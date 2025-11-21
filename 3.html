@@ -1,47 +1,60 @@
-<style>
-    /* İçeriği sayfada ortalamak ve dikey yığınlamak için */
-    body { 
-        display: flex; 
-        flex-direction: column; 
-        justify-content: center; 
-        align-items: center; 
-        min-height: 100vh; 
-        margin: 0; 
-        background-color: #000; /* Arka plan siyah */
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        overflow: hidden; /* Büyüme sırasında kaydırma çubuğu çıkmasını engeller */
-    }
-    
-    /* Görselin başlangıç ve bitiş stilini tanımlar */
-    img { 
-        max-width: 90%; 
-        max-height: 75vh;
-        border-radius: 5px;
-        margin-bottom: 20px; 
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAH! Kandırıldın.</title>
+    <style>
+        /* İçeriği sayfada ortalamak ve dikey yığınlamak için */
+        body { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            background-color: #000; /* Arka plan siyah */
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            overflow: hidden; /* Büyüme sırasında kaydırma çubuğu çıkmasını engeller */
+        }
         
-        /* Büyüme efekti için kritik kısım */
-        transform: scale(0.1); /* Başlangıçta %10 boyutunda */
-        animation: grow 0.8s ease-out forwards; /* 0.8 saniyede büyüt animasyonunu uygula */
-    }
-
-    /* Animasyonu tanımlar: %10 boyutundan %100 boyutuna geçiş */
-    @keyframes grow {
-        from {
-            transform: scale(0.1);
+        /* Görselin başlangıç ve bitiş stilini tanımlar */
+        img { 
+            max-width: 90%; 
+            max-height: 75vh;
+            border-radius: 5px;
+            margin-bottom: 20px; 
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            
+            /* Büyüme efekti için kritik kısım */
+            transform: scale(0.1); /* Başlangıçta %10 boyutunda */
+            animation: grow 0.8s ease-out forwards; /* 0.8 saniyede büyüt animasyonunu uygula */
         }
-        to {
-            transform: scale(1);
-        }
-    }
 
-    /* Yazı Stili */
-    .saka-metni {
-        color: #FFF; 
-        font-size: 1.5em; 
-        font-weight: bold;
-        text-align: center;
-        max-width: 80%;
-    }
-</style>
+        /* Animasyonu tanımlar: %10 boyutundan %100 boyutuna geçiş */
+        @keyframes grow {
+            from {
+                transform: scale(0.1);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        /* Yazı Stili */
+        .saka-metni {
+            color: #FFF; /* Yazı rengi beyaz */
+            font-size: 1.5em; 
+            font-weight: bold;
+            text-align: center;
+            max-width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <img src="nah.jpg" alt="NAH!"> 
+    
+    <p class="saka-metni">Dünyalı dostum, tam olarak anlamadın galiba? KANDIRILDIN!</p>
+</body>
+</html>
