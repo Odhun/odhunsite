@@ -25,7 +25,8 @@
             max-height: 75vh;
             border-radius: 5px;
             margin-bottom: 20px; 
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            /* İstenildiği gibi, görselin etrafındaki çerçeveyi ve gölgeyi kaldırdık. 
+               Görsel, arka planla tam karışacak (eğer 'nah.png' görselinin arka planı da siyah ise). */
             
             /* Büyüme efekti için kritik kısım */
             transform: scale(0.1); /* Başlangıçta %10 boyutunda */
@@ -59,16 +60,18 @@
     </style>
 </head>
 <body>
+    <!-- Görselin adının 'nah.png' olduğunu varsayıyoruz. Eğer 'nah.jpg' ise lütfen bu satırı düzenleyin. -->
     <img src="nah.png" alt="NAH!"> 
     
-    <p class="saka-metni">Dünyalı dostum, tam olarak anlamadın galiba? KANDIRILDIN!</p>
+    <p class="saka-metni">Nah Yedin! Üzülme Yalnız Değilsin. Kaç kişinin Nah yediğini aşağıda görebilirsin.</p>
 
+    <!-- Ziyaretçi Sayacı Kodu -->
     <div class="sayaç-kapsayici">
         <a href="https://tr.web-counter.net" title="Sayaç">
             <img src="https://www.web-counter.net/count_20091204.php?c=1oIf3FiTyOl" 
                  style="border:0; padding:0; margin:0;" 
                  alt="Sayaç">
         </a>
-        </div>
+    </div>
 </body>
 </html>
