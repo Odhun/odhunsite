@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odhun Şaka Albümü</title>
+    <style>
+        body { 
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0; 
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        img { 
+            max-width: 90%; 
+            height: auto; 
+            border: 2px solid #333;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Merhaba! Sana Özel Bir Şakam Var.</h1>
+    <img src="ana-gorsel.jpg" alt="Hoş Geldiniz Görseli"> 
+    <p>Linkin sonundaki sayıyı değiştirerek diğer şakaları görebilirsin. Örneğin: odhunsite.com/1.html</p>
+</body>
+</html>
