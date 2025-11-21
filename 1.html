@@ -5,23 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KANDIRILDIN!</title>
     <style>
+        /* Ana Kapsayıcı: İçeriği sayfada ortalamak için */
         body { 
             display: flex; 
+            flex-direction: column; /* İçerikleri dikey yığınlamak için */
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
-            background-color: #f0f0f0; /* Hafif bir arka plan */
+            background-color: #f0f0f0; 
+            font-family: Arial, sans-serif;
+            padding: 20px; /* Kenar boşluğu ekle */
         }
+        
+        /* Görsel Stili */
         img { 
             max-width: 90%; 
-            max-height: 90vh; /* Ekran yüksekliğinin %90'ı */
+            max-height: 75vh; /* Metin için yer açmak adına yüksekliği biraz azalttık */
             border: 5px solid #fff;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px; /* Görsel ile yazı arasına boşluk */
+        }
+
+        /* Yazı Stili */
+        .saka-metni {
+            color: #333;
+            font-size: 1.5em; /* Yazı boyutunu büyüttük */
+            font-weight: bold;
+            text-align: center;
+            max-width: 80%; /* Uzun cümlelerde taşmayı önler */
         }
     </style>
 </head>
 <body>
-    <img src="saka1.jpg" alt="Dünyali dostum, tam olarak anlamadın galiba? KANDIRILDIN!"> 
+    <img src="saka1.jpg" alt="Ana Görsel"> 
+    
+    <p class="saka-metni">Dünyalı dostum, tam olarak anlamadın galiba? KANDIRILDIN!</p>
 </body>
 </html>
