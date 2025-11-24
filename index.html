@@ -6,43 +6,53 @@
     <title>Odhun</title>
     <style>
         body { 
-            text-align: center;
-            font-family: Arial, sans-serif;
-            margin: 0; 
-            padding: 20px;
-            /* Arka planı tamamen siyah yaptık */
-            background-color: #000;
-            /* Sayfa içeriğini dikeyde ortalamak için */
-            min-height: 100vh;
+            /* Sayfayı ekran boyutunda ve ortalanmış hale getir */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 100vh; /* Ekran yüksekliği kadar minimum yükseklik */
+            
+            margin: 0; 
+            padding: 0; /* Sayfanın kenarlarındaki varsayılan boşlukları sıfırla */
+            
+            background-color: #000; /* Tamamen siyah arka plan */
+            color: #FFF; /* Metin rengini beyaz yap */
+            font-family: Arial, sans-serif;
+            text-align: center;
         }
         
-        /* Başlık ve Paragraf Metin Rengini Beyaz Yaptık */
-        h1, p { 
-            color: #FFF; 
-        }
-
+        /* Başlık stili */
         h1 { 
-            /* Başlığın altındaki boşluğu biraz artırdık */
-            margin-bottom: 20px;
+            color: #FFF; 
+            margin-bottom: 20px; /* Görselden önceki boşluk */
+            font-size: 2.5em; /* Başlığı biraz büyütelim */
         }
 
+        /* Görsel stili */
         img { 
-            max-width: 90%; 
+            max-width: 100%; /* Ekran genişliğinin %100'ünü kullanabilir */
             height: auto; 
-            /* Siyah arka plana tam uyum için çerçeve ve gölgeyi kaldırdık */
+            display: block; /* Görselin altında oluşabilecek boşluğu engeller */
+            
+            /* Siyah arka planla tam uyum için çerçeve ve gölgeyi kaldırdık */
             border: none;
             box-shadow: none;
-            margin-bottom: 15px; /* Görsel altındaki boşluk */
+            
+            margin: 0 auto; /* Görseli yatayda ortala */
+            padding: 0; /* Görselin içindeki boşlukları sıfırla */
+        }
+        
+        /* Paragraf metni stili */
+        p { 
+            color: #FFF; 
+            margin-top: 15px; /* Görselden sonraki boşluk */
+            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
     <h1>odhun.</h1>
-    <!-- Lütfen 'ana-gorsel.jpg' adının, yüklediğiniz görselle eşleştiğinden emin olun. -->
     <img src="ana-gorsel.jpg" alt="Hoş Geldiniz Görseli"> 
     <p>Test aşamasındadır.</p>
 </body>
