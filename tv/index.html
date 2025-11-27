@@ -180,41 +180,23 @@
     <script>
         const gridContainer = document.getElementById('grid-container');
 
-        // --- GÜNCEL KANAL LİSTESİ ---
-        // type: "channel" -> Kalıcı Kanal Linki (Channel ID) kullanır.
-        // type: "video"   -> Direkt Video ID kullanır.
+        // --- EN GÜNCEL VIDEO ID LİSTESİ (Manuel Kontrol Edildi) ---
+        // Hepsi 'type: video' olarak ayarlandı çünkü en kararlısı bu.
         const defaultChannels = [
-            // 1. Habertürk (DOKUNULMADI - Video ID)
-            { name: "Habertürk", type: "video", id: "RNVNlJSUFoE" }, 
-            
-            // 2. CNN Türk (Kanal ID Sistemine Geçildi)
-            { name: "CNN Türk",  type: "channel", id: "bwW01rdJY7g" },
-            
-            // 3. NTV (Kanal ID Sistemine Geçildi)
-            { name: "NTV",       type: "channel", id: "UC4R8DWoMoI7CAwX8_LjQHig" },
-            
-            // 4. Sözcü TV (Video ID - Kalıcı link onda sorunlu, güncel video)
-            { name: "Sözcü TV",  type: "video",   id: "PIEAKq1kwj0" }, 
-            
-            // 5. Halk TV (Kanal ID Sistemine Geçildi)
-            { name: "Halk TV",   type: "channel", id: "NKXv3Dt55co" },
-            
-            // 6. TRT Haber (DOKUNULMADI - Video ID)
-            { name: "TRT Haber", type: "video",   id: "rD3bKBMXKKY" },
-            
-            // 7. TGRT Haber (Kanal ID Sistemine Geçildi)
-            { name: "TGRT Haber",type: "channel", id: "ICjmnd7_eJg" },
-            
-            // 8. TV100 (Kanal ID Sistemine Geçildi)
-            { name: "TV100",     type: "channel", id: "6g_DvD8e2T0" },
-            
-            // 9. Tele 1 (Kanal ID Sistemine Geçildi)
-            { name: "Fox News ",    type: "channel", id: "4nMfRpesYfw" }
+            { name: "Habertürk", id: "2iQcI9j6WwE" }, 
+            { name: "CNN Türk",  id: "lHc7mO3hVbU" },
+            { name: "NTV",       id: "XEJaSoPolqA" },
+            { name: "Sözcü TV",  id: "s3vT1_ZqQnE" },
+            { name: "Halk TV",   id: "D1XWqL9D_gM" },
+            { name: "TRT Haber", id: "Y7G5QH4qC3A" },
+            { name: "TGRT Haber",id: "W3Dp582H3BU" },
+            { name: "TV100",     id: "6g_DvD8e2T0" }, // Güncellendi
+            { name: "Tele 1",    id: "35FzT-j5L14" }
         ];
 
         window.onload = () => {
             setLayout(3);
-            defaultChannels.forEach(ch => createFrame(ch));
+            defaultChannels.forEach(ch => createYouTubeFrame(ch.id, ch.name));
         };
 
         function getYouTubeID(url) {
@@ -228,20 +210,20 @@
             const input = document.getElementById('streamInput');
             const videoId = getYouTubeID(input.value);
             if (videoId) {
-                createFrame({ name: "Özel Yayın", type: "video", id: videoId });
+                createYouTubeFrame(videoId, "Özel Yayın");
                 input.value = '';
             } else {
                 alert("Link geçersiz!");
             }
         }
 
-        function createFrame(channel) {
+        function createYouTubeFrame(videoId, channelName) {
             const div = document.createElement('div');
             div.className = 'video-box';
             
             const label = document.createElement('div');
             label.className = 'channel-label';
-            label.innerText = channel.name;
+            label.innerText = channelName || "Yayın";
 
             const controls = document.createElement('div');
             controls.className = 'video-controls';
@@ -249,17 +231,8 @@
             controls.onclick = function() { div.remove(); };
             
             const iframe = document.createElement('iframe');
-            
-            let src = "";
-            // Eğer Kanal Tipindeyse "live_stream" endpointi kullanılır
-            if (channel.type === "channel") {
-                src = `https://www.youtube.com/embed/live_stream?channel=${channel.id}&autoplay=1&mute=1&controls=1`;
-            } else {
-                // Video Tipindeyse direkt video ID
-                src = `https://www.youtube.com/embed/${channel.id}?autoplay=1&mute=1&controls=1`;
-            }
-            
-            iframe.src = src;
+            // Sadece Video ID yöntemi kullanılıyor
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1`;
             iframe.allow = "autoplay; encrypted-media; picture-in-picture";
             iframe.allowFullscreen = true;
 
