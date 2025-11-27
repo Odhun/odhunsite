@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --header-bg: #2c3e50;
-            --accent: #3498db;
+            --bg-color: #121212;
+            --header-bg: #202020;
+            --accent: #e74c3c;
             --text: #ecf0f1;
         }
 
@@ -28,65 +28,57 @@
         /* Üst Kontrol Barı */
         header {
             background-color: var(--header-bg);
-            padding: 8px 15px;
+            padding: 0 15px;
             display: flex;
             gap: 10px;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
             z-index: 10;
             height: 50px;
+            border-bottom: 1px solid #333;
         }
 
         header h3 {
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             white-space: nowrap;
+            color: #fff;
+            font-weight: 600;
         }
 
         .input-group {
             display: flex;
             flex-grow: 1;
-            max-width: 500px;
+            max-width: 400px;
             gap: 5px;
         }
 
         input[type="text"] {
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             border: 1px solid #444;
-            background: #34495e;
+            background: #333;
             color: white;
             width: 100%;
             outline: none;
-        }
-
-        input[type="text"]::placeholder {
-            color: #bdc3c7;
+            font-size: 0.9rem;
         }
 
         button {
             padding: 6px 12px;
-            background-color: var(--accent);
+            background-color: #3498db;
             border: none;
             border-radius: 4px;
             color: white;
             cursor: pointer;
             transition: background 0.2s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             white-space: nowrap;
         }
 
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        button.btn-danger {
-            background-color: #e74c3c;
-        }
-        
-        button.btn-danger:hover {
-            background-color: #c0392b;
-        }
+        button:hover { background-color: #2980b9; }
+        button.btn-danger { background-color: #e74c3c; }
+        button.btn-danger:hover { background-color: #c0392b; }
 
         /* Grid Alanı */
         #grid-container {
@@ -107,7 +99,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            border: 1px solid #333;
+            border: 1px solid #222;
         }
 
         .video-box iframe {
@@ -116,39 +108,51 @@
             border: none;
         }
 
-        /* Video Üzerindeki Kontroller */
+        /* Video Üzerindeki Etiket (Kanal Adı) */
+        .channel-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            z-index: 6;
+            pointer-events: none; /* Tıklamayı engelleme */
+            text-shadow: 0 1px 2px rgba(0,0,0,1);
+            font-weight: bold;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* Kapat Butonu */
         .video-controls {
             position: absolute;
             top: 0;
             right: 0;
-            background: rgba(192, 57, 43, 0.8);
-            padding: 4px 8px;
+            background: #c0392b;
+            padding: 6px 10px;
             cursor: pointer;
+            z-index: 10;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
             opacity: 0;
             transition: opacity 0.2s;
-            z-index: 5;
-            border-bottom-left-radius: 6px;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
         }
 
-        .video-box:hover .video-controls {
-            opacity: 1;
-        }
+        .video-box:hover .video-controls { opacity: 1; }
 
         /* Grid Düzen Ayarları */
-        .grid-1 { grid-template-columns: 1fr; }
-        .grid-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid-3 { grid-template-columns: repeat(3, 1fr); }
-        .grid-4 { grid-template-columns: repeat(4, 1fr); }
-        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-1 { grid-template-columns: 1fr !important; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr) !important; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr) !important; }
+        .grid-4 { grid-template-columns: repeat(4, 1fr) !important; }
 
-        /* Mobil Uyumluluk */
+        /* Mobil */
         @media (max-width: 768px) {
             header { flex-wrap: wrap; height: auto; padding: 10px; }
             .input-group { order: 2; width: 100%; max-width: none; }
-            header h3 { width: 100%; text-align: center; margin-bottom: 5px; }
             #grid-container { grid-template-columns: 1fr !important; overflow-y: auto; }
             .video-box { min-height: 250px; }
         }
@@ -157,48 +161,47 @@
 <body>
 
     <header>
-        <h3><i class="fas fa-satellite-dish"></i> Odhun TV</h3>
+        <h3><i class="fas fa-tv"></i> Odhun TV</h3>
         
         <div class="input-group">
-            <input type="text" id="streamInput" placeholder="YouTube Linki (Örn: youtu.be/xyz)">
-            <button onclick="addStream()"><i class="fas fa-plus"></i> Ekle</button>
+            <input type="text" id="streamInput" placeholder="YouTube Linki yapıştır...">
+            <button onclick="addStreamFromInput()"><i class="fas fa-plus"></i> Ekle</button>
         </div>
         
         <div style="margin-left: auto; display: flex; gap:5px;">
             <button onclick="setLayout(1)">1x1</button>
             <button onclick="setLayout(2)">2x2</button>
             <button onclick="setLayout(3)">3x3</button>
-            <button onclick="setLayout(4)">4x4</button>
-            <button onclick="clearAll()" class="btn-danger" title="Temizle"><i class="fas fa-trash"></i></button>
+            <button onclick="clearAll()" class="btn-danger"><i class="fas fa-trash"></i></button>
         </div>
     </header>
 
-    <div id="grid-container" class="grid-3">
-        </div>
+    <div id="grid-container" class="grid-3"></div>
 
     <script>
         const gridContainer = document.getElementById('grid-container');
-        
-        // --- GÜNCEL KANAL LİSTESİ (9 ADET) ---
-        // A Haber yerine TGRT Haber eklendi
+
+        /* ÖNEMLİ: "Video Kullanılamıyor" hatası alırsan, 
+           YouTube'a gir, kanalın canlı yayınına tıkla.
+           Adres çubuğundaki 'v=' den sonraki kodu buraya yaz.
+        */
         const defaultChannels = [
-            'y6120QOlsfU', // Habertürk
-            'lHc7mO3hVbU', // CNN Türk
-            'XEJaSoPolqA', // NTV
-            's3vT1_ZqQnE', // Sözcü TV
-            'D1XWqL9D_gM', // Halk TV
-            'Y7G5QH4qC3A', // TRT Haber
-            'W3Dp582H3BU', // TGRT Haber (YENİ EKLENDİ)
-            'b3G5-yX9T4E', // TV100
-            '35FzT-j5L14'  // Tele1 (veya KRT)
+            { name: "Habertürk", id: "2iQcI9j6WwE" }, 
+            { name: "CNN Türk",  id: "lHc7mO3hVbU" },
+            { name: "NTV",       id: "XEJaSoPolqA" },
+            { name: "Sözcü TV",  id: "s3vT1_ZqQnE" },
+            { name: "Halk TV",   id: "D1XWqL9D_gM" },
+            { name: "TRT Haber", id: "Y7G5QH4qC3A" },
+            { name: "TGRT Haber",id: "W3Dp582H3BU" },
+            { name: "TV100",     id: "6g_DvD8e2T0" },
+            { name: "Tele 1",    id: "35FzT-j5L14" }
         ];
 
         window.onload = () => {
             setLayout(3);
-            defaultChannels.forEach(id => createYouTubeFrame(id));
+            defaultChannels.forEach(ch => createYouTubeFrame(ch.id, ch.name));
         };
 
-        // --- GELİŞMİŞ LINK AYRIŞTIRICI ---
         function getYouTubeID(url) {
             url = url.trim();
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -206,36 +209,39 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        function addStream() {
+        function addStreamFromInput() {
             const input = document.getElementById('streamInput');
-            const url = input.value;
-            
-            if (!url) return;
-
-            const videoId = getYouTubeID(url);
-
+            const videoId = getYouTubeID(input.value);
             if (videoId) {
-                createYouTubeFrame(videoId);
+                createYouTubeFrame(videoId, "Özel Yayın");
                 input.value = '';
             } else {
-                alert("Geçersiz YouTube Linki! Lütfen linki kontrol edin.");
+                alert("Link geçersiz!");
             }
         }
 
-        function createYouTubeFrame(videoId) {
+        function createYouTubeFrame(videoId, channelName) {
             const div = document.createElement('div');
             div.className = 'video-box';
             
+            // Etiket
+            const label = document.createElement('div');
+            label.className = 'channel-label';
+            label.innerText = channelName || "Yayın";
+
+            // Kapat Butonu
             const controls = document.createElement('div');
             controls.className = 'video-controls';
-            controls.innerHTML = `<i class="fas fa-times"></i> KAPAT`;
+            controls.innerHTML = `<i class="fas fa-times"></i>`;
             controls.onclick = function() { div.remove(); };
             
             const iframe = document.createElement('iframe');
+            // autoplay=1 ve mute=1 çoklu ekran için zorunlu
             iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1`;
             iframe.allow = "autoplay; encrypted-media; picture-in-picture";
             iframe.allowFullscreen = true;
 
+            div.appendChild(label);
             div.appendChild(controls);
             div.appendChild(iframe);
             gridContainer.appendChild(div);
@@ -247,9 +253,7 @@
         }
 
         function clearAll() {
-            if(confirm('Tüm ekranlar kapatılsın mı?')) {
-                gridContainer.innerHTML = '';
-            }
+            if(confirm('Temizle?')) gridContainer.innerHTML = '';
         }
     </script>
 </body>
