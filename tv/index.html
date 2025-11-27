@@ -99,7 +99,7 @@ header {
 }
 .btn-clear:hover { background: #c0392b; color: white; }
 
-/* --- GRID YAPISI (DÜZELTİLDİ) --- */
+/* --- GRID YAPISI (DÜZELTİLDİ - Üst Üste Binme Yok) --- */
 #grid {
     flex: 1; 
     padding: 20px; 
@@ -211,13 +211,13 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
 const grid = document.getElementById('grid');
 const channelListEl = document.getElementById('channelList');
 
-// --- TOP 10 YOUTUBE HABER LİSTESİ ---
+// --- SENİN VERDİĞİN ÖZEL KANAL LİSTESİ ---
 const channels = [
     { name: "Sözcü TV", id: "ztmY_cCtUl0" },
     { name: "Halk TV", id: "VBU0QX6brew" },
     { name: "Haber Global", id: "EqoCJ8BPxtE" },
     { name: "TV100", id: "6g_DvD8e2T0" },
-    { name: "TRT HABER", id: "rD3bKBMXKKY" },
+    { name: "TRT HABER", id: "rD3bKBMXKKY" }, // HLS yerine Video ID olarak güncellendi
     { name: "CNBC-e", id: "ziYwt0jF1p4" },
     { name: "Habertürk", id: "RNVNlJSUFoE" }, 
     { name: "NTV", id: "pqq5c6k70kk" },      
