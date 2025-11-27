@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun TV | Ultimate Haber Paneli</title>
+    <title>Odhun TV | 16'lı Hibrit Haber Paneli</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
         :root {
-            --bg: #0a0a0a;
-            --header: #111;
-            --border: #333;
+            --bg: #0f0f0f;
+            --header: #141414;
+            --border: #222;
             --accent: #e50914;
             --text: #fff;
         }
@@ -22,20 +22,20 @@
             overflow: hidden;
         }
 
-        /* Üst Bar Tasarımı */
+        /* Üst Bar */
         header {
             height: 50px; background: var(--header); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 20px; gap: 15px; z-index: 100;
+            display: flex; align-items: center; padding: 0 15px; gap: 10px; z-index: 100;
         }
 
-        .brand { font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; color: #fff; }
+        .brand { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px; color: #fff; }
         .brand span { color: var(--accent); }
 
-        .controls { margin-left: auto; display: flex; gap: 5px; }
+        .controls { margin-left: auto; display: flex; gap: 4px; }
 
         button {
-            background: #222; border: 1px solid #444; color: #ccc;
-            padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;
+            background: #222; border: 1px solid #333; color: #aaa;
+            padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 0.8rem;
             transition: all 0.2s;
         }
         button:hover { background: #333; color: #fff; }
@@ -43,46 +43,45 @@
         button.btn-red { border-color: #c0392b; color: #c0392b; background: transparent; }
         button.btn-red:hover { background: #c0392b; color: #fff; }
 
-        .input-area { display: flex; flex: 1; max-width: 400px; margin: 0 20px; }
+        .input-area { display: flex; flex: 1; max-width: 350px; margin: 0 15px; }
         input {
             width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff;
-            padding: 0 10px; height: 32px; border-radius: 4px 0 0 4px; outline: none;
+            padding: 0 10px; height: 30px; border-radius: 3px 0 0 3px; outline: none; font-size: 0.9rem;
         }
         .btn-add {
-            height: 34px; border-radius: 0 4px 4px 0; background: var(--accent); 
-            border: none; color: white; font-weight: bold;
+            height: 32px; border-radius: 0 3px 3px 0; background: var(--accent); 
+            border: none; color: white; font-weight: bold; cursor: pointer; padding: 0 15px;
         }
 
-        /* Video Izgarası */
+        /* Izgara Sistemi */
         #grid {
             flex: 1; display: grid; background: #000;
-            grid-template-columns: repeat(4, 1fr); /* Varsayılan 4x4 */
+            grid-template-columns: repeat(4, 1fr); /* 4x4 Başlangıç */
             grid-auto-rows: 1fr;
             gap: 1px; overflow-y: auto;
         }
 
         .stream-box {
-            position: relative; background: #000; border: 1px solid #222;
+            position: relative; background: #000; border: 1px solid #1a1a1a;
             display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
 
-        /* Video Elementleri */
         video, iframe { width: 100%; height: 100%; object-fit: fill; border: none; }
 
         .label {
-            position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7);
-            padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+            position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.8);
+            padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700;
             pointer-events: none; z-index: 10; border-left: 3px solid var(--accent);
             text-transform: uppercase;
         }
 
         .close {
-            position: absolute; top: 0; right: 0; padding: 8px 12px; background: #c0392b;
-            color: white; cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s;
+            position: absolute; top: 0; right: 0; padding: 6px 10px; background: #c0392b;
+            color: white; cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s; font-size: 12px;
         }
         .stream-box:hover .close { opacity: 1; }
 
-        /* Mobil Uyum */
+        /* Mobil */
         @media (max-width: 768px) {
             header { flex-wrap: wrap; height: auto; padding: 10px; }
             .input-area { order: 2; width: 100%; max-width: none; margin: 10px 0; }
@@ -97,7 +96,7 @@
         <div class="brand">ODHUN<span>TV</span></div>
         
         <div class="input-area">
-            <input type="text" id="linkIn" placeholder="YouTube ID veya m3u8 Linki...">
+            <input type="text" id="linkIn" placeholder="YouTube ID veya Link...">
             <button class="btn-add" onclick="addCustom()"><i class="fas fa-plus"></i></button>
         </div>
 
@@ -115,33 +114,33 @@
     <script>
         const grid = document.getElementById('grid');
 
-        // --- HİBRİT KANAL LİSTESİ (16 KANAL) ---
-        // type: 'hls' -> Uydu Yayını (YouTube engeli olanlar için)
-        // type: 'yt'  -> YouTube Yayını (Engeli olmayanlar için)
+        // --- TAM LİSTE (16 KANAL) ---
+        // type: 'hls' -> Uydu Linki (YouTube engeli olanlar için)
+        // type: 'yt'  -> YouTube ID (Embed izni olanlar için)
         const channels = [
             // 1. Sıra
             { name: "NTV",          type: "hls", src: "https://dogus-live.daioncdn.net/ntv/ntv.m3u8" },
             { name: "CNN Türk",     type: "hls", src: "https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/playlist.m3u8" },
             { name: "Habertürk",    type: "hls", src: "https://ciner-live.daioncdn.net/haberturk/haberturk.m3u8" },
-            { name: "Sözcü TV",     type: "yt",  src: "ztmY_cCtUI0" }, // Sözcü YouTube'da stabil
+            { name: "Sözcü TV",     type: "yt",  src: "ztmY_cCtUI0" },
             
             // 2. Sıra
-            { name: "Halk TV",      type: "yt",  src: "VBU0QX6brew" }, // Halk TV YouTube'da stabil
-            { name: "TRT Haber",    type: "hls", src: "https://tv-trthaber.live.trt.net.tr/master.m3u8" },
-            { name: "A Haber",      type: "hls", src: "https://tring.daioncdn.net/ahaber/ahaber.m3u8" },
+            { name: "Halk TV",      type: "yt",  src: "VBU0QX6brew" },
             { name: "Haber Global", type: "yt",  src: "EqoCJ8BPxtE" },
+            { name: "EKOL TV",      type: "hls", src: "https://ekoltv-live.elkon.com.tr/hls/ekoltv.m3u8" },
+            { name: "TV 100",       type: "yt",  src: "6g_DvD8e2T0" },
 
             // 3. Sıra
-            { name: "TV 100",       type: "yt",  src: "6g_DvD8e2T0" },
-            { name: "Tele 1",       type: "yt",  src: "UCoHnRpOS5rL62jTmSDO5Npw" },
+            { name: "TRT Haber",    type: "hls", src: "https://tv-trthaber.live.trt.net.tr/master.m3u8" },
             { name: "TGRT Haber",   type: "hls", src: "https://tgrt-live.daioncdn.net/tgrthaber/tgrthaber.m3u8" },
-            { name: "EKOL TV",      type: "hls", src: "https://ekoltv-live.elkon.com.tr/hls/ekoltv.m3u8" },
+            { name: "CNBC-e",       type: "yt",  src: "ziYwt0jF1p4" },
+            { name: "TYT Türk",     type: "hls", src: "https://cdn-tytturk.yayin.com.tr/tytturk/tytturk/playlist.m3u8" },
 
             // 4. Sıra
-            { name: "CNBC-e",       type: "yt",  src: "ziYwt0jF1p4" },
+            { name: "Ulusal Kanal", type: "yt",  src: "dK96AZbCns0" },
             { name: "Bloomberg HT", type: "hls", src: "https://ciner-live.daioncdn.net/bloomberght/bloomberght.m3u8" },
-            { name: "24 TV",        type: "hls", src: "https://turkmedya-live.daioncdn.net/tv24/tv24.m3u8" },
-            { name: "TVNET",        type: "hls", src: "https://mn-nl.mncdn.com/tvnet/tvnet.smil/playlist.m3u8" }
+            { name: "TVNET",        type: "hls", src: "https://mn-nl.mncdn.com/tvnet/tvnet.smil/playlist.m3u8" },
+            { name: "24 TV",        type: "hls", src: "https://turkmedya-live.daioncdn.net/tv24/tv24.m3u8" }
         ];
 
         window.onload = () => {
@@ -161,13 +160,13 @@
                 <div class="close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></div>
             `;
 
-            // HLS (M3U8) Oynatıcı
+            // HLS (Uydu) Oynatıcı
             if (ch.type === 'hls') {
                 const video = document.createElement('video');
                 video.muted = true; // Çoklu yayında sesleri kapatmak zorunludur
                 video.autoplay = true;
                 video.playsInline = true;
-                video.controls = true; // İstersen false yapabilirsin
+                video.controls = true; 
 
                 box.appendChild(video);
 
@@ -177,7 +176,7 @@
                     hls.attachMedia(video);
                     hls.on(Hls.Events.ERROR, function (event, data) {
                         if (data.fatal) {
-                             // Hata olursa yeniden dene
+                            // Hata durumunda yeniden bağlanmayı dene
                             hls.startLoad();
                         }
                     });
@@ -188,7 +187,6 @@
             // YouTube Oynatıcı
             else {
                 const iframe = document.createElement('iframe');
-                // mute=1 ve autoplay=1 kritik parametrelerdir
                 iframe.src = `https://www.youtube.com/embed/${ch.src}?autoplay=1&mute=1&controls=1&playsinline=1`;
                 iframe.allow = "autoplay; encrypted-media; picture-in-picture";
                 box.appendChild(iframe);
@@ -205,10 +203,9 @@
             let type = 'hls';
             let src = val;
 
-            // YouTube Linki Kontrolü
+            // YouTube Linki Tespiti
             if(val.includes('youtu') || val.includes('v=')) {
                 type = 'yt';
-                // Regex ile ID çekme
                 const match = val.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
                 if (match && match[2].length === 11) src = match[2];
             }
@@ -219,7 +216,6 @@
 
         function setGrid(n) {
             grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
-            // Aktif butonu işaretle
             document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
             if(event) event.target.classList.add('active');
         }
