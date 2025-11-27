@@ -3,48 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taşınabilir Uygulamalarım</title>
+    <title>Odhun Uygulama Merkezi</title>
     <style>
-        /* Basit ve temiz bir görünüm için stil */
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
-        h1 { color: #333; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 15px; border: 1px solid #eee; padding: 10px; border-radius: 5px; }
-        a { text-decoration: none; color: #007bff; font-weight: bold; }
-        a:hover { text-decoration: underline; }
+        /* Modern ve Temiz Tasarım */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        /* Kartlar için Izgara (Grid) Yapısı */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        /* Uygulama Kartı Tasarımı */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-desc {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .download-btn {
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: block; /* Butonu tam genişlik yapar */
+        }
+
+        .download-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Farklı dosya türleri için renk kodları */
+        .btn-bat { background-color: #e67e22; } /* Turuncu */
+        .btn-bat:hover { background-color: #d35400; }
+        
+        .btn-rar { background-color: #27ae60; } /* Yeşil */
+        .btn-rar:hover { background-color: #2ecc71; }
+
+        .btn-txt { background-color: #95a5a6; } /* Gri */
+        .btn-txt:hover { background-color: #7f8c8d; }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.8em;
+            color: #999;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
-    <h1>Uygulama İndirme Merkezi (Odhun)</h1>
-    <p>Odhun</p>
 
-    <ul>
-        <li>
-            <a href="Odhun Windows+Office Lisanslama.bat" download> Windows ve Office Lisanslama (Odhun)</a>
-            <p>Açıklama: Office ve Windows etkinleştirmek için yönetici olarak başlat ve adımları takip et. Güncel</p>
-        </li>
-        <li>
-            <a href="Odhun Oto Pc Kapatma.bat" download> Oto Pc Kapatma (Odhun)</a>
-            <p>Açıklama: Zaman ayarlı otomatik pc kapatma uygulaması..</p>
-        </li>
-        </ul>
-    <a href="Internet Download Manager 6.42 Build 26 Multilingual + Retail.rar" download> İDM güncel)</a>
-            <p>Açıklama: Güncel cracklı idm.</p>
-        </li>
-        </ul>
-   <a href="windows etkinleştirme.txt" download>windows etkinleştirme text</a>
-            <p>1. uygulama çalışmazsa yazılı olarak aktif etmek için.</p>
-        </li>
-        </ul>
-    <a href="Uygulama_2_Setup.exe" download>Uygulama 2 Adı (Kurulum Dosyası)</a>
-            <p>Açıklama: İkinci uygulamanın doğrudan kurulum dosyasını buradan edinebilirsiniz.</p>
-        </li>
-        </ul>
-    <a href="Uygulama_2_Setup.exe" download>Uygulama 2 Adı (Kurulum Dosyası)</a>
-            <p>Açıklama: İkinci uygulamanın doğrudan kurulum dosyasını buradan edinebilirsiniz.</p>
-        </li>
-        </ul>
-    
-    <p>Şahsıma aittir. İzinsiz kullanımdan doğan sonuçlar beni bağlamaz.</p>
+    <header>
+        <h1>Odhun Apps</h1>
+        <div class="subtitle">Kişisel Taşınabilir Uygulama Deposu</div>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <div class="card-title">🔑 Windows & Office Lisanslama</div>
+            <div class="card-desc">
+                Office ve Windows etkinleştirmek için script. İndirdikten sonra yönetici olarak çalıştırın ve adımları takip edin.
+            </div>
+            <a href="Odhun Windows+Office Lisanslama.bat" download class="download-btn btn-bat">📥 İndir (.bat)</a>
+        </div>
+
+        <div class="card">
+            <div class="card-title">⏲️ Oto PC Kapatma</div>
+            <div class="card-desc">
+                Bilgisayarı belirli bir süre sonra otomatik kapatmak için zaman ayarlı araç.
+            </div>
+            <a href="Odhun Oto Pc Kapatma.bat" download class="download-btn btn-bat">📥 İndir (.bat)</a>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🚀 Internet Download Manager</div>
+            <div class="card-desc">
+                IDM 6.42 Build 26 Multilingual + Retail sürümü. Güncel ve hazır paket.
+            </div>
+            <a href="Internet Download Manager 6.42 Build 26 Multilingual + Retail.rar" download class="download-btn btn-rar">📥 İndir (.rar)</a>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📄 Manuel Etkinleştirme</div>
+            <div class="card-desc">
+                Eğer otomatik .bat dosyası çalışmazsa, manuel etkinleştirme yöntemini içeren metin belgesi.
+            </div>
+            <a href="windows etkinleştirme.txt" download class="download-btn btn-txt">📥 Oku / İndir (.txt)</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>⚠️ Odhun.com © 2024</p>
+        <p>Bu arşiv şahsıma aittir. Dosyaların izinsiz veya hatalı kullanımından doğacak sonuçlar kullanıcı sorumluluğundadır.</p>
+    </footer>
+
 </body>
 </html>
