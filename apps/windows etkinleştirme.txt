@@ -1,0 +1,3 @@
+Başlata tıkla Terminal aç (cmd değil)
+irm https://get.activated.win | iex
+yaz enter tıkla açılan sayfada ihtiyacın olanı etkinleştir
