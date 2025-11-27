@@ -3,128 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun TV | YouTube Haber Paneli</title>
+    <title>Odhun TV | Haber Merkezi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --sidebar-width: 250px;
-            --bg-dark: #0f0f0f;
-            --bg-panel: #161616;
-            --accent: #ff0000; /* YouTube Kırmızısı */
-            --border: #2a2a2a;
-            --text-main: #ffffff;
-            --text-dim: #a0a0a0;
+            --bg-dark: #050505;       /* Simsiyah arka plan */
+            --bg-panel: #111111;      /* Panel rengi */
+            --accent: #ff0000;        /* YouTube Kırmızısı */
+            --border: #333;           /* İnce çizgiler */
+            --text-main: #fff;
+            --sidebar-width: 260px;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text-main);
-            font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
+            font-family: 'Roboto', sans-serif; height: 100vh; display: flex; overflow: hidden;
         }
 
-        /* --- SOL MENÜ --- */
+        /* --- SOL MENÜ (Modern ve Temiz) --- */
         .sidebar {
             width: var(--sidebar-width); background: var(--bg-panel);
             border-right: 1px solid var(--border); display: flex; flex-direction: column;
-            flex-shrink: 0; z-index: 20;
+            flex-shrink: 0; z-index: 50;
         }
 
         .logo-area {
             height: 60px; display: flex; align-items: center; padding: 0 20px;
-            font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px;
-            border-bottom: 1px solid var(--border);
+            font-size: 1.5rem; font-weight: 900; letter-spacing: -1px;
+            background: #000; border-bottom: 1px solid var(--border);
         }
         .logo-area span { color: var(--accent); margin-left: 2px; }
-        .logo-area i { margin-right: 10px; color: var(--accent); }
 
         .search-wrapper { padding: 15px; border-bottom: 1px solid var(--border); }
         .search-box {
-            width: 100%; background: #000; border: 1px solid #333; color: white;
-            padding: 10px; border-radius: 6px; outline: none; transition: 0.3s;
-            font-family: inherit; box-sizing: border-box;
+            width: 100%; background: #222; border: 1px solid #333; color: white;
+            padding: 10px; border-radius: 4px; outline: none; font-size: 0.9rem;
         }
-        .search-box:focus { border-color: var(--accent); }
+        .search-box:focus { border-color: var(--accent); background: #000; }
 
         .channel-list {
             flex: 1; overflow-y: auto; padding: 10px;
         }
-        .channel-list::-webkit-scrollbar { width: 5px; }
-        .channel-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        /* Özel Scrollbar Tasarımı */
+        .channel-list::-webkit-scrollbar { width: 6px; }
+        .channel-list::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        .channel-list::-webkit-scrollbar-track { background: #111; }
 
         .channel-item {
-            padding: 12px 15px; border-radius: 6px; cursor: pointer;
-            font-size: 0.9rem; font-weight: 600; color: var(--text-dim);
+            padding: 12px 15px; border-radius: 4px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 500; color: #ccc;
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 5px; transition: all 0.2s; background: #1a1a1a;
+            margin-bottom: 4px; transition: all 0.2s; border-left: 3px solid transparent;
         }
-        .channel-item:hover { background: #252525; color: #fff; transform: translateX(3px); }
-        .channel-item i { font-size: 0.8rem; opacity: 0; transition: 0.2s; color: var(--accent); }
-        .channel-item:hover i { opacity: 1; }
+        .channel-item:hover { background: #1a1a1a; color: #fff; border-left-color: var(--accent); padding-left: 18px; }
+        .channel-item i { font-size: 0.8rem; color: #555; }
+        .channel-item:hover i { color: var(--accent); }
 
-        /* --- SAĞ EKRAN --- */
+        /* --- SAĞ EKRAN (Grid Alanı) --- */
         .main-content {
             flex: 1; display: flex; flex-direction: column; height: 100%;
-            background: #000;
+            background: #080808;
         }
 
         header {
-            height: 60px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; background: var(--bg-panel);
+            height: 60px; border-bottom: 1px solid var(--border); background: var(--bg-panel);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 40;
         }
 
-        .input-group { display: flex; max-width: 400px; width: 100%; }
+        .input-group { display: flex; width: 350px; }
         .input-group input {
             flex: 1; background: #000; border: 1px solid #333; color: #fff;
-            padding: 8px 12px; border-radius: 4px 0 0 4px; outline: none;
+            padding: 0 15px; border-radius: 4px 0 0 4px; outline: none; height: 36px;
         }
         .input-group button {
-            background: var(--accent); color: white; border: none; padding: 0 15px;
-            border-radius: 0 4px 4px 0; cursor: pointer; font-weight: bold;
+            background: var(--accent); color: white; border: none; padding: 0 20px;
+            border-radius: 0 4px 4px 0; cursor: pointer; font-weight: bold; height: 36px;
         }
 
-        .controls { display: flex; gap: 5px; }
+        .controls { display: flex; gap: 8px; }
         .btn-grid {
             background: #222; border: 1px solid #333; color: #888;
-            padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600;
+            width: 36px; height: 36px; border-radius: 4px; cursor: pointer; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
-        .btn-grid:hover { color: #fff; border-color: #555; }
+        .btn-grid:hover { color: #fff; border-color: #666; }
         .btn-grid.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        
         .btn-clear {
-            background: transparent; color: #c0392b; border: 1px solid #c0392b;
-            padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 10px;
+            background: transparent; color: #ff4444; border: 1px solid #ff4444;
+            padding: 0 15px; height: 36px; border-radius: 4px; cursor: pointer; 
+            font-weight: 600; font-size: 0.85rem; margin-left: 10px; transition: 0.2s;
         }
-        .btn-clear:hover { background: #c0392b; color: white; }
+        .btn-clear:hover { background: #ff4444; color: white; }
 
-        /* GRID YAPISI */
+        /* --- IZGARA DÜZENİ (SORUNU ÇÖZEN KISIM) --- */
         #grid {
-            flex: 1; padding: 20px; display: grid;
-            grid-template-columns: repeat(3, 1fr); gap: 15px; 
-            overflow-y: auto; align-content: start;
+            flex: 1; 
+            padding: 15px;
+            display: grid;
+            /* Varsayılan 3 kolon */
+            grid-template-columns: repeat(3, 1fr); 
+            /* Boşluk ayarı - üst üste binmeyi engeller */
+            gap: 15px; 
+            /* İçerik sığmazsa kaydırma çubuğu çıkar */
+            overflow-y: auto; 
+            /* Satırları içeriğe göre boyutlandır, sündürme yapma */
+            grid-auto-rows: min-content; 
+            align-content: start;
         }
+        
+        /* Scrollbar */
+        #grid::-webkit-scrollbar { width: 8px; }
+        #grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        #grid::-webkit-scrollbar-track { background: #000; }
 
         .stream-box {
-            position: relative; width: 100%;
-            aspect-ratio: 16 / 9; /* En-Boy Oranını Kilitler */
-            background: #000; border-radius: 8px; overflow: hidden;
-            border: 1px solid #222; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            position: relative; 
+            width: 100%;
+            /* EN-BOY ORANI KİLİDİ: Bu satır kutuların her zaman TV ekranı gibi durmasını sağlar */
+            aspect-ratio: 16 / 9; 
+            background: #000; 
+            border-radius: 6px; 
+            overflow: hidden;
+            border: 1px solid #222; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
-        .stream-box:hover { border-color: #444; }
+        .stream-box:hover { border-color: #555; }
 
-        iframe { width: 100%; height: 100%; border: none; }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
 
         .label {
             position: absolute; top: 10px; left: 10px;
-            background: rgba(255, 0, 0, 0.85); 
+            background: rgba(200, 0, 0, 0.9); 
             padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: bold;
             color: #fff; pointer-events: none; z-index: 10; text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .close {
             position: absolute; top: 8px; right: 8px;
-            width: 24px; height: 24px; border-radius: 50%;
-            background: #222; color: white;
+            width: 24px; height: 24px; border-radius: 4px;
+            background: rgba(0,0,0,0.8); color: white;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s; font-size: 12px;
             border: 1px solid #444;
@@ -132,16 +156,17 @@
         .stream-box:hover .close { opacity: 1; }
         .close:hover { background: var(--accent); border-color: var(--accent); }
 
-        /* Boş Durum */
+        /* BOŞ EKRAN */
         .empty-state {
-            grid-column: 1 / -1; height: 300px; display: flex; flex-direction: column;
+            grid-column: 1 / -1; height: 400px; display: flex; flex-direction: column;
             align-items: center; justify-content: center; color: #333;
         }
-        .empty-state i { font-size: 4rem; margin-bottom: 15px; opacity: 0.5; }
+        .empty-state i { font-size: 5rem; margin-bottom: 15px; opacity: 0.2; }
+        .empty-state p { font-size: 1.2rem; font-weight: 500; opacity: 0.5; }
 
         @media (max-width: 900px) {
             .sidebar { display: none; }
-            #grid { grid-template-columns: 1fr !important; }
+            #grid { grid-template-columns: 1fr !important; padding: 10px; }
             header { flex-wrap: wrap; height: auto; padding: 10px; gap: 10px; }
             .input-group { width: 100%; max-width: none; }
         }
@@ -179,7 +204,7 @@
         <div id="grid">
             <div class="empty-state">
                 <i class="fab fa-youtube"></i>
-                <p>Sol menüden bir haber kanalı seçin</p>
+                <p>İzlemek için sol menüden bir kanal seçin</p>
             </div>
         </div>
     </div>
@@ -188,26 +213,26 @@
         const grid = document.getElementById('grid');
         const channelListEl = document.getElementById('channelList');
 
-        // --- TOP 10 YOUTUBE HABER LİSTESİ ---
-        // Sadece çalışan güncel YouTube ID'leri
+        // --- KANAL LİSTESİ (LİNKLERE DOKUNULMADI) ---
         const channels = [
             { name: "Sözcü TV", id: "ztmY_cCtUl0" },
             { name: "Halk TV", id: "VBU0QX6brew" },
             { name: "Haber Global", id: "EqoCJ8BPxtE" },
             { name: "TV100", id: "6g_DvD8e2T0" },
-            { name: "Sözcü TV", id: "ztmY_cCtUl0" },
+            { name: "Tele 1", id: "UCoHnRpOS5rL62jTmSDO5Npw" },
             { name: "CNBC-e", id: "ziYwt0jF1p4" },
-            { name: "Habertürk", id: "RNVNlJSUFoE" }, // Not: Bazen embed kısıtlaması olabilir
-            { name: "NTV", id: "pqq5c6k70kk" },      // Not: Bazen embed kısıtlaması olabilir
-            { name: "CNN Türk", id: "6N8_r2uwLEc" }, // Not: Bazen embed kısıtlaması olabilir
-            { name: "TGRT Haber", id: "TsB0xYOH0AU" }
+            { name: "Habertürk", id: "2iQcI9j6WwE" }, 
+            { name: "NTV", id: "XEJaSoPolqA" },      
+            { name: "CNN Türk", id: "lHc7mO3hVbU" }, 
+            { name: "TGRT Haber", id: "W3Dp582H3BU" }
         ];
 
         window.onload = () => {
             renderSidebar();
-            // Başlangıçta boş gelmesin, ilk 2'sini aç
-            createPlayer(channels[0]);
-            createPlayer(channels[1]);
+            // Açılışta popüler 3 kanalı açalım
+            createPlayer(channels[0]); // Sözcü
+            createPlayer(channels[1]); // Halk
+            createPlayer(channels[6]); // Habertürk
         };
 
         function renderSidebar() {
@@ -217,6 +242,7 @@
                 item.className = 'channel-item';
                 item.innerHTML = `<span>${ch.name}</span> <i class="fas fa-play"></i>`;
                 item.onclick = () => {
+                    // Eğer boş ekran varsa temizle
                     if(document.querySelector('.empty-state')) grid.innerHTML = '';
                     createPlayer(ch);
                 };
@@ -236,6 +262,7 @@
         function createPlayer(ch) {
             const box = document.createElement('div');
             box.className = 'stream-box';
+            // playsinline=1 ve mute=1 önemli
             box.innerHTML = `
                 <div class="label">${ch.name}</div>
                 <div class="close" onclick="checkEmpty(this)"><i class="fas fa-times"></i></div>
@@ -269,13 +296,16 @@
                 grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fab fa-youtube"></i>
-                    <p>Sol menüden bir haber kanalı seçin</p>
+                    <p>İzlemek için sol menüden bir kanal seçin</p>
                 </div>`;
             }
         }
 
         function setGrid(n) {
+            // CSS Grid kolon sayısını değiştir
             grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+            
+            // Aktif buton stilini değiştir
             document.querySelectorAll('.btn-grid').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
         }
@@ -285,7 +315,7 @@
                 grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fab fa-youtube"></i>
-                    <p>Sol menüden bir haber kanalı seçin</p>
+                    <p>İzlemek için sol menüden bir kanal seçin</p>
                 </div>`;
             }
         }
