@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun MultiTV | Canlı Yayın Merkezi</title>
+    <title>Odhun MultiTV | Kesintisiz Canlı Yayın</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -108,7 +108,7 @@
             border: none;
         }
 
-        /* Video Üzerindeki Etiket (Kanal Adı) */
+        /* Video Üzerindeki Etiket */
         .channel-label {
             position: absolute;
             top: 10px;
@@ -119,7 +119,7 @@
             font-size: 12px;
             border-radius: 4px;
             z-index: 6;
-            pointer-events: none; /* Tıklamayı engelleme */
+            pointer-events: none;
             text-shadow: 0 1px 2px rgba(0,0,0,1);
             font-weight: bold;
             border-left: 3px solid var(--accent);
@@ -149,7 +149,6 @@
         .grid-3 { grid-template-columns: repeat(3, 1fr) !important; }
         .grid-4 { grid-template-columns: repeat(4, 1fr) !important; }
 
-        /* Mobil */
         @media (max-width: 768px) {
             header { flex-wrap: wrap; height: auto; padding: 10px; }
             .input-group { order: 2; width: 100%; max-width: none; }
@@ -181,25 +180,33 @@
     <script>
         const gridContainer = document.getElementById('grid-container');
 
-        /* ÖNEMLİ: "Video Kullanılamıyor" hatası alırsan, 
-           YouTube'a gir, kanalın canlı yayınına tıkla.
-           Adres çubuğundaki 'v=' den sonraki kodu buraya yaz.
-        */
+        // --- GÜNCELLENMİŞ KALICI KANAL LISTESI (Channel ID Sistemi) ---
+        // Bu sistem "live_stream?channel=ID" yapısını kullanır.
+        // Kanal, yayını kapatıp açsa bile link aynı kalır.
         const defaultChannels = [
-            { name: "Habertürk", id: "2iQcI9j6WwE" }, 
-            { name: "CNN Türk",  id: "lHc7mO3hVbU" },
-            { name: "NTV",       id: "XEJaSoPolqA" },
-            { name: "Sözcü TV",  id: "s3vT1_ZqQnE" },
-            { name: "Halk TV",   id: "D1XWqL9D_gM" },
-            { name: "TRT Haber", id: "Y7G5QH4qC3A" },
-            { name: "TGRT Haber",id: "W3Dp582H3BU" },
-            { name: "TV100",     id: "6g_DvD8e2T0" },
-            { name: "Tele 1",    id: "35FzT-j5L14" }
+            // 1. Habertürk (Channel ID)
+            { name: "Habertürk", type: "channel", id: "UCn6dNfiRE_Xunu7iMyvD7AA" },
+            // 2. CNN Türk (Channel ID)
+            { name: "CNN Türk",  type: "channel", id: "UCV6zcRug6Hqp1UX_FdyUeBg" },
+            // 3. NTV (Video ID - Kalıcı kanal ID'si embed desteklemiyor, en güncel video ID)
+            { name: "NTV",       type: "video",   id: "XEJaSoPolqA" },
+            // 4. Sözcü TV (Video ID - Güncel)
+            { name: "Sözcü TV",  type: "video",   id: "s3vT1_ZqQnE" }, 
+            // 5. Halk TV (Channel ID)
+            { name: "Halk TV",   type: "channel", id: "UCf_ResXZzE-o18zACUEmyvQ" },
+            // 6. TRT Haber (Channel ID)
+            { name: "TRT Haber", type: "channel", id: "UCBgTP2LOFVPmq15W-RH-WXA" },
+            // 7. TGRT Haber (Channel ID - İsteğin üzerine eklendi)
+            { name: "TGRT Haber",type: "channel", id: "UCzgrZ-CndOoylh2_e72nSBQ" },
+            // 8. TV100 (Channel ID)
+            { name: "TV100",     type: "channel", id: "UCndsdUW_oPLqpQJY9J8oIRg" },
+            // 9. Tele1 (Channel ID)
+            { name: "Tele 1",    type: "channel", id: "UCoHnRpOS5rL62jTmSDO5Npw" }
         ];
 
         window.onload = () => {
             setLayout(3);
-            defaultChannels.forEach(ch => createYouTubeFrame(ch.id, ch.name));
+            defaultChannels.forEach(ch => createFrame(ch));
         };
 
         function getYouTubeID(url) {
@@ -213,21 +220,21 @@
             const input = document.getElementById('streamInput');
             const videoId = getYouTubeID(input.value);
             if (videoId) {
-                createYouTubeFrame(videoId, "Özel Yayın");
+                createFrame({ name: "Özel Yayın", type: "video", id: videoId });
                 input.value = '';
             } else {
                 alert("Link geçersiz!");
             }
         }
 
-        function createYouTubeFrame(videoId, channelName) {
+        function createFrame(channel) {
             const div = document.createElement('div');
             div.className = 'video-box';
             
-            // Etiket
+            // Kanal İsmi
             const label = document.createElement('div');
             label.className = 'channel-label';
-            label.innerText = channelName || "Yayın";
+            label.innerText = channel.name;
 
             // Kapat Butonu
             const controls = document.createElement('div');
@@ -236,8 +243,17 @@
             controls.onclick = function() { div.remove(); };
             
             const iframe = document.createElement('iframe');
-            // autoplay=1 ve mute=1 çoklu ekran için zorunlu
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1`;
+            
+            // Akıllı URL Oluşturucu
+            // Eğer "channel" tipindeyse kalıcı link kullan, "video" ise direkt video ID kullan.
+            let src = "";
+            if (channel.type === "channel") {
+                src = `https://www.youtube.com/embed/live_stream?channel=${channel.id}&autoplay=1&mute=1&controls=1`;
+            } else {
+                src = `https://www.youtube.com/embed/${channel.id}?autoplay=1&mute=1&controls=1`;
+            }
+            
+            iframe.src = src;
             iframe.allow = "autoplay; encrypted-media; picture-in-picture";
             iframe.allowFullscreen = true;
 
@@ -253,7 +269,7 @@
         }
 
         function clearAll() {
-            if(confirm('Temizle?')) gridContainer.innerHTML = '';
+            if(confirm('Tüm ekranlar kapatılsın mı?')) gridContainer.innerHTML = '';
         }
     </script>
 </body>
