@@ -3,305 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odhun TV | AI Destekli Panel</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet"> <style>
-:root {
-    --sidebar-width: 260px;
-    --bg-dark: #0f0f0f;
-    --bg-panel: #161616;
-    --accent: #ff0000;
-    --ai-color: #00ff41; /* Hacker Yeşili */
-    --border: #2a2a2a;
-    --text-main: #ffffff;
-    --text-dim: #a0a0a0;
-}
-
-* { box-sizing: border-box; }
-
-body {
-    margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text-main);
-    font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
-}
-
-/* --- SOL MENÜ --- */
-.sidebar {
-    width: var(--sidebar-width); background: var(--bg-panel);
-    border-right: 1px solid var(--border); display: flex; flex-direction: column;
-    flex-shrink: 0; z-index: 20;
-}
-
-.logo-area {
-    height: 60px; display: flex; align-items: center; padding: 0 20px;
-    font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px;
-    border-bottom: 1px solid var(--border);
-}
-.logo-area span { color: var(--accent); margin-left: 2px; }
-
-.search-wrapper { padding: 15px; border-bottom: 1px solid var(--border); }
-.search-box {
-    width: 100%; background: #000; border: 1px solid #333; color: white;
-    padding: 10px; border-radius: 6px; outline: none; transition: 0.3s; font-family: inherit;
-}
-.search-box:focus { border-color: var(--accent); }
-
-.channel-list { flex: 1; overflow-y: auto; padding: 10px; }
-.channel-list::-webkit-scrollbar { width: 5px; }
-.channel-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-.list-header {
-    font-size: 0.75rem; text-transform: uppercase; color: #555; font-weight: 800;
-    margin: 15px 0 5px 5px; letter-spacing: 1px;
-}
-
-.channel-item {
-    padding: 10px 15px; border-radius: 6px; cursor: pointer;
-    font-size: 0.9rem; font-weight: 600; color: var(--text-dim);
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 3px; transition: all 0.2s; background: #1a1a1a;
-}
-.channel-item:hover { background: #252525; color: #fff; transform: translateX(3px); }
-.channel-item i { font-size: 0.8rem; opacity: 0; transition: 0.2s; color: var(--accent); }
-.channel-item:hover i { opacity: 1; }
-
-.channel-item.fav i { opacity: 1; color: #f1c40f; } /* Favori Rengi */
-
-/* --- SAĞ EKRAN --- */
-.main-content {
-    flex: 1; display: flex; flex-direction: column; height: 100%;
-    background: #050505;
-}
-
-header {
-    height: 60px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px; background: var(--bg-panel); z-index: 10;
-}
-
-.input-group { display: flex; max-width: 450px; width: 100%; gap: 5px; }
-.input-group input {
-    flex: 1; background: #000; border: 1px solid #333; color: #fff;
-    padding: 8px 12px; border-radius: 4px; outline: none;
-}
-.input-group button {
-    background: #333; color: white; border: 1px solid #333; padding: 0 15px;
-    border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;
-}
-.input-group button.add-btn:hover { background: var(--accent); border-color: var(--accent); }
-.input-group button.save-btn:hover { background: #f1c40f; color: #000; border-color: #f1c40f; }
-
-.controls { display: flex; gap: 5px; align-items: center; }
-.btn-grid {
-    background: #222; border: 1px solid #333; color: #888;
-    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600;
-}
-.btn-grid:hover { color: #fff; border-color: #555; }
-.btn-grid.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-.btn-ai {
-    background: rgba(0, 255, 65, 0.1); color: var(--ai-color); border: 1px solid var(--ai-color);
-    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 10px;
-    display: flex; align-items: center; gap: 5px; transition: 0.3s;
-}
-.btn-ai:hover { background: var(--ai-color); color: #000; box-shadow: 0 0 10px var(--ai-color); }
-
-.btn-clear {
-    background: transparent; color: #c0392b; border: 1px solid #c0392b;
-    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 5px;
-}
-.btn-clear:hover { background: #c0392b; color: white; }
-
-/* --- GRID YAPISI --- */
-#grid {
-    flex: 1; padding: 20px; display: grid;
-    grid-template-columns: repeat(3, 1fr); gap: 15px;
-    overflow-y: auto; grid-auto-rows: min-content; align-content: start;
-}
-#grid::-webkit-scrollbar { width: 8px; }
-#grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-.stream-box {
-    position: relative; width: 100%; aspect-ratio: 16 / 9;
-    background: #000; border-radius: 8px; overflow: hidden;
-    border: 1px solid #222; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-}
-.stream-box:hover { border-color: #444; }
-
-iframe { width: 100%; height: 100%; border: none; display: block; }
-
-/* AI KUTUSU STİLİ */
-.ai-box {
-    background: #0d0d0d; border: 1px solid var(--ai-color);
-    font-family: 'Fira Code', monospace; color: var(--ai-color);
-    padding: 15px; display: flex; flex-direction: column;
-    position: relative; overflow: hidden;
-}
-.ai-header {
-    display: flex; justify-content: space-between; border-bottom: 1px solid #333;
-    padding-bottom: 5px; margin-bottom: 10px; font-size: 0.8rem; opacity: 0.8;
-}
-.ai-content {
-    flex: 1; overflow-y: hidden; font-size: 0.85rem; line-height: 1.4;
-    text-shadow: 0 0 2px rgba(0, 255, 65, 0.3);
-}
-.ai-cursor { display: inline-block; width: 8px; height: 15px; background: var(--ai-color); animation: blink 1s infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-
-.label {
-    position: absolute; top: 10px; left: 10px;
-    background: rgba(255, 0, 0, 0.9); padding: 3px 8px; border-radius: 3px;
-    font-size: 11px; font-weight: bold; color: #fff; pointer-events: none; z-index: 10;
-}
-.close {
-    position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%;
-    background: rgba(20, 20, 20, 0.9); color: white; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s; font-size: 12px; border: 1px solid #444;
-}
-.stream-box:hover .close { opacity: 1; }
-.close:hover { background: var(--accent); border-color: var(--accent); }
-
-/* Mobil */
-@media (max-width: 900px) {
-    .sidebar { display: none; }
-    #grid { grid-template-columns: 1fr !important; padding: 10px; }
-    header { flex-wrap: wrap; height: auto; padding: 10px; gap: 10px; }
-    .input-group { width: 100%; max-width: none; }
-}
-</style>
-</head>
-<body>
-
-<div class="sidebar">
-    <div class="logo-area"><i class="fab fa-youtube"></i> ODHUN<span>TV</span></div>
-    <div class="search-wrapper">
-        <input type="text" class="search-box" id="search" placeholder="Kanal Ara..." onkeyup="filterChannels()">
-    </div>
-    <div class="channel-list" id="channelList"></div>
-</div>
-
-<div class="main-content">
-    <header>
-        <div class="input-group">
-            <input type="text" id="linkIn" placeholder="YouTube Linki veya ID...">
-            <button class="add-btn" onclick="addCustom(false)" title="Sadece İzle"><i class="fas fa-play"></i></button>
-            <button class="save-btn" onclick="addCustom(true)" title="Favorilere Kaydet"><i class="fas fa-star"></i></button>
-        </div>
-
-        <div style="display:flex; align-items:center;">
-            <div class="controls">
-                <button class="btn-grid" onclick="setGrid(1)">1</button>
-                <button class="btn-grid" onclick="setGrid(2)">2</button>
-                <button class="btn-grid active" onclick="setGrid(3)">3</button>
-                <button class="btn-grid" onclick="setGrid(4)">4</button>
-            </div>
-            <button class="btn-ai" onclick="openAIScreen()"><i class="fas fa-robot"></i> AI ÖZET</button>
-            <button class="btn-clear" onclick="resetAll()">SIFIRLA</button>
-        </div>
-    </header>
-
-    <div id="grid"></div>
-</div>
-
-<script>
-const grid = document.getElementById('grid');
-const channelListEl = document.getElementById('channelList');
-
-// --- VARSAYILAN KANAL LİSTESİ ---
-const defaultChannels = [
-    { name: "Sözcü TV", id: "ztmY_cCtUl0" },
-    { name: "Halk TV", id: "VBU0QX6brew" },
-    { name: "Haber Global", id: "EqoCJ8BPxtE" },
-    { name: "TV100", id: "6g_DvD8e2T0" },
-    { name: "TRT HABER", id: "rD3bKBMXKKY" },
-    { name: "CNBC-e", id: "ziYwt0jF1p4" },
-    { name: "Habertürk", id: "RNVNlJSUFoE" }, 
-    { name: "NTV", id: "pqq5c6k70kk" },      
-    { name: "CNN Türk", id: "6N8_r2uwLEc" }, 
-    { name: "TGRT Haber", id: "TsB0xYOH0AU" }
-];
-
-// --- FAVORİLERİ YÜKLE ---
-let savedChannels = JSON.parse(localStorage.getItem('odhun_favs')) || [];
-
-window.onload = () => {
-    renderSidebar();
-    // Açılışta 2 kanal aç
-    createPlayer(defaultChannels[0]);
-    createPlayer(defaultChannels[1]);
-};
-
-function renderSidebar() {
-    channelListEl.innerHTML = "";
-
-    // 1. Favoriler Başlığı
-    if (savedChannels.length > 0) {
-        const header = document.createElement('div');
-        header.className = 'list-header';
-        header.innerText = 'Favorilerim';
-        channelListEl.appendChild(header);
-
-        savedChannels.forEach((ch, index) => {
-            createListItem(ch, true, index);
-        });
-    }
-
-    // 2. Varsayılanlar Başlığı
-    const defHeader = document.createElement('div');
-    defHeader.className = 'list-header';
-    defHeader.innerText = 'Haber Kanalları';
-    channelListEl.appendChild(defHeader);
-
-    defaultChannels.forEach(ch => {
-        createListItem(ch, false);
-    });
-}
-
-function createListItem(ch, isFav, index) {
-    const item = document.createElement('div');
-    item.className = isFav ? 'channel-item fav' : 'channel-item';
-    
-    let deleteBtn = isFav ? `<i class="fas fa-trash" style="opacity:1; color:#c0392b; margin-left:10px;" onclick="removeFav(event, ${index})"></i>` : '';
-    let icon = isFav ? '<i class="fas fa-star"></i>' : '<i class="fas fa-play"></i>';
-
-    item.innerHTML = `
-        <div style="display:flex; align-items:center;">
-            <span>${ch.name}</span>
-        </div>
-        <div style="display:flex; align-items:center;">
-            ${icon} ${deleteBtn}
-        </div>
-    `;
-    item.onclick = (e) => {
-        // Çöp kutusuna basıldıysa oynatma
-        if(e.target.classList.contains('fa-trash')) return;
-        createPlayer(ch);
-    };
-    channelListEl.appendChild(item);
-}
-
-function createPlayer(ch) {
-    const box = document.createElement('div');
-    box.className = 'stream-box';
-    box.innerHTML = `
-        <div class="label">${ch.name}</div>
-        <div class="close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></div>
-        <iframe 
-            src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1&playsinline=1" 
-            allow="autoplay; encrypted-media; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
-    `;
-    grid.appendChild(box);
-}
-
-// --- YAPAY ZEKA SİMÜLASYONU ---
-f<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odhun TV | AI Destekli Haber Merkezi</title>
+<title>Odhun TV | Multi Haber Takibi</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"> 
@@ -309,13 +11,13 @@ f<!DOCTYPE html>
 <style>
 :root {
     --sidebar-width: 260px;
-    --bg-dark: #0f0f0f;
-    --bg-panel: #161616;
-    --accent: #ff0000;
-    --ai-color: #00ff41; /* Hacker Yeşili */
-    --ai-alert: #ffbd2e; /* Uyarı Sarısı */
-    --ai-danger: #ff5f5f; /* Hata Kırmızısı */
-    --ai-info: #00e5ff; /* Bilgi Mavisi */
+    --bg-dark: #050505;
+    --bg-panel: #111111;
+    --accent: #ff0000;       /* YouTube Kırmızısı */
+    --ai-color: #00ff41;     /* Matrix Yeşili */
+    --ai-alert: #ffbd2e;     /* Uyarı Sarısı */
+    --ai-danger: #ff5f5f;    /* Hata Kırmızısı */
+    --ai-info: #00e5ff;      /* Bilgi Mavisi */
     --border: #2a2a2a;
     --text-main: #ffffff;
     --text-dim: #a0a0a0;
@@ -328,96 +30,97 @@ body {
     font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
 }
 
-/* --- SOL MENÜ --- */
+/* --- SOL MENÜ (SIDEBAR) --- */
 .sidebar {
     width: var(--sidebar-width); background: var(--bg-panel);
     border-right: 1px solid var(--border); display: flex; flex-direction: column;
-    flex-shrink: 0; z-index: 20;
+    flex-shrink: 0; z-index: 50;
 }
 
 .logo-area {
     height: 60px; display: flex; align-items: center; padding: 0 20px;
     font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); background: #080808;
 }
 .logo-area span { color: var(--accent); margin-left: 2px; }
 
 .search-wrapper { padding: 15px; border-bottom: 1px solid var(--border); }
 .search-box {
-    width: 100%; background: #000; border: 1px solid #333; color: white;
-    padding: 10px; border-radius: 6px; outline: none; transition: 0.3s; font-family: inherit;
+    width: 100%; background: #1a1a1a; border: 1px solid #333; color: white;
+    padding: 10px; border-radius: 4px; outline: none; transition: 0.3s; font-family: inherit;
 }
-.search-box:focus { border-color: var(--accent); }
+.search-box:focus { border-color: var(--accent); background: #000; }
 
 .channel-list { flex: 1; overflow-y: auto; padding: 10px; }
 .channel-list::-webkit-scrollbar { width: 5px; }
 .channel-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
 .list-header {
-    font-size: 0.75rem; text-transform: uppercase; color: #555; font-weight: 800;
-    margin: 15px 0 5px 5px; letter-spacing: 1px;
+    font-size: 0.75rem; text-transform: uppercase; color: #666; font-weight: 800;
+    margin: 20px 0 8px 10px; letter-spacing: 1px;
 }
 
 .channel-item {
-    padding: 10px 15px; border-radius: 6px; cursor: pointer;
-    font-size: 0.9rem; font-weight: 600; color: var(--text-dim);
+    padding: 10px 15px; border-radius: 4px; cursor: pointer;
+    font-size: 0.9rem; font-weight: 500; color: var(--text-dim);
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 3px; transition: all 0.2s; background: #1a1a1a;
+    margin-bottom: 3px; transition: all 0.2s; border-left: 3px solid transparent;
 }
-.channel-item:hover { background: #252525; color: #fff; transform: translateX(3px); }
+.channel-item:hover { background: #1a1a1a; color: #fff; border-left-color: var(--accent); padding-left: 18px; }
 .channel-item i { font-size: 0.8rem; opacity: 0; transition: 0.2s; color: var(--accent); }
 .channel-item:hover i { opacity: 1; }
-.channel-item.fav i { opacity: 1; color: #f1c40f; }
+.channel-item.fav i { opacity: 1; color: #f1c40f; } /* Favori Yıldız Rengi */
 
-/* --- SAĞ EKRAN --- */
+/* --- ANA EKRAN --- */
 .main-content {
     flex: 1; display: flex; flex-direction: column; height: 100%;
-    background: #050505;
+    background: #080808;
 }
 
 header {
     height: 60px; border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px; background: var(--bg-panel); z-index: 10;
+    padding: 0 20px; background: var(--bg-panel); z-index: 40;
 }
 
+/* Üst Bar Araçları */
 .input-group { display: flex; max-width: 450px; width: 100%; gap: 5px; }
 .input-group input {
     flex: 1; background: #000; border: 1px solid #333; color: #fff;
-    padding: 8px 12px; border-radius: 4px; outline: none;
+    padding: 0 15px; border-radius: 4px; outline: none; height: 36px;
 }
 .input-group button {
-    background: #333; color: white; border: 1px solid #333; padding: 0 15px;
+    background: #222; color: white; border: 1px solid #333; padding: 0 15px; height: 36px;
     border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;
 }
 .input-group button.add-btn:hover { background: var(--accent); border-color: var(--accent); }
 .input-group button.save-btn:hover { background: #f1c40f; color: #000; border-color: #f1c40f; }
 
-.controls { display: flex; gap: 5px; align-items: center; }
+.controls { display: flex; gap: 8px; align-items: center; }
 .btn-grid {
     background: #222; border: 1px solid #333; color: #888;
-    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600;
+    width: 36px; height: 36px; border-radius: 4px; cursor: pointer; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
 }
-.btn-grid:hover { color: #fff; border-color: #555; }
+.btn-grid:hover { color: #fff; border-color: #666; }
 .btn-grid.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 .btn-ai {
-    background: rgba(0, 255, 65, 0.1); color: var(--ai-color); border: 1px solid var(--ai-color);
-    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 10px;
-    display: flex; align-items: center; gap: 8px; transition: 0.3s; letter-spacing: 0.5px;
+    background: rgba(0, 255, 65, 0.05); color: var(--ai-color); border: 1px solid var(--ai-color);
+    padding: 0 15px; height: 36px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 10px;
+    display: flex; align-items: center; gap: 8px; transition: 0.3s; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
 }
 .btn-ai:hover { background: var(--ai-color); color: #000; box-shadow: 0 0 15px var(--ai-color); }
-.btn-ai i { font-size: 1rem; }
 
 .btn-clear {
-    background: transparent; color: #c0392b; border: 1px solid #c0392b;
-    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 5px;
+    background: transparent; color: #ff4444; border: 1px solid #ff4444;
+    padding: 0 15px; height: 36px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 5px;
 }
-.btn-clear:hover { background: #c0392b; color: white; }
+.btn-clear:hover { background: #ff4444; color: white; }
 
 /* --- GRID YAPISI --- */
 #grid {
-    flex: 1; padding: 20px; display: grid;
+    flex: 1; padding: 15px; display: grid;
     grid-template-columns: repeat(3, 1fr); gap: 15px;
     overflow-y: auto; grid-auto-rows: min-content; align-content: start;
 }
@@ -426,20 +129,20 @@ header {
 
 .stream-box {
     position: relative; width: 100%; aspect-ratio: 16 / 9;
-    background: #000; border-radius: 8px; overflow: hidden;
-    border: 1px solid #222; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    background: #000; border-radius: 6px; overflow: hidden;
+    border: 1px solid #222; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
 .stream-box:hover { border-color: #444; }
 
 iframe { width: 100%; height: 100%; border: none; display: block; }
 
-/* --- AI KUTUSU TASARIMI (GELİŞMİŞ) --- */
+/* --- AI KUTUSU TASARIMI --- */
 .ai-box {
     background: #050505; border: 1px solid var(--ai-color);
     font-family: 'JetBrains Mono', monospace; 
     padding: 0; display: flex; flex-direction: column;
     position: relative; overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
 }
 
 .ai-header {
@@ -448,7 +151,7 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1px solid rgba(0, 255, 65, 0.3);
 }
-.ai-status-dot { width: 8px; height: 8px; background: var(--ai-color); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
+.ai-status-dot { width: 8px; height: 8px; background: var(--ai-color); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
 
 .ai-content {
     flex: 1; overflow-y: auto; padding: 12px; font-size: 0.8rem; line-height: 1.6;
@@ -457,8 +160,8 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
 .ai-content::-webkit-scrollbar { width: 4px; }
 .ai-content::-webkit-scrollbar-thumb { background: var(--ai-color); }
 
-/* Log Renkleri */
-.log-time { color: #555; margin-right: 8px; font-size: 0.75rem; }
+/* AI Log Renkleri */
+.log-time { color: #555; margin-right: 8px; font-size: 0.7rem; }
 .log-info { color: var(--ai-info); font-weight: bold; }
 .log-warn { color: var(--ai-alert); font-weight: bold; }
 .log-err  { color: var(--ai-danger); font-weight: bold; }
@@ -467,19 +170,22 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
 
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
+/* Etiketler */
 .label {
     position: absolute; top: 10px; left: 10px;
-    background: rgba(255, 0, 0, 0.9); padding: 3px 8px; border-radius: 3px;
+    background: rgba(200, 0, 0, 0.9); padding: 3px 8px; border-radius: 3px;
     font-size: 11px; font-weight: bold; color: #fff; pointer-events: none; z-index: 10;
+    text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 .close {
-    position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%;
+    position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 4px;
     background: rgba(20, 20, 20, 0.9); color: white; display: flex; align-items: center; justify-content: center;
     cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s; font-size: 12px; border: 1px solid #444;
 }
 .stream-box:hover .close { opacity: 1; }
 .close:hover { background: var(--accent); border-color: var(--accent); }
 
+/* Mobil Uyum */
 @media (max-width: 900px) {
     .sidebar { display: none; }
     #grid { grid-template-columns: 1fr !important; padding: 10px; }
@@ -525,7 +231,7 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
 const grid = document.getElementById('grid');
 const channelListEl = document.getElementById('channelList');
 
-// --- KANAL LİSTESİ ---
+// --- KANAL LİSTESİ (SABİT) ---
 const defaultChannels = [
     { name: "Sözcü TV", id: "ztmY_cCtUl0" },
     { name: "Halk TV", id: "VBU0QX6brew" },
@@ -539,16 +245,20 @@ const defaultChannels = [
     { name: "TGRT Haber", id: "TsB0xYOH0AU" }
 ];
 
+// Favorileri Çek
 let savedChannels = JSON.parse(localStorage.getItem('odhun_favs')) || [];
 
 window.onload = () => {
     renderSidebar();
+    // Başlangıçta 2 kanal aç
     createPlayer(defaultChannels[0]);
     createPlayer(defaultChannels[1]);
 };
 
 function renderSidebar() {
     channelListEl.innerHTML = "";
+
+    // 1. Favoriler
     if (savedChannels.length > 0) {
         const header = document.createElement('div');
         header.className = 'list-header';
@@ -556,6 +266,8 @@ function renderSidebar() {
         channelListEl.appendChild(header);
         savedChannels.forEach((ch, index) => createListItem(ch, true, index));
     }
+
+    // 2. Varsayılanlar
     const defHeader = document.createElement('div');
     defHeader.className = 'list-header';
     defHeader.innerText = 'Haber Kanalları';
@@ -566,9 +278,21 @@ function renderSidebar() {
 function createListItem(ch, isFav, index) {
     const item = document.createElement('div');
     item.className = isFav ? 'channel-item fav' : 'channel-item';
-    let deleteBtn = isFav ? `<i class="fas fa-trash" style="opacity:1; color:#c0392b; margin-left:10px;" onclick="removeFav(event, ${index})"></i>` : '';
-    let icon = isFav ? '<i class="fas fa-star"></i>' : '<i class="fas fa-play"></i>';
-    item.innerHTML = `<div style="display:flex; align-items:center;"><span>${ch.name}</span></div><div style="display:flex; align-items:center;">${icon} ${deleteBtn}</div>`;
+    
+    let actionBtn = isFav 
+        ? `<i class="fas fa-trash" style="opacity:1; color:#ff4444; margin-left:10px;" onclick="removeFav(event, ${index})"></i>` 
+        : '<i class="fas fa-play"></i>';
+    
+    let icon = isFav ? '<i class="fas fa-star" style="margin-right:8px; color:#f1c40f;"></i>' : '';
+
+    item.innerHTML = `
+        <div style="display:flex; align-items:center;">
+            ${icon} <span>${ch.name}</span>
+        </div>
+        <div style="display:flex; align-items:center;">
+            ${actionBtn}
+        </div>
+    `;
     item.onclick = (e) => { if(!e.target.classList.contains('fa-trash')) createPlayer(ch); };
     channelListEl.appendChild(item);
 }
@@ -579,30 +303,34 @@ function createPlayer(ch) {
     box.innerHTML = `
         <div class="label">${ch.name}</div>
         <div class="close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></div>
-        <iframe src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        <iframe 
+            src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1&playsinline=1" 
+            allow="autoplay; encrypted-media; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
     `;
     grid.appendChild(box);
 }
 
-// --- DETAYLI AI SİMÜLASYONU ---
+// --- DETAYLI AI SİMÜLASYONU (Gelişmiş) ---
 let aiInterval;
 
 function openAIScreen() {
-    // Varsa temizle (tekrar açılmasını engelle)
-    const existing = document.querySelector('.ai-box');
-    if(existing) return;
+    // Aynı pencereden varsa açma
+    if(document.querySelector('.ai-box')) return;
 
     const box = document.createElement('div');
     box.className = 'stream-box ai-box';
     box.innerHTML = `
         <div class="ai-header">
-            <span><span class="ai-status-dot"></span>ODHUN AI v4.0 - NEURAL CORE</span>
-            <span>CPU: 12% | RAM: 4.2GB</span>
+            <span><span class="ai-status-dot"></span>ODHUN AI CORE v4.2</span>
+            <span id="ai-stats">CPU: 12%</span>
         </div>
         <div class="ai-content"></div>
         <div class="close" onclick="closeAI(this)"><i class="fas fa-times"></i></div>
     `;
-    grid.insertBefore(box, grid.firstChild); // En başa ekle
+    // En başa ekle
+    grid.insertBefore(box, grid.firstChild);
     
     startAISimulation(box.querySelector('.ai-content'));
 }
@@ -614,20 +342,118 @@ function closeAI(btn) {
 
 function startAISimulation(container) {
     const logs = [
-        { type: 'sys', text: 'Sistem başlatılıyor... Çekirdek modüller yükleniyor.' },
-        { type: 'sys', text: 'Ağ bağlantısı güvenli (SSL/TLS). Gecikme: 14ms' },
+        { type: 'sys', text: 'Sistem başlatılıyor... Modüller yükleniyor.' },
+        { type: 'sys', text: 'Güvenli bağlantı (SSL/TLS) kuruldu. Gecikme: 14ms' },
         { type: 'info', text: 'Kanal taraması başlatıldı: [Sözcü, NTV, CNN, Halk TV]' },
-        { type: 'info', text: 'Ses işleme motoru (NLP) aktif.' },
-        { type: 'sys', text: 'Görüntü işleme (OCR) servisi bağlandı.' }
+        { type: 'sys', text: 'Görüntü işleme (OCR) servisi aktif.' }
     ];
 
-    // Rastgele Üretilecek Log Havuzu
     const activities = [
-        { type: 'warn', text: 'NTV: Canlı yayında "Enflasyon" anahtar kelimesi tespit edildi.' },
-        { type: 'info', text: 'CNN Türk: Alt bant yazısı OCR ile okundu: "SON DAKİKA: Faiz Kararı"' },
-        { type: 'info', text: 'Halk TV: Konuşmacı duygu analizi: %78 ÖFKELİ' },
+        { type: 'warn', text: 'NTV: "Enflasyon" kelimesi tespit edildi.' },
+        { type: 'info', text: 'CNN Türk: Alt bant okundu: "SON DAKİKA: Faiz Kararı"' },
+        { type: 'info', text: 'Halk TV: Konuşmacı duygu analizi: %82 CİDDİ' },
         { type: 'sys', text: 'Veri tamponu temizleniyor... Önbellek optimize edildi.' },
         { type: 'info', text: 'Sözcü TV: Görüntüde "Kalabalık Meydan" nesnesi algılandı.' },
         { type: 'warn', text: 'TRT Haber: Ses frekansında ani yükselme (Desibel Alarmı).' },
         { type: 'sys', text: 'Yapay Zeka Modeli (GPT-4) ile özetleme yapılıyor...' },
-        { type: 'info', text: 'Global Gündem: "Seçim Anketi" verisi ver
+        { type: 'info', text: 'Global Gündem: "Seçim Anketi" verisi işlendi.' },
+        { type: 'err', text: 'TGRT Haber: Yayın akışında anlık paket kaybı (%0.2).' },
+        { type: 'info', text: 'Habertürk: Yüz tanıma: "Ekrem İmamoğlu" eşleşti.' },
+        { type: 'sys', text: 'Günlük rapor oluşturuluyor... /var/log/daily.txt' },
+        { type: 'warn', text: 'Ekonomi Modülü: Dolar/TL kurunda hareketlilik.' }
+    ];
+
+    let index = 0;
+    
+    aiInterval = setInterval(() => {
+        const now = new Date();
+        const timeStr = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+        let logData;
+        
+        // Önce açılış logları, sonra rastgele
+        if (index < logs.length) {
+            logData = logs[index];
+            index++;
+        } else {
+            logData = activities[Math.floor(Math.random() * activities.length)];
+        }
+
+        const logLine = document.createElement('div');
+        
+        // CPU Güncelleme
+        const cpu = Math.floor(Math.random() * 40) + 10;
+        const ram = (Math.random() * 4 + 2).toFixed(1);
+        const stats = document.getElementById('ai-stats');
+        if(stats) stats.innerText = `CPU: ${cpu}% | RAM: ${ram}GB`;
+
+        logLine.innerHTML = `<span class="log-time">[${timeStr}]</span> <span class="log-${logData.type}">${getLogPrefix(logData.type)}</span> <span class="log-txt">${logData.text}</span>`;
+        
+        container.appendChild(logLine);
+        container.scrollTop = container.scrollHeight;
+
+        if (container.children.length > 50) container.removeChild(container.firstChild);
+
+    }, 1200); 
+}
+
+function getLogPrefix(type) {
+    if(type === 'sys') return '[SİSTEM]';
+    if(type === 'info') return '[BİLGİ]';
+    if(type === 'warn') return '[UYARI]';
+    if(type === 'err') return '[HATA]';
+    return '[GENEL]';
+}
+
+// --- FONKSİYONLAR ---
+function addCustom(save) {
+    const input = document.getElementById('linkIn');
+    let val = input.value.trim();
+    if(!val) return;
+
+    let id = val;
+    if(val.includes('v=')) id = val.split('v=')[1].split('&')[0];
+    else if(val.includes('youtu.be/')) id = val.split('youtu.be/')[1];
+
+    const newChannel = { name: "Özel Kanal " + (savedChannels.length + 1), id: id };
+
+    if (save) {
+        savedChannels.push(newChannel);
+        localStorage.setItem('odhun_favs', JSON.stringify(savedChannels));
+        renderSidebar();
+        alert("Kanal favorilere eklendi!");
+    } else {
+        createPlayer(newChannel);
+    }
+    input.value = '';
+}
+
+function removeFav(e, index) {
+    e.stopPropagation();
+    if(confirm('Silinsin mi?')) {
+        savedChannels.splice(index, 1);
+        localStorage.setItem('odhun_favs', JSON.stringify(savedChannels));
+        renderSidebar();
+    }
+}
+
+function filterChannels() {
+    const term = document.getElementById('search').value.toLowerCase();
+    const items = channelListEl.getElementsByClassName('channel-item');
+    Array.from(items).forEach(item => {
+        const name = item.querySelector('span').innerText.toLowerCase();
+        item.style.display = name.includes(term) ? 'flex' : 'none';
+    });
+}
+
+function setGrid(n) {
+    grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    document.querySelectorAll('.btn-grid').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+function resetAll() {
+    if(confirm('Tüm ekranları kapatmak istiyor musunuz?')) grid.innerHTML = '';
+}
+</script>
+</body>
+</html>
