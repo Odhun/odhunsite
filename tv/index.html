@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odhun TV | YouTube Haber Paneli</title>
+<title>Odhun TV | AI Destekli Panel</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
-<style>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet"> <style>
 :root {
-    --sidebar-width: 250px;
+    --sidebar-width: 260px;
     --bg-dark: #0f0f0f;
     --bg-panel: #161616;
-    --accent: #ff0000; /* YouTube Kırmızısı */
+    --accent: #ff0000;
+    --ai-color: #00ff41; /* Hacker Yeşili */
     --border: #2a2a2a;
     --text-main: #ffffff;
     --text-dim: #a0a0a0;
@@ -38,31 +38,34 @@ body {
     border-bottom: 1px solid var(--border);
 }
 .logo-area span { color: var(--accent); margin-left: 2px; }
-.logo-area i { margin-right: 10px; color: var(--accent); }
 
 .search-wrapper { padding: 15px; border-bottom: 1px solid var(--border); }
 .search-box {
     width: 100%; background: #000; border: 1px solid #333; color: white;
-    padding: 10px; border-radius: 6px; outline: none; transition: 0.3s;
-    font-family: inherit;
+    padding: 10px; border-radius: 6px; outline: none; transition: 0.3s; font-family: inherit;
 }
 .search-box:focus { border-color: var(--accent); }
 
-.channel-list {
-    flex: 1; overflow-y: auto; padding: 10px;
-}
+.channel-list { flex: 1; overflow-y: auto; padding: 10px; }
 .channel-list::-webkit-scrollbar { width: 5px; }
 .channel-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
+.list-header {
+    font-size: 0.75rem; text-transform: uppercase; color: #555; font-weight: 800;
+    margin: 15px 0 5px 5px; letter-spacing: 1px;
+}
+
 .channel-item {
-    padding: 12px 15px; border-radius: 6px; cursor: pointer;
+    padding: 10px 15px; border-radius: 6px; cursor: pointer;
     font-size: 0.9rem; font-weight: 600; color: var(--text-dim);
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 5px; transition: all 0.2s; background: #1a1a1a;
+    margin-bottom: 3px; transition: all 0.2s; background: #1a1a1a;
 }
 .channel-item:hover { background: #252525; color: #fff; transform: translateX(3px); }
 .channel-item i { font-size: 0.8rem; opacity: 0; transition: 0.2s; color: var(--accent); }
 .channel-item:hover i { opacity: 1; }
+
+.channel-item.fav i { opacity: 1; color: #f1c40f; } /* Favori Rengi */
 
 /* --- SAĞ EKRAN --- */
 .main-content {
@@ -76,93 +79,89 @@ header {
     padding: 0 20px; background: var(--bg-panel); z-index: 10;
 }
 
-.input-group { display: flex; max-width: 400px; width: 100%; }
+.input-group { display: flex; max-width: 450px; width: 100%; gap: 5px; }
 .input-group input {
     flex: 1; background: #000; border: 1px solid #333; color: #fff;
-    padding: 8px 12px; border-radius: 4px 0 0 4px; outline: none;
+    padding: 8px 12px; border-radius: 4px; outline: none;
 }
 .input-group button {
-    background: var(--accent); color: white; border: none; padding: 0 15px;
-    border-radius: 0 4px 4px 0; cursor: pointer; font-weight: bold;
+    background: #333; color: white; border: 1px solid #333; padding: 0 15px;
+    border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;
 }
+.input-group button.add-btn:hover { background: var(--accent); border-color: var(--accent); }
+.input-group button.save-btn:hover { background: #f1c40f; color: #000; border-color: #f1c40f; }
 
-.controls { display: flex; gap: 5px; }
+.controls { display: flex; gap: 5px; align-items: center; }
 .btn-grid {
     background: #222; border: 1px solid #333; color: #888;
     padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600;
 }
 .btn-grid:hover { color: #fff; border-color: #555; }
 .btn-grid.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.btn-ai {
+    background: rgba(0, 255, 65, 0.1); color: var(--ai-color); border: 1px solid var(--ai-color);
+    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 10px;
+    display: flex; align-items: center; gap: 5px; transition: 0.3s;
+}
+.btn-ai:hover { background: var(--ai-color); color: #000; box-shadow: 0 0 10px var(--ai-color); }
+
 .btn-clear {
     background: transparent; color: #c0392b; border: 1px solid #c0392b;
-    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 10px;
+    padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-left: 5px;
 }
 .btn-clear:hover { background: #c0392b; color: white; }
 
-/* --- GRID YAPISI (DÜZELTİLDİ - Üst Üste Binme Yok) --- */
+/* --- GRID YAPISI --- */
 #grid {
-    flex: 1; 
-    padding: 20px; 
-    display: grid;
-    /* Varsayılan 3 kolon */
-    grid-template-columns: repeat(3, 1fr); 
-    /* Boşluklar */
-    gap: 15px;
-    /* Taşan içerik için kaydırma çubuğu */
-    overflow-y: auto; 
-    /* Satırları içeriğe göre (min-content) boyutlandır, sündürme yapma */
-    grid-auto-rows: min-content;
-    /* İçeriği yukarı hizala */
-    align-content: start;
+    flex: 1; padding: 20px; display: grid;
+    grid-template-columns: repeat(3, 1fr); gap: 15px;
+    overflow-y: auto; grid-auto-rows: min-content; align-content: start;
 }
-
-/* Scrollbar Tasarımı */
 #grid::-webkit-scrollbar { width: 8px; }
 #grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-#grid::-webkit-scrollbar-track { background: #000; }
 
 .stream-box {
-    position: relative; 
-    width: 100%;
-    /* EN-BOY ORANI KİLİDİ: Kutular her zaman 16:9 oranında kalır */
-    aspect-ratio: 16 / 9; 
-    background: #000; 
-    border-radius: 8px; 
-    overflow: hidden;
-    border: 1px solid #222; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    position: relative; width: 100%; aspect-ratio: 16 / 9;
+    background: #000; border-radius: 8px; overflow: hidden;
+    border: 1px solid #222; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
 }
 .stream-box:hover { border-color: #444; }
 
 iframe { width: 100%; height: 100%; border: none; display: block; }
 
+/* AI KUTUSU STİLİ */
+.ai-box {
+    background: #0d0d0d; border: 1px solid var(--ai-color);
+    font-family: 'Fira Code', monospace; color: var(--ai-color);
+    padding: 15px; display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+}
+.ai-header {
+    display: flex; justify-content: space-between; border-bottom: 1px solid #333;
+    padding-bottom: 5px; margin-bottom: 10px; font-size: 0.8rem; opacity: 0.8;
+}
+.ai-content {
+    flex: 1; overflow-y: hidden; font-size: 0.85rem; line-height: 1.4;
+    text-shadow: 0 0 2px rgba(0, 255, 65, 0.3);
+}
+.ai-cursor { display: inline-block; width: 8px; height: 15px; background: var(--ai-color); animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
 .label {
     position: absolute; top: 10px; left: 10px;
-    background: rgba(255, 0, 0, 0.9); 
-    padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: bold;
-    color: #fff; pointer-events: none; z-index: 10; text-transform: uppercase;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    background: rgba(255, 0, 0, 0.9); padding: 3px 8px; border-radius: 3px;
+    font-size: 11px; font-weight: bold; color: #fff; pointer-events: none; z-index: 10;
 }
-
 .close {
-    position: absolute; top: 8px; right: 8px;
-    width: 24px; height: 24px; border-radius: 50%;
-    background: rgba(20, 20, 20, 0.9); color: white;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s; font-size: 12px;
-    border: 1px solid #444;
+    position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(20, 20, 20, 0.9); color: white; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s; font-size: 12px; border: 1px solid #444;
 }
 .stream-box:hover .close { opacity: 1; }
 .close:hover { background: var(--accent); border-color: var(--accent); }
 
-/* Boş Durum */
-.empty-state {
-    grid-column: 1 / -1; height: 400px; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; color: #333;
-}
-.empty-state i { font-size: 5rem; margin-bottom: 20px; opacity: 0.3; }
-.empty-state p { font-size: 1.1rem; opacity: 0.6; }
-
+/* Mobil */
 @media (max-width: 900px) {
     .sidebar { display: none; }
     #grid { grid-template-columns: 1fr !important; padding: 10px; }
@@ -185,7 +184,8 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
     <header>
         <div class="input-group">
             <input type="text" id="linkIn" placeholder="YouTube Linki veya ID...">
-            <button onclick="addCustom()">EKLE</button>
+            <button class="add-btn" onclick="addCustom(false)" title="Sadece İzle"><i class="fas fa-play"></i></button>
+            <button class="save-btn" onclick="addCustom(true)" title="Favorilere Kaydet"><i class="fas fa-star"></i></button>
         </div>
 
         <div style="display:flex; align-items:center;">
@@ -195,29 +195,25 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
                 <button class="btn-grid active" onclick="setGrid(3)">3</button>
                 <button class="btn-grid" onclick="setGrid(4)">4</button>
             </div>
-            <button class="btn-clear" onclick="resetAll()">Sıfırla</button>
+            <button class="btn-ai" onclick="openAIScreen()"><i class="fas fa-robot"></i> AI ÖZET</button>
+            <button class="btn-clear" onclick="resetAll()">SIFIRLA</button>
         </div>
     </header>
 
-    <div id="grid">
-        <div class="empty-state">
-            <i class="fab fa-youtube"></i>
-            <p>Sol menüden bir haber kanalı seçin</p>
-        </div>
-    </div>
+    <div id="grid"></div>
 </div>
 
 <script>
 const grid = document.getElementById('grid');
 const channelListEl = document.getElementById('channelList');
 
-// --- SENİN VERDİĞİN ÖZEL KANAL LİSTESİ ---
-const channels = [
+// --- VARSAYILAN KANAL LİSTESİ ---
+const defaultChannels = [
     { name: "Sözcü TV", id: "ztmY_cCtUl0" },
     { name: "Halk TV", id: "VBU0QX6brew" },
     { name: "Haber Global", id: "EqoCJ8BPxtE" },
     { name: "TV100", id: "6g_DvD8e2T0" },
-    { name: "TRT HABER", id: "rD3bKBMXKKY" }, // HLS yerine Video ID olarak güncellendi
+    { name: "TRT HABER", id: "rD3bKBMXKKY" },
     { name: "CNBC-e", id: "ziYwt0jF1p4" },
     { name: "Habertürk", id: "RNVNlJSUFoE" }, 
     { name: "NTV", id: "pqq5c6k70kk" },      
@@ -225,25 +221,148 @@ const channels = [
     { name: "TGRT Haber", id: "TsB0xYOH0AU" }
 ];
 
+// --- FAVORİLERİ YÜKLE ---
+let savedChannels = JSON.parse(localStorage.getItem('odhun_favs')) || [];
+
 window.onload = () => {
     renderSidebar();
-    // Başlangıçta boş gelmesin, ilk 2'sini aç
-    createPlayer(channels[0]);
-    createPlayer(channels[1]);
+    // Açılışta 2 kanal aç
+    createPlayer(defaultChannels[0]);
+    createPlayer(defaultChannels[1]);
 };
 
 function renderSidebar() {
     channelListEl.innerHTML = "";
-    channels.forEach(ch => {
-        const item = document.createElement('div');
-        item.className = 'channel-item';
-        item.innerHTML = `<span>${ch.name}</span> <i class="fas fa-play"></i>`;
-        item.onclick = () => {
-            if(document.querySelector('.empty-state')) grid.innerHTML = '';
-            createPlayer(ch);
-        };
-        channelListEl.appendChild(item);
+
+    // 1. Favoriler Başlığı
+    if (savedChannels.length > 0) {
+        const header = document.createElement('div');
+        header.className = 'list-header';
+        header.innerText = 'Favorilerim';
+        channelListEl.appendChild(header);
+
+        savedChannels.forEach((ch, index) => {
+            createListItem(ch, true, index);
+        });
+    }
+
+    // 2. Varsayılanlar Başlığı
+    const defHeader = document.createElement('div');
+    defHeader.className = 'list-header';
+    defHeader.innerText = 'Haber Kanalları';
+    channelListEl.appendChild(defHeader);
+
+    defaultChannels.forEach(ch => {
+        createListItem(ch, false);
     });
+}
+
+function createListItem(ch, isFav, index) {
+    const item = document.createElement('div');
+    item.className = isFav ? 'channel-item fav' : 'channel-item';
+    
+    let deleteBtn = isFav ? `<i class="fas fa-trash" style="opacity:1; color:#c0392b; margin-left:10px;" onclick="removeFav(event, ${index})"></i>` : '';
+    let icon = isFav ? '<i class="fas fa-star"></i>' : '<i class="fas fa-play"></i>';
+
+    item.innerHTML = `
+        <div style="display:flex; align-items:center;">
+            <span>${ch.name}</span>
+        </div>
+        <div style="display:flex; align-items:center;">
+            ${icon} ${deleteBtn}
+        </div>
+    `;
+    item.onclick = (e) => {
+        // Çöp kutusuna basıldıysa oynatma
+        if(e.target.classList.contains('fa-trash')) return;
+        createPlayer(ch);
+    };
+    channelListEl.appendChild(item);
+}
+
+function createPlayer(ch) {
+    const box = document.createElement('div');
+    box.className = 'stream-box';
+    box.innerHTML = `
+        <div class="label">${ch.name}</div>
+        <div class="close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></div>
+        <iframe 
+            src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1&playsinline=1" 
+            allow="autoplay; encrypted-media; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+    `;
+    grid.appendChild(box);
+}
+
+// --- YAPAY ZEKA SİMÜLASYONU ---
+function openAIScreen() {
+    const box = document.createElement('div');
+    box.className = 'stream-box ai-box';
+    box.innerHTML = `
+        <div class="ai-header">
+            <span>ODHUN AI v2.5</span>
+            <span>LIVE ANALYSIS</span>
+        </div>
+        <div class="ai-content" id="ai-log-${Date.now()}">
+            > Sistem başlatılıyor...<br>
+            > Kanallar taranıyor...<br>
+        </div>
+        <div class="close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></div>
+    `;
+    grid.appendChild(box);
+    
+    // Simülasyonu Başlat
+    const logContainer = box.querySelector('.ai-content');
+    const messages = [
+        "Sözcü TV: Gündem analizi yapılıyor...",
+        "Ses verisi işleniyor [Buffer: 24ms]...",
+        "CNN Türk: Ekonomi haberi tespit edildi.",
+        "NTV: Son dakika gelişmesi taranıyor...",
+        "Anahtar kelimeler: Enflasyon, Seçim, Döviz...",
+        "Özet oluşturuluyor...",
+        "Veri akışı stabil. İzlemeye devam ediliyor."
+    ];
+    
+    let i = 0;
+    setInterval(() => {
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+        const time = new Date().toLocaleTimeString();
+        logContainer.innerHTML += `> [${time}] ${msg}<br>`;
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }, 2500);
+}
+
+// --- FAVORİ EKLEME MANTIĞI ---
+function addCustom(save) {
+    const input = document.getElementById('linkIn');
+    let val = input.value.trim();
+    if(!val) return;
+
+    let id = val;
+    if(val.includes('v=')) id = val.split('v=')[1].split('&')[0];
+    else if(val.includes('youtu.be/')) id = val.split('youtu.be/')[1];
+
+    const newChannel = { name: "Özel Kanal " + (savedChannels.length + 1), id: id };
+
+    if (save) {
+        savedChannels.push(newChannel);
+        localStorage.setItem('odhun_favs', JSON.stringify(savedChannels));
+        renderSidebar();
+        alert("Kanal favorilere eklendi!");
+    } else {
+        createPlayer(newChannel);
+    }
+    input.value = '';
+}
+
+function removeFav(e, index) {
+    e.stopPropagation(); // Tıklamanın oynatmaya gitmesini engelle
+    if(confirm('Bu kanalı favorilerden silmek istiyor musunuz?')) {
+        savedChannels.splice(index, 1);
+        localStorage.setItem('odhun_favs', JSON.stringify(savedChannels));
+        renderSidebar();
+    }
 }
 
 function filterChannels() {
@@ -255,47 +374,6 @@ function filterChannels() {
     });
 }
 
-function createPlayer(ch) {
-    const box = document.createElement('div');
-    box.className = 'stream-box';
-    box.innerHTML = `
-        <div class="label">${ch.name}</div>
-        <div class="close" onclick="checkEmpty(this)"><i class="fas fa-times"></i></div>
-        <iframe 
-            src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1&playsinline=1" 
-            allow="autoplay; encrypted-media; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
-    `;
-    grid.appendChild(box);
-}
-
-function addCustom() {
-    const input = document.getElementById('linkIn');
-    let val = input.value.trim();
-    if(!val) return;
-
-    let id = val;
-    // Linkten ID ayıkla
-    if(val.includes('v=')) id = val.split('v=')[1].split('&')[0];
-    else if(val.includes('youtu.be/')) id = val.split('youtu.be/')[1];
-
-    if(document.querySelector('.empty-state')) grid.innerHTML = '';
-    createPlayer({ name: "Özel Kanal", id: id });
-    input.value = '';
-}
-
-function checkEmpty(btn) {
-    btn.parentElement.remove();
-    if (grid.children.length === 0) {
-        grid.innerHTML = `
-        <div class="empty-state">
-            <i class="fab fa-youtube"></i>
-            <p>Sol menüden bir haber kanalı seçin</p>
-        </div>`;
-    }
-}
-
 function setGrid(n) {
     grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
     document.querySelectorAll('.btn-grid').forEach(b => b.classList.remove('active'));
@@ -303,12 +381,8 @@ function setGrid(n) {
 }
 
 function resetAll() {
-    if(confirm('Tüm ekranları kapatmak istiyor musunuz?')) {
-        grid.innerHTML = `
-        <div class="empty-state">
-            <i class="fab fa-youtube"></i>
-            <p>Sol menüden bir haber kanalı seçin</p>
-        </div>`;
+    if(confirm('Tüm ekranları temizlemek istiyor musunuz?')) {
+        grid.innerHTML = '';
     }
 }
 </script>
