@@ -4,40 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>metin2 31 haber!</title>
+    <!-- Daha modern bir görünüm için Inter fontunu ekleyelim -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Ana Kapsayıcı: İçeriği sayfada ortalamak için */
+        /* Ana Kapsayıcı: İçeriği sayfada ortalamak ve Arkaplanı ayarlamak için */
         body { 
+            /* Arkaplan Resmini Ayarlama: Yüklenen görseli tam ekran kaplayacak şekilde ayarlar */
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), /* Görselin üstüne karanlık, yarı şeffaf bir katman ekler (kontrast için) */
+                url('metin2-wallpaper.jpg') no-repeat center center fixed; /* Resim yolu, tekrar etmesin, ortalansın ve sabit kalsın */
+            background-size: cover; /* Tüm ekranı kaplasın */
+
+            /* İçerik Ortalaması ve Düzeni */
             display: flex; 
-            flex-direction: column; /* İçerikleri dikey yığınlamak için */
+            flex-direction: column;
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
-            background-color: #f0f0f0; 
-            font-family: Arial, sans-serif;
-            padding: 20px; /* Kenar boşluğu ekle */
+            font-family: 'Inter', sans-serif; /* Yeni font ailesini kullan */
+            padding: 20px;
+            color: #fff; /* Arka plan koyu olduğu için genel metin rengini beyaza çevirdik */
         }
         
         /* Görsel Stili */
         img { 
             max-width: 90%; 
-            max-height: 75vh; /* Metin için yer açmak adına yüksekliği biraz azalttık */
-            border: 5px solid #fff;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            margin-bottom: 20px; /* Görsel ile yazı arasına boşluk */
+            max-height: 75vh;
+            /* Metin2 temasına uygun altın sarısı bir çerçeve ve gölge */
+            border: 5px solid #ffcc00; 
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.7); 
+            margin-bottom: 20px;
+            border-radius: 12px; /* Hafif yuvarlatılmış köşeler */
+            object-fit: contain; 
         }
 
         /* Yazı Stili */
         .saka-metni {
-            color: #333;
-            font-size: 1.5em; /* Yazı boyutunu büyüttük */
-            font-weight: bold;
+            color: #fff; /* Metni beyaz yaptık */
+            font-size: 1.8em; 
+            font-weight: 700; 
             text-align: center;
-            max-width: 80%; /* Uzun cümlelerde taşmayı önler */
+            max-width: 90%; 
+            /* Metin etrafına belirgin bir gölge ekleyerek okunabilirliği artırır */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.6); /* Okunabilirliği artırmak için metin arkasına hafif koyu bir kutu */
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
+    <!-- metin2seco.jpg görseli orijinal kodunuzdaki gibi bırakılmıştır. -->
     <img src="metin2seco.jpg" alt="Ana Görsel"> 
     
     <p class="saka-metni">grup indirimi vardır!</p>
