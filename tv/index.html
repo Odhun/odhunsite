@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun TV | Pro</title>
+    <title>Odhun TV | Güncel CDN Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
         :root {
-            --sidebar-width: 280px;
-            --bg-dark: #0f0f0f;
-            --bg-panel: #181818;
-            --accent: #e50914; /* Netflix kırmızısı */
-            --border: #2a2a2a;
-            --text-main: #ffffff;
-            --text-dim: #a0a0a0;
+            --sidebar-width: 260px;
+            --bg-dark: #121212;
+            --bg-panel: #1e1e1e;
+            --accent: #e50914; 
+            --border: #333;
+            --text-main: #fff;
+            --text-dim: #aaa;
         }
 
         body {
@@ -24,136 +24,112 @@
             font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
         }
 
-        /* --- SOL MENÜ (SIDEBAR) --- */
+        /* SIDEBAR */
         .sidebar {
             width: var(--sidebar-width); background: var(--bg-panel);
             border-right: 1px solid var(--border); display: flex; flex-direction: column;
-            flex-shrink: 0; z-index: 20; box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            flex-shrink: 0; z-index: 20;
         }
 
         .logo-area {
             height: 60px; display: flex; align-items: center; padding: 0 20px;
-            border-bottom: 1px solid var(--border); font-size: 1.4rem; font-weight: 800;
-            letter-spacing: -0.5px;
+            font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; background: #181818;
         }
         .logo-area span { color: var(--accent); }
 
-        .search-wrapper { padding: 15px; }
+        .search-wrapper { padding: 10px 15px; border-bottom: 1px solid #2a2a2a; }
         .search-box {
-            width: 100%; background: #222; border: 1px solid #333; color: white;
-            padding: 10px 15px; border-radius: 8px; outline: none; transition: 0.3s;
-            font-family: inherit;
+            width: 100%; background: #2a2a2a; border: none; color: white;
+            padding: 8px 12px; border-radius: 6px; outline: none; font-size: 0.9rem;
+            box-sizing: border-box;
         }
-        .search-box:focus { border-color: var(--accent); background: #2a2a2a; }
+        .search-box:focus { background: #333; }
 
-        .channel-list {
-            flex: 1; overflow-y: auto; padding: 0 10px 20px 10px;
-        }
-        /* İnce Scrollbar */
+        .channel-list { flex: 1; overflow-y: auto; padding: 10px; }
         .channel-list::-webkit-scrollbar { width: 5px; }
         .channel-list::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
 
         .channel-item {
-            padding: 12px 15px; border-radius: 8px; cursor: pointer;
-            font-size: 0.95rem; font-weight: 500; color: var(--text-dim);
+            padding: 10px 12px; border-radius: 6px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 500; color: var(--text-dim);
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 4px; transition: all 0.2s;
+            margin-bottom: 2px; transition: all 0.2s;
         }
-        .channel-item:hover { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(5px); }
-        .channel-item i { font-size: 0.8rem; opacity: 0; transition: 0.2s; color: var(--accent); }
+        .channel-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .channel-item i { font-size: 0.8rem; color: var(--accent); opacity: 0; }
         .channel-item:hover i { opacity: 1; }
 
-        /* --- ANA EKRAN --- */
+        /* ANA EKRAN */
         .main-content {
             flex: 1; display: flex; flex-direction: column; height: 100%;
-            background: radial-gradient(circle at top right, #1a1a1a 0%, #0f0f0f 100%);
+            background: #000;
         }
 
         header {
-            height: 60px; border-bottom: 1px solid var(--border);
+            height: 50px; border-bottom: 1px solid var(--border); background: #181818;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; background: rgba(24, 24, 24, 0.8);
-            backdrop-filter: blur(10px); z-index: 10;
+            padding: 0 20px;
         }
 
-        .header-title { font-size: 0.9rem; color: var(--text-dim); font-weight: 600; }
-
-        .controls { display: flex; gap: 8px; background: #222; padding: 4px; border-radius: 8px; border: 1px solid #333; }
+        .controls { display: flex; gap: 5px; }
         .btn-grid {
-            background: transparent; border: none; color: #888;
-            padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;
-            transition: all 0.2s;
+            background: #2a2a2a; border: none; color: #888;
+            padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.8rem;
         }
         .btn-grid:hover { color: #fff; }
-        .btn-grid.active { background: #333; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .btn-grid.active { background: var(--accent); color: #fff; }
 
         .btn-clear {
-            background: rgba(229, 9, 20, 0.15); color: var(--accent); border: none;
-            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 15px;
-            transition: 0.2s;
+            background: transparent; color: var(--accent); border: 1px solid var(--accent);
+            padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-left: 10px;
         }
         .btn-clear:hover { background: var(--accent); color: #fff; }
 
-        /* --- GRID VE VİDEO KUTULARI (ÖNEMLİ KISIM) --- */
+        /* GRID ALANI */
         #grid {
-            flex: 1; 
-            padding: 20px;
+            flex: 1; padding: 10px;
             display: grid;
-            /* Grid sütun sayısı JS ile kontrol edilecek */
             grid-template-columns: repeat(3, 1fr); 
-            gap: 15px; 
+            gap: 10px; 
             overflow-y: auto;
-            align-content: start; /* AZ KANAL VARSA YUKARI YASLA (Sündürme yapmaz) */
+            grid-auto-rows: min-content; /* Sündürmeyi engeller */
+            align-content: start;
         }
 
         .stream-box {
-            position: relative;
-            width: 100%;
-            /* SİHİRLİ KOD: Aspect Ratio'yu 16/9'a kilitler */
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            position: relative; width: 100%;
+            aspect-ratio: 16 / 9; /* En-boy oranını sabitler */
+            background: #050505; border-radius: 8px; overflow: hidden;
             border: 1px solid #333;
-            transition: transform 0.2s;
         }
-        .stream-box:hover { border-color: #555; }
 
         video, iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
 
         .label {
-            position: absolute; top: 12px; left: 12px;
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
-            padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;
-            color: #fff; pointer-events: none; z-index: 10;
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(0,0,0,0.8); padding: 4px 8px; border-radius: 4px;
+            font-size: 11px; font-weight: 700; color: #fff; pointer-events: none; z-index: 10;
             border-left: 3px solid var(--accent); text-transform: uppercase;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .close {
-            position: absolute; top: 10px; right: 10px;
-            width: 24px; height: 24px; border-radius: 50%;
-            background: rgba(229, 9, 20, 0.9); color: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 20; opacity: 0; transform: scale(0.8);
-            transition: all 0.2s; font-size: 12px;
+            position: absolute; top: 8px; right: 8px;
+            width: 22px; height: 22px; border-radius: 50%;
+            background: #c0392b; color: white; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 20; opacity: 0; font-size: 12px; transition: 0.2s;
         }
-        .stream-box:hover .close { opacity: 1; transform: scale(1); }
-        .close:hover { background: #ff0f1f; }
+        .stream-box:hover .close { opacity: 1; }
 
-        /* BOŞ DURUM MESAJI */
+        /* BOŞ DURUM */
         .empty-state {
-            grid-column: 1 / -1; height: 100%; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; color: #444;
-            margin-top: 50px;
+            grid-column: 1 / -1; height: 300px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: #333;
         }
-        .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.3; }
+        .empty-state i { font-size: 4rem; margin-bottom: 10px; }
 
         @media (max-width: 900px) {
-            .sidebar { display: none; } /* Mobilde menüyü gizle */
-            #grid { grid-template-columns: 1fr !important; padding: 10px; }
-            .logo-area { display: none; }
+            .sidebar { display: none; }
+            #grid { grid-template-columns: 1fr !important; }
         }
     </style>
 </head>
@@ -164,14 +140,12 @@
         <div class="search-wrapper">
             <input type="text" class="search-box" id="search" placeholder="Kanal Ara..." onkeyup="filterChannels()">
         </div>
-        <div class="channel-list" id="channelList">
-            </div>
+        <div class="channel-list" id="channelList"></div>
     </div>
 
     <div class="main-content">
         <header>
-            <div class="header-title">Çoklu Canlı Yayın Paneli</div>
-            
+            <div style="font-size:0.9rem; font-weight:600; color:#aaa;">Canlı Yayın Paneli</div>
             <div style="display:flex; align-items:center;">
                 <div class="controls">
                     <button class="btn-grid" onclick="setGrid(1)">1</button>
@@ -186,7 +160,7 @@
         <div id="grid">
             <div class="empty-state">
                 <i class="fas fa-tv"></i>
-                <p>Sol menüden bir kanal seçin</p>
+                <p>Listeden kanal seçiniz</p>
             </div>
         </div>
     </div>
@@ -195,55 +169,62 @@
         const grid = document.getElementById('grid');
         const channelListEl = document.getElementById('channelList');
 
-        // TAM KANAL LİSTESİ
+        // --- GÜNCEL RESMİ CDN LİSTESİ (2025) ---
+        // Hepsi HTTPS ve Resmi kaynaklardır.
         const channels = [
-            // ULUSAL
-            { name: "TRT 1", src: "https://trt.daioncdn.net/trt-1/master.m3u8?app=web" },
-            { name: "ATV", src: "http://116.202.238.88/ATV_TR/tracks-v1a1/index.m3u8" },
-            { name: "Show TV", src: "https://ciner.daioncdn.net/showtv/showtv.m3u8?ce=3&app=4bc856ef-4c68-4a94-bc87-37dfaaa66558" },
-            { name: "Star TV", src: "https://raw.githubusercontent.com/ipstreet312/freeiptv/refs/heads/master/ressources/tur/star.m3u8" },
-            { name: "Kanal D", src: "http://live.duhnet.tv/S2/HLS_LIVE/kanalddainp/playlist.m3u8" },
-            { name: "Now TV", src: "http://116.202.238.88/FOXTV_TR/index.m3u8" },
-            { name: "TV8", src: "https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788" },
+            // --- ULUSAL ---
+            { name: "TRT 1", src: "https://tv-trt1.medya.trt.com.tr/master.m3u8" },
+            { name: "ATV", src: "https://tring.daioncdn.net/atv/atv.m3u8" }, // Resmi Daion Linki
+            { name: "Show TV", src: "https://ciner-live.daioncdn.net/showtv/showtv.m3u8" },
+            { name: "Star TV", src: "https://dogus-live.daioncdn.net/startv/startv.m3u8" }, // Resmi Doğuş Linki
+            { name: "Kanal D", src: "https://live.duhnet.tv/S2/HLS_LIVE/kanalddainp/playlist.m3u8" }, // Demirören Resmi
+            { name: "TV8", src: "https://tv8.daioncdn.net/tv8/tv8.m3u8" },
             { name: "Kanal 7", src: "https://kanal7-live.daioncdn.net/kanal7/kanal7.m3u8" },
-            { name: "DMAX", src: "http://dygvideo.dygdigital.com/live/hls/dmaxdai?m3u8" },
-            { name: "TLC", src: "http://dygvideo.dygdigital.com/live/hls/tlctvdai?m3u8" },
+            { name: "Now TV", src: "https://art-fox-live-dash.ercdn.net/foxtv/foxtv.m3u8" }, // Eski Fox, Yeni Now
             
-            // HABER
-            { name: "NTV", src: "http://dygvideo.dygdigital.com/live/hls/ntv4puhu?m3u8" },
-            { name: "CNN Türk", src: "https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/playlist.m3u8" },
-            { name: "Habertürk", src: "https://tv.ensonhaber.com/haberturk/haberturk.m3u8" },
-            { name: "Sözcü TV", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/Sozcu_Tv.m3u8" },
-            { name: "Halk TV", src: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8" },
-            { name: "Haber Global", src: "https://tv.ensonhaber.com/haberglobal/haberglobal.m3u8" },
-            { name: "TV 100", src: "https://tv100-live.daioncdn.net/tv100/tv100_1080p.m3u8" },
+            // --- HABER ---
+            { name: "NTV", src: "https://dogus-live.daioncdn.net/ntv/ntv.m3u8" }, // Resmi Doğuş CDN
+            { name: "CNN Türk", src: "https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/playlist.m3u8" }, // Resmi
+            { name: "Habertürk", src: "https://ciner-live.daioncdn.net/haberturk/haberturk.m3u8" }, // Resmi
+            { name: "Sözcü TV", src: "ztmY_cCtUI0", type: "yt" }, // Sözcü YouTube'da en stabil
+            { name: "Halk TV", src: "VBU0QX6brew", type: "yt" }, // Halk TV YouTube'da en stabil
+            { name: "Tele 1", src: "UCoHnRpOS5rL62jTmSDO5Npw", type: "yt" }, // Tele1 YouTube
             { name: "TRT Haber", src: "https://tv-trthaber.medya.trt.com.tr/master.m3u8" },
-            { name: "TGRT Haber", src: "https://canli.tgrthaber.com/tgrt.m3u8" },
-            { name: "A Haber", src: "https://raw.githubusercontent.com/UzunMuhalefet/yt-streams/refs/heads/main/TR/dizi/ahaber.m3u8" },
-            { name: "Tele 1", src: "https://tele1-live.ercdn.net/tele1/tele1.m3u8" },
+            { name: "A Haber", src: "https://tring.daioncdn.net/ahaber/ahaber.m3u8" },
+            { name: "TV 100", src: "6g_DvD8e2T0", type: "yt" },
+            { name: "TGRT Haber", src: "https://tgrt-live.daioncdn.net/tgrthaber/tgrthaber.m3u8" },
+            { name: "Haber Global", src: "EqoCJ8BPxtE", type: "yt" },
             { name: "Ekol TV", src: "https://ekoltv-live.ercdn.net/ekoltv/ekoltv.m3u8" },
-            { name: "CNBC-E", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/CNBC_E.m3u8" },
-            { name: "Bloomberg HT", src: "https://ciner.daioncdn.net/bloomberght/bloomberght.m3u8" },
-            { name: "24 TV", src: "https://tv.ensonhaber.com/tv24/tv24.m3u8" },
-            { name: "TVNET", src: "https://mn-nl.mncdn.com/tvnet/tvnet/playlist.m3u8" },
-            
-            // SPOR & DİĞER
-            { name: "TRT Spor", src: "http://162.212.179.33:80/dvrfl05/gin-trtspor/playlist.m3u8" },
-            { name: "A Spor", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/A_Spor.m3u8" },
-            { name: "Bein Sports Haber", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/Bein_Spor_Haber.m3u8" },
+            { name: "CNBC-e", src: "ziYwt0jF1p4", type: "yt" },
+            { name: "Bloomberg HT", src: "https://ciner-live.daioncdn.net/bloomberght/bloomberght.m3u8" },
+            { name: "24 TV", src: "https://turkmedya-live.daioncdn.net/tv24/tv24.m3u8" },
+            { name: "Ülke TV", src: "https://kanal7-live.daioncdn.net/ulketv/ulketv.m3u8" },
+            { name: "Akit TV", src: "https://akittv-live.ercdn.net/akittv/akittv.m3u8" },
+            { name: "TVNET", src: "https://mn-nl.mncdn.com/tvnet/tvnet.smil/playlist.m3u8" },
+            { name: "Ulusal Kanal", src: "dK96AZbCns0", type: "yt" },
+
+            // --- SPOR ---
+            { name: "TRT Spor", src: "https://tv-trtspor1.medya.trt.com.tr/master.m3u8" },
+            { name: "TRT Spor Yıldız", src: "https://tv-trtspor2.medya.trt.com.tr/master.m3u8" },
+            { name: "A Spor", src: "https://tring.daioncdn.net/aspor/aspor.m3u8" },
+            { name: "Bein Sports Haber", src: "https://beinsports.daioncdn.net/beinsportshaber/beinsportshaber.m3u8" },
             { name: "TJK TV", src: "https://tjktv-live.tjk.org/tjktv.m3u8" },
+            { name: "Sports TV", src: "https://live.sportstv.com.tr/hls/low/sportstv_hd/index.m3u8" },
+
+            // --- DİĞER ---
+            { name: "TRT Belgesel", src: "https://tv-trtbelgesel.medya.trt.com.tr/master.m3u8" },
             { name: "TRT Müzik", src: "https://tv-trtmuzik.medya.trt.com.tr/master.m3u8" },
+            { name: "Kral Pop", src: "https://dogus.daioncdn.net/kralpoptv/kralpoptv.m3u8" },
             { name: "Power TV", src: "https://live.artidijitalmedya.com/artidijital_powertv/powertv/playlist.m3u8" },
-            { name: "Number1 TV", src: "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/broadcast_5c9e17cd59e8b.smil/playlist.m3u8" },
-            { name: "Kral Pop", src: "https://dogus.daioncdn.net/kralpoptv/kralpoptv.m3u8?app=kralpoptv_web" },
             { name: "TRT Çocuk", src: "https://tv-trtcocuk.medya.trt.com.tr/master.m3u8" }
         ];
 
         window.onload = () => {
             renderSidebar();
-            // Başlangıçta boş gelmesin diye en popüler 3 haberi açalım
-            const startChannels = channels.filter(c => ["NTV", "CNN Türk", "Habertürk"].includes(c.name));
-            startChannels.forEach(ch => createPlayer(ch));
+            // Açılışta popüler 3 kanalı açalım
+            createPlayer(channels.find(c => c.name === "NTV"));
+            createPlayer(channels.find(c => c.name === "Habertürk"));
+            createPlayer(channels.find(c => c.name === "Sözcü TV"));
         };
 
         function renderSidebar() {
@@ -253,7 +234,6 @@
                 item.className = 'channel-item';
                 item.innerHTML = `<span>${ch.name}</span> <i class="fas fa-play"></i>`;
                 item.onclick = () => {
-                    // Boş durum varsa temizle
                     if(document.querySelector('.empty-state')) grid.innerHTML = '';
                     createPlayer(ch);
                 };
@@ -271,6 +251,7 @@
         }
 
         function createPlayer(ch) {
+            if(!ch) return;
             const box = document.createElement('div');
             box.className = 'stream-box';
             box.innerHTML = `
@@ -278,15 +259,18 @@
                 <div class="close" onclick="checkEmpty(this)"><i class="fas fa-times"></i></div>
             `;
 
-            let isHLS = ch.src.includes('.m3u8') || ch.src.startsWith('http');
-
-            if (isHLS) {
+            // Eğer özel olarak 'yt' tipi belirtilmişse YouTube, yoksa HLS.
+            if (ch.type === "yt") {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${ch.src}?autoplay=1&mute=1&controls=1`;
+                iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+                box.appendChild(iframe);
+            } else {
                 const video = document.createElement('video');
                 video.muted = true; 
                 video.autoplay = true; 
                 video.playsInline = true;
                 video.controls = true; 
-                
                 box.appendChild(video);
 
                 if (Hls.isSupported()) {
@@ -299,11 +283,6 @@
                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                     video.src = ch.src;
                 }
-            } else {
-                const iframe = document.createElement('iframe');
-                iframe.src = `https://www.youtube.com/embed/${ch.src}?autoplay=1&mute=1&controls=1`;
-                iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-                box.appendChild(iframe);
             }
 
             grid.appendChild(box);
@@ -315,7 +294,7 @@
                 grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-tv"></i>
-                    <p>İzlemek için sol menüden bir kanal seçin</p>
+                    <p>Listeden kanal seçiniz</p>
                 </div>`;
             }
         }
@@ -327,11 +306,11 @@
         }
 
         function resetAll() {
-            if(confirm('Tüm ekranlar kapatılsın mı?')) {
+            if(confirm('Temizlensin mi?')) {
                 grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-tv"></i>
-                    <p>İzlemek için sol menüden bir kanal seçin</p>
+                    <p>Listeden kanal seçiniz</p>
                 </div>`;
             }
         }
