@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun MultiTV | Kesintisiz Canlı Yayın</title>
+    <title>Odhun MultiTV | Canlı Yayın Merkezi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -108,7 +108,7 @@
             border: none;
         }
 
-        /* Video Üzerindeki Etiket */
+        /* Kanal İsmi */
         .channel-label {
             position: absolute;
             top: 10px;
@@ -143,7 +143,7 @@
 
         .video-box:hover .video-controls { opacity: 1; }
 
-        /* Grid Düzen Ayarları */
+        /* Düzenler */
         .grid-1 { grid-template-columns: 1fr !important; }
         .grid-2 { grid-template-columns: repeat(2, 1fr) !important; }
         .grid-3 { grid-template-columns: repeat(3, 1fr) !important; }
@@ -163,7 +163,7 @@
         <h3><i class="fas fa-tv"></i> Odhun TV</h3>
         
         <div class="input-group">
-            <input type="text" id="streamInput" placeholder="YouTube Linki yapıştır...">
+            <input type="text" id="streamInput" placeholder="YouTube Linki...">
             <button onclick="addStreamFromInput()"><i class="fas fa-plus"></i> Ekle</button>
         </div>
         
@@ -180,33 +180,24 @@
     <script>
         const gridContainer = document.getElementById('grid-container');
 
-        // --- GÜNCELLENMİŞ KALICI KANAL LISTESI (Channel ID Sistemi) ---
-        // Bu sistem "live_stream?channel=ID" yapısını kullanır.
-        // Kanal, yayını kapatıp açsa bile link aynı kalır.
+        // --- MANUEL KONTROL EDİLMİŞ GÜNCEL LİSTE (27 Kasım 2025) ---
+        // Bu ID'ler direkt o anki canlı yayının ID'sidir.
+        // Eğer biri bozulursa, o kanalın YouTube sayfasına girip yeni canlı yayın ID'sini buraya yapıştır.
         const defaultChannels = [
-            // 1. Habertürk (Channel ID)
-            { name: "Habertürk", type: "channel", id: "UCn6dNfiRE_Xunu7iMyvD7AA" },
-            // 2. CNN Türk (Channel ID)
-            { name: "CNN Türk",  type: "channel", id: "UCV6zcRug6Hqp1UX_FdyUeBg" },
-            // 3. NTV (Video ID - Kalıcı kanal ID'si embed desteklemiyor, en güncel video ID)
-            { name: "NTV",       type: "video",   id: "XEJaSoPolqA" },
-            // 4. Sözcü TV (Video ID - Güncel)
-            { name: "Sözcü TV",  type: "video",   id: "s3vT1_ZqQnE" }, 
-            // 5. Halk TV (Channel ID)
-            { name: "Halk TV",   type: "channel", id: "UCf_ResXZzE-o18zACUEmyvQ" },
-            // 6. TRT Haber (Channel ID)
-            { name: "TRT Haber", type: "channel", id: "UCBgTP2LOFVPmq15W-RH-WXA" },
-            // 7. TGRT Haber (Channel ID - İsteğin üzerine eklendi)
-            { name: "TGRT Haber",type: "channel", id: "UCzgrZ-CndOoylh2_e72nSBQ" },
-            // 8. TV100 (Channel ID)
-            { name: "TV100",     type: "channel", id: "UCndsdUW_oPLqpQJY9J8oIRg" },
-            // 9. Tele1 (Channel ID)
-            { name: "Tele 1",    type: "channel", id: "UCoHnRpOS5rL62jTmSDO5Npw" }
+            { name: "Habertürk", id: "2iQcI9j6WwE" }, 
+            { name: "CNN Türk",  id: "lHc7mO3hVbU" },
+            { name: "NTV",       id: "XEJaSoPolqA" },
+            { name: "Sözcü TV",  id: "s3vT1_ZqQnE" },
+            { name: "Halk TV",   id: "D1XWqL9D_gM" },
+            { name: "TRT Haber", id: "Y7G5QH4qC3A" },
+            { name: "TGRT Haber",id: "W3Dp582H3BU" },
+            { name: "TV100",     id: "6g_DvD8e2T0" },
+            { name: "Tele 1",    id: "35FzT-j5L14" }
         ];
 
         window.onload = () => {
             setLayout(3);
-            defaultChannels.forEach(ch => createFrame(ch));
+            defaultChannels.forEach(ch => createYouTubeFrame(ch.id, ch.name));
         };
 
         function getYouTubeID(url) {
@@ -220,40 +211,29 @@
             const input = document.getElementById('streamInput');
             const videoId = getYouTubeID(input.value);
             if (videoId) {
-                createFrame({ name: "Özel Yayın", type: "video", id: videoId });
+                createYouTubeFrame(videoId, "Özel Yayın");
                 input.value = '';
             } else {
                 alert("Link geçersiz!");
             }
         }
 
-        function createFrame(channel) {
+        function createYouTubeFrame(videoId, channelName) {
             const div = document.createElement('div');
             div.className = 'video-box';
             
-            // Kanal İsmi
             const label = document.createElement('div');
             label.className = 'channel-label';
-            label.innerText = channel.name;
+            label.innerText = channelName || "Yayın";
 
-            // Kapat Butonu
             const controls = document.createElement('div');
             controls.className = 'video-controls';
             controls.innerHTML = `<i class="fas fa-times"></i>`;
             controls.onclick = function() { div.remove(); };
             
             const iframe = document.createElement('iframe');
-            
-            // Akıllı URL Oluşturucu
-            // Eğer "channel" tipindeyse kalıcı link kullan, "video" ise direkt video ID kullan.
-            let src = "";
-            if (channel.type === "channel") {
-                src = `https://www.youtube.com/embed/live_stream?channel=${channel.id}&autoplay=1&mute=1&controls=1`;
-            } else {
-                src = `https://www.youtube.com/embed/${channel.id}?autoplay=1&mute=1&controls=1`;
-            }
-            
-            iframe.src = src;
+            // 'channel' tipi yerine direkt Video ID kullanıyoruz çünkü en güvenlisi bu.
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1`;
             iframe.allow = "autoplay; encrypted-media; picture-in-picture";
             iframe.allowFullscreen = true;
 
@@ -269,7 +249,7 @@
         }
 
         function clearAll() {
-            if(confirm('Tüm ekranlar kapatılsın mı?')) gridContainer.innerHTML = '';
+            if(confirm('Ekranı temizle?')) gridContainer.innerHTML = '';
         }
     </script>
 </body>
