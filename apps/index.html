@@ -10,16 +10,26 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f6f8;
             color: #333;
-            margin: 0;
+            margin: 0; /* Sayfa kenar boşluklarını sıfırladık (Footer tam otursun diye) */
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Sayfa içeriği az olsa bile footer en altta durur */
+        }
+
+        /* İçerik Sarmalayıcı (Padding'i buraya verdik) */
+        .content-wrapper {
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex: 1; /* Footer'ı aşağı itmek için alanı kaplar */
         }
 
         header {
             text-align: center;
             margin-bottom: 40px;
+            margin-top: 20px;
         }
 
         h1 {
@@ -85,7 +95,7 @@
             text-align: center;
             font-weight: bold;
             transition: background-color 0.3s;
-            display: block; /* Butonu tam genişlik yapar */
+            display: block;
         }
 
         .download-btn:hover {
@@ -102,63 +112,90 @@
         .btn-txt { background-color: #95a5a6; } /* Gri */
         .btn-txt:hover { background-color: #7f8c8d; }
 
+        /* Yeni Footer Tasarımı */
         footer {
-            margin-top: 50px;
-            font-size: 0.8em;
-            color: #999;
+            background-color: #2c3e50; /* Koyu Lacivert */
+            color: #ecf0f1;
+            padding: 40px 20px;
             text-align: center;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
             width: 100%;
+            box-sizing: border-box;
+            margin-top: 50px;
+        }
+
+        footer strong {
+            color: #3498db;
+        }
+
+        .footer-warning {
+            font-size: 0.85em;
+            color: #bdc3c7;
+            margin-top: 10px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Odhun Apps</h1>
-        <div class="subtitle">Kişisel Taşınabilir Uygulama Deposu</div>
-    </header>
+    <div class="content-wrapper">
+        <header>
+            <h1>Odhun Apps</h1>
+            <div class="subtitle">Kişisel Taşınabilir Uygulama Deposu</div>
+        </header>
 
-    <div class="container">
-        
-        <div class="card">
-            <div class="card-title">🔑 Windows & Office Lisanslama</div>
-            <div class="card-desc">
-                Office ve Windows etkinleştirmek için script. İndirdikten sonra yönetici olarak çalıştırın ve adımları takip edin.
+        <div class="container">
+            
+            <div class="card">
+                <div class="card-title">🔑 Windows & Office Lisanslama</div>
+                <div class="card-desc">
+                    Office ve Windows etkinleştirmek için script. İndirdikten sonra yönetici olarak çalıştırın ve adımları takip edin.
+                </div>
+                <a href="Odhun Windows+Office Lisanslama.bat" download class="download-btn btn-bat">📥 İndir (.bat)</a>
             </div>
-            <a href="Odhun Windows+Office Lisanslama.bat" download class="download-btn btn-bat">📥 İndir (.bat)</a>
-        </div>
 
-        <div class="card">
-            <div class="card-title">⏲️ Oto PC Kapatma</div>
-            <div class="card-desc">
-                Bilgisayarı belirli bir süre sonra otomatik kapatmak için zaman ayarlı araç.
+            <div class="card">
+                <div class="card-title">⏲️ Oto PC Kapatma</div>
+                <div class="card-desc">
+                    Bilgisayarı belirli bir süre sonra otomatik kapatmak için zaman ayarlı araç.
+                </div>
+                <a href="Odhun Oto Pc Kapatma.bat" download class="download-btn btn-bat">📥 İndir (.bat)</a>
             </div>
-            <a href="Odhun Oto Pc Kapatma.bat" download class="download-btn btn-bat">📥 İndir (.bat)</a>
-        </div>
 
-        <div class="card">
-            <div class="card-title">🚀 Internet Download Manager</div>
-            <div class="card-desc">
-                IDM 6.42 Build 26 Multilingual + Retail sürümü. Güncel ve hazır paket.
+            <div class="card">
+                <div class="card-title">🚀 Internet Download Manager</div>
+                <div class="card-desc">
+                    IDM 6.42 Build 26 Multilingual + Retail sürümü. Güncel ve hazır paket.
+                </div>
+                <a href="Internet Download Manager 6.42 Build 26 Multilingual + Retail.rar" download class="download-btn btn-rar">📥 İndir (.rar)</a>
             </div>
-            <a href="Internet Download Manager 6.42 Build 26 Multilingual + Retail.rar" download class="download-btn btn-rar">📥 İndir (.rar)</a>
-        </div>
 
-        <div class="card">
-            <div class="card-title">📄 Manuel Etkinleştirme</div>
-            <div class="card-desc">
-                Eğer otomatik .bat dosyası çalışmazsa, manuel etkinleştirme yöntemini içeren metin belgesi.
+            <div class="card">
+                <div class="card-title">📄 Manuel Etkinleştirme</div>
+                <div class="card-desc">
+                    Eğer otomatik .bat dosyası çalışmazsa, manuel etkinleştirme yöntemini içeren metin belgesi.
+                </div>
+                <a href="windows etkinleştirme.txt" download class="download-btn btn-txt">📥 Oku / İndir (.txt)</a>
             </div>
-            <a href="windows etkinleştirme.txt" download class="download-btn btn-txt">📥 Oku / İndir (.txt)</a>
-        </div>
 
+            <div class="card">
+                <div class="card-title">⚔️ Metin 2 Çözünürlük Ayarlama</div>
+                <div class="card-desc">
+                    Metin2 oyununda istediğiniz çözünürlüklere geçmek için kullanacağınız autoconfig aracı.
+                </div>
+                <a href="Odhun Çözünürlük.bat" download class="download-btn btn-bat">📥 İndir (.bat)</a>
+            </div>
+
+        </div>
     </div>
 
     <footer>
-        <p>⚠️ Odhun.com © 2024</p>
-        <p>Bu arşiv şahsıma aittir. Dosyaların izinsiz veya hatalı kullanımından doğacak sonuçlar kullanıcı sorumluluğundadır.</p>
+        <p><strong>Odhun.com</strong> &copy; 2025 Tüm Hakları Saklıdır.</p>
+        <div class="footer-warning">
+            ⚠️ Bu arşivdeki yazılımlar kişisel kullanım amaçlıdır. Dosyaların kullanımı tamamen kullanıcının iradesindedir; doğabilecek sistemsel veya yasal sorunlardan geliştirici sorumlu tutulamaz.
+        </div>
     </footer>
 
 </body>
