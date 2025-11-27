@@ -3,80 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun TV | Özel Panel</title>
+    <title>Odhun TV | Mega Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
         :root {
-            --bg: #0a0a0a;
-            --header: #111;
-            --border: #333;
-            --accent: #d32f2f;
-            --text: #fff;
+            --bg: #0f0f0f;
+            --header: #161616;
+            --border: #2a2a2a;
+            --accent: #e50914;
+            --text: #eee;
         }
 
         body {
             margin: 0; padding: 0; background: var(--bg); color: var(--text);
-            font-family: sans-serif; height: 100vh; display: flex; flex-direction: column;
+            font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column;
             overflow: hidden;
         }
 
         header {
-            height: 50px; background: var(--header); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 15px; gap: 10px;
+            height: 55px; background: var(--header); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 15px; gap: 10px; z-index: 100;
         }
 
-        h3 { margin: 0; font-size: 1.1rem; color: #fff; flex-grow: 1; }
+        .brand { font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px; color: #fff; }
+        .brand span { color: var(--accent); }
 
+        .input-area { display: flex; flex: 1; max-width: 400px; margin: 0 15px; }
+        input {
+            width: 100%; background: #000; border: 1px solid #333; color: #fff;
+            padding: 0 12px; height: 34px; border-radius: 4px 0 0 4px; outline: none;
+        }
+        .btn-add {
+            height: 36px; border-radius: 0 4px 4px 0; background: var(--accent); 
+            border: none; color: white; font-weight: bold; cursor: pointer; padding: 0 15px;
+        }
+
+        .controls { margin-left: auto; display: flex; gap: 5px; }
         button {
-            background: #222; border: 1px solid #444; color: #ccc;
-            padding: 5px 10px; cursor: pointer; border-radius: 3px;
+            background: #222; border: 1px solid #333; color: #aaa;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+            transition: all 0.2s;
         }
-        button:hover, button.active { background: var(--accent); color: white; border-color: var(--accent); }
+        button:hover, button.active { background: #333; color: #fff; border-color: #555; }
+        button.btn-red { border-color: #c0392b; color: #c0392b; background: transparent; }
+        button.btn-red:hover { background: #c0392b; color: #fff; }
 
+        /* Izgara */
         #grid {
             flex: 1; display: grid; background: #000;
-            grid-template-columns: repeat(4, 1fr); /* 4x4 Düzen */
+            grid-template-columns: repeat(4, 1fr); 
             grid-auto-rows: 1fr;
             gap: 1px; overflow-y: auto;
         }
 
-        .box {
-            position: relative; background: #000; border: 1px solid #222;
+        .stream-box {
+            position: relative; background: #000; border: 1px solid #1a1a1a;
             display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
 
-        video, iframe { width: 100%; height: 100%; border: none; }
+        video, iframe { width: 100%; height: 100%; object-fit: fill; border: none; }
 
         .label {
             position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8);
-            padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;
+            padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
             pointer-events: none; z-index: 10; border-left: 3px solid var(--accent);
+            text-transform: uppercase; white-space: nowrap; max-width: 80%; overflow: hidden; text-overflow: ellipsis;
         }
 
         .close {
-            position: absolute; top: 0; right: 0; padding: 5px 10px; background: #c0392b;
-            color: white; cursor: pointer; z-index: 20; opacity: 0;
+            position: absolute; top: 0; right: 0; padding: 8px 12px; background: #c0392b;
+            color: white; cursor: pointer; z-index: 20; opacity: 0; transition: 0.2s;
         }
-        .box:hover .close { opacity: 1; }
+        .stream-box:hover .close { opacity: 1; }
 
+        /* Mobil */
         @media (max-width: 768px) {
+            header { flex-wrap: wrap; height: auto; padding: 10px; }
+            .input-area { order: 2; width: 100%; max-width: none; margin: 10px 0; }
             #grid { grid-template-columns: 1fr !important; }
-            .box { min-height: 250px; }
+            .stream-box { min-height: 250px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h3>ODHUN TV</h3>
-        <div>
+        <div class="brand">ODHUN<span>TV</span></div>
+        
+        <div class="input-area">
+            <input type="text" id="linkIn" placeholder="Link veya ID yapıştır...">
+            <button class="btn-add" onclick="addCustom()"><i class="fas fa-plus"></i></button>
+        </div>
+
+        <div class="controls">
             <button onclick="setGrid(1)">1x1</button>
             <button onclick="setGrid(2)">2x2</button>
             <button onclick="setGrid(3)">3x3</button>
             <button onclick="setGrid(4)" class="active">4x4</button>
-            <button onclick="resetApp()" style="border-color:red; color:red;">R</button>
+            <button onclick="setGrid(5)">5x5</button>
+            <button class="btn-red" onclick="resetAll()"><i class="fas fa-trash"></i></button>
         </div>
     </header>
 
@@ -85,24 +112,119 @@
     <script>
         const grid = document.getElementById('grid');
 
-        // SENİN VERDİĞİN LİSTE (Birebir)
+        // --- M3U DOSYASINDAN AYIKLANAN KANAL LİSTESİ ---
         const channels = [
-            { name: "NTV", src: "pqq5c6k70kk" },
-            { name: "CNN Türk", src: "6N8_r2uwLEc" },
-            { name: "Sözcü TV", src: "ztmY_cCtUl0" },
-            { name: "Habertürk", src: "RNVNlJSUFoE" },
-            { name: "Halk TV", src: "VBU0QX6brew" },
-            { name: "Haber Global", src: "EqoCJ8BPxtE" },
-            { name: "EKOL TV", src: "https://ekoltv-live.ercdn.net/ekoltv/ekoltv.m3u8" },
-            { name: "TV 100", src: "6g_DvD8e2T0" },
+            // ULUSAL KANALLAR
+            { name: "TRT 1", src: "https://trt.daioncdn.net/trt-1/master.m3u8?app=web" },
+            { name: "ATV", src: "http://116.202.238.88/ATV_TR/tracks-v1a1/index.m3u8" },
+            { name: "ATV Avrupa", src: "http://162.212.179.33/dvrfl05/gin-atvavrupa/playlist.m3u8" },
+            { name: "Show TV", src: "https://ciner.daioncdn.net/showtv/showtv.m3u8?ce=3&app=4bc856ef-4c68-4a94-bc87-37dfaaa66558" },
+            { name: "Show TV Max", src: "https://raw.githubusercontent.com/ipstreet312/freeiptv/master/ressources/tur/shmax.m3u8" },
+            { name: "Star TV", src: "https://raw.githubusercontent.com/ipstreet312/freeiptv/refs/heads/master/ressources/tur/star.m3u8" },
+            { name: "Eurostar", src: "https://raw.githubusercontent.com/ipstreet312/freeiptv/master/ressources/tur/estar.m3u8" },
+            { name: "Kanal D", src: "http://live.duhnet.tv/S2/HLS_LIVE/kanalddainp/playlist.m3u8" },
+            { name: "Euro D", src: "http://live.duhnet.tv/S2/HLS_LIVE/eurodnp/playlist.m3u8" },
+            { name: "Now TV", src: "http://116.202.238.88/FOXTV_TR/index.m3u8" },
+            { name: "TV8", src: "https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788" },
+            { name: "TV8.5", src: "https://tv8.daioncdn.net/tv8bucuk/tv8bucuk.m3u8?app=tv8bucuk_web" },
+            { name: "Kanal 7", src: "https://kanal7-live.daioncdn.net/kanal7/kanal7.m3u8" },
+            { name: "Kanal 7 Avrupa", src: "https://livetv.radyotvonline.net/kanal7live/kanal7avr/playlist.m3u8" },
+            { name: "Flash Haber", src: "https://flashhaber-live.ercdn.net/flashhaber/flashhaber.m3u8" },
+            { name: "A2", src: "https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/a2tv/a2tv.m3u8" },
+            { name: "Teve2", src: "http://live.duhnet.tv/S2/HLS_LIVE/teve2np/playlist.m3u8" },
+            { name: "DMAX", src: "http://dygvideo.dygdigital.com/live/hls/dmaxdai?m3u8" },
+            { name: "TLC", src: "http://dygvideo.dygdigital.com/live/hls/tlctvdai?m3u8" },
+            
+            // HABER KANALLARI
+            { name: "TV 100", src: "https://tv100-live.daioncdn.net/tv100/tv100_1080p.m3u8" },
+            { name: "TRT Türk", src: "https://tv-trtturk.medya.trt.com.tr/master.m3u8" },
             { name: "TRT Haber", src: "https://tv-trthaber.medya.trt.com.tr/master.m3u8" },
             { name: "TGRT Haber", src: "https://canli.tgrthaber.com/tgrt.m3u8" },
-            { name: "CNBC-e", src: "ziYwt0jF1p4" },
-            { name: "TYT Türk", src: "https://cdn-tytturk.yayin.com.tr/tytturk/tracks-v1a1/mono.m3u8" },
-            { name: "Ulusal Kanal", src: "dK96AZbCns0" }
+            { name: "A Haber", src: "https://raw.githubusercontent.com/UzunMuhalefet/yt-streams/refs/heads/main/TR/dizi/ahaber.m3u8" },
+            { name: "Beyaz TV", src: "https://beyaztv.daioncdn.net/beyaztv/beyaztv.m3u8?app=fcd5c66b-da9d-44ba-a410-4f34805c397d&ce=3" },
+            { name: "Habertürk", src: "https://tv.ensonhaber.com/haberturk/haberturk.m3u8" },
+            { name: "Haber Global", src: "https://tv.ensonhaber.com/haberglobal/haberglobal.m3u8" },
+            { name: "Halk TV", src: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8" },
+            { name: "NTV", src: "http://dygvideo.dygdigital.com/live/hls/ntv4puhu?m3u8" },
+            { name: "Ülke TV", src: "https://livetv.radyotvonline.net/kanal7live/ulketv/playlist.m3u8" },
+            { name: "24 TV", src: "https://tv.ensonhaber.com/tv24/tv24.m3u8" },
+            { name: "360 TV", src: "https://turkmedya-live.ercdn.net/tv360/tv360.m3u8" },
+            { name: "Akit TV", src: "https://akittv-live.ercdn.net/akittv/akittv.m3u8" },
+            { name: "Sözcü TV", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/Sozcu_Tv.m3u8" },
+            { name: "Tele 1", src: "https://tele1-live.ercdn.net/tele1/tele1.m3u8" },
+            { name: "TVNET", src: "https://mn-nl.mncdn.com/tvnet/tvnet/playlist.m3u8" },
+            { name: "CNBC-E", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/CNBC_E.m3u8" },
+            { name: "Ekol Haber", src: "https://ekoltv-live.ercdn.net/ekoltv/ekoltv.m3u8" },
+            { name: "Bengütürk", src: "https://tv.ensonhaber.com/benguturk/benguturk.m3u8" },
+            { name: "TBMM TV", src: "https://meclistv-live.ercdn.net/meclistv/meclistv.m3u8" },
+            { name: "DHA Canlı", src: "https://603c568fccdf5.streamlock.net/live/dhaweb1_C5efC/playlist.m3u8" },
+            { name: "Bloomberg HT", src: "https://ciner.daioncdn.net/bloomberght/bloomberght.m3u8" },
+            { name: "Ekotürk", src: "https://raw.githubusercontent.com/UzunMuhalefet/yt-streams/refs/heads/main/TR/haber/ekoturk.m3u8" },
+
+            // EĞLENCE & BELGESEL
+            { name: "TRT 2", src: "https://tv-trt2.medya.trt.com.tr/master.m3u8" },
+            { name: "TV 4", src: "https://turkmedya-live.ercdn.net/tv4/tv4.m3u8" },
+            { name: "TRT World", src: "https://tv-trtworld.medya.trt.com.tr/master.m3u8" },
+            { name: "TRT Avaz", src: "https://tv-trtavaz.medya.trt.com.tr/master.m3u8" },
+            { name: "TRT Belgesel", src: "https://tv-trtbelgesel.medya.trt.com.tr/master.m3u8" },
+            { name: "Cine 1", src: "https://live.artidijitalmedya.com/artidijital_cine1/cine1/playlist.m3u8" },
+            { name: "Çiftçi TV", src: "https://live.artidijitalmedya.com/artidijital_ciftcitv/ciftcitv/playlist.m3u8" },
+            { name: "Tivi 6", src: "https://live.artidijitalmedya.com/artidijital_tivi6/tivi6/playlist.m3u8" },
+            { name: "Meltem TV", src: "https://vhxyrsly.rocketcdn.com/meltemtv/playlist.m3u8" },
+
+            // DİNİ
+            { name: "Diyanet TV", src: "https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3bf95a47e07.smil/playlist.m3u8" },
+            { name: "Dost TV", src: "https://dost.stream.emsal.im/tv/live.m3u8" },
+            { name: "Semerkand", src: "https://b01c02nl.mediatriple.net/videoonlylive/mtisvwurbfcyslive/broadcast_58d915bd40efc.smil/playlist.m3u8" },
+            { name: "Rehber TV", src: "https://cdn4.yayin.com.tr/rehbertv/tracks-v1a1/mono.m3u8" },
+            { name: "Lalegül TV", src: "https://lbl.netmedya.net/hls/lalegultv.m3u8" },
+
+            // SPOR
+            { name: "TRT Spor", src: "http://162.212.179.33:80/dvrfl05/gin-trtspor/playlist.m3u8" },
+            { name: "TRT Spor Yıldız", src: "https://tv-trtspor2.medya.trt.com.tr/master.m3u8" },
+            { name: "A Spor", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/A_Spor.m3u8" },
+            { name: "HT Spor", src: "https://ciner-live.ercdn.net/htspor/htspor.m3u8" },
+            { name: "Sports TV", src: "https://live.sportstv.com.tr/hls/low/sportstv_hd/index.m3u8" },
+            { name: "Bein Sports Haber", src: "https://raw.githubusercontent.com/tecotv2025/tecotv/refs/heads/main/playlist/Bein_Spor_Haber.m3u8" },
+            { name: "Ekol Sports", src: "https://ekoltv-live.ercdn.net/ekolsport/ekolsport.m3u8" },
+            { name: "TJK TV", src: "https://tjktv-live.tjk.org/tjktv.m3u8" },
+            { name: "TJK TV 2", src: "https://tjktv-live.tjk.org/tjktv2/tjktv2.m3u8" },
+
+            // MÜZİK
+            { name: "TRT Müzik", src: "https://tv-trtmuzik.medya.trt.com.tr/master.m3u8" },
+            { name: "Power TV", src: "https://live.artidijitalmedya.com/artidijital_powertv/powertv/playlist.m3u8" },
+            { name: "Powerturk", src: "https://live.artidijitalmedya.com/artidijital_powerturktv/powerturktv/playlist.m3u8" },
+            { name: "Powerturk Taptaze", src: "https://livetv.powerapp.com.tr/pturktaptaze/taptaze.smil/playlist.m3u8" },
+            { name: "Powerturk Slow", src: "https://livetv.powerapp.com.tr/pturkslow/slow.smil/playlist.m3u8" },
+            { name: "Powerturk Akustik", src: "https://livetv.powerapp.com.tr/pturkakustik/akustik.smil/playlist.m3u8" },
+            { name: "Power Love", src: "https://livetv.powerapp.com.tr/plove/love.smil/playlist.m3u8" },
+            { name: "Power Dance", src: "https://livetv.powerapp.com.tr/dance/dance.smil/playlist.m3u8" },
+            { name: "Number1 TV", src: "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/broadcast_5c9e17cd59e8b.smil/playlist.m3u8" },
+            { name: "Number1 Türk", src: "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/broadcast_5c9e187770143.smil/playlist.m3u8" },
+            { name: "Number1 Dance", src: "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e2aa8acf44_1/playlist.m3u8" },
+            { name: "Number1 Damar", src: "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e198784bdc_1/playlist.m3u8" },
+            { name: "Number1 Aşk", src: "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e18f9cea15_1/playlist.m3u8" },
+            { name: "Kral Pop", src: "https://dogus.daioncdn.net/kralpoptv/kralpoptv.m3u8?app=kralpoptv_web" },
+            { name: "Dream Türk", src: "https://live.duhnet.tv/S2/HLS_LIVE/dreamturknp/playlist.m3u8" },
+
+            // ÇOCUK
+            { name: "TRT Çocuk", src: "https://tv-trtcocuk.medya.trt.com.tr/master.m3u8" },
+            { name: "TRT Diyanet Çocuk", src: "https://tv-trtdiyanetcocuk.medya.trt.com.tr/master.m3u8" },
+            { name: "TRT EBA", src: "https://tv-e-okul01.medya.trt.com.tr/master.m3u8" },
+            { name: "Baby TV", src: "https://saran-live.ercdn.net/babytv/index.m3u8" },
+
+            // YURT DIŞI
+            { name: "Persiana TR", src: "https://turkhls.persiana.live/hls/stream.m3u8" },
+            { name: "CAN TV", src: "http://canbroadcast.com:7000/canlican/tv.m3u8" },
+            { name: "SAT7 Türk", src: "https://live.artidijitalmedya.com/artidijital_sat7turk/sat7turk/playlist.m3u8" },
+            { name: "Syria TV", src: "https://live.kwikmotion.com/syriatvlive/syriatv.smil/playlist_dvr.m3u8" }
         ];
 
-        window.onload = loadChannels;
+        window.onload = () => {
+            // Başlangıçta 4x4 açılacak
+            setGrid(4);
+            loadChannels();
+        };
 
         function loadChannels() {
             grid.innerHTML = "";
@@ -111,31 +233,44 @@
 
         function createPlayer(ch) {
             const box = document.createElement('div');
-            box.className = 'box';
+            box.className = 'stream-box';
             box.innerHTML = `
                 <div class="label">${ch.name}</div>
-                <div class="close" onclick="this.parentElement.remove()">X</div>
+                <div class="close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></div>
             `;
 
-            // Eğer link "http" ile başlıyorsa HLS (m3u8) player kullan
-            if (ch.src.startsWith('http')) {
+            // Mantık: Link '.m3u8' içeriyorsa veya http/https ise HLS olarak dene.
+            // Eğer YouTube ID'sine benziyorsa iframe aç.
+            
+            let isHLS = ch.src.includes('.m3u8') || ch.src.startsWith('http');
+
+            if (isHLS) {
                 const video = document.createElement('video');
                 video.muted = true; 
                 video.autoplay = true;
                 video.playsInline = true;
-                video.controls = true;
+                video.controls = true; 
+                
                 box.appendChild(video);
 
                 if (Hls.isSupported()) {
                     const hls = new Hls();
                     hls.loadSource(ch.src);
                     hls.attachMedia(video);
+                    hls.on(Hls.Events.ERROR, function(event, data) {
+                        if (data.fatal) {
+                            switch(data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR: hls.startLoad(); break;
+                                case Hls.ErrorTypes.MEDIA_ERROR: hls.recoverMediaError(); break;
+                                default: hls.destroy(); break;
+                            }
+                        }
+                    });
                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                     video.src = ch.src;
                 }
-            } 
-            // Yoksa YouTube ID'sidir
-            else {
+            } else {
+                // YouTube Iframe
                 const iframe = document.createElement('iframe');
                 iframe.src = `https://www.youtube.com/embed/${ch.src}?autoplay=1&mute=1&controls=1`;
                 iframe.allow = "autoplay; encrypted-media; picture-in-picture";
@@ -145,14 +280,34 @@
             grid.appendChild(box);
         }
 
-        function setGrid(n) {
-            grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
-            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        function addCustom() {
+            const input = document.getElementById('linkIn');
+            let val = input.value.trim();
+            if(!val) return;
+
+            let src = val;
+            // YouTube Regex
+            if (val.includes('youtu')) {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                const match = val.match(regExp);
+                if (match && match[2].length === 11) src = match[2];
+            }
+
+            createPlayer({ name: "Özel Kanal", src: src });
+            input.value = '';
         }
 
-        function resetApp() {
-            if(confirm('Yenilensin mi?')) loadChannels();
+        function setGrid(n) {
+            grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+            document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+            if(event) event.target.classList.add('active');
+        }
+
+        function resetAll() {
+            if(confirm('Tüm ekranlar sıfırlansın mı?')) {
+                grid.innerHTML = "";
+                loadChannels();
+            }
         }
     </script>
 </body>
