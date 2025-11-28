@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odhun Pass | Güvenli Şifre</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg: #0f0f0f;
+        --card-bg: #1a1a1a;
+        --accent: #ff0000;
+        --accent-hover: #cc0000;
+        --text: #ffffff;
+        --text-dim: #888;
+        --success: #00ff41;
+        --warning: #ffbd2e;
+        --danger: #ff5f5f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; padding: 0; background: var(--bg); color: var(--text);
+        font-family: 'Inter', sans-serif; height: 100vh; display: flex;
+        flex-direction: column; align-items: center; justify-content: center;
+    }
+
+    /* LOGO */
+    .brand {
+        font-size: 2rem; font-weight: 900; margin-bottom: 30px;
+        letter-spacing: -1px;
+    }
+    .brand span { color: var(--accent); }
+
+    /* KART */
+    .container {
+        width: 400px; max-width: 90%; background: var(--card-bg);
+        padding: 30px; border-radius: 16px; border: 1px solid #333;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    /* ŞİFRE EKRANI */
+    .screen {
+        background: #000; border: 1px solid #333; border-radius: 8px;
+        padding: 20px; display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 20px; position: relative; overflow: hidden;
+    }
+    
+    .password-text {
+        font-family: 'JetBrains Mono', monospace; font-size: 1.2rem;
+        color: var(--text); flex: 1; word-break: break-all; margin-right: 10px;
+    }
+
+    .copy-btn {
+        background: transparent; border: none; color: var(--accent);
+        font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+    }
+    .copy-btn:hover { color: #fff; transform: scale(1.1); }
+
+    /* GÜÇ ÇUBUĞU */
+    .strength-bar {
+        height: 4px; width: 100%; background: #333; border-radius: 2px;
+        margin-bottom: 25px; position: relative; overflow: hidden;
+    }
+    .strength-fill {
+        height: 100%; width: 0%; background: var(--danger);
+        transition: width 0.3s, background 0.3s;
+    }
+
+    /* AYARLAR */
+    .settings { display: flex; flex-direction: column; gap: 15px; }
+
+    /* Slider */
+    .slider-container { margin-bottom: 10px; }
+    .slider-label { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-dim); }
+    .length-val { color: var(--accent); font-weight: bold; font-family: 'JetBrains Mono'; }
+    
+    input[type=range] {
+        width: 100%; height: 6px; background: #333; border-radius: 3px;
+        outline: none; appearance: none; cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+        appearance: none; width: 18px; height: 18px; background: var(--accent);
+        border-radius: 50%; cursor: pointer; transition: 0.2s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    /* Checkboxlar */
+    .checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .check-item {
+        display: flex; align-items: center; gap: 10px; cursor: pointer;
+        font-size: 0.9rem; color: var(--text-dim); user-select: none;
+    }
+    .check-item:hover { color: #fff; }
+
+    input[type="checkbox"] {
+        appearance: none; width: 18px; height: 18px; border: 2px solid #444;
+        border-radius: 4px; cursor: pointer; position: relative;
+    }
+    input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+    input[type="checkbox"]:checked::after {
+        content: '✔'; position: absolute; color: white; font-size: 12px;
+        left: 2px; top: -1px;
+    }
+
+    /* BUTON */
+    .generate-btn {
+        width: 100%; padding: 15px; border: none; border-radius: 8px;
+        background: var(--accent); color: white; font-weight: 800; font-size: 1rem;
+        cursor: pointer; margin-top: 25px; transition: 0.2s; text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .generate-btn:hover { background: var(--accent-hover); box-shadow: 0 0 15px rgba(255,0,0,0.4); }
+    .generate-btn:active { transform: scale(0.98); }
+
+    /* Kopyalandı Uyarısı */
+    .toast {
+        position: fixed; bottom: 30px; background: var(--success); color: #000;
+        padding: 10px 20px; border-radius: 50px; font-weight: bold;
+        transform: translateY(100px); transition: 0.3s; opacity: 0; font-size: 0.9rem;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Footer */
+    footer { margin-top: 40px; font-size: 0.8rem; color: #444; }
+
+</style>
+</head>
+<body>
+
+    <div class="brand">ODHUN<span>PASS</span></div>
+
+    <div class="container">
+        <div class="screen">
+            <div class="password-text" id="password">...</div>
+            <button class="copy-btn" onclick="copyPassword()" title="Kopyala"><i class="far fa-copy"></i></button>
+        </div>
+        
+        <div class="strength-bar"><div class="strength-fill" id="strengthBar"></div></div>
+
+        <div class="settings">
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Karakter Uzunluğu</span>
+                    <span class="length-val" id="lengthVal">16</span>
+                </div>
+                <input type="range" id="length" min="4" max="50" value="16" oninput="syncLength()">
+            </div>
+
+            <div class="checkbox-group">
+                <label class="check-item">
+                    <input type="checkbox" id="uppercase" checked> Büyük Harf (A-Z)
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" id="lowercase" checked> Küçük Harf (a-z)
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" id="numbers" checked> Rakamlar (0-9)
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" id="symbols" checked> Semboller (!@#)
+                </label>
+            </div>
+        </div>
+
+        <button class="generate-btn" onclick="generatePassword()">Şifre Oluştur <i class="fas fa-bolt"></i></button>
+    </div>
+
+    <footer>
+        🔒 Şifreler tarayıcınızda oluşturulur, sunucuya kaydedilmez.
+    </footer>
+
+    <div class="toast" id="toast">Kopyalandı!</div>
+
+    <script>
+        const passwordEl = document.getElementById('password');
+        const lengthEl = document.getElementById('length');
+        const lengthValEl = document.getElementById('lengthVal');
+        const uppercaseEl = document.getElementById('uppercase');
+        const lowercaseEl = document.getElementById('lowercase');
+        const numbersEl = document.getElementById('numbers');
+        const symbolsEl = document.getElementById('symbols');
+        const strengthBar = document.getElementById('strengthBar');
+        const toast = document.getElementById('toast');
+
+        const randomFunc = {
+            lower: getRandomLower,
+            upper: getRandomUpper,
+            number: getRandomNumber,
+            symbol: getRandomSymbol
+        };
+
+        // Başlangıçta oluştur
+        generatePassword();
+
+        function syncLength() {
+            lengthValEl.innerText = lengthEl.value;
+            generatePassword();
+        }
+
+        function generatePassword() {
+            const length = +lengthEl.value;
+            const hasLower = lowercaseEl.checked;
+            const hasUpper = uppercaseEl.checked;
+            const hasNumber = numbersEl.checked;
+            const hasSymbol = symbolsEl.checked;
+
+            let generatedPassword = '';
+            const typesCount = hasLower + hasUpper + hasNumber + hasSymbol;
+            const typesArr = [{lower: hasLower}, {upper: hasUpper}, {number: hasNumber}, {symbol: hasSymbol}].filter(item => Object.values(item)[0]);
+
+            if (typesCount === 0) {
+                passwordEl.innerText = '';
+                updateStrength(0);
+                return;
+            }
+
+            for (let i = 0; i < length; i += typesCount) {
+                typesArr.forEach(type => {
+                    const funcName = Object.keys(type)[0];
+                    generatedPassword += randomFunc[funcName]();
+                });
+            }
+
+            const finalPassword = generatedPassword.slice(0, length);
+            // Karıştır (Shuffle)
+            const shuffled = finalPassword.split('').sort(() => 0.5 - Math.random()).join('');
+            
+            passwordEl.innerText = shuffled;
+            calculateStrength(shuffled);
+        }
+
+        function calculateStrength(pass) {
+            let score = 0;
+            if(pass.length > 8) score += 1;
+            if(pass.length > 12) score += 1;
+            if(/[A-Z]/.test(pass)) score += 1;
+            if(/[0-9]/.test(pass)) score += 1;
+            if(/[^A-Za-z0-9]/.test(pass)) score += 1;
+
+            let width = '0%';
+            let color = 'red';
+
+            if (score <= 2) { width = '30%'; color = '#ff5f5f'; } // Zayıf
+            else if (score <= 4) { width = '60%'; color = '#ffbd2e'; } // Orta
+            else { width = '100%'; color = '#00ff41'; } // Güçlü
+
+            strengthBar.style.width = width;
+            strengthBar.style.backgroundColor = color;
+        }
+
+        function copyPassword() {
+            const textarea = document.createElement('textarea');
+            const password = passwordEl.innerText;
+
+            if (!password) return;
+
+            textarea.value = password;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            textarea.remove();
+
+            showToast();
+        }
+
+        function showToast() {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function getRandomLower() {
+            return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+        }
+
+        function getRandomUpper() {
+            return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+        }
+
+        function getRandomNumber() {
+            return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
+        }
+
+        function getRandomSymbol() {
+            const symbols = '!@#$%^&*(){}[]=<>/,.';
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+    </script>
+
+</body>
+</html>
