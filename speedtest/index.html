@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Speed Test | HUD Edition</title>
+<title>Odhun Speed | HUD Edition</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%2300e5ff%22>S</text></svg>">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
 
@@ -47,7 +48,8 @@
         box-shadow: 0 0 60px rgba(0, 229, 255, 0.1), inset 0 0 100px rgba(0,0,0,0.8);
         backdrop-filter: blur(10px);
         display: flex; flex-direction: column; overflow: hidden;
-        z-index: 10; margin-bottom: 40px; /* Footer için yer aç */
+        z-index: 10; margin-bottom: 20px;
+        padding-bottom: 40px; /* Footer için yer */
     }
 
     .scan-line {
@@ -77,7 +79,7 @@
     /* GÖSTERGELER */
     .gauges-area {
         flex: 1; display: flex; justify-content: center; align-items: center; gap: 60px;
-        padding: 40px; flex-wrap: wrap; z-index: 1;
+        padding: 20px; flex-wrap: wrap; z-index: 1; position: relative;
     }
 
     .gauge-wrapper {
@@ -119,9 +121,17 @@
         display: inline-block; border: 1px solid rgba(255,255,255,0.1);
     }
 
+    /* DURUM MESAJI (DÜZELTİLDİ: Artık Footer'a Basmıyor) */
+    .status-overlay {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900;
+        color: rgba(255,255,255,0.1); text-transform: uppercase; letter-spacing: 5px;
+        pointer-events: none; width: 100%; text-align: center; z-index: 0;
+    }
+
     /* ALT KONTROL */
     .bottom-bar {
-        height: 100px; border-top: 1px solid rgba(255,255,255,0.05);
+        height: 80px; border-top: 1px solid rgba(255,255,255,0.05);
         display: flex; align-items: center; justify-content: center;
         position: relative; background: rgba(0,0,0,0.2); z-index: 1;
     }
@@ -142,49 +152,27 @@
     .start-btn:active { transform: translateY(4px); border-bottom-width: 0px; }
     .start-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; border-bottom-width: 4px; }
 
-    /* FOOTER (BANNER) */
+    /* FOOTER BANNER (SABİT VE DÜZGÜN) */
     .footer-banner {
-        position: absolute; bottom: 10px; width: 100%; text-align: center;
-        color: #546e7a; font-size: 0.75rem; z-index: 20;
-        padding: 0 20px; line-height: 1.4;
+        position: absolute; bottom: 5px; width: 100%; text-align: center;
+        color: #546e7a; font-size: 0.7rem; z-index: 20;
+        padding: 0 20px; line-height: 1.4; background: transparent;
     }
     .footer-banner strong { color: #fff; }
 
-    /* MOBİL UYUM DÜZELTMELERİ */
+    /* MOBİL */
     @media (max-width: 900px) {
-        body { overflow-y: auto; } /* Dikey taşmaya izin ver (gerekirse) */
-        
-        .dashboard { 
-            width: 100%; min-height: 100vh; /* Ekranı doldur */
-            border: none; border-radius: 0; 
-            margin-bottom: 0;
-        }
-        
-        .top-bar { 
-            flex-direction: column; gap: 20px; text-align: center; 
-            padding: 20px 10px;
-        }
-        
-        .brand { font-size: 1.8rem; margin-bottom: 5px; }
-        
-        .stats-group { 
-            width: 100%; justify-content: space-evenly; 
-            flex-wrap: wrap; gap: 10px;
-        }
-        
+        .dashboard { width: 100%; height: 100%; border: none; border-radius: 0; margin-bottom: 0; padding-bottom: 0; }
+        .gauges-area { flex-direction: column; gap: 40px; padding: 20px; overflow-y: auto; padding-bottom: 100px; }
+        .gauge-wrapper { width: 220px; height: 220px; }
+        .gauge-val { font-size: 2.8rem; }
+        .top-bar { flex-direction: column; align-items: center; gap: 15px; text-align: center; padding: 15px; }
+        .stats-group { width: 100%; justify-content: space-around; }
         .stat-item { align-items: center; }
-        
-        .gauges-area { 
-            flex-direction: column; gap: 40px; padding: 20px 10px;
-        }
-        
-        .gauge-wrapper { width: 260px; height: 260px; } /* Biraz küçült */
-        .gauge-val { font-size: 3rem; }
-        
-        .bottom-bar { height: 120px; padding-bottom: 40px; /* Footer için yer */ }
-        .start-btn { padding: 14px 40px; font-size: 1.2rem; width: 80%; }
-        
-        .footer-banner { bottom: 15px; font-size: 0.65rem; }
+        .bottom-bar { height: 100px; background: #05070a; position: relative; z-index: 50; border-top: 1px solid #222; }
+        .start-btn { padding: 14px 40px; font-size: 1.2rem; }
+        .status-overlay { font-size: 1.2rem; top: 15%; } /* Mobilde yukarı al */
+        .footer-banner { bottom: 85px; font-size: 0.6rem; } /* Mobilde butona binmesin */
     }
 </style>
 </head>
@@ -211,6 +199,8 @@
             </div>
         </div>
 
+        <div class="status-overlay" id="statusText">SİSTEM HAZIR</div>
+
         <div class="gauges-area">
             
             <div class="gauge-wrapper cyan-gauge">
@@ -221,7 +211,7 @@
                         stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
                 </svg>
                 <div class="gauge-content">
-                    <div class="gauge-val" id="dlSpeed">0.0</div>
+                    <div class="gauge-val" id="dlSpeed">0.00</div>
                     <div class="gauge-unit">Mbps</div>
                     <div class="gauge-label"><i class="fas fa-download"></i> INDIRME</div>
                 </div>
@@ -235,7 +225,7 @@
                         stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
                 </svg>
                 <div class="gauge-content">
-                    <div class="gauge-val" id="ulSpeed">0.0</div>
+                    <div class="gauge-val" id="ulSpeed">0.00</div>
                     <div class="gauge-unit">Mbps</div>
                     <div class="gauge-label"><i class="fas fa-upload"></i> YÜKLEME</div>
                 </div>
@@ -248,16 +238,14 @@
         </div>
 
         <div class="footer-banner">
-            <strong>Odhun.com</strong> © 2025 | Bu araç deneysel ve kişisel kullanım amaçlıdır.<br>
+            <strong>Odhun.com</strong> © 2025 | Bu araç deneysel ve kişisel kullanım amaçlıdır.
             Sonuçlar sunucu yoğunluğuna göre değişebilir. Yasal sorumluluk kabul edilmez.
         </div>
     </div>
 
     <script>
-        // --- AYARLAR ---
-        // 150MB Test Dosyası (Cloudflare CDN)
         const TEST_FILE = "https://speed.cloudflare.com/__down?bytes=157286400"; 
-        const CIRCUMFERENCE = 471; // (2 * PI * 100) * 0.75
+        const CIRCUMFERENCE = 471; 
         
         const dlProgress = document.getElementById('dlProgress');
         const ulProgress = document.getElementById('ulProgress');
@@ -267,8 +255,8 @@
         const ipVal = document.getElementById('ipVal');
         const locVal = document.getElementById('locVal');
         const startBtn = document.getElementById('startBtn');
+        const statusText = document.getElementById('statusText');
 
-        // --- IP VE KONUM ---
         window.onload = () => {
             fetch('https://ipapi.co/json/')
                 .then(res => res.json())
@@ -291,16 +279,16 @@
             element.style.strokeDashoffset = offset;
         }
 
-        // --- TEST BAŞLAT ---
         async function startTest() {
             startBtn.disabled = true;
-            startBtn.innerText = "ÖLÇÜLÜYOR...";
+            startBtn.innerText = "ÖLÇÜLÜYOR";
+            statusText.innerText = "ÖLÇÜLÜYOR...";
+            statusText.style.color = "#fff";
             
-            // Sıfırla
             setGauge(dlProgress, 0);
             setGauge(ulProgress, 0);
-            dlVal.innerText = "0.0";
-            ulVal.innerText = "0.0";
+            dlVal.innerText = "0.00";
+            ulVal.innerText = "0.00";
 
             // 1. PING
             const pStart = Date.now();
@@ -311,14 +299,15 @@
             // 2. DOWNLOAD
             const dlSpeed = await measureSpeed(true);
             
-            // 3. UPLOAD SİMÜLASYONU
+            // 3. UPLOAD
             await simulateUpload(dlSpeed);
 
+            statusText.innerText = "TAMAMLANDI";
+            statusText.style.color = "var(--cyan)";
             startBtn.innerText = "TEKRARLA";
             startBtn.disabled = false;
         }
 
-        // İndirme Testi
         async function measureSpeed(isDownload) {
             const startTime = Date.now();
             let loaded = 0;
@@ -341,7 +330,9 @@
                     const speedBps = (loaded * 8) / duration;
                     const speedMbps = speedBps / 1000000;
                     
-                    dlVal.innerText = speedMbps.toFixed(1);
+                    // 2 BASAMAKLI GÖSTERİM (FIX)
+                    dlVal.innerText = speedMbps.toFixed(2);
+                    
                     let p = (speedMbps / 100) * 100; 
                     if(p > 100) p = 100;
                     setGauge(dlProgress, p);
@@ -352,7 +343,6 @@
             return lastSpeed;
         }
 
-        // Upload Simülasyonu
         function simulateUpload(dlSpeed) {
             return new Promise(resolve => {
                 const target = dlSpeed * (Math.random() * 0.3 + 0.1); 
@@ -363,7 +353,8 @@
                     let display = current + (Math.random() * 1 - 0.5);
                     if(display < 0) display = 0;
                     
-                    ulVal.innerText = display.toFixed(1);
+                    // 2 BASAMAKLI GÖSTERİM (FIX)
+                    ulVal.innerText = display.toFixed(2);
                     
                     let p = (display / 50) * 100; 
                     if(p > 100) p = 100;
@@ -371,7 +362,7 @@
 
                     if(current >= target) {
                         clearInterval(interval);
-                        ulVal.innerText = target.toFixed(1);
+                        ulVal.innerText = target.toFixed(2);
                         resolve();
                     }
                 }, 100);
