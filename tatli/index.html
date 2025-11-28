@@ -1,111 +1,342 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canım Tatlı Çekti | Odhun Tatlı</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0; padding: 0;
-            background: linear-gradient(135deg, #c33764, #1d2671); /* Tatlı Mor Renkler */
-            font-family: 'Poppins', sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            color: #333;
-            max-width: 90%;
-            width: 400px;
-        }
-        h1 { font-size: 1.2rem; color: #666; margin-bottom: 30px; font-weight: 400; }
-        
-        .food-card {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .food-card:hover { transform: scale(1.05); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Odhun FM | Mobil Uyumlu</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O<tspan fill=%22%23ff0000%22>FM</tspan></text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
-        #foodName {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #c33764;
-            line-height: 1.2;
-            margin: 0;
-        }
-        .hint {
-            font-size: 0.8rem;
-            color: #999;
-            margin-top: 10px;
-            display: block;
+<style>
+    :root {
+        --bg: #000000;
+        --panel: #111;
+        --accent: #ff0000;
+        --text: #fff;
+        --text-dim: #888;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; padding: 0; background: var(--bg); color: var(--text);
+        font-family: 'Rajdhani', sans-serif; 
+        height: 100vh; /* Tam ekran yüksekliği */
+        height: 100dvh; /* Mobil tarayıcılar için dinamik yükseklik */
+        display: flex;
+        align-items: center; justify-content: center;
+        overflow: hidden; /* Kaydırmayı engelle */
+    }
+
+    /* Ana Kasa */
+    .radio-container {
+        width: 1000px; height: 600px;
+        background: var(--panel); border: 1px solid #333; border-radius: 15px;
+        display: flex; overflow: hidden; position: relative;
+        box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+
+    /* SOL PANEL (LİSTE) */
+    .stations-panel {
+        width: 300px; background: #0c0c0c; border-right: 1px solid #222;
+        display: flex; flex-direction: column; flex-shrink: 0;
+    }
+
+    .panel-header {
+        padding: 15px; font-size: 1.4rem; font-weight: 700; border-bottom: 1px solid #222;
+        display: flex; align-items: center; gap: 10px; background: #080808;
+    }
+    .panel-header span { color: var(--accent); }
+
+    .search-box { padding: 10px; border-bottom: 1px solid #222; background: #0a0a0a; }
+    .search-box input {
+        width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff;
+        padding: 10px; border-radius: 6px; outline: none; font-family: inherit; font-size: 1rem;
+    }
+
+    .station-list {
+        flex: 1; overflow-y: auto; padding: 0;
+    }
+    /* Scrollbar */
+    .station-list::-webkit-scrollbar { width: 6px; }
+    .station-list::-webkit-scrollbar-thumb { background: #333; }
+
+    .station-item {
+        padding: 15px; cursor: pointer; transition: 0.2s; border-bottom: 1px solid #1a1a1a;
+        display: flex; align-items: center; justify-content: space-between;
+        font-size: 1rem; color: #aaa;
+    }
+    .station-item:hover { background: #151515; color: #fff; padding-left: 20px; }
+    .station-item.active { background: #1a0505; color: var(--accent); border-left: 4px solid var(--accent); }
+    
+    .playing-icon { display: none; }
+    .station-item.active .playing-icon { display: block; animation: pulse 1s infinite; }
+
+    /* SAĞ PANEL (PLAYER) */
+    .player-panel {
+        flex: 1; display: flex; flex-direction: column; position: relative;
+        background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+    }
+
+    .screen-area {
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; text-align: center;
+        padding: 20px;
+    }
+
+    .current-logo {
+        font-size: 4rem; color: #222; margin-bottom: 20px;
+        text-shadow: 0 0 10px rgba(255,255,255,0.05);
+    }
+    .playing .current-logo { color: var(--accent); text-shadow: 0 0 30px var(--accent); }
+
+    .info-area h2 { font-size: 2.5rem; margin: 0; line-height: 1.1; text-transform: uppercase; }
+    .info-area p { color: var(--accent); font-size: 1.1rem; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+
+    /* HTTP Uyarısı */
+    .http-alert {
+        font-size: 0.8rem; background: rgba(255, 165, 0, 0.1); color: orange;
+        padding: 8px; border-radius: 4px; margin-top: 15px; display: none; max-width: 80%;
+        border: 1px solid orange;
+    }
+
+    /* Görselleştirici */
+    .visualizer {
+        display: flex; gap: 5px; height: 60px; align-items: flex-end; margin-top: 30px;
+    }
+    .bar {
+        width: 8px; background: var(--accent); border-radius: 4px;
+        height: 5px; opacity: 0.3; transition: height 0.1s;
+    }
+    .playing .bar { opacity: 1; animation: equalizer 0.8s infinite ease-in-out; }
+
+    /* Kontroller */
+    .controls {
+        height: 100px; background: #080808; border-top: 1px solid #222;
+        display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+    }
+
+    .play-btn {
+        width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent);
+        background: transparent; color: var(--accent); font-size: 1.5rem;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: 0.2s;
+    }
+    .play-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
+
+    .volume-box { display: flex; align-items: center; gap: 10px; width: 120px; color: #666; }
+    input[type=range] { width: 100%; accent-color: var(--accent); }
+
+    /* --- MOBİL UYUMLULUK --- */
+    @media (max-width: 900px) {
+        .radio-container {
+            width: 100%; height: 100%; 
+            border: none; border-radius: 0;
+            flex-direction: column; /* Alt alta diz */
         }
 
-        button {
-            margin-top: 30px;
-            padding: 12px 30px;
-            border: none;
-            background: #333;
-            color: white;
-            font-size: 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
+        /* Liste Alanı - Ekranın %40'ı */
+        .stations-panel {
+            width: 100%; 
+            height: 40%; 
+            border-right: none; 
+            border-bottom: 1px solid #222;
         }
-        button:hover { background: #c33764; }
 
-    </style>
+        /* Player Alanı - Ekranın %60'ı */
+        .player-panel {
+            height: 60%;
+        }
+
+        .info-area h2 { font-size: 1.8rem; }
+        .current-logo { font-size: 3rem; margin-bottom: 10px; }
+        .controls { padding: 0 20px; }
+        .visualizer { height: 40px; margin-top: 15px; }
+    }
+
+    @keyframes equalizer { 0% { height: 10px; } 50% { height: 50px; } 100% { height: 10px; } }
+    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Tatlı Krizine Çözüm</h1>
-        
-        <div class="food-card" onclick="goToRecipe()">
-            <div id="foodName">Yükleniyor...</div>
-            <span class="hint">👆 Tarifi görmek için tıkla</span>
+<div class="radio-container">
+    <div class="stations-panel">
+        <div class="panel-header">
+            <i class="fas fa-music"></i> ODHUN<span>FM</span>
         </div>
-
-        <button onclick="pickRandomFood()">Başka Bir Şey Çekti</button>
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Radyo ara..." onkeyup="filterStations()">
+        </div>
+        <div class="station-list" id="list">
+            </div>
     </div>
 
-    <script>
-        // Tatlı Listesi
-        const desserts = [
-            "Sütlaç", "Baklava", "Künefe", "Magnolia", "Trileçe", 
-            "Mozaik Pasta", "Revani", "Şekerpare", "Kazandibi", "Waffle",
-            "Brownie", "Islak Kek", "Profiterol", "Supangle", "Aşure",
-            "Kemalpaşa Tatlısı", "Kalburabastı", "Elmalı Turta", "Cheesecake", "Tiramisu",
-            "İrmik Helvası", "Un Helvası", "Kabak Tatlısı", "Ayva Tatlısı", "Pankek",
-            "Sufle", "Muhallebi", "Kadayıf", "Tulumba", "Lokma"
-        ];
+    <div class="player-panel">
+        <div class="screen-area">
+            <div class="current-logo" id="logoIcon"><i class="fas fa-broadcast-tower"></i></div>
+            <div class="info-area">
+                <h2 id="rName">ODHUN FM</h2>
+                <p id="rStatus">RADYO SEÇİNİZ</p>
+            </div>
+            
+            <div id="httpAlert" class="http-alert">
+                ⚠️ Bu radyo güvenli olmayan (HTTP) bağlantı kullanıyor. Çalmazsa tarayıcı adres çubuğundaki kilit simgesinden "Güvenli olmayan içeriğe" izin verin.
+            </div>
 
-        let currentFood = "";
+            <div class="visualizer" id="viz">
+                <div class="bar" style="animation-delay:0.1s"></div>
+                <div class="bar" style="animation-delay:0.3s"></div>
+                <div class="bar" style="animation-delay:0.5s"></div>
+                <div class="bar" style="animation-delay:0.2s"></div>
+                <div class="bar" style="animation-delay:0.4s"></div>
+                <div class="bar" style="animation-delay:0.6s"></div>
+                <div class="bar" style="animation-delay:0.3s"></div>
+                <div class="bar" style="animation-delay:0.1s"></div>
+            </div>
+        </div>
 
-        function pickRandomFood() {
-            const randomIndex = Math.floor(Math.random() * desserts.length);
-            currentFood = desserts[randomIndex];
-            document.getElementById("foodName").innerText = currentFood;
+        <div class="controls">
+            <div class="volume-box">
+                <i class="fas fa-volume-down"></i>
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVol(this.value)">
+            </div>
+            <div class="play-btn" onclick="togglePlay()" id="playBtn"><i class="fas fa-play"></i></div>
+            <div style="width: 120px;"></div> </div>
+    </div>
+</div>
+
+<script>
+    // --- GÜVENLİ (HTTPS) LİSTE ---
+    // Not: Gözde FM HTTP olduğu için özel işlem görecek
+    const stations = [
+        { name: "Power FM", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio" },
+        { name: "Power Türk", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio" },
+        { name: "Kral FM", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" }, // Kral FM alternatifi
+        { name: "Süper FM", url: "https://17733.live.streamtheworld.com/SUPER_FM_SC" },
+        { name: "Metro FM", url: "https://17733.live.streamtheworld.com/METRO_FM_SC" },
+        { name: "Joy Türk", url: "https://17753.live.streamtheworld.com/JOY_TURK_SC" },
+        { name: "Virgin Radio", url: "https://17703.live.streamtheworld.com/VIRGIN_RADIO_SC" },
+        { name: "Fenomen", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio" },
+        { name: "Alem FM", url: "https://turkmedya.radyotvonline.net/alemfm" },
+        { name: "Show Radyo", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" },
+        { name: "Radyo Viva", url: "https://mo.ciner.com.tr/radyoviva/radyo.m3u8" },
+        { name: "A Haber Radyo", url: "https://icecast.tring.com.tr/ahaberradyo" },
+        { name: "TRT FM", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
+        { name: "TRT Türkü", url: "https://radios.trt.net.tr/radyoturku/master.m3u8" },
+        // HTTP OLANLAR (Sorunlu Olabilir)
+        { name: "Gözde FM (Anamur)", url: "http://yayin.radyosfer.com:8020/gozdefm" },
+        { name: "Best FM", url: "http://46.20.7.126:80/" }
+    ];
+
+    const audio = new Audio();
+    let isPlaying = false;
+    let currentIndex = -1;
+
+    // UI Elementleri
+    const listEl = document.getElementById('list');
+    const titleEl = document.getElementById('rName');
+    const statusEl = document.getElementById('rStatus');
+    const btnEl = document.getElementById('playBtn');
+    const container = document.querySelector('.radio-container');
+    const httpAlert = document.getElementById('httpAlert');
+
+    window.onload = () => renderList(stations);
+
+    function renderList(data) {
+        listEl.innerHTML = "";
+        data.forEach((s, i) => {
+            // Orijinal indexi bul
+            const realIndex = stations.indexOf(s);
+            const div = document.createElement('div');
+            div.className = `station-item ${realIndex === currentIndex ? 'active' : ''}`;
+            div.onclick = () => playStation(realIndex);
+            div.innerHTML = `
+                <span>${s.name}</span>
+                <i class="fas fa-volume-up playing-icon"></i>
+            `;
+            listEl.appendChild(div);
+        });
+    }
+
+    function playStation(index) {
+        currentIndex = index;
+        const s = stations[index];
+        
+        // Listeyi güncelle (Aktif sınıfı için)
+        renderList(stations); // Filtre varsa sıfırlar, basit tuttum
+
+        // UI Güncelle
+        titleEl.innerText = s.name;
+        statusEl.innerText = "BAĞLANIYOR...";
+        statusEl.style.color = "#fff";
+        container.classList.remove('playing');
+        httpAlert.style.display = 'none';
+
+        // HTTP Kontrolü
+        if (s.url.startsWith('http:')) {
+            httpAlert.style.display = 'block';
         }
 
-        function goToRecipe() {
-            if(currentFood) {
-                const url = `https://www.nefisyemektarifleri.com/ara/?s=${encodeURIComponent(currentFood)}`;
-                window.open(url, '_blank');
-            }
-        }
+        // Oynat
+        audio.src = s.url;
+        audio.play().then(() => {
+            isPlaying = true;
+            statusEl.innerText = "CANLI YAYIN";
+            statusEl.style.color = "var(--accent)";
+            btnEl.innerHTML = '<i class="fas fa-pause"></i>';
+            container.classList.add('playing');
+        }).catch(err => {
+            console.error(err);
+            isPlaying = false;
+            statusEl.innerText = "HATA / ENGEL";
+            statusEl.style.color = "red";
+            btnEl.innerHTML = '<i class="fas fa-play"></i>';
+        });
+    }
 
-        window.onload = pickRandomFood;
-    </script>
+    function togglePlay() {
+        if (currentIndex === -1) { playStation(0); return; }
+
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+            statusEl.innerText = "DURAKLATILDI";
+            statusEl.style.color = "#888";
+            btnEl.innerHTML = '<i class="fas fa-play"></i>';
+            container.classList.remove('playing');
+        } else {
+            audio.play();
+            isPlaying = true;
+            statusEl.innerText = "CANLI YAYIN";
+            statusEl.style.color = "var(--accent)";
+            btnEl.innerHTML = '<i class="fas fa-pause"></i>';
+            container.classList.add('playing');
+        }
+    }
+
+    function setVol(val) { audio.volume = val; }
+
+    function filterStations() {
+        const term = document.getElementById('search').value.toLowerCase();
+        const filtered = stations.filter(s => s.name.toLowerCase().includes(term));
+        
+        // Filtreli listeyi render et ama tıklanınca doğru index'i bulması lazım
+        // Basit çözüm: renderList içinde stations.indexOf kullanıyoruz zaten.
+        renderList(filtered);
+    }
+
+    // Hata durumunda
+    audio.onerror = () => {
+        statusEl.innerText = "YAYIN ALINAMIYOR";
+        statusEl.style.color = "red";
+        container.classList.remove('playing');
+        isPlaying = false;
+        btnEl.innerHTML = '<i class="fas fa-play"></i>';
+    };
+
+</script>
 
 </body>
 </html>
