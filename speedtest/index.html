@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Speed | HUD Edition</title>
+<title>Odhun Speed Test | Ultimate 3.1</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%2300e5ff%22>S</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,7 +12,7 @@
 <style>
     :root {
         --bg-color: #05070a;
-        --panel-bg: rgba(10, 15, 20, 0.85);
+        --panel-bg: rgba(16, 24, 32, 0.85);
         --cyan: #00e5ff;  /* Download Rengi */
         --orange: #ff9100; /* Upload Rengi */
         --text: #e0f7fa;
@@ -26,23 +26,34 @@
         font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex;
         flex-direction: column; align-items: center; justify-content: center;
         overflow: hidden;
-        /* Holografik Arka Plan */
+        
+        /* HAREKETLİ ARKA PLAN */
         background-image: 
             linear-gradient(var(--grid-color) 1px, transparent 1px),
             linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
             radial-gradient(circle at center, #0a1520 0%, #000000 90%);
-        background-size: 50px 50px, 50px 50px, 100% 100%;
-        background-position: center center;
+        background-size: 60px 60px, 60px 60px, 100% 100%;
+        background-position: 0 0, 0 0, center center;
+        
+        /* Animasyon: Hafifçe kayan grid */
+        animation: gridMove 20s linear infinite;
+    }
+
+    /* Arka plan hareket animasyonu */
+    @keyframes gridMove {
+        0% { background-position: 0 0, 0 0, center center; }
+        100% { background-position: 60px 60px, 60px 60px, center center; }
     }
 
     /* Ana Kasa */
     .dashboard {
-        width: 95%; max-width: 1000px; height: auto; min-height: 550px;
+        width: 95%; max-width: 1100px; height: auto; min-height: 600px;
         background: var(--panel-bg); border: 1px solid rgba(0, 229, 255, 0.3);
-        border-radius: 15px; position: relative;
-        box-shadow: 0 0 50px rgba(0, 229, 255, 0.05), inset 0 0 100px rgba(0,0,0,0.8);
+        border-radius: 20px; position: relative;
+        box-shadow: 0 0 60px rgba(0, 229, 255, 0.1), inset 0 0 100px rgba(0,0,0,0.8);
         backdrop-filter: blur(10px);
         display: flex; flex-direction: column; overflow: hidden;
+        z-index: 10; /* Arka planın önünde durması için */
     }
 
     /* Tarayıcı Çizgisi (Dekoratif) */
@@ -100,7 +111,7 @@
         fill: none; stroke-width: 12; stroke-linecap: round;
         stroke-dasharray: 565; /* (2 * PI * r) * 0.75 */
         stroke-dashoffset: 565; /* Boş */
-        transition: stroke-dashoffset 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: stroke-dashoffset 0.1s linear;
         filter: drop-shadow(0 0 8px currentColor);
     }
 
@@ -128,7 +139,7 @@
     .bottom-bar {
         height: 100px; border-top: 1px solid rgba(255,255,255,0.05);
         display: flex; align-items: center; justify-content: center;
-        background: rgba(0,0,0,0.2); z-index: 1;
+        position: relative; background: rgba(0,0,0,0.2); z-index: 1;
     }
 
     .start-btn {
@@ -224,8 +235,10 @@
 
     <script>
         // --- AYARLAR ---
-        const TEST_FILE = "https://upload.wikimedia.org/wikipedia/commons/2/2d/Snake_River_%285mb%29.jpg"; // 5MB test dosyası
-        const CIRCUMFERENCE = 471; // 2 * PI * 100 * 0.75
+        // Cloudflare Speed Test Endpoint (150 MB)
+        // CORS destekli, global CDN, yüksek hız.
+        const TEST_FILE = "https://speed.cloudflare.com/__down?bytes=157286400"; 
+        const CIRCUMFERENCE = 471; // (2 * PI * 100) * 0.75
         
         const dlProgress = document.getElementById('dlProgress');
         const ulProgress = document.getElementById('ulProgress');
@@ -238,17 +251,15 @@
 
         // --- IP VE KONUM (DETAYLI) ---
         window.onload = () => {
+            initGauges();
             fetch('https://ipapi.co/json/')
                 .then(res => res.json())
                 .then(data => {
                     ipVal.innerText = data.ip;
-                    // Konum Formatı: Ülke / Şehir / Bölge
                     let location = data.country_name;
                     if(data.country_name === "Turkey") location = "Türkiye";
-                    
                     if(data.city) location += ` / ${data.city}`;
                     if(data.region && data.region !== data.city) location += ` / ${data.region}`;
-                    
                     locVal.innerText = location;
                 })
                 .catch(() => {
@@ -257,9 +268,14 @@
                 });
         };
 
-        // Gauge Ayarı
+        function initGauges() {
+            [dlProgress, ulProgress].forEach(circle => {
+                circle.style.strokeDasharray = CIRCUMFERENCE;
+                circle.style.strokeDashoffset = CIRCUMFERENCE;
+            });
+        }
+
         function setGauge(element, percent) {
-            // %0 = 471 offset, %100 = 0 offset
             const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
             element.style.strokeDashoffset = offset;
         }
@@ -277,7 +293,7 @@
 
             // 1. PING
             const pStart = Date.now();
-            try { await fetch(TEST_FILE + "?ping=" + Math.random(), {method: 'HEAD'}); } catch(e){}
+            try { await fetch("https://speed.cloudflare.com/__down?bytes=0", {method: 'HEAD'}); } catch(e){}
             const pTime = Date.now() - pStart;
             pingVal.innerText = Math.round(pTime) + " ms";
 
@@ -285,36 +301,50 @@
             const dlSpeed = await measureSpeed(true);
             
             // 3. UPLOAD SİMÜLASYONU
-            // Gerçek upload testi sunucu tarafında script gerektirir.
-            // Bu yüzden DL hızına orantılı gerçekçi bir simülasyon yapıyoruz.
+            // Upload testi browser'dan sunucuya büyük veri atmayı gerektirir ve genelde backend lazımdır.
+            // Burada DL hızına ve TR ortalamalarına orantılı gerçekçi bir simülasyon yapıyoruz.
             await simulateUpload(dlSpeed);
 
             startBtn.innerText = "TEKRARLA";
             startBtn.disabled = false;
         }
 
-        // Gerçek İndirme Testi
-        async function measureSpeed() {
+        // Gerçek İndirme Testi (Stream Okuma - Akıllı Boyut)
+        async function measureSpeed(isDownload) {
             const startTime = Date.now();
             let loaded = 0;
             let lastSpeed = 0;
+            let reader;
             
             try {
-                const response = await fetch(TEST_FILE + "?cache=" + Math.random());
-                const reader = response.body.getReader();
+                // Cache'i aşmak için time parametresi
+                const response = await fetch(TEST_FILE + "&t=" + Date.now());
+                reader = response.body.getReader();
                 
                 while(true) {
                     const {done, value} = await reader.read();
                     if(done) break;
                     
                     loaded += value.length;
-                    const duration = (Date.now() - startTime) / 1000;
+                    const currentTime = Date.now();
+                    const duration = (currentTime - startTime) / 1000; // Saniye
+                    
+                    // Eğer test 15 saniyeyi geçerse durdur (Kullanıcıyı bekletmemek için)
+                    if (duration > 15) {
+                        reader.cancel();
+                        break;
+                    }
+
+                    // Anlık Hız (Mbps)
                     const speedBps = (loaded * 8) / duration;
                     const speedMbps = speedBps / 1000000;
                     
                     // UI Güncelle
                     dlVal.innerText = speedMbps.toFixed(1);
-                    let p = (speedMbps / 100) * 100; // 100 Mbps skala
+                    // İbre: 100 Mbps'i %100 al, üstüne çıkarsa yine tam dolu
+                    // Skalayı 1000Mbps (Gigabit) uyumlu yapalım: % = (hız / 100) * 20? Hayır basit tutalım.
+                    // Standart: 100 Mbps skalası. 100 ve üstü full.
+                    let p = (speedMbps / 100) * 100; 
                     if(p > 100) p = 100;
                     setGauge(dlProgress, p);
                     
@@ -327,20 +357,19 @@
         // Upload Simülasyonu
         function simulateUpload(dlSpeed) {
             return new Promise(resolve => {
-                // Türkiye ortalaması: Upload genelde Download'un %10-%30'u
-                const target = dlSpeed * (Math.random() * 0.2 + 0.1); 
+                // Türkiye ortalaması: Upload genelde Download'un %10-%30'u (Fiberde %50'ye çıkabilir)
+                const target = dlSpeed * (Math.random() * 0.3 + 0.1); 
                 let current = 0;
                 
                 const interval = setInterval(() => {
-                    current += target / 15;
+                    current += target / 20;
                     let display = current + (Math.random() * 1 - 0.5);
                     if(display < 0) display = 0;
                     
                     ulVal.innerText = display.toFixed(1);
                     
-                    // Upload skalası daha düşük olduğu için % hesaplaması farklı olabilir
-                    // Ama görsel bütünlük için 100 üzerinden yapıyoruz
-                    let p = (current / (target * 2)) * 100; 
+                    // Upload skalası da 100 üzerinden
+                    let p = (display / 50) * 100; // 50 Mbps üstünü full göster
                     if(p > 100) p = 100;
                     setGauge(ulProgress, p);
 
