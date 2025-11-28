@@ -88,10 +88,7 @@ header {
     font-weight: 900; font-size: 1.2rem; color: #fff; letter-spacing: -0.5px;
 }
 
-.controls {
-    display: flex; align-items: center; gap: 5px;
-}
-
+.controls { display: flex; align-items: center; gap: 5px; }
 .controls button {
     background: #222; border: 1px solid #333; color: #aaa; padding: 6px 12px;
     border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
@@ -106,24 +103,16 @@ header {
 
 /* GRID ALANI */
 #grid-area {
-    flex: 1; 
-    padding: 15px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 15px;
-    grid-auto-rows: min-content; 
-    overflow-y: auto;
-    align-content: start;
-    border-right: 1px solid var(--border);
-    /* Transition kaldırıldı (Resize işlemi akıcı olsun diye) */
+    flex: 1; padding: 15px; display: grid;
+    grid-template-columns: repeat(3, 1fr); gap: 15px;
+    grid-auto-rows: min-content; overflow-y: auto;
+    align-content: start; border-right: 1px solid var(--border);
 }
 #grid-area::-webkit-scrollbar { width: 8px; }
 #grid-area::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
 .stream-box {
-    position: relative; 
-    width: 100%; 
-    aspect-ratio: 16 / 9;
+    position: relative; width: 100%; aspect-ratio: 16 / 9;
     background: #000; border-radius: 6px; overflow: hidden; border: 1px solid #222;
     display: flex; flex-direction: column;
 }
@@ -137,52 +126,33 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
 .close {
     position: absolute; top: 8px; right: 8px; width: 24px; height: 24px;
     background: rgba(0,0,0,0.8); color: #fff; display: flex; align-items: center;
-    justify-content: center; cursor: pointer; font-size: 12px; border-radius: 4px;
-    z-index: 20;
+    justify-content: center; cursor: pointer; font-size: 12px; border-radius: 4px; z-index: 20;
 }
 
-/* RESIZER (TUTAMAÇ) */
+/* RESIZER */
 #resizer {
-    width: 8px;
-    background: #111;
-    border-left: 1px solid #222;
-    border-right: 1px solid #222;
-    cursor: col-resize;
-    flex-shrink: 0;
-    transition: background 0.2s;
+    width: 8px; background: #111; border-left: 1px solid #222; border-right: 1px solid #222;
+    cursor: col-resize; flex-shrink: 0; transition: background 0.2s;
     display: flex; align-items: center; justify-content: center;
 }
 #resizer:hover, #resizer.resizing { background: var(--accent); }
-#resizer::after {
-    content: '⋮'; color: #555; font-size: 14px;
-}
+#resizer::after { content: '⋮'; color: #555; font-size: 14px; }
 
 /* RSS PANEL */
 #rss-panel {
-    width: 350px; 
-    min-width: 200px; /* Minimum genişlik */
-    max-width: 800px; /* Maksimum genişlik */
-    background: var(--rss-bg);
-    display: flex; flex-direction: column;
-    flex-shrink: 0;
-    /* Transition kaldırıldı akıcılık için */
+    width: 350px; min-width: 200px; max-width: 800px; background: var(--rss-bg);
+    display: flex; flex-direction: column; flex-shrink: 0;
 }
-
 .rss-header {
     height: 50px; border-bottom: 1px solid #333; background: #111;
     display: flex; align-items: center; padding: 0 10px;
 }
-
 .rss-select {
     width: 100%; background: #222; color: #fff; border: 1px solid #333;
-    padding: 8px; border-radius: 4px; outline: none; font-size: 0.85rem;
-    font-weight: 500; cursor: pointer;
+    padding: 8px; border-radius: 4px; outline: none; font-size: 0.85rem; font-weight: 500; cursor: pointer;
 }
 .rss-select option { color: #fff; background: #222; padding: 5px; }
-
-.rss-content {
-    flex: 1; overflow-y: auto; padding: 0;
-}
+.rss-content { flex: 1; overflow-y: auto; padding: 0; }
 .rss-content::-webkit-scrollbar { width: 6px; }
 .rss-content::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
@@ -195,6 +165,29 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
 .news-title { font-size: 0.9rem; line-height: 1.4; color: #eee; font-weight: 600; }
 .news-desc { font-size: 0.8rem; color: #888; margin-top: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
 
+/* --- FOOTER TASARIMI --- */
+footer {
+    background: #0d0d0d;
+    border-top: 1px solid var(--border);
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+    flex-shrink: 0; /* Alan daralsa da footer küçülmesin */
+    z-index: 40;
+}
+footer strong { color: #fff; }
+.footer-warning {
+    margin-top: 5px;
+    font-size: 0.75rem;
+    color: #555;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
+}
+.footer-warning i { color: var(--accent); margin-right: 4px; }
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
     .sidebar {
@@ -202,28 +195,19 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
         box-shadow: 5px 0 15px rgba(0,0,0,0.8);
     }
     .sidebar.active { left: 0; }
-    
     .mobile-close-btn { display: block; }
-    
-    /* Mobilde Resizer ve RSS paneli gizli */
     #rss-panel { display: none; }
     #resizer { display: none; }
-    
     #grid-area { 
-        display: flex; flex-direction: column; 
-        padding: 10px; gap: 20px; 
-        height: calc(100vh - 60px); 
+        display: flex; flex-direction: column; padding: 10px; gap: 20px; 
         overflow-y: scroll;
-        border-right: none;
     }
     .stream-box { width: 100%; flex-shrink: 0; }
-    
-    /* Kontrol butonlarını mobilde göster ama sıkışmasın diye ufalttık */
     .controls { overflow-x: auto; max-width: 60vw; }
-    .controls button { padding: 5px 8px; font-size: 0.75rem; }
-    
+    .controls .btn-grid { display: none; } 
     header { padding: 0 10px; }
-    .header-center-title { font-size: 1rem; display: none; } /* Mobilde başlığı gizle yer aç */
+    .header-center-title { display: none; }
+    footer { padding: 10px; font-size: 0.7rem; } /* Mobilde footer küçülsün */
 }
 </style>
 </head>
@@ -235,7 +219,7 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
         <div class="mobile-close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
     </div>
     <div class="search-wrapper">
-        <input type="text" class="search-box" id="quickAddInput" placeholder="YouTube Linki Yapıştır + Enter" onkeydown="handleQuickAdd(event)">
+        <input type="text" class="search-box" id="quickAddInput" placeholder="YouTube Linki + Enter" onkeydown="handleQuickAdd(event)">
     </div>
     <div class="channel-list" id="channelList"></div>
 </div>
@@ -260,9 +244,7 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
 
     <div class="split-container" id="splitContainer">
         <div id="grid-area"></div>
-        
         <div id="resizer"></div>
-
         <div id="rss-panel">
             <div class="rss-header">
                 <select id="rssSource" class="rss-select" onchange="changeRSS()"></select>
@@ -274,6 +256,15 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
             </div>
         </div>
     </div>
+
+    <footer>
+        <div><strong>Odhun.com</strong> &copy; 2025 Tüm Hakları Saklıdır.</div>
+        <div class="footer-warning">
+            <i class="fas fa-info-circle"></i> 
+            Bu proje, halka açık haber kaynaklarını ve YouTube yayınlarını kişisel takip amacıyla tek ekranda toplayan bir araçtır. 
+            Ticari amaç gütmemektedir. Yayınların içerik ve telif hakları ilgili yayın kuruluşlarına aittir.
+        </div>
+    </footer>
 </div>
 
 <script>
@@ -284,7 +275,6 @@ const rssPanel = document.getElementById('rss-panel');
 const rssSelect = document.getElementById('rssSource');
 const sidebar = document.getElementById('sidebar');
 const resizer = document.getElementById('resizer');
-const splitContainer = document.getElementById('splitContainer');
 
 // --- KANAL LİSTESİ ---
 const channels = [
@@ -319,61 +309,42 @@ const rssData = [
     { name: "Döviz.com", url: "https://www.doviz.com/news/rss" }
 ];
 
-let allNewsCache = [];
-
 window.onload = () => {
     renderSidebar();
-    
-    // Varsayılan: İlk 9 kanalı aç
     for(let i=0; i<9; i++) { if(channels[i]) createPlayer(channels[i]); }
-    
     populateRSSMenu();
     fetchAllRSS();
     setInterval(fetchAllRSS, 120000);
-    
-    // Resizer Eventleri
     initResizer();
 };
 
-// --- YENİ: HIZLI KANAL EKLEME ---
+// --- HIZLI KANAL EKLEME ---
 function handleQuickAdd(event) {
     if (event.key === "Enter") {
         const input = document.getElementById('quickAddInput');
         const val = input.value.trim();
         if(!val) return;
-        
         let id = val;
-        // YouTube Link Ayrıştırma
         if(val.includes('v=')) id = val.split('v=')[1].split('&')[0];
         else if(val.includes('youtu.be/')) id = val.split('youtu.be/')[1];
-        
         createPlayer({ name: "Özel Kanal", id: id });
         input.value = '';
     }
 }
 
-// --- YENİ: RESIZER (SÜRÜKLE BIRAK) MANTIĞI ---
+// --- RESIZER ---
 function initResizer() {
     let isResizing = false;
-
     resizer.addEventListener('mousedown', (e) => {
         isResizing = true;
         document.body.style.cursor = 'col-resize';
         resizer.classList.add('resizing');
     });
-
     document.addEventListener('mousemove', (e) => {
         if (!isResizing) return;
-        
-        // Sağ panelin yeni genişliğini hesapla
-        // Window Width - Mouse X = Sağ panel genişliği
         const newWidth = window.innerWidth - e.clientX;
-        
-        if (newWidth > 200 && newWidth < 800) {
-            rssPanel.style.width = `${newWidth}px`;
-        }
+        if (newWidth > 200 && newWidth < 800) rssPanel.style.width = `${newWidth}px`;
     });
-
     document.addEventListener('mouseup', () => {
         isResizing = false;
         document.body.style.cursor = 'default';
@@ -381,13 +352,9 @@ function initResizer() {
     });
 }
 
-// --- SIDEBAR KONTROL ---
 function toggleSidebar() {
-    if (window.innerWidth > 900) {
-        sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
-    } else {
-        sidebar.classList.toggle('active');
-    }
+    if (window.innerWidth > 900) sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
+    else sidebar.classList.toggle('active');
 }
 
 function renderSidebar() {
@@ -420,12 +387,9 @@ function setGrid(n) {
     grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
     document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
     const btns = document.querySelectorAll('.btn-grid'); 
-    // Buton indeksleri mobilde ve pcde aynı sırada olduğu varsayılarak:
-    // 0: 1x1, 1: 2x2, 2: 3x3, 3: 4x4
     if(btns[n-1]) btns[n-1].classList.add('active');
 }
 
-// --- RSS MANTIĞI ---
 function populateRSSMenu() {
     rssSelect.innerHTML = "";
     rssData.forEach(feed => {
@@ -492,10 +456,7 @@ function renderNewsList(newsList) {
         link.href = news.link;
         link.target = "_blank";
         link.innerHTML = `
-            <div class="news-meta">
-                <span class="news-source">${news.source}</span>
-                <span>${timeStr}</span>
-            </div>
+            <div class="news-meta"><span class="news-source">${news.source}</span><span>${timeStr}</span></div>
             <div class="news-title">${news.title}</div>
             <div class="news-desc">${news.desc}</div>
         `;
@@ -513,10 +474,10 @@ function cleanText(html) {
 function toggleRSS() {
     if (rssPanel.style.display === 'none') {
         rssPanel.style.display = 'flex';
-        resizer.style.display = 'flex'; // Resizer'ı da aç
+        resizer.style.display = 'flex';
     } else {
         rssPanel.style.display = 'none';
-        resizer.style.display = 'none'; // Resizer'ı da gizle
+        resizer.style.display = 'none';
     }
 }
 
