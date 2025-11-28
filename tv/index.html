@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun TV | Haber Komuta Merkezi</title>
+<title>Odhun TV | Haber  Merkezi</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O<tspan fill=%22%23ff0000%22>TV</tspan></text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -456,4 +456,46 @@ async function fetchAllRSS() {
     renderNewsList(mixedNews);
 }
 
-function renderNewsList(newsList
+function renderNewsList(newsList) {
+    rssContainer.innerHTML = "";
+    newsList.slice(0, 100).forEach(news => {
+        const timeStr = news.date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        const link = document.createElement('a');
+        link.className = 'news-item';
+        link.href = news.link;
+        link.target = "_blank";
+        link.innerHTML = `
+            <div class="news-meta">
+                <span class="news-source">${news.source}</span>
+                <span class="news-time"> - ${timeStr}</span>
+            </div>
+            <div class="news-title">${news.title}</div>
+            <div class="news-desc">${news.desc}</div>
+        `;
+        rssContainer.appendChild(link);
+    });
+}
+
+function cleanText(html) {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    let text = tmp.textContent || tmp.innerText || "";
+    return text.length > 90 ? text.substring(0, 90) + "..." : text;
+}
+
+function toggleRSS() {
+    if (rssPanel.style.display === 'none') {
+        rssPanel.style.display = 'flex';
+        resizer.style.display = 'flex';
+    } else {
+        rssPanel.style.display = 'none';
+        resizer.style.display = 'none';
+    }
+}
+
+function resetAll() {
+    if(confirm('Temizlensin mi?')) grid.innerHTML = '';
+}
+</script>
+</body>
+</html>
