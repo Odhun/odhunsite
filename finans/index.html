@@ -55,7 +55,7 @@
         overflow-y: auto; position: relative;
     }
 
-    /* HEADER (EKLEME ALANI) */
+    /* HEADER */
     header {
         height: 70px; border-bottom: 1px solid var(--border); background: var(--bg-panel);
         display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
@@ -89,7 +89,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 20px;
-        padding-bottom: 100px; /* Alt boşluk */
+        padding-bottom: 100px;
     }
 
     /* CHART CARDS */
@@ -114,21 +114,39 @@
     }
     .btn-delete:hover { color: var(--danger); }
 
-    /* CONVERTER SECTION (FOOTER GİBİ) */
+    /* --- YENİ ÇEVİRİCİ BÖLÜMÜ --- */
     .converter-section {
         background: #161616; border-top: 1px solid var(--border);
         padding: 20px; margin-top: auto; flex-shrink: 0;
     }
     .converter-wrapper {
-        display: flex; align-items: center; justify-content: center; gap: 20px;
+        display: flex; align-items: center; justify-content: center; gap: 15px;
+        max-width: 900px; margin: 0 auto;
     }
+
+    .conv-group {
+        display: flex; flex-direction: column; gap: 5px; flex: 1;
+    }
+    .conv-group label { font-size: 0.75rem; color: var(--text-dim); font-weight: bold; }
+    
     .conv-input {
-        background: #000; border: 1px solid #333; color: #fff; padding: 10px;
-        border-radius: 6px; width: 120px; text-align: center; font-weight: bold;
+        background: #000; border: 1px solid #333; color: #fff; padding: 12px;
+        border-radius: 6px; width: 100%; font-weight: bold; font-size: 1.1rem; outline: none;
     }
-    .conv-result {
-        font-size: 1.5rem; font-weight: 900; color: var(--accent); min-width: 150px; text-align: right;
+    .conv-input:focus { border-color: var(--accent); }
+
+    .conv-select {
+        background: #222; border: 1px solid #333; color: #fff; padding: 12px;
+        border-radius: 6px; font-weight: bold; cursor: pointer; outline: none;
     }
+
+    .swap-btn {
+        background: #222; border: 1px solid #333; color: var(--accent);
+        width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem; margin-top: 18px; transition: 0.3s;
+    }
+    .swap-btn:hover { background: var(--accent); color: #000; transform: rotate(180deg); }
 
     /* MOBİL */
     @media (max-width: 900px) {
@@ -136,9 +154,9 @@
         .dashboard { grid-template-columns: 1fr; padding: 10px; }
         header { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
         .input-group { width: 100%; }
-        .converter-wrapper { flex-direction: column; gap: 10px; }
-        .conv-input, select { width: 100%; }
-        .conv-result { text-align: center; }
+        .converter-wrapper { flex-direction: column; gap: 15px; align-items: stretch; }
+        .swap-btn { align-self: center; margin-top: 0; transform: rotate(90deg); }
+        .swap-btn:hover { transform: rotate(270deg); }
     }
 </style>
 </head>
@@ -149,9 +167,14 @@
         <div class="menu-list">
             <div class="menu-item active"><i class="fas fa-th-large"></i> Portföyüm</div>
             <div style="margin-top:20px; padding:0 15px; font-size:0.8rem; color:#555;">
-                İPUCU:<br>
-                Sembol eklerken tam kodu yazmayı deneyin.<br>
-                Örn: <b>THYAO</b>, <b>GARAN</b>, <b>BTCUSD</b>, <b>EURUSD</b>
+                <p>SEMBOL REHBERİ:</p>
+                <ul style="padding-left:15px; line-height:1.8;">
+                    <li>Dolar: <b>USDTRY</b></li>
+                    <li>Euro: <b>EURTRY</b></li>
+                    <li>Altın: <b>XAUTRYG</b></li>
+                    <li>Bitcoin: <b>BTCUSD</b></li>
+                    <li>THY: <b>THYAO</b></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -160,7 +183,7 @@
         
         <header>
             <div class="input-group">
-                <input type="text" id="symbolInput" placeholder="Sembol girin (Örn: GARAN, USDTRY, BTCUSD)..." onkeydown="handleEnter(event)">
+                <input type="text" id="symbolInput" placeholder="Sembol Ekle (Örn: GARAN, USDTRY)..." onkeydown="handleEnter(event)">
                 <button class="btn-add" onclick="addSymbolFromInput()">EKLE</button>
             </div>
             <button class="btn-reset" onclick="resetDefaults()">SIFIRLA</button>
@@ -170,16 +193,38 @@
 
         <div class="converter-section">
             <div class="converter-wrapper">
-                <span style="color:#888; font-weight:bold;">HIZLI ÇEVİRİ:</span>
-                <input type="number" id="amount" class="conv-input" value="1" oninput="calculate()">
-                <select id="currency" class="conv-input" onchange="calculate()">
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="XAU">GR. ALTIN</option>
-                </select>
-                <span style="color:#555;">=</span>
-                <div id="result" class="conv-result">...</div>
+                
+                <div class="conv-group">
+                    <label>Miktar & Birim</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="amountOne" class="conv-input" value="1" oninput="calculate()">
+                        <select id="currencyOne" class="conv-select" onchange="calculate()">
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="GBP">GBP (£)</option>
+                            <option value="TRY">TRY (₺)</option>
+                            <option value="XAU">ALTIN (Gr)</option>
+                            <option value="BTC">BTC (₿)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="swap-btn" onclick="swapCurrencies()"><i class="fas fa-exchange-alt"></i></button>
+
+                <div class="conv-group">
+                    <label>Karşılık & Hedef</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="amountTwo" class="conv-input" value="..." readonly style="color:var(--accent); cursor:default;">
+                        <select id="currencyTwo" class="conv-select" onchange="calculate()">
+                            <option value="TRY" selected>TRY (₺)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="GBP">GBP (£)</option>
+                            <option value="XAU">ALTIN (Gr)</option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -189,7 +234,7 @@
         const dashboard = document.getElementById('dashboard');
         const symbolInput = document.getElementById('symbolInput');
 
-        // Varsayılan Semboller (Başlangıç Listesi)
+        // Varsayılan Semboller
         const defaultSymbols = [
             { symbol: "FX_IDC:USDTRY", title: "DOLAR / TL" },
             { name: "EURO / TL", symbol: "FX_IDC:EURTRY" },
@@ -199,27 +244,24 @@
             { name: "THY", symbol: "BIST:THYAO" }
         ];
 
-        // LocalStorage'dan veriyi çek veya varsayılanı al
         let mySymbols = JSON.parse(localStorage.getItem('odhun_finance_list')) || defaultSymbols;
 
-        // Sayfa Yüklenince
+        // --- DÖVİZ KURLARI (Canlı Fetch) ---
+        let rates = {}; 
+
         window.onload = () => {
             renderDashboard();
-            fetchRates(); // Kurları çek (Hesap makinesi için)
+            fetchRates();
         };
 
         // --- WIDGET OLUŞTURUCU ---
         function renderDashboard() {
-            dashboard.innerHTML = ""; // Temizle
-            
+            dashboard.innerHTML = "";
             mySymbols.forEach((item, index) => {
-                // Eğer title yoksa sembolün kendisini başlık yap
                 const displayTitle = item.title || item.name || item.symbol.replace('FX_IDC:', '').replace('BINANCE:', '').replace('BIST:', '');
-
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                // TradingView script'ini dinamik oluşturmalıyız (innerHTML ile çalışmaz)
                 const widgetContainer = document.createElement('div');
                 widgetContainer.className = 'tradingview-widget-container';
                 widgetContainer.style.height = "100%";
@@ -246,7 +288,6 @@
                 
                 widgetContainer.appendChild(script);
 
-                // HTML Yapısı
                 card.innerHTML = `
                     <div class="card-header">
                         <span>${displayTitle}</span>
@@ -254,32 +295,21 @@
                     </div>
                     <div class="card-body"></div>
                 `;
-                
-                // Widget'ı card-body içine ekle
                 card.querySelector('.card-body').appendChild(widgetContainer);
                 dashboard.appendChild(card);
             });
         }
 
-        // --- SEMBOL EKLEME ---
         function addSymbolFromInput() {
             const val = symbolInput.value.trim().toUpperCase();
             if(!val) return;
-
             let finalSymbol = val;
 
-            // Basit Tahmin Mantığı (Kullanıcı kolaylığı için)
             if(val === "DOLAR" || val === "USD") finalSymbol = "FX_IDC:USDTRY";
             else if(val === "EURO" || val === "EUR") finalSymbol = "FX_IDC:EURTRY";
             else if(val === "ALTIN" || val === "GOLD") finalSymbol = "FX_IDC:XAUTRYG";
             else if(val === "BTC" || val === "BITCOIN") finalSymbol = "BINANCE:BTCUSDT";
-            else if(!val.includes(":")) {
-                // Eğer kullanıcı borsa kodu girdiyse (örn: GARAN), başına BIST: eklemeyi dene
-                // veya kripto girdiyse (örn: ETHUSDT) direkt ekle.
-                // TradingView genelde ham sembolü de anlar ama biz BIST varsayalım tr için
-                // Ancak kripto da olabilir. O yüzden direkt girileni veriyoruz, TradingView akıllıdır bulur.
-                finalSymbol = val; 
-            }
+            else if(!val.includes(":")) finalSymbol = val; 
 
             mySymbols.push({ symbol: finalSymbol, name: val });
             saveAndRender();
@@ -287,15 +317,15 @@
         }
 
         function removeSymbol(index) {
-            if(confirm('Bu kartı kaldırmak istiyor musunuz?')) {
+            if(confirm('Kaldırılacak mı?')) {
                 mySymbols.splice(index, 1);
                 saveAndRender();
             }
         }
 
         function resetDefaults() {
-            if(confirm('Tüm listeyi sıfırlayıp varsayılanlara dönmek istiyor musunuz?')) {
-                mySymbols = [...defaultSymbols]; // Kopyasını al
+            if(confirm('Sıfırlansın mı?')) {
+                mySymbols = [...defaultSymbols];
                 saveAndRender();
             }
         }
@@ -309,35 +339,67 @@
             if(e.key === 'Enter') addSymbolFromInput();
         }
 
-        // --- HESAP MAKİNESİ (DÖVİZ) ---
-        let rates = { USD: 35.50, EUR: 38.20, GBP: 45.10, XAU: 2500 }; // Yedek değerler
-
+        // --- ÇEVİRİCİ MANTIĞI ---
         async function fetchRates() {
             try {
-                // Altın ve Döviz için yaklaşık verileri çek
-                const res = await fetch('https://api.exchangerate-api.com/v4/latest/TRY');
+                // USD Bazlı API (Tüm pariteler USD üzerinden hesaplanır)
+                const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
                 const data = await res.json();
-                rates.USD = 1 / data.rates.USD;
-                rates.EUR = 1 / data.rates.EUR;
-                rates.GBP = 1 / data.rates.GBP;
-                // Altın (ons/gram tahmini) API'de yoksa elle veya başka kaynak
+                rates = data.rates;
+                
+                // Altın ve BTC için manuel eklemeler (API'de yoksa yaklaşık değerler)
+                // Not: Ücretsiz API'lerde altın/btc olmayabilir, sabit oran veya başka api gerekebilir.
+                // Burada mantığı göstermek için manuel ekliyorum, canlı veri için Coingecko API eklenebilir.
+                rates.XAU = 1 / 2650; // 1 USD = X ons altın (Yaklaşık) -> Bunu gram TL'ye çevirmek daha sağlıklı olur
+                // Daha basit bir yöntem: Her şeyi TRY'ye çevirip oranlayalım.
+                
+                // BTC verisi için CoinGecko
+                const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+                const btcData = await btcRes.json();
+                rates.BTC = 1 / btcData.bitcoin.usd; // 1 USD kaç BTC eder
+
                 calculate();
-            } catch (e) { console.log("Kur çekilemedi, yedekler aktif."); }
+            } catch (e) { console.log("Kur hatası"); }
         }
 
         function calculate() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const currency = document.getElementById('currency').value;
-            let rate = rates[currency];
-            
-            // Altın için özel sabit (yaklaşık) eğer API yoksa
-            if(currency === 'XAU') rate = 2900; // Güncel yaklaşık gram altın
+            const amount = parseFloat(document.getElementById('amountOne').value);
+            const currOne = document.getElementById('currencyOne').value;
+            const currTwo = document.getElementById('currencyTwo').value;
+            const resBox = document.getElementById('amountTwo');
 
-            if (!isNaN(amount) && rate) {
-                const total = (amount * rate).toFixed(2);
-                document.getElementById('result').innerText = total + " ₺";
+            if (!rates[currOne] && currOne !== 'XAU') return; // Altın özel hesaplanacaksa
+
+            // Base: USD
+            // Formül: (Miktar / Kaynak_USD_Oranı) * Hedef_USD_Oranı
+            
+            let rateOne = rates[currOne];
+            let rateTwo = rates[currTwo];
+
+            // Altın için (Gram Altın TL ~ 3000 TL varsayalım API yoksa)
+            // Bu kısım basit tutuldu, tam entegrasyon için gold-api gerekir.
+            if(currOne === 'XAU') rateOne = 1 / (rates['TRY'] * 3000); // 1 Gram ~ 3000 TL (Örnek)
+            if(currTwo === 'XAU') rateTwo = 1 / (rates['TRY'] * 3000);
+
+            if (!isNaN(amount) && rateOne && rateTwo) {
+                // USD'ye çevir -> Sonra hedefe çevir
+                const inUSD = amount / rateOne;
+                const result = inUSD * rateTwo;
+                
+                // Biçimlendirme (Kuruşlar vs)
+                resBox.value = result < 0.01 ? result.toFixed(6) : result.toFixed(2);
             }
         }
+
+        function swapCurrencies() {
+            const c1 = document.getElementById('currencyOne');
+            const c2 = document.getElementById('currencyTwo');
+            const temp = c1.value;
+            c1.value = c2.value;
+            c2.value = temp;
+            calculate();
+        }
+
     </script>
 
 </body>
