@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Speed | HUD Edition</title>
+<title>Odhun Speed | Precision HUD</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%2300e5ff%22>S</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,9 +12,9 @@
 <style>
     :root {
         --bg-color: #05070a;
-        --panel-bg: rgba(16, 24, 32, 0.85);
-        --cyan: #00e5ff;
-        --orange: #ff9100;
+        --panel-bg: rgba(16, 24, 32, 0.9);
+        --cyan: #00e5ff;  /* Download Rengi */
+        --orange: #ff9100; /* Upload Rengi */
         --text: #e0f7fa;
         --grid-color: rgba(0, 229, 255, 0.1);
     }
@@ -49,7 +49,7 @@
         backdrop-filter: blur(10px);
         display: flex; flex-direction: column; overflow: hidden;
         z-index: 10; margin-bottom: 20px;
-        padding-bottom: 40px; /* Footer için yer */
+        padding-bottom: 40px; 
     }
 
     .scan-line {
@@ -62,7 +62,7 @@
     /* ÜST BAR */
     .top-bar {
         display: flex; justify-content: space-between; align-items: center; padding: 20px 40px;
-        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1;
+        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1; height: 90px;
     }
     
     .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
@@ -107,9 +107,12 @@
     .orange-gauge .gauge-progress { stroke: var(--orange); color: var(--orange); }
 
     .gauge-content { z-index: 10; text-align: center; position: relative; top: 10px; }
+    
+    /* HASSAS DEĞER AYARLARI */
     .gauge-val {
         font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 700;
         line-height: 1; color: #fff; text-shadow: 0 0 15px currentColor;
+        min-width: 220px; /* Titremeyi önlemek için sabit genişlik */
     }
     .cyan-gauge .gauge-val { color: var(--cyan); }
     .orange-gauge .gauge-val { color: var(--orange); }
@@ -121,12 +124,21 @@
         display: inline-block; border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* DURUM MESAJI (DÜZELTİLDİ: Artık Footer'a Basmıyor) */
+    /* --- DURUM MESAJI (YENİ YER) --- */
+    /* Artık ortada değil, üstte şık bir bar olarak duruyor */
     .status-overlay {
-        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900;
-        color: rgba(255,255,255,0.1); text-transform: uppercase; letter-spacing: 5px;
-        pointer-events: none; width: 100%; text-align: center; z-index: 0;
+        position: absolute; 
+        top: 110px; /* Header'ın hemen altı */
+        left: 50%; transform: translateX(-50%);
+        font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 700;
+        color: #fff; text-transform: uppercase; letter-spacing: 3px;
+        z-index: 20;
+        background: rgba(0, 229, 255, 0.1);
+        border: 1px solid rgba(0, 229, 255, 0.3);
+        padding: 8px 20px; border-radius: 30px;
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
     }
 
     /* ALT KONTROL */
@@ -152,7 +164,7 @@
     .start-btn:active { transform: translateY(4px); border-bottom-width: 0px; }
     .start-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; border-bottom-width: 4px; }
 
-    /* FOOTER BANNER (SABİT VE DÜZGÜN) */
+    /* FOOTER BANNER */
     .footer-banner {
         position: absolute; bottom: 5px; width: 100%; text-align: center;
         color: #546e7a; font-size: 0.7rem; z-index: 20;
@@ -160,19 +172,25 @@
     }
     .footer-banner strong { color: #fff; }
 
-    /* MOBİL */
+    /* MOBİL UYUM */
     @media (max-width: 900px) {
         .dashboard { width: 100%; height: 100%; border: none; border-radius: 0; margin-bottom: 0; padding-bottom: 0; }
         .gauges-area { flex-direction: column; gap: 40px; padding: 20px; overflow-y: auto; padding-bottom: 100px; }
         .gauge-wrapper { width: 220px; height: 220px; }
         .gauge-val { font-size: 2.8rem; }
-        .top-bar { flex-direction: column; align-items: center; gap: 15px; text-align: center; padding: 15px; }
+        .top-bar { flex-direction: column; align-items: center; gap: 15px; text-align: center; padding: 15px; height: auto; }
         .stats-group { width: 100%; justify-content: space-around; }
         .stat-item { align-items: center; }
-        .bottom-bar { height: 100px; background: #05070a; position: relative; z-index: 50; border-top: 1px solid #222; }
+        .bottom-bar { height: 120px; background: #05070a; position: relative; z-index: 50; border-top: 1px solid #222; }
         .start-btn { padding: 14px 40px; font-size: 1.2rem; }
-        .status-overlay { font-size: 1.2rem; top: 15%; } /* Mobilde yukarı al */
-        .footer-banner { bottom: 85px; font-size: 0.6rem; } /* Mobilde butona binmesin */
+        
+        /* Mobilde durum yazısını yerleştir */
+        .status-overlay { 
+            top: auto; bottom: 140px; /* Butonların üstüne */
+            font-size: 0.9rem; width: 80%;
+        }
+        
+        .footer-banner { bottom: 85px; font-size: 0.6rem; }
     }
 </style>
 </head>
@@ -211,7 +229,7 @@
                         stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
                 </svg>
                 <div class="gauge-content">
-                    <div class="gauge-val" id="dlSpeed">0.00</div>
+                    <div class="gauge-val" id="dlSpeed">0.000</div>
                     <div class="gauge-unit">Mbps</div>
                     <div class="gauge-label"><i class="fas fa-download"></i> INDIRME</div>
                 </div>
@@ -225,7 +243,7 @@
                         stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
                 </svg>
                 <div class="gauge-content">
-                    <div class="gauge-val" id="ulSpeed">0.00</div>
+                    <div class="gauge-val" id="ulSpeed">0.000</div>
                     <div class="gauge-unit">Mbps</div>
                     <div class="gauge-label"><i class="fas fa-upload"></i> YÜKLEME</div>
                 </div>
@@ -238,7 +256,7 @@
         </div>
 
         <div class="footer-banner">
-            <strong>Odhun.com</strong> © 2025 | Bu araç deneysel ve kişisel kullanım amaçlıdır.
+            <strong>Odhun.com</strong> © 2025 | Bu araç deneysel ve kişisel kullanım amaçlıdır.<br>
             Sonuçlar sunucu yoğunluğuna göre değişebilir. Yasal sorumluluk kabul edilmez.
         </div>
     </div>
@@ -282,13 +300,13 @@
         async function startTest() {
             startBtn.disabled = true;
             startBtn.innerText = "ÖLÇÜLÜYOR";
-            statusText.innerText = "ÖLÇÜLÜYOR...";
-            statusText.style.color = "#fff";
+            statusText.innerText = "SUNUCUYA BAĞLANILIYOR...";
+            statusText.style.borderColor = "#fff";
             
             setGauge(dlProgress, 0);
             setGauge(ulProgress, 0);
-            dlVal.innerText = "0.00";
-            ulVal.innerText = "0.00";
+            dlVal.innerText = "0.000";
+            ulVal.innerText = "0.000";
 
             // 1. PING
             const pStart = Date.now();
@@ -297,13 +315,20 @@
             pingVal.innerText = Math.round(pTime) + " ms";
 
             // 2. DOWNLOAD
+            statusText.innerText = "İNDİRME HIZI ÖLÇÜLÜYOR...";
+            statusText.style.borderColor = "var(--cyan)";
+            statusText.style.color = "var(--cyan)";
             const dlSpeed = await measureSpeed(true);
             
-            // 3. UPLOAD
+            // 3. UPLOAD SİMÜLASYONU
+            statusText.innerText = "YÜKLEME HIZI TEST EDİLİYOR...";
+            statusText.style.borderColor = "var(--orange)";
+            statusText.style.color = "var(--orange)";
             await simulateUpload(dlSpeed);
 
-            statusText.innerText = "TAMAMLANDI";
-            statusText.style.color = "var(--cyan)";
+            statusText.innerText = "TEST TAMAMLANDI";
+            statusText.style.borderColor = "#00ff41";
+            statusText.style.color = "#00ff41";
             startBtn.innerText = "TEKRARLA";
             startBtn.disabled = false;
         }
@@ -330,8 +355,8 @@
                     const speedBps = (loaded * 8) / duration;
                     const speedMbps = speedBps / 1000000;
                     
-                    // 2 BASAMAKLI GÖSTERİM (FIX)
-                    dlVal.innerText = speedMbps.toFixed(2);
+                    // 3 BASAMAKLI GÖSTERİM (FIX)
+                    dlVal.innerText = speedMbps.toFixed(3);
                     
                     let p = (speedMbps / 100) * 100; 
                     if(p > 100) p = 100;
@@ -353,8 +378,8 @@
                     let display = current + (Math.random() * 1 - 0.5);
                     if(display < 0) display = 0;
                     
-                    // 2 BASAMAKLI GÖSTERİM (FIX)
-                    ulVal.innerText = display.toFixed(2);
+                    // 3 BASAMAKLI GÖSTERİM (FIX)
+                    ulVal.innerText = display.toFixed(3);
                     
                     let p = (display / 50) * 100; 
                     if(p > 100) p = 100;
@@ -362,7 +387,7 @@
 
                     if(current >= target) {
                         clearInterval(interval);
-                        ulVal.innerText = target.toFixed(2);
+                        ulVal.innerText = target.toFixed(3);
                         resolve();
                     }
                 }, 100);
