@@ -14,7 +14,7 @@
     :root {
         --bg-dark: #050505;
         --panel-bg: #111111;
-        --accent: #ffa500; 
+        --accent: #ffa500; /* Tools Turuncusu */
         --border: #333;
         --text-main: #ffffff;
         --text-dim: #aaa;
@@ -32,7 +32,8 @@
     .sidebar {
         width: var(--sidebar-width); background: var(--panel-bg);
         border-right: 1px solid var(--border); display: flex; flex-direction: column;
-        flex-shrink: 0; z-index: 1000; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-shrink: 0; z-index: 100; 
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .logo-area {
@@ -42,10 +43,13 @@
     }
     .logo-area span { color: var(--accent); margin-left: 2px; }
 
-    .mobile-close-btn { display: none; cursor: pointer; font-size: 1.2rem; color: #fff; }
+    /* Mobil Kapatma Butonu (Masaüstünde Gizli) */
+    .mobile-close-btn { display: none; cursor: pointer; font-size: 1.4rem; color: #fff; }
 
     .menu-list { padding: 20px; flex: 1; overflow-y: auto; }
-    
+    .menu-list::-webkit-scrollbar { width: 5px; }
+    .menu-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
     .menu-group-title {
         font-size: 0.7rem; text-transform: uppercase; color: #666; font-weight: 800;
         margin: 15px 0 8px 5px; letter-spacing: 1px;
@@ -69,7 +73,8 @@
 
     /* MOBİL HEADER (SADECE BUTON) */
     .mobile-toggle-btn {
-        display: none; position: absolute; top: 15px; left: 15px; z-index: 900;
+        display: none; /* Masaüstünde gizli */
+        position: fixed; top: 15px; left: 15px; z-index: 900;
         background: rgba(0,0,0,0.6); border: 1px solid var(--border); color: #fff;
         width: 40px; height: 40px; border-radius: 8px; cursor: pointer;
         font-size: 1.2rem; backdrop-filter: blur(5px);
@@ -92,12 +97,12 @@
     .input-group { margin-bottom: 15px; width: 100%; }
     label { display: block; margin-bottom: 8px; color: #ccc; font-weight: 600; font-size: 0.85rem; }
     
-    input, textarea, select {
+    input[type="text"], input[type="number"], textarea, select {
         width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff;
         padding: 12px; border-radius: 8px; outline: none; font-family: inherit; font-size: 0.95rem;
         transition: 0.3s; box-sizing: border-box;
     }
-    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--accent); }
 
     .row { display: flex; gap: 15px; flex-wrap: wrap; }
     .col { flex: 1; min-width: 140px; }
@@ -154,26 +159,34 @@
 
     /* --- MOBİL UYUMLULUK --- */
     @media (max-width: 900px) {
-        /* Sidebar Başlangıçta Gizli */
+        /* Sidebar Mobilde Gizli Başlar */
         .sidebar {
-            position: fixed; left: -100%; top: 0; height: 100%; width: 85%; max-width: 300px;
+            display: flex; /* Flex kalmalı ama ekrandan dışarı iteceğiz */
+            position: fixed; 
+            left: -100%; 
+            top: 0; height: 100%; width: 85%; max-width: 300px;
             box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+            z-index: 2000; /* En üstte olsun */
         }
+        /* Active sınıfı eklenince içeri kayar */
         .sidebar.active { left: 0; }
 
         .mobile-close-btn { display: block; }
-        
-        /* Sadece küçük bir hamburger butonu göster */
-        .mobile-toggle-btn { display: flex; } 
+        .mobile-toggle-btn { display: flex; } /* Butonu Göster */
 
-        /* İçerik alanını üstten biraz boşalt (buton için) */
-        .main-content { padding-top: 60px; }
+        .main-content { 
+            padding-top: 60px; /* Buton için üst boşluk */
+            padding-bottom: 80px; 
+        }
         
         .tool-container { padding: 20px; }
-
+        
         .qr-layout { flex-direction: column-reverse; gap: 20px; }
         .qr-options { min-width: 100%; }
         .qr-preview { width: 100%; position: static; margin-bottom: 20px; }
+        
+        /* Alt Menü (Opsiyonel - Sidebar varken gerek yok ama hızlı erişim için tutabiliriz) */
+        .mobile-nav { display: none; } /* Şimdilik kapattım, sidebar yeterli */
     }
 </style>
 </head>
@@ -210,7 +223,7 @@
         </div>
     </div>
 
-    <div class="main-content" id="mainContent">
+    <div class="main-content">
 
         <div id="tool-qr" class="tool-container active">
             <h2><i class="fas fa-qrcode"></i> QR Tasarım Stüdyosu</h2>
@@ -374,21 +387,24 @@
     </div>
 
     <script>
+        const sidebar = document.getElementById('sidebar');
+
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+            sidebar.classList.toggle('active');
         }
 
         function showTool(id) {
             document.querySelectorAll('.tool-container').forEach(el => el.classList.remove('active'));
             document.getElementById('tool-' + id).classList.add('active');
             
+            // Masaüstü Menü Aktiflik
             document.querySelectorAll('.sidebar .menu-item').forEach(el => el.classList.remove('active'));
             const deskEl = document.querySelector(`.sidebar .menu-item[onclick*="'${id}'"]`);
             if(deskEl) deskEl.classList.add('active');
-            
+
             // Mobilde menüyü kapat
             if (window.innerWidth <= 900) {
-                document.getElementById('sidebar').classList.remove('active');
+                sidebar.classList.remove('active');
             }
             
             // Sayfanın başına git
@@ -437,6 +453,11 @@
         function downloadQR() { qrCode.download({ name: "odhun-qr", extension: document.getElementById('dlFormat').value }); }
 
         // --- DİĞERLERİ ---
+        let loadedImage = null;
+        function loadImage(e) {
+            const f = e.target.files[0];
+            if(f) { const r = new FileReader(); r.onload = (ev) => { document.getElementById('previewImg').src = ev.target.result; document.getElementById('previewImg').style.display='block'; document.getElementById('convertOptions').style.display='block'; loadedImage = new Image(); loadedImage.src = ev.target.result; }; r.readAsDataURL(f); }
+        }
         function convertImage() {
             if(!loadedImage) return;
             const c = document.createElement('canvas'); c.width=loadedImage.width; c.height=loadedImage.height;
@@ -444,13 +465,6 @@
             const fmt = document.getElementById('formatSelect').value;
             const a = document.createElement('a'); a.download = `odhun-image.${fmt.split('/')[1]}`; a.href = c.toDataURL(fmt); a.click();
         }
-        
-        let loadedImage = null;
-        function loadImage(e) {
-            const f = e.target.files[0];
-            if(f) { const r = new FileReader(); r.onload = (ev) => { document.getElementById('previewImg').src = ev.target.result; document.getElementById('previewImg').style.display='block'; document.getElementById('convertOptions').style.display='block'; loadedImage = new Image(); loadedImage.src = ev.target.result; }; r.readAsDataURL(f); }
-        }
-        
         function updateGradient() {
             const c1=document.getElementById('gradC1').value, c2=document.getElementById('gradC2').value, dir=document.getElementById('gradDir').value;
             const css = dir==='circle' ? `radial-gradient(circle, ${c1}, ${c2})` : `linear-gradient(${dir}, ${c1}, ${c2})`;
@@ -458,14 +472,12 @@
             document.getElementById('gradCode').innerText = `background: ${css};`;
         }
         function copyText(el){navigator.clipboard.writeText(el.innerText); alert('Kopyalandı!');}
-
         function changeCase(type) {
             const el = document.getElementById('caseInput');
             if(type==='upper') el.value=el.value.toUpperCase();
             if(type==='lower') el.value=el.value.toLowerCase();
             if(type==='title') el.value=el.value.toLowerCase().replace(/\b\w/g, c=>c.toUpperCase());
         }
-
         function processList(type) {
             const el = document.getElementById('listInput');
             let arr = el.value.split('\n').filter(l=>l.trim()!=='');
@@ -474,15 +486,12 @@
             if(type==='shuffle') arr.sort(()=>Math.random()-0.5);
             el.value = arr.join('\n');
         }
-
         function formatJSON(pretty) {
             const el = document.getElementById('jsonInput');
             try { const o = JSON.parse(el.value); el.value = JSON.stringify(o, null, pretty ? 4 : 0); } catch(e) { alert("Geçersiz JSON!"); }
         }
-
         function toBase64() { document.getElementById('b64Output').value = btoa(unescape(encodeURIComponent(document.getElementById('b64Input').value))); }
         function fromBase64() { try { document.getElementById('b64Output').value = decodeURIComponent(escape(atob(document.getElementById('b64Input').value))); } catch(e){document.getElementById('b64Output').value="Hata";} }
-
         async function generateHash() {
             const msg = document.getElementById('hashInput').value;
             const msgBuffer = new TextEncoder().encode(msg);
@@ -492,13 +501,11 @@
             document.getElementById('hashSHA256').value = buf2hex(sha256);
         }
         function buf2hex(buffer) { return [...new Uint8Array(buffer)].map(x => x.toString(16).padStart(2, '0')).join(''); }
-
         function generateLorem() {
             const count = document.getElementById('loremCount').value;
             const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
             document.getElementById('loremOutput').value = Array(parseInt(count)).fill(lorem).join('\n\n');
         }
-
         function updateUnitUI() { convertUnit(); }
         function convertUnit() {
             const t=document.getElementById('unitType').value, v=parseFloat(document.getElementById('unitInput').value);
@@ -506,7 +513,6 @@
             if(t==='len') o.value=(v*3.28).toFixed(2);
             if(t==='weight') o.value=(v*2.2).toFixed(2);
         }
-        
         function analyzeText() {
             const t = document.getElementById('textInput').value;
             document.getElementById('charCount').innerText = t.length;
