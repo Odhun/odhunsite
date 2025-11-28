@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bugün Ne Pişirsem? | Odhun Yemek</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: #333;
+            max-width: 90%;
+            width: 400px;
+        }
+        h1 { font-size: 1.2rem; color: #666; margin-bottom: 30px; font-weight: 400; }
+        
+        .food-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .food-card:hover { transform: scale(1.05); }
 
+        #foodName {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ff5e62;
+            line-height: 1.2;
+            margin: 0;
+        }
+        .hint {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 10px;
+            display: block;
+        }
+
+        button {
+            margin-top: 30px;
+            padding: 12px 30px;
+            border: none;
+            background: #333;
+            color: white;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover { background: #ff5e62; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Bugün Ne Pişirsem?</h1>
+        
+        <div class="food-card" onclick="goToRecipe()">
+            <div id="foodName">Yükleniyor...</div>
+            <span class="hint">👆 Tarifi görmek için tıkla</span>
+        </div>
+
+        <button onclick="pickRandomFood()">Beğenmedim, Başka Öner</button>
+    </div>
+
+    <script>
+        // Yemek Listesi
+        const foods = [
+            "Karnıyarık", "Mantı", "Kuru Fasulye", "Yaprak Sarma", "İçli Köfte", 
+            "Hünkar Beğendi", "Ali Nazik", "Tavuk Sote", "Mercimek Çorbası", "İskender Kebap",
+            "Lahmacun", "Pide", "Taze Fasulye", "Musakka", "Tas Kebabı",
+            "Fırında Makarna", "Etli Nohut", "Biber Dolması", "Ispanak Yemeği", "Menemen",
+            "Köfte Patates", "Tavuklu Pilav", "Orman Kebabı", "Bezelye Yemeği", "Kabak Mücver",
+            "Güveç", "Fırın Tavuk", "Sulu Köfte", "Mercimek Köftesi", "Kıymalı Makarna"
+        ];
+
+        let currentFood = "";
+
+        function pickRandomFood() {
+            // Rastgele seçim
+            const randomIndex = Math.floor(Math.random() * foods.length);
+            currentFood = foods[randomIndex];
+            
+            // Ekrana yaz
+            document.getElementById("foodName").innerText = currentFood;
+        }
+
+        function goToRecipe() {
+            if(currentFood) {
+                // Nefis Yemek Tarifleri'nde arama yap
+                // Bu yöntem en garantisidir çünkü spesifik linkler bazen değişebilir.
+                const url = `https://www.nefisyemektarifleri.com/ara/?s=${encodeURIComponent(currentFood)}`;
+                window.open(url, '_blank');
+            }
+        }
+
+        // Sayfa açılınca çalıştır
+        window.onload = pickRandomFood;
+    </script>
+
+</body>
+</html>
