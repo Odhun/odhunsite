@@ -110,7 +110,7 @@ header {
     /* Varsayılan 3x3 */
     grid-template-columns: repeat(3, 1fr); 
     gap: 15px;
-    /* İçerik sığsın, taşma olmasın */
+    /* İçeriğe göre yükseklik (taşmayı engeller) */
     grid-auto-rows: min-content; 
     overflow-y: auto;
     align-content: start;
@@ -195,23 +195,30 @@ footer strong { color: #fff; }
 }
 .footer-warning i { color: var(--accent); margin-right: 4px; }
 
-/* RESPONSIVE */
+/* --- MOBİL UYUMLULUK DÜZELTMELERİ --- */
 @media (max-width: 900px) {
     .sidebar {
         position: fixed; left: -100%; top: 0; height: 100%; width: 85%; max-width: 320px;
         box-shadow: 5px 0 15px rgba(0,0,0,0.8);
     }
     .sidebar.active { left: 0; }
+    
     .mobile-close-btn { display: block; }
     #rss-panel { display: none; }
     #resizer { display: none; }
+    
+    /* Grid Mobilde de Grid Olarak Kalacak, Flex Değil */
     #grid-area { 
-        display: flex; flex-direction: column; padding: 10px; gap: 20px; 
-        overflow-y: scroll;
+        display: grid;
+        padding: 10px; gap: 15px; 
+        overflow-y: auto;
+        padding-bottom: 80px; /* Alttaki videoların kesilmemesi için boşluk */
     }
-    .stream-box { width: 100%; flex-shrink: 0; }
-    .controls { overflow-x: auto; max-width: 60vw; }
-    .controls .btn-grid { display: none; } 
+    
+    /* Mobilde Butonlar Görünsün */
+    .controls { overflow-x: auto; max-width: 70vw; }
+    .controls button { padding: 6px 10px; font-size: 0.75rem; display: inline-block !important; }
+    
     header { padding: 0 10px; }
     .header-center-title { display: none; }
     footer { padding: 10px; font-size: 0.7rem; }
@@ -283,21 +290,19 @@ const rssSelect = document.getElementById('rssSource');
 const sidebar = document.getElementById('sidebar');
 const resizer = document.getElementById('resizer');
 
-// --- KANAL LİSTESİ (ALFABETİK) ---
 const channels = [
-    { name: "CNBC-e", id: "ziYwt0jF1p4" },
-    { name: "CNN Türk", id: "6N8_r2uwLEc" },
-    { name: "Haber Global", id: "EqoCJ8BPxtE" },
-    { name: "Habertürk", id: "RNVNlJSUFoE" },
-    { name: "Halk TV", id: "VBU0QX6brew" },
-    { name: "NTV", id: "pqq5c6k70kk" },
     { name: "Sözcü TV", id: "ztmY_cCtUl0" },
-    { name: "TGRT Haber", id: "TsB0xYOH0AU" },
+    { name: "Halk TV", id: "VBU0QX6brew" },
+    { name: "Haber Global", id: "EqoCJ8BPxtE" },
+    { name: "TV100", id: "6g_DvD8e2T0" },
     { name: "TRT HABER", id: "rD3bKBMXKKY" },
-    { name: "TV100", id: "6g_DvD8e2T0" }
+    { name: "CNBC-e", id: "ziYwt0jF1p4" },
+    { name: "Habertürk", id: "RNVNlJSUFoE" },
+    { name: "NTV", id: "pqq5c6k70kk" },
+    { name: "CNN Türk", id: "6N8_r2uwLEc" },
+    { name: "TGRT Haber", id: "TsB0xYOH0AU" }
 ];
 
-// --- RSS LİSTESİ ---
 const rssData = [
     { name: "Tüm Akış (Otomatik)", url: "MIXED" },
     { name: "Euronews TR", url: "https://tr.euronews.com/rss" },
@@ -319,13 +324,21 @@ const rssData = [
 window.onload = () => {
     renderSidebar();
     
-    // İlk 9 kanalı otomatik aç
-    for(let i=0; i<9; i++) { if(channels[i]) createPlayer(channels[i]); }
+    // Varsayılan kanalları açma mantığı
+    let count = 9;
+    // Mobilde varsayılan olarak sadece 1 kanal açalım ki hızlansın, kullanıcı isterse arttırır
+    if(window.innerWidth < 900) count = 1; 
+
+    for(let i=0; i<count; i++) { if(channels[i]) createPlayer(channels[i]); }
     
     populateRSSMenu();
     fetchAllRSS();
     setInterval(fetchAllRSS, 120000);
     initResizer();
+    
+    // Mobilde varsayılan 1x1, masaüstünde 3x3
+    if(window.innerWidth < 900) setGrid(1);
+    else setGrid(3);
 };
 
 function handleQuickAdd(event) {
@@ -392,19 +405,16 @@ function createPlayer(ch) {
 }
 
 function setGrid(n) {
-    // 1. Grid Ayarı
+    // Mobilde ve Masaüstünde çalışması için
     grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
     
-    // 2. Buton Stilleri
     document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
     const btns = document.querySelectorAll('.btn-grid'); 
     if(btns[n-1]) btns[n-1].classList.add('active');
 
-    // 3. FAZLA KANALLARI SİLME (OTOMATİK KAPATMA)
-    const totalSlots = n * n; // Örneğin 1x1=1, 2x2=4
+    // Fazla kanalları kapatma mantığı (Temizlik)
+    const totalSlots = n * n; 
     const currentBoxes = Array.from(grid.children);
-    
-    // Eğer ekrandaki kanal sayısı, seçilen moddan fazlaysa sondan başa doğru sil
     if (currentBoxes.length > totalSlots) {
         for (let i = totalSlots; i < currentBoxes.length; i++) {
             currentBoxes[i].remove();
@@ -444,12 +454,7 @@ async function fetchSingleRSS(url) {
         const data = await res.json();
         if(data.status === 'ok') {
             const sourceName = formatSourceName(data.feed.title);
-            // DÜZELTME: Tarihten 1 saat (3600000ms) çıkar
-            const items = data.items.map(item => ({
-                ...item, 
-                source: sourceName, 
-                date: new Date(new Date(item.pubDate).getTime() - 3600000)
-            }));
+            const items = data.items.map(item => ({...item, source: sourceName, date: new Date(new Date(item.pubDate).getTime() - 3600000)}));
             renderNewsList(items);
         }
     } catch(e) { rssContainer.innerHTML = 'Hata oluştu.'; }
@@ -466,7 +471,6 @@ async function fetchAllRSS() {
                 if (data.status === 'ok') {
                     const sourceName = formatSourceName(data.feed.title);
                     data.items.forEach(item => {
-                        // DÜZELTME: Tarihten 1 saat çıkar
                         mixedNews.push({
                             title: item.title,
                             desc: cleanText(item.description),
