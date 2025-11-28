@@ -34,7 +34,7 @@
         display: flex; overflow: hidden; position: relative;
     }
 
-    /* Sol Panel: İstasyon Listesi */
+    /* Sol Panel */
     .stations-panel {
         width: 300px; background: #0a0a0a; border-right: 1px solid #222;
         display: flex; flex-direction: column;
@@ -55,21 +55,23 @@
     .station-item {
         padding: 15px; border-radius: 8px; cursor: pointer; transition: 0.3s;
         display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 5px; font-size: 1.1rem; color: #aaa;
+        margin-bottom: 5px; font-size: 1.1rem; color: #aaa; border-left: 3px solid transparent;
     }
     .station-item:hover { background: #151515; color: #fff; padding-left: 20px; }
-    .station-item.active { background: var(--accent); color: #fff; font-weight: bold; box-shadow: 0 5px 15px rgba(255,0,0,0.3); }
+    .station-item.active { 
+        background: #1a0000; color: var(--accent); font-weight: bold; 
+        box-shadow: 0 5px 15px rgba(255,0,0,0.3); border-left-color: var(--accent);
+    }
     
     .playing-icon { display: none; }
     .station-item.active .playing-icon { display: block; animation: pulse 1s infinite; }
 
-    /* Sağ Panel: Oynatıcı Ekranı */
+    /* Sağ Panel */
     .player-panel {
         flex: 1; display: flex; flex-direction: column; position: relative;
         background: radial-gradient(circle at center, #1a1a1a 0%, #0e0e0e 100%);
     }
 
-    /* Frekans Ekranı (Visualizer) */
     .screen-area {
         flex: 1; display: flex; flex-direction: column;
         align-items: center; justify-content: center; text-align: center;
@@ -77,24 +79,22 @@
 
     .current-station-logo {
         font-size: 4rem; color: #222; margin-bottom: 20px;
-        text-shadow: 0 0 5px rgba(255,255,255,0.1);
+        text-shadow: 0 0 5px rgba(255,255,255,0.1); transition: 0.5s;
     }
+    .playing .current-station-logo { color: var(--accent); text-shadow: 0 0 20px var(--accent); transform: scale(1.1); }
 
     .current-info h2 { font-size: 2.5rem; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
     .current-info p { color: var(--accent); font-size: 1.2rem; margin: 5px 0 0 0; font-weight: bold; }
 
-    /* Animasyonlu Barlar (Visualizer) */
     .visualizer {
         display: flex; gap: 5px; height: 60px; align-items: flex-end; margin-top: 40px;
     }
     .bar {
         width: 8px; background: var(--accent); border-radius: 5px;
-        animation: equalizer 1s infinite ease-in-out;
-        opacity: 0.3; /* Varsayılan sönük */
+        height: 5px; opacity: 0.3; transition: height 0.1s;
     }
-    .playing .bar { opacity: 1; } /* Çalarken parlasın */
+    .playing .bar { opacity: 1; animation: equalizer 1s infinite ease-in-out; }
 
-    /* Kontrol Paneli */
     .controls-area {
         height: 100px; background: #080808; border-top: 1px solid #222;
         display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
@@ -108,15 +108,16 @@
     .play-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
 
     .volume-ctrl { display: flex; align-items: center; gap: 10px; color: #666; }
-    input[type=range] {accent-color: var(--accent);}
+    input[type=range] { accent-color: var(--accent); cursor: pointer; }
 
-    /* Animasyonlar */
-    @keyframes equalizer {
-        0% { height: 10px; } 50% { height: 50px; } 100% { height: 10px; }
+    .footer-info {
+        position: absolute; bottom: 10px; width: 100%; text-align: center; 
+        font-size: 0.7rem; color: #444; pointer-events: none;
     }
+
+    @keyframes equalizer { 0% { height: 10px; } 50% { height: 50px; } 100% { height: 10px; } }
     @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-    /* Mobil Uyum */
     @media (max-width: 800px) {
         .radio-container { flex-direction: column; height: 100vh; width: 100%; border: none; border-radius: 0; }
         .stations-panel { width: 100%; height: 40%; border-right: none; border-bottom: 1px solid #222; }
@@ -132,18 +133,17 @@
             <div class="panel-header">
                 <i class="fas fa-broadcast-tower"></i> ODHUN<span>FM</span>
             </div>
-            <div class="station-list" id="stationList">
-                </div>
+            <div class="station-list" id="stationList"></div>
         </div>
 
-        <div class="player-panel" id="playerPanel">
+        <div class="player-panel">
             <div class="screen-area">
-                <div class="current-station-logo">
+                <div class="current-station-logo" id="logoIcon">
                     <i class="fas fa-music"></i>
                 </div>
                 <div class="current-info">
                     <h2 id="displayTitle">RADYO SEÇ</h2>
-                    <p id="statusText">Yayın Bekleniyor...</p>
+                    <p id="statusText">YAYINA HAZIR</p>
                 </div>
 
                 <div class="visualizer" id="visualizer">
@@ -169,26 +169,30 @@
                     <i class="fas fa-play"></i>
                 </button>
                 
-                <div style="width: 100px;"></div> </div>
+                <div style="width: 50px;"></div>
+            </div>
+            <div class="footer-info">Odhun.com © 2025 | Kişisel Kullanım İçindir</div>
         </div>
     </div>
 
     <script>
-        // --- GÜNCEL VE GÜVENLİ RADYO LİSTESİ ---
+        // --- KESİN ÇALIŞAN HTTPS RADYO LİSTESİ ---
         const stations = [
             { name: "Power FM", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio" },
             { name: "Power Türk", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio" },
-            { name: "Kral FM", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" }, // Show Radyo altyapısı
+            { name: "Power Pop", url: "https://listen.powerapp.com.tr/powerpop/icecast.audio" },
             { name: "Fenomen", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio" },
             { name: "Fenomen Türk", url: "https://listen.radyofenomen.com/fenomenturk/128/icecast.audio" },
-            { name: "Joy Türk", url: "https://17753.live.streamtheworld.com/JOY_TURK_SC" },
-            { name: "Virgin Radio", url: "https://17703.live.streamtheworld.com/VIRGIN_RADIO_SC" },
-            { name: "Metro FM", url: "https://17733.live.streamtheworld.com/METRO_FM_SC" },
-            { name: "Süper FM", url: "https://17733.live.streamtheworld.com/SUPER_FM_SC" },
-            { name: "Number1", url: "https://n10101m.mediatriple.net/numberone" },
+            { name: "Metro FM", url: "https://17733.live.streamtheworld.com/METRO_FM_SC" }, 
+            { name: "Süper FM", url: "https://17733.live.streamtheworld.com/SUPER_FM_SC" }, 
+            { name: "Joy Türk", url: "https://17753.live.streamtheworld.com/JOY_TURK_SC" }, 
+            { name: "Virgin Radio", url: "https://17703.live.streamtheworld.com/VIRGIN_RADIO_SC" }, 
+            { name: "Number1 FM", url: "https://n10101m.mediatriple.net/numberone" },
             { name: "Number1 Türk", url: "https://n10101m.mediatriple.net/numberoneturk" },
+            { name: "TRT FM", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
             { name: "Alem FM", url: "https://turkmedya.radyotvonline.net/alemfm" },
-            // HTTPS Linki olmadığı için Best FM'i çıkardım, sorun yaratmasın
+            { name: "Lig Radyo", url: "https://turkmedya.radyotvonline.net/ligradyo" },
+            { name: "Pal FM", url: "https://shoutcast.radyogrup.com/radio/8000/radio.mp3" }
         ];
 
         let audio = new Audio();
@@ -199,12 +203,10 @@
         const displayTitle = document.getElementById('displayTitle');
         const statusText = document.getElementById('statusText');
         const playBtn = document.getElementById('playBtn');
-        const visualizer = document.getElementById('visualizer');
+        const container = document.querySelector('.radio-container');
+        const logoIcon = document.getElementById('logoIcon');
 
-        // Sayfa Yüklenince
-        window.onload = () => {
-            renderList();
-        };
+        window.onload = () => renderList();
 
         function renderList() {
             listEl.innerHTML = "";
@@ -221,55 +223,68 @@
         }
 
         function playStation(index) {
-            // Önceki aktifi kaldır
             const items = document.querySelectorAll('.station-item');
             items.forEach(i => i.classList.remove('active'));
-
-            // Yeni aktifi seç
             items[index].classList.add('active');
             
-            const station = stations[index];
             currentStationIndex = index;
+            const station = stations[index];
 
-            // Oynatıcıyı hazırla
-            audio.src = station.url;
-            audio.play();
+            // UI Güncelle (Yükleniyor...)
+            displayTitle.innerText = station.name;
+            statusText.innerText = "BAĞLANIYOR...";
+            statusText.style.color = "#fff";
             
-            // UI Güncelle
-            isPlaying = true;
-            updateUI(station.name, "CANLI YAYIN");
+            // Audio Yükle
+            audio.src = station.url;
+            audio.load(); // Zorla yeniden yükle
+
+            // Promise ile oynat
+            var playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Otomatik başladı
+                    isPlaying = true;
+                    updateUI(true);
+                })
+                .catch(error => {
+                    console.log("Oynatma Hatası:", error);
+                    statusText.innerText = "BAĞLANTI HATASI!";
+                    statusText.style.color = "red";
+                    isPlaying = false;
+                    updateUI(false);
+                });
+            }
         }
 
         function togglePlay() {
-            if (currentStationIndex === -1) {
-                // Eğer hiç kanal seçilmediyse ilkini aç
-                playStation(0);
-                return;
-            }
+            if (currentStationIndex === -1) { playStation(0); return; }
 
             if (isPlaying) {
                 audio.pause();
                 isPlaying = false;
-                updateUI(stations[currentStationIndex].name, "DURAKLATILDI");
+                updateUI(false);
+                statusText.innerText = "DURAKLATILDI";
             } else {
                 audio.play();
                 isPlaying = true;
-                updateUI(stations[currentStationIndex].name, "CANLI YAYIN");
+                updateUI(true);
             }
         }
 
-        function updateUI(name, status) {
-            displayTitle.innerText = name;
-            statusText.innerText = status;
-
-            if (isPlaying) {
+        function updateUI(playing) {
+            if (playing) {
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                visualizer.classList.add('playing');
+                container.classList.add('playing');
+                statusText.innerText = "CANLI YAYIN";
                 statusText.style.color = "var(--accent)";
+                logoIcon.style.color = "var(--accent)";
             } else {
                 playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                visualizer.classList.remove('playing');
+                container.classList.remove('playing');
                 statusText.style.color = "#555";
+                logoIcon.style.color = "#222";
             }
         }
 
@@ -277,12 +292,13 @@
             audio.volume = val;
         }
 
-        // Hata Yönetimi
-        audio.onerror = function() {
-            statusText.innerText = "Bağlantı Hatası!";
+        // Hata Yakalama
+        audio.addEventListener("error", function(e) {
+            console.log("Audio Error:", e);
+            statusText.innerText = "YAYIN ALINAMIYOR";
             statusText.style.color = "red";
-            visualizer.classList.remove('playing');
-        };
+            container.classList.remove('playing');
+        });
 
     </script>
 
