@@ -11,30 +11,37 @@
 
     <style>
         :root {
-            --bg-dark: #050505;
-            --card-bg: #111;
-            --border: #222;
-            --text: #fff;
-            --text-dim: #888;
+            /* ZEN TEMALI ARKA PLAN RENKLERİ */
+            --bg-gradient-start: #0f172a; /* Derin Gece Mavisi */
+            --bg-gradient-end: #1e293b;   /* Koyu Arduvaz Mavisi */
+            
+            --card-bg: rgba(30, 41, 59, 0.7); /* Yarı saydam kart */
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #e2e8f0; /* Kırık Beyaz */
+            --text-dim: #94a3b8; /* Soluk Mavi-Gri */
         }
 
         * { box-sizing: border-box; }
 
         body {
-            margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text);
+            margin: 0; padding: 0; 
+            /* ZEN BACKGROUND GRADIENT */
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text);
             font-family: 'Inter', sans-serif; display: flex; flex-direction: column;
             min-height: 100vh;
         }
 
         /* HEADER */
         header {
-            text-align: center; padding: 60px 20px 40px;
+            text-align: center; padding: 80px 20px 50px;
         }
         .brand {
-            font-size: 3rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px;
+            font-size: 3.5rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .brand span { color: #666; }
-        .subtitle { color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+        .brand span { color: #00e5ff; /* Zen Mavisi Vurgu */ }
+        .subtitle { color: var(--text-dim); font-size: 1.2rem; max-width: 600px; margin: 0 auto; font-weight: 400; }
 
         /* GRID ALANI */
         .container {
@@ -43,52 +50,60 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
             flex: 1;
+            padding-bottom: 60px;
         }
 
         /* KART TASARIMI */
         .card {
             background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 16px; padding: 30px; text-decoration: none;
-            color: inherit; transition: all 0.3s ease;
+            border-radius: 20px; padding: 30px; text-decoration: none;
+            color: inherit; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; flex-direction: column; align-items: flex-start;
             position: relative; overflow: hidden;
+            backdrop-filter: blur(10px); /* Buzlu cam efekti */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
             border-color: var(--card-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: rgba(30, 41, 59, 0.9); /* Hover'da daha opak */
         }
 
         /* İkon Kutusu */
         .icon-box {
-            width: 60px; height: 60px; border-radius: 12px;
+            width: 60px; height: 60px; border-radius: 15px;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.8rem; margin-bottom: 20px;
             background: rgba(255,255,255,0.05); color: var(--card-color);
-            transition: 0.3s;
+            transition: 0.3s; box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
         }
-        .card:hover .icon-box { background: var(--card-color); color: #000; }
+        .card:hover .icon-box { background: var(--card-color); color: #000; box-shadow: 0 0 20px var(--card-color); }
 
-        .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
-        .card-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; }
+        .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.5px; }
+        .card-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
 
         .card-arrow {
-            margin-top: auto; padding-top: 20px; font-weight: 700; font-size: 0.9rem;
-            color: var(--card-color); display: flex; align-items: center; gap: 5px;
+            margin-top: auto; padding-top: 25px; font-weight: 700; font-size: 0.9rem;
+            color: var(--card-color); display: flex; align-items: center; gap: 8px;
+            transition: 0.3s;
         }
-        .card:hover .card-arrow { gap: 10px; } /* Ok kayma efekti */
+        .card:hover .card-arrow { gap: 15px; transform: translateX(5px); }
 
         /* Footer */
         footer {
-            text-align: center; padding: 40px; color: #444; font-size: 0.9rem;
-            border-top: 1px solid var(--border); margin-top: 40px;
+            text-align: center; padding: 40px; color: var(--text-dim); font-size: 0.9rem;
+            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
         }
 
         /* MOBİL */
         @media (max-width: 768px) {
-            .brand { font-size: 2.5rem; }
-            .container { grid-template-columns: 1fr; padding: 15px; }
+            header { padding: 60px 20px 30px; }
+            .brand { font-size: 2.8rem; }
+            .container { grid-template-columns: 1fr; padding: 15px; gap: 15px; }
+            .card { padding: 25px; }
         }
     </style>
 </head>
@@ -101,21 +116,21 @@
 
     <div class="container">
 
-        <a href="/tv" class="card" style="--card-color: #e50914;">
+        <a href="/tv" class="card" style="--card-color: #ff3d3d;">
             <div class="icon-box"><i class="fas fa-tv"></i></div>
             <div class="card-title">Haber Merkezi</div>
             <div class="card-desc">Çoklu ekran ile 16'ya kadar canlı haber kanalını aynı anda takip edin. Global haber akışı ile entegre.</div>
             <div class="card-arrow">Panele Git <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/radyo" class="card" style="--card-color: #ff4757;">
+        <a href="/radyo" class="card" style="--card-color: #ff6b6b;">
             <div class="icon-box"><i class="fas fa-broadcast-tower"></i></div>
             <div class="card-title">Canlı Radyo</div>
             <div class="card-desc">Türkiye'nin en popüler radyo istasyonlarını kesintisiz dinleyin. Görsel efektli modern arayüz.</div>
             <div class="card-arrow">Dinlemeye Başla <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/finans" class="card" style="--card-color: #2ecc71;">
+        <a href="/finans" class="card" style="--card-color: #00d26a;">
             <div class="icon-box"><i class="fas fa-chart-line"></i></div>
             <div class="card-title">Finans Takip</div>
             <div class="card-desc">Borsa, Döviz, Altın ve Kripto paraları anlık grafiklerle izleyin. Döviz çevirici asistanı dahil.</div>
@@ -129,28 +144,28 @@
             <div class="card-arrow">Odaklan <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/apps" class="card" style="--card-color: #f39c12;">
+        <a href="/apps" class="card" style="--card-color: #ffa502;">
             <div class="icon-box"><i class="fas fa-box-open"></i></div>
             <div class="card-title">Uygulama Deposu</div>
             <div class="card-desc">Kişisel kullanım için hazırlanan yazılımlar, bat dosyaları ve araçlar arşivi.</div>
             <div class="card-arrow">Arşive Git <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/sifre" class="card" style="--card-color: #9b59b6;">
+        <a href="/sifre" class="card" style="--card-color: #c56cf0;">
             <div class="icon-box"><i class="fas fa-key"></i></div>
             <div class="card-title">Güvenli Şifre</div>
             <div class="card-desc">Kırılması zor, karmaşık ve güvenli şifreler oluşturun. Tarayıcı tabanlı, %100 güvenli.</div>
             <div class="card-arrow">Oluştur <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/yemek" class="card" style="--card-color: #e67e22;">
+        <a href="/yemek" class="card" style="--card-color: #ff9f43;">
             <div class="icon-box"><i class="fas fa-utensils"></i></div>
             <div class="card-title">Ne Pişirsem?</div>
             <div class="card-desc">Kararsız kaldığınızda rastgele yemek önerisi alın ve tarifine tek tıkla ulaşın.</div>
             <div class="card-arrow">Yemek Seç <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/tatli" class="card" style="--card-color: #e91e63;">
+        <a href="/tatli" class="card" style="--card-color: #ff6348;">
             <div class="icon-box"><i class="fas fa-ice-cream"></i></div>
             <div class="card-title">Tatlı Krizi</div>
             <div class="card-desc">Tatlı krizlerine özel rastgele tatlı önericisi. Tariflere anında erişim.</div>
