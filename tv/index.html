@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odhun TV | Tüm Haberler</title>
+<title>Odhun TV | Global Haber Akışı</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"> 
@@ -79,7 +79,7 @@ header {
     flex: 1; 
     padding: 15px;
     display: grid;
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(2, 1fr); /* Varsayılan 2x2 */
     gap: 10px;
     overflow-y: auto;
     align-content: start;
@@ -117,16 +117,13 @@ iframe { width: 100%; height: 100%; border: none; }
 
 .rss-header {
     height: 50px; border-bottom: 1px solid #333; background: #111;
-    display: flex; align-items: center; padding: 0 10px;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+    font-weight: 700; color: #ddd; font-size: 0.85rem;
 }
-
-/* RSS Select Box */
-.rss-select {
-    width: 100%; background: #222; color: #fff; border: 1px solid #333;
-    padding: 8px; border-radius: 4px; outline: none; font-size: 0.85rem;
-    font-weight: 500; cursor: pointer;
+.live-dot {
+    width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
+    display: inline-block; animation: blink 1s infinite; margin-right: 5px;
 }
-.rss-select option { color: #fff; background: #222; padding: 5px; }
 
 .rss-content {
     flex: 1; overflow-y: auto; padding: 0;
@@ -136,12 +133,18 @@ iframe { width: 100%; height: 100%; border: none; }
 
 .news-item {
     padding: 15px; border-bottom: 1px solid #222; transition: 0.2s;
-    display: block; text-decoration: none; color: inherit;
+    display: block; text-decoration: none; color: inherit; position: relative;
+    animation: slideIn 0.5s ease;
 }
-.news-item:hover { background: #1a1a1a; }
-.news-time { font-size: 0.75rem; color: var(--accent); margin-bottom: 5px; display: block; font-weight: bold; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+.news-item:hover { background: #161616; }
+.news-meta { display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; margin-bottom: 5px; }
+.news-source { color: var(--accent); font-weight: bold; text-transform: uppercase; }
 .news-title { font-size: 0.85rem; line-height: 1.4; color: #eee; font-weight: 500; }
 .news-desc { font-size: 0.75rem; color: #888; margin-top: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
 /* Mobil */
 @media (max-width: 900px) {
@@ -180,12 +183,11 @@ iframe { width: 100%; height: 100%; border: none; }
 
         <div id="rss-panel">
             <div class="rss-header">
-                <select id="rssSource" class="rss-select" onchange="changeRSS()">
-                    </select>
+                <span><span class="live-dot"></span>TÜM KAYNAKLARDAN AKIŞ</span>
+                <span style="font-size:0.7rem; opacity:0.5;" id="rssStatus">BAĞLANIYOR...</span>
             </div>
             <div class="rss-content" id="rssFeed">
-                <div style="padding:20px; text-align:center; color:#555;">Haberler yükleniyor...</div>
-            </div>
+                </div>
         </div>
     </div>
 </div>
@@ -195,7 +197,7 @@ const grid = document.getElementById('grid-area');
 const channelListEl = document.getElementById('channelList');
 const rssContainer = document.getElementById('rssFeed');
 const rssPanel = document.getElementById('rss-panel');
-const rssSelect = document.getElementById('rssSource');
+const rssStatus = document.getElementById('rssStatus');
 
 // --- TV KANALLARI ---
 const channels = [
@@ -211,150 +213,132 @@ const channels = [
     { name: "TGRT Haber", id: "TsB0xYOH0AU" }
 ];
 
-// --- BİRLEŞTİRİLMİŞ RSS HAVUZU (A-Z Otomatik Sıralanacak) ---
-const rssData = [
-    { name: "Euronews TR", url: "https://tr.euronews.com/rss" },
-    { name: "Donanım Haber", url: "https://www.donanimhaber.com/rss/tum/" },
-    { name: "Webrazzi", url: "https://webrazzi.com/feed" },
-    { name: "Technopat", url: "https://www.technopat.net/feed/" },
-    { name: "ShiftDelete", url: "https://shiftdelete.net/feed" },
-    { name: "Evrim Ağacı", url: "https://evrimagaci.org/rss.xml" },
-    { name: "Arkeofili", url: "https://arkeofili.com/feed/" },
-    { name: "Chip Online", url: "https://www.chip.com.tr/rss" },
-    { name: "LOG", url: "https://www.log.com.tr/feed/" },
-    { name: "PC Hocası", url: "https://pchocasi.com.tr/feed" },
-    { name: "Webtekno", url: "https://www.webtekno.com/rss.xml" },
-    { name: "Fotomaç", url: "https://www.fotomac.com.tr/rss/anasayfa.xml" },
-    { name: "NTV Spor", url: "https://www.ntvspor.net/rss/anasayfa" },
-    { name: "A Spor", url: "https://www.aspor.com.tr/rss/anasayfa.xml" },
-    { name: "Fanatik", url: "https://www.fanatik.com.tr/rss/haberler" },
-    { name: "AjansSpor", url: "https://ajansspor.com/rss" },
-    { name: "Bein Sports Haber", url: "https://beinsports.daioncdn.net/beinsportshaber/beinsportshaber.m3u8" }, // Video tabanlı olabilir, dikkat
-    { name: "En Son Haber", url: "https://www.ensonhaber.com/rss/ensonhaber.xml" },
-    { name: "Sözcü Son Dakika", url: "https://www.sozcu.com.tr/feeds-son-dakika" },
-    { name: "NTV Gündem", url: "https://www.ntv.com.tr/gundem.rss" },
-    { name: "Habertürk", url: "https://www.haberturk.com/rss" },
-    { name: "CNN Türk", url: "https://www.cnnturk.com/feed/rss/all/news" },
-    { name: "TRT Haber", url: "https://www.trthaber.com/sondakika.rss" },
-    { name: "Cumhuriyet", url: "https://www.cumhuriyet.com.tr/rss/son_dakika.xml" },
-    { name: "BBC Türkçe", url: "https://feeds.bbci.co.uk/turkce/rss.xml" },
-    { name: "Anadolu Ajansı", url: "https://www.aa.com.tr/tr/rss/default?cat=guncel" },
-    { name: "Mynet", url: "https://www.mynet.com/haber/rss/sondakika" },
-    { name: "Hürriyet", url: "https://www.hurriyet.com.tr/rss/anasayfa" },
-    { name: "Milliyet", url: "https://www.milliyet.com.tr/rss/rssnew/sondakikarss.xml" },
-    { name: "Sabah", url: "https://www.sabah.com.tr/rss/gundem.xml" },
-    { name: "BirGün", url: "https://www.birgun.net/rss/home" },
-    { name: "Gazete Duvar", url: "https://www.gazeteduvar.com.tr/export/rss" },
-    { name: "T24", url: "https://t24.com.tr/rss" },
-    { name: "OdaTV", url: "https://www.odatv.com/rss.xml" },
-    { name: "Onedio", url: "https://onedio.com/Publisher/publisher-daily.rss" },
-    { name: "Investing Haber", url: "https://tr.investing.com/rss/news.rss" },
-    { name: "Döviz.com", url: "https://www.doviz.com/news/rss" },
-    { name: "BigPara", url: "https://bigpara.hurriyet.com.tr/rss/" },
-    { name: "Ekonomim", url: "https://www.ekonomim.com/export/rss" },
-    { name: "Bloomberg HT", url: "https://ciner-live.daioncdn.net/bloomberght/bloomberght.m3u8" }, // RSS olarak eklenmeli, link kontrolü
-    { name: "Arkitera", url: "https://www.arkitera.com/feed/" },
-    { name: "Bant Mag", url: "https://bantmag.com/feed/" },
-    { name: "Edebiyat Haber", url: "https://www.edebiyathaber.net/feed/" },
-    { name: "Beyaz Perde", url: "https://www.beyazperde.com/rss/haberler.xml" },
-    { name: "Kayıp Rıhtım", url: "https://kayiprihtim.com/feed/" },
-    { name: "FRPNET", url: "https://frpnet.net/feed" },
-    { name: "Bilim ve Gelecek", url: "https://bilimvegelecek.com.tr/index.php/feed/" },
-    { name: "Popular Science TR", url: "https://popsci.com.tr/feed/" },
-    { name: "Kozmik Anafor", url: "https://www.kozmikanafor.com/feed/" },
-    { name: "SavunmaSanayiST", url: "https://www.savunmasanayist.com/feed/" },
-    { name: "DefenceTurk", url: "https://www.defenceturk.net/feed" },
-    { name: "GZT", url: "https://www.gzt.com/rss" },
-    { name: "Haber 7", url: "https://i12.haber7.net/sondakika/newsstand/latest.xml" },
-    { name: "Yeni Şafak", url: "https://www.yenisafak.com/rss?xml=gundem" },
-    { name: "Aydınlık", url: "https://www.aydinlik.com.tr/feed" },
-    { name: "Tele1", url: "https://www.tele1.com.tr/rss" },
-    { name: "Halk TV RSS", url: "https://halktv.com.tr/service/rss.php" },
-    { name: "Milli Gazete", url: "https://www.milligazete.com.tr/rss" },
-    { name: "Independent Türkçe", url: "https://www.indyturk.com/rss.xml" },
-    { name: "Bianet", url: "https://bianet.org/biamag.rss" },
-    { name: "Diken", url: "https://www.diken.com.tr/feed/" }
+// --- DEVASA RSS HAVUZU (Hepsini Birleştirdik) ---
+const rssSources = [
+    "https://arkeofili.com/feed/",
+    "https://beyinsizler.net/feed/",
+    "https://evrimagaci.org/rss.xml",
+    "https://popsci.com.tr/feed/",
+    "https://www.donanimhaber.com/rss/tum/",
+    "https://www.chip.com.tr/rss",
+    "https://www.technopat.net/feed/",
+    "https://webrazzi.com/feed",
+    "https://www.webtekno.com/rss.xml",
+    "https://22dakika.org/feed/",
+    "https://www.beyazperde.com/rss/haberler.xml",
+    "https://kayiprihtim.com/feed/",
+    "https://onedio.com/Publisher/publisher-daily.rss",
+    "https://www.aspor.com.tr/rss/anasayfa.xml",
+    "https://www.fotomac.com.tr/rss/anasayfa.xml",
+    "https://www.ntvspor.net/rss/anasayfa",
+    "https://www.sozcu.com.tr/feeds-rss-category-spor",
+    "https://www.ahaber.com.tr/rss/gundem.xml",
+    "https://www.aa.com.tr/tr/rss/default?cat=guncel",
+    "https://www.cnnturk.com/feed/rss/all/news",
+    "https://www.cumhuriyet.com.tr/rss/son_dakika.xml",
+    "https://www.diken.com.tr/feed/",
+    "https://www.ensonhaber.com/rss/ensonhaber.xml",
+    "https://www.gazeteduvar.com.tr/export/rss",
+    "https://haberglobal.com.tr/rss",
+    "https://www.haberturk.com/rss",
+    "https://halktv.com.tr/service/rss.php",
+    "https://www.hurriyet.com.tr/rss/anasayfa",
+    "https://www.indyturk.com/rss.xml",
+    "https://www.ntv.com.tr/gundem.rss",
+    "https://www.odatv.com/rss.xml",
+    "https://www.sabah.com.tr/rss/gundem.xml",
+    "https://www.sozcu.com.tr/feeds-son-dakika",
+    "https://t24.com.tr/rss",
+    "https://www.tele1.com.tr/rss",
+    "https://www.trthaber.com/sondakika.rss",
+    "https://www.yenisafak.com/rss?xml=gundem",
+    "https://tr.investing.com/rss/news.rss",
+    "https://www.doviz.com/news/rss",
+    "https://bigpara.hurriyet.com.tr/rss/",
+    "https://www.ekonomim.com/export/rss",
+    "https://www.arkitera.com/feed/",
+    "https://bantmag.com/feed/"
 ];
-
-// Listeyi A'dan Z'ye Sırala
-rssData.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
 
 window.onload = () => {
     renderSidebar();
     createPlayer(channels[0]); // Sözcü
     createPlayer(channels[7]); // NTV
     
-    // RSS Menüsünü Doldur
-    populateRSSMenu();
-    
-    // İlk RSS'i Çek (Varsayılan olarak listedeki ilk site)
-    if(rssData.length > 0) fetchRSS(rssData[0].url);
-    
-    // Her dakika güncelle
-    setInterval(() => {
-        const currentUrl = rssSelect.value;
-        if(currentUrl) fetchRSS(currentUrl);
-    }, 60000);
+    // Haber Akışını Başlat
+    startNewsStream();
 };
 
-function populateRSSMenu() {
-    rssSelect.innerHTML = "";
-    rssData.forEach(feed => {
-        const option = document.createElement('option');
-        option.value = feed.url;
-        option.innerText = feed.name;
-        rssSelect.appendChild(option);
-    });
+// --- AKILLI HABER MOTORU ---
+// Tüm kaynaklardan rastgele seçip sürekli akış sağlar
+async function startNewsStream() {
+    rssStatus.innerText = "AKIŞ BAŞLATILIYOR...";
+    
+    // İlk yüklemede 3 farklı kaynaktan çek
+    for(let i=0; i<3; i++) {
+        await fetchRandomSource();
+    }
+    
+    // Her 7 saniyede bir yeni bir kaynaktan haber çek ve ekle
+    setInterval(fetchRandomSource, 7000);
 }
 
-function changeRSS() {
-    const url = rssSelect.value;
-    rssContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#555;">Yükleniyor...</div>';
-    fetchRSS(url);
-}
-
-async function fetchRSS(url) {
-    const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
+async function fetchRandomSource() {
+    const randomUrl = rssSources[Math.floor(Math.random() * rssSources.length)];
+    const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(randomUrl)}`;
 
     try {
+        rssStatus.innerText = "VERİ ALINIYOR...";
         const res = await fetch(API_URL);
         const data = await res.json();
 
-        if (data.status === 'ok') {
-            renderNews(data.items);
-        } else {
-            rssContainer.innerHTML = '<div style="padding:20px;">Haber akışı alınamadı.</div>';
+        if (data.status === 'ok' && data.items.length > 0) {
+            // Kaynaktan en güncel 2 haberi al
+            const newItems = data.items.slice(0, 2);
+            // Kaynak ismini başlıktan temizle
+            const sourceName = data.feed.title.replace('RSS', '').replace('Haberler', '').trim().substring(0, 15);
+            
+            newItems.forEach(item => prependNews(item, sourceName));
+            rssStatus.innerText = "CANLI AKIŞ";
         }
     } catch (e) {
-        console.error(e);
-        rssContainer.innerHTML = '<div style="padding:20px;">Bağlantı hatası.</div>';
+        console.log("Hata:", e);
     }
 }
 
-function renderNews(items) {
-    rssContainer.innerHTML = "";
-    items.forEach(item => {
-        const date = new Date(item.pubDate);
-        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+function prependNews(item, source) {
+    // Tarih
+    const date = new Date(item.pubDate);
+    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        const link = document.createElement('a');
-        link.className = 'news-item';
-        link.href = item.link;
-        link.target = "_blank";
+    const link = document.createElement('a');
+    link.className = 'news-item';
+    link.href = item.link;
+    link.target = "_blank";
 
-        link.innerHTML = `
-            <span class="news-time"><i class="far fa-clock"></i> ${timeStr}</span>
-            <div class="news-title">${item.title}</div>
-            <div class="news-desc">${cleanText(item.description)}</div>
-        `;
-        rssContainer.appendChild(link);
-    });
+    link.innerHTML = `
+        <div class="news-meta">
+            <span class="news-source">${source}</span>
+            <span>${timeStr}</span>
+        </div>
+        <div class="news-title">${item.title}</div>
+        <div class="news-desc">${cleanText(item.description)}</div>
+    `;
+    
+    // En üste ekle (Yeni haber üstte)
+    rssContainer.insertBefore(link, rssContainer.firstChild);
+    
+    // Hafıza şişmesin diye alttan sil (Max 100 haber)
+    if (rssContainer.children.length > 100) {
+        rssContainer.removeChild(rssContainer.lastChild);
+    }
 }
 
 function cleanText(html) {
     const tmp = document.createElement("DIV");
     tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || "";
+    let text = tmp.textContent || tmp.innerText || "";
+    return text.length > 100 ? text.substring(0, 100) + "..." : text;
 }
 
 // --- PLAYER FONKSİYONLARI ---
@@ -375,7 +359,7 @@ function createPlayer(ch) {
     box.innerHTML = `
         <div class="label">${ch.name}</div>
         <div class="close"><i class="fas fa-times"></i></div>
-        <iframe src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1" allowfullscreen></iframe>
     `;
     box.querySelector('.close').onclick = () => box.remove();
     grid.appendChild(box);
@@ -398,9 +382,7 @@ function setGrid(n) {
 }
 
 function resetAll() {
-    if(confirm('Temizlensin mi?')) {
-        grid.innerHTML = '';
-    }
+    if(confirm('Temizlensin mi?')) grid.innerHTML = '';
 }
 
 function filterChannels() {
