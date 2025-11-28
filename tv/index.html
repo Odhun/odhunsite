@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun TV | Haber Merkezi</title>
+<title>Odhun TV | Haber Komuta Merkezi</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O<tspan fill=%22%23ff0000%22>TV</tspan></text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -53,6 +53,8 @@ body {
     width: 100%; background: #000; border: 1px solid #333;
     color: white; padding: 12px; border-radius: 6px; outline: none; font-size: 0.9rem;
 }
+.search-box:focus { border-color: var(--accent); }
+
 .channel-list { flex: 1; overflow-y: auto; padding: 10px; }
 .channel-list::-webkit-scrollbar { width: 5px; }
 .channel-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -105,8 +107,10 @@ header {
     flex: 1; 
     padding: 15px;
     display: grid;
+    /* Varsayılan 3x3 */
     grid-template-columns: repeat(3, 1fr); 
     gap: 15px;
+    /* İçerik sığsın, taşma olmasın */
     grid-auto-rows: min-content; 
     overflow-y: auto;
     align-content: start;
@@ -153,7 +157,8 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
 }
 .rss-select {
     width: 100%; background: #222; color: #fff; border: 1px solid #333;
-    padding: 8px; border-radius: 4px; outline: none; font-size: 0.85rem; font-weight: 500; cursor: pointer;
+    padding: 8px; border-radius: 4px; outline: none; font-size: 0.85rem;
+    font-weight: 500; cursor: pointer;
 }
 .rss-select option { color: #fff; background: #222; padding: 5px; }
 .rss-content { flex: 1; overflow-y: auto; padding: 0; }
@@ -387,14 +392,24 @@ function createPlayer(ch) {
 }
 
 function setGrid(n) {
+    // 1. Grid Ayarı
     grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    
+    // 2. Buton Stilleri
     document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
     const btns = document.querySelectorAll('.btn-grid'); 
-    // Button index fix: 0=1x1, 1=2x2, 2=3x3, 3=4x4
-    if(n===1 && btns[0]) btns[0].classList.add('active');
-    if(n===2 && btns[1]) btns[1].classList.add('active');
-    if(n===3 && btns[2]) btns[2].classList.add('active');
-    if(n===4 && btns[3]) btns[3].classList.add('active');
+    if(btns[n-1]) btns[n-1].classList.add('active');
+
+    // 3. FAZLA KANALLARI SİLME (OTOMATİK KAPATMA)
+    const totalSlots = n * n; // Örneğin 1x1=1, 2x2=4
+    const currentBoxes = Array.from(grid.children);
+    
+    // Eğer ekrandaki kanal sayısı, seçilen moddan fazlaysa sondan başa doğru sil
+    if (currentBoxes.length > totalSlots) {
+        for (let i = totalSlots; i < currentBoxes.length; i++) {
+            currentBoxes[i].remove();
+        }
+    }
 }
 
 function populateRSSMenu() {
@@ -414,7 +429,6 @@ function changeRSS() {
     else fetchSingleRSS(url);
 }
 
-// --- İSİM DÜZELTME ---
 function formatSourceName(rawTitle) {
     let name = rawTitle.replace('RSS', '').replace('Haberler', '').trim();
     if (name.toLowerCase().includes('latest') || name.toLowerCase().includes('euronews')) {
@@ -430,7 +444,12 @@ async function fetchSingleRSS(url) {
         const data = await res.json();
         if(data.status === 'ok') {
             const sourceName = formatSourceName(data.feed.title);
-            const items = data.items.map(item => ({...item, source: sourceName, date: new Date(item.pubDate)}));
+            // DÜZELTME: Tarihten 1 saat (3600000ms) çıkar
+            const items = data.items.map(item => ({
+                ...item, 
+                source: sourceName, 
+                date: new Date(new Date(item.pubDate).getTime() - 3600000)
+            }));
             renderNewsList(items);
         }
     } catch(e) { rssContainer.innerHTML = 'Hata oluştu.'; }
@@ -447,11 +466,12 @@ async function fetchAllRSS() {
                 if (data.status === 'ok') {
                     const sourceName = formatSourceName(data.feed.title);
                     data.items.forEach(item => {
+                        // DÜZELTME: Tarihten 1 saat çıkar
                         mixedNews.push({
                             title: item.title,
                             desc: cleanText(item.description),
                             link: item.link,
-                            date: new Date(item.pubDate),
+                            date: new Date(new Date(item.pubDate).getTime() - 3600000),
                             source: sourceName
                         });
                     });
