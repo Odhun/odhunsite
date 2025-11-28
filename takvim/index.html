@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Odhun Takvim | Zaman Asistanı</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%239d00ff%22>O<tspan fill=%22%23ffffff%22>C</tspan></text></svg>">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg-dark: #050505;
+        --panel-bg: #111111;
+        --accent: #9d00ff; /* Takvim Moru */
+        --accent-dim: rgba(157, 0, 255, 0.1);
+        --text: #ffffff;
+        --text-dim: #aaa;
+        --border: #333;
+        --sidebar-width: 280px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text);
+        font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
+    }
+
+    /* --- SIDEBAR (SOL MENÜ) --- */
+    .sidebar {
+        width: var(--sidebar-width); background: var(--panel-bg);
+        border-right: 1px solid var(--border); display: flex; flex-direction: column;
+        flex-shrink: 0; z-index: 100;
+    }
+
+    .logo-area {
+        height: 70px; display: flex; align-items: center; padding: 0 25px;
+        font-size: 1.5rem; font-weight: 900; border-bottom: 1px solid var(--border);
+        letter-spacing: -1px;
+    }
+    .logo-area span { color: var(--accent); margin-left: 2px; }
+
+    /* Resmi Tatiller Listesi */
+    .holiday-list { padding: 20px; flex: 1; overflow-y: auto; }
+    .holiday-title { 
+        font-size: 0.8rem; text-transform: uppercase; color: #666; font-weight: 800;
+        margin-bottom: 15px; letter-spacing: 1px;
+    }
+
+    .holiday-item {
+        background: #1a1a1a; padding: 12px; border-radius: 8px; margin-bottom: 10px;
+        border-left: 3px solid var(--accent); transition: 0.2s;
+    }
+    .holiday-item:hover { transform: translateX(5px); background: #222; }
+    
+    .h-name { font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 4px; }
+    .h-date { font-size: 0.8rem; color: var(--text-dim); font-family: 'JetBrains Mono'; }
+    .h-count { 
+        font-size: 0.75rem; color: var(--accent); float: right; 
+        background: var(--accent-dim); padding: 2px 6px; border-radius: 4px;
+    }
+
+    /* --- MAIN CONTENT --- */
+    .main-content {
+        flex: 1; display: flex; flex-direction: column; height: 100%; 
+        overflow-y: auto; position: relative; background: #080808;
+    }
+
+    /* SAAT ALANI (HEADER) */
+    .clock-header {
+        height: 200px; background: radial-gradient(circle at center, #1a0525 0%, #050505 100%);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+
+    .clock-time {
+        font-size: 6rem; font-weight: 200; letter-spacing: 2px; font-variant-numeric: tabular-nums;
+        text-shadow: 0 0 30px rgba(157, 0, 255, 0.3); line-height: 1;
+    }
+    .clock-date {
+        font-size: 1.2rem; color: var(--text-dim); margin-top: 10px; font-weight: 500;
+    }
+
+    /* TAKVİM IZGARASI */
+    .calendar-wrapper {
+        padding: 40px; display: flex; justify-content: center; flex: 1;
+    }
+
+    .calendar-container {
+        width: 100%; max-width: 800px;
+    }
+
+    .calendar-nav {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+    }
+    .month-year { font-size: 1.8rem; font-weight: 800; }
+    .nav-btn {
+        background: transparent; border: 1px solid #333; color: #fff; width: 40px; height: 40px;
+        border-radius: 50%; cursor: pointer; transition: 0.2s;
+    }
+    .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .weekdays {
+        display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 10px;
+        text-align: center; font-weight: bold; color: var(--text-dim); font-size: 0.9rem;
+    }
+    
+    .days {
+        display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;
+    }
+
+    .day {
+        aspect-ratio: 1; background: #111; border: 1px solid #222; border-radius: 8px;
+        display: flex; flex-direction: column; align-items: flex-start; padding: 10px;
+        cursor: pointer; transition: 0.2s; position: relative;
+    }
+    .day:hover { border-color: #555; background: #1a1a1a; }
+    .day.today { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+    .day.empty { background: transparent; border: none; cursor: default; }
+    
+    .day-num { font-weight: 700; font-size: 1rem; }
+    .note-indicator { 
+        position: absolute; bottom: 8px; right: 8px; width: 6px; height: 6px; 
+        background: var(--accent); border-radius: 50%; display: none;
+    }
+    .day.has-note .note-indicator { display: block; }
+
+    /* NOT MODALI */
+    .modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); z-index: 200; display: none;
+        align-items: center; justify-content: center; backdrop-filter: blur(5px);
+    }
+    .modal.active { display: flex; }
+
+    .modal-content {
+        background: #161616; border: 1px solid #333; border-radius: 12px;
+        width: 90%; max-width: 400px; padding: 25px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .modal-title { font-size: 1.2rem; font-weight: 800; }
+    
+    textarea {
+        width: 100%; height: 150px; background: #0a0a0a; border: 1px solid #333;
+        color: #fff; padding: 15px; border-radius: 8px; resize: none; outline: none;
+        font-family: inherit; font-size: 0.9rem;
+    }
+    textarea:focus { border-color: var(--accent); }
+
+    .modal-footer { margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; }
+    .btn {
+        padding: 10px 20px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer;
+    }
+    .btn-save { background: var(--accent); color: #fff; }
+    .btn-cancel { background: #333; color: #ccc; }
+
+    /* FOOTER */
+    footer {
+        text-align: center; padding: 20px; font-size: 0.8rem; color: #444;
+        border-top: 1px solid #222; margin-top: auto;
+    }
+
+    /* MOBİL */
+    @media (max-width: 900px) {
+        .sidebar { display: none; }
+        .clock-time { font-size: 4rem; }
+        .calendar-wrapper { padding: 20px 10px; }
+        .day { padding: 5px; }
+        .day-num { font-size: 0.9rem; }
+    }
+</style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area">ODHUN<span>TAKVİM</span></div>
+        <div class="holiday-list">
+            <div class="holiday-title">Yaklaşan Tatiller</div>
+            <div id="holidayContainer">
+                </div>
+        </div>
+        <div style="margin-top: auto; padding: 20px; color: #444; font-size: 0.75rem;">
+            Odhun.com © 2025
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <div class="clock-header">
+            <div class="clock-time" id="clock">00:00:00</div>
+            <div class="clock-date" id="dateText">1 Ocak 2025, Çarşamba</div>
+        </div>
+
+        <div class="calendar-wrapper">
+            <div class="calendar-container">
+                <div class="calendar-nav">
+                    <div class="month-year" id="monthYear">Ocak 2025</div>
+                    <div>
+                        <button class="nav-btn" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                        <button class="nav-btn" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="weekdays">
+                    <div>Pzt</div><div>Sal</div><div>Çar</div><div>Per</div><div>Cum</div><div>Cmt</div><div>Paz</div>
+                </div>
+                <div class="days" id="daysGrid">
+                    </div>
+            </div>
+        </div>
+
+        <footer>Odhun.com © 2025 | Kişisel Zaman Yönetimi</footer>
+    </div>
+
+    <div class="modal" id="noteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalDate">...</div>
+                <i class="fas fa-times" style="cursor:pointer;" onclick="closeModal()"></i>
+            </div>
+            <textarea id="noteInput" placeholder="Bugün için bir not ekle..."></textarea>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal()">İptal</button>
+                <button class="btn btn-save" onclick="saveNote()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SAAT & TARİH ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('tr-TR');
+            document.getElementById('dateText').innerText = now.toLocaleDateString('tr-TR', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- TATİL VERİLERİ (2025 Örnek) ---
+        const holidays = [
+            { name: "Yılbaşı", date: "2025-01-01" },
+            { name: "Ramazan Bayramı", date: "2025-03-30" },
+            { name: "23 Nisan", date: "2025-04-23" },
+            { name: "1 Mayıs", date: "2025-05-01" },
+            { name: "19 Mayıs", date: "2025-05-19" },
+            { name: "Kurban Bayramı", date: "2025-06-06" },
+            { name: "15 Temmuz", date: "2025-07-15" },
+            { name: "30 Ağustos", date: "2025-08-30" },
+            { name: "29 Ekim", date: "2025-10-29" }
+        ];
+
+        function renderHolidays() {
+            const container = document.getElementById('holidayContainer');
+            const today = new Date();
+            
+            holidays.forEach(h => {
+                const hDate = new Date(h.date);
+                // Geçmiş tatilleri gösterme veya soluk göster (Burada sadece gelecekleri alalım)
+                if (hDate >= today.setHours(0,0,0,0)) {
+                    const diffTime = Math.abs(hDate - today);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    
+                    const div = document.createElement('div');
+                    div.className = 'holiday-item';
+                    div.innerHTML = `
+                        <span class="h-name">${h.name}</span>
+                        <span class="h-date">${hDate.toLocaleDateString('tr-TR')}</span>
+                        <span class="h-count">${diffDays} Gün Kaldı</span>
+                    `;
+                    container.appendChild(div);
+                }
+            });
+        }
+        renderHolidays();
+
+        // --- TAKVİM MANTIĞI ---
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        const monthNames = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+
+        function renderCalendar() {
+            const daysGrid = document.getElementById('daysGrid');
+            const monthYear = document.getElementById('monthYear');
+            daysGrid.innerHTML = "";
+            
+            monthYear.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay(); // 0=Pazar
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Pazartesi (1) ile başlatmak için offset ayarı
+            // Pazar(0) -> 6, Pzt(1) -> 0, Sal(2) -> 1 ...
+            const offset = firstDay === 0 ? 6 : firstDay - 1;
+
+            // Boş kutular
+            for(let i=0; i<offset; i++) {
+                daysGrid.innerHTML += `<div class="day empty"></div>`;
+            }
+
+            // Günler
+            const today = new Date();
+            const notes = JSON.parse(localStorage.getItem('odhun_notes')) || {};
+
+            for(let i=1; i<=daysInMonth; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day';
+                dayDiv.innerHTML = `<span class="day-num">${i}</span><div class="note-indicator"></div>`;
+                
+                // Bugün mü?
+                if(i === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+                    dayDiv.classList.add('today');
+                }
+
+                // Not var mı?
+                const dateKey = `${currentYear}-${currentMonth+1}-${i}`;
+                if(notes[dateKey]) dayDiv.classList.add('has-note');
+
+                dayDiv.onclick = () => openModal(i);
+                daysGrid.appendChild(dayDiv);
+            }
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
+        }
+
+        // --- NOT SİSTEMİ ---
+        let selectedDateKey = null;
+        const modal = document.getElementById('noteModal');
+        const noteInput = document.getElementById('noteInput');
+
+        function openModal(day) {
+            selectedDateKey = `${currentYear}-${currentMonth+1}-${day}`;
+            document.getElementById('modalDate').innerText = `${day} ${monthNames[currentMonth]} ${currentYear}`;
+            
+            const notes = JSON.parse(localStorage.getItem('odhun_notes')) || {};
+            noteInput.value = notes[selectedDateKey] || "";
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        function saveNote() {
+            const notes = JSON.parse(localStorage.getItem('odhun_notes')) || {};
+            const val = noteInput.value.trim();
+            
+            if(val) {
+                notes[selectedDateKey] = val;
+            } else {
+                delete notes[selectedDateKey];
+            }
+            
+            localStorage.setItem('odhun_notes', JSON.stringify(notes));
+            closeModal();
+            renderCalendar(); // Göstergeyi güncelle
+        }
+
+        renderCalendar();
+    </script>
+
+</body>
+</html>
