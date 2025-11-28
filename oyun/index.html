@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Odhun Arcade | Retro Oyunlar</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Courier%22 font-weight=%22900%22 font-size=%2250%22 fill=%22%23ff00ff%22>R</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --neon-pink: #ff00ff;
+        --neon-blue: #00ffff;
+        --neon-green: #00ff00;
+        --neon-yellow: #ffff00;
+        --screen-bg: #0a0a12;
+    }
+
+    * { box-sizing: border-box; user-select: none; }
+
+    body {
+        margin: 0; padding: 0; 
+        background-color: #050505;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(255, 0, 255, 0.15), transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(0, 255, 255, 0.15), transparent 40%);
+        color: #fff; font-family: 'Press Start 2P', cursive; 
+        height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        overflow: hidden;
+    }
+
+    /* ARCADE KABİNİ */
+    .arcade-cabinet {
+        width: 900px; max-width: 95%; height: 700px; max-height: 90vh;
+        background: #111; border: 15px solid #222; border-radius: 30px;
+        box-shadow: 
+            0 0 50px rgba(255, 0, 255, 0.3), 
+            inset 0 0 100px rgba(0,0,0,0.9);
+        position: relative; display: flex; flex-direction: column;
+        border-bottom-width: 40px; /* Alt panel kalınlığı */
+    }
+
+    /* EKRAN */
+    .crt-screen {
+        flex: 1; background: var(--screen-bg); position: relative;
+        border: 2px solid #000; border-radius: 4px; overflow: hidden;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+    }
+
+    /* CRT EFEKTLERİ */
+    .scanlines {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 900;
+    }
+    .screen-glow {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.6) 90%);
+        pointer-events: none; z-index: 901;
+    }
+
+    /* MENÜ EKRANI */
+    .menu-container {
+        text-align: center; z-index: 10; width: 100%; height: 100%;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        overflow-y: auto; padding: 20px;
+    }
+    .game-logo {
+        font-size: 3rem; color: var(--neon-pink); text-shadow: 4px 4px 0 var(--neon-blue);
+        margin-bottom: 10px; letter-spacing: 5px; line-height: 1.5; animation: flicker 3s infinite;
+    }
+    .game-subtitle { font-size: 0.8rem; color: var(--neon-green); margin-bottom: 30px; }
+
+    .games-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px; width: 90%; max-width: 800px;
+    }
+
+    .game-card {
+        background: rgba(255,255,255,0.05); border: 2px solid var(--neon-blue);
+        padding: 15px; cursor: pointer; transition: 0.2s; text-align: center;
+        display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .game-card:hover {
+        background: var(--neon-blue); color: #000; transform: scale(1.05);
+        box-shadow: 0 0 20px var(--neon-blue);
+    }
+    .game-icon { font-size: 2rem; margin-bottom: 5px; }
+    .game-name { font-size: 0.7rem; line-height: 1.4; }
+
+    /* OYUN ALANI */
+    .game-stage {
+        display: none; width: 100%; height: 100%; flex-direction: column;
+        align-items: center; justify-content: center; position: absolute; top: 0; left: 0;
+        background: #000; z-index: 50;
+    }
+    .game-stage.active { display: flex; }
+
+    canvas { background: #000; border: 2px solid #fff; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
+    .back-btn {
+        position: absolute; top: 20px; left: 20px; background: transparent; border: none;
+        color: #666; font-size: 1.5rem; cursor: pointer; z-index: 100; transition: 0.2s;
+    }
+    .back-btn:hover { color: #fff; text-shadow: 0 0 10px #fff; }
+
+    /* SKOR TABLOSU */
+    .score-board {
+        position: absolute; top: 20px; right: 20px; color: var(--neon-green);
+        font-size: 1rem; text-shadow: 0 0 5px var(--neon-green);
+    }
+
+    /* MOBİL KONTROLLER */
+    .controls-layer {
+        position: absolute; bottom: 20px; width: 100%; display: none;
+        justify-content: space-between; padding: 0 30px; z-index: 200;
+        pointer-events: none; /* Butonlar harici tıklanamaz */
+    }
+    .d-pad, .action-pad { pointer-events: auto; }
+
+    .d-pad { display: grid; grid-template-columns: repeat(3, 50px); gap: 5px; }
+    .btn-ctrl {
+        width: 50px; height: 50px; background: rgba(255,255,255,0.1); border: 2px solid #444;
+        color: #fff; border-radius: 8px; font-size: 1.2rem; cursor: pointer;
+    }
+    .btn-ctrl:active { background: var(--neon-pink); border-color: var(--neon-pink); }
+
+    .action-pad { display: flex; gap: 15px; align-items: center; }
+    .btn-action {
+        width: 70px; height: 70px; border-radius: 50%; background: rgba(0, 255, 255, 0.2);
+        border: 2px solid var(--neon-blue); color: #fff; font-size: 0.8rem;
+        cursor: pointer; font-weight: bold;
+    }
+    .btn-action:active { background: var(--neon-blue); color: #000; }
+
+    /* XOX Board */
+    .xox-board { display: grid; grid-template-columns: repeat(3, 80px); gap: 5px; }
+    .xox-cell {
+        width: 80px; height: 80px; background: #222; border: 2px solid #444;
+        display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer;
+    }
+    .xox-cell.x { color: var(--neon-pink); } .xox-cell.o { color: var(--neon-blue); }
+
+    /* Hafıza Kartları */
+    .memory-grid { display: grid; grid-template-columns: repeat(4, 60px); gap: 10px; }
+    .mem-card {
+        width: 60px; height: 60px; background: var(--neon-blue); border-radius: 5px;
+        display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+        cursor: pointer; color: transparent; transition: transform 0.3s;
+    }
+    .mem-card.flipped { background: #fff; color: #000; transform: rotateY(180deg); }
+    .mem-card.matched { background: var(--neon-green); opacity: 0.5; }
+
+    /* Footer */
+    footer {
+        position: absolute; bottom: 10px; width: 100%; text-align: center;
+        color: #555; font-size: 0.6rem; font-family: sans-serif;
+    }
+
+    @keyframes flicker {
+        0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; text-shadow: 4px 4px 0 var(--neon-blue); }
+        20%, 24%, 55% { opacity: 0.5; text-shadow: none; }
+    }
+
+    @media (max-width: 900px) {
+        .arcade-cabinet { width: 100%; height: 100%; border: none; border-radius: 0; }
+        .game-logo { font-size: 2rem; }
+        .controls-layer { display: flex; } /* Mobilde kontrolleri aç */
+        canvas { max-width: 95%; }
+    }
+</style>
+</head>
+<body>
+
+    <div class="arcade-cabinet">
+        <div class="scanlines"></div>
+        <div class="screen-glow"></div>
+
+        <div class="crt-screen">
+            
+            <div class="menu-container" id="mainMenu">
+                <div class="game-logo">ODHUN<br>ARCADE</div>
+                <div class="game-subtitle">INSERT COIN TO PLAY</div>
+                
+                <div class="games-grid">
+                    <div class="game-card" onclick="loadGame('snake')">
+                        <div class="game-icon">🐍</div>
+                        <div class="game-name">NEON SNAKE</div>
+                    </div>
+                    <div class="game-card" onclick="loadGame('breakout')">
+                        <div class="game-icon">🧱</div>
+                        <div class="game-name">BREAKOUT</div>
+                    </div>
+                    <div class="game-card" onclick="loadGame('pong')">
+                        <div class="game-icon">🏓</div>
+                        <div class="game-name">PONG</div>
+                    </div>
+                    <div class="game-card" onclick="loadGame('space')">
+                        <div class="game-icon">🚀</div>
+                        <div class="game-name">SPACE WAR</div>
+                    </div>
+                    <div class="game-card" onclick="loadGame('xox')">
+                        <div class="game-icon">❌</div>
+                        <div class="game-name">XOX PRO</div>
+                    </div>
+                    <div class="game-card" onclick="loadGame('memory')">
+                        <div class="game-icon">🧠</div>
+                        <div class="game-name">MEMORY</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-stage" id="gameStage">
+                <button class="back-btn" onclick="goHome()"><i class="fas fa-power-off"></i></button>
+                <div class="score-board">SKOR: <span id="scoreVal">0</span></div>
+                
+                <canvas id="gameCanvas" width="400" height="400" style="display:none;"></canvas>
+                
+                <div id="htmlGameArea" style="display:none;"></div>
+
+                <div id="gameOverMsg" style="display:none; position:absolute; font-size:2rem; color:red; text-align:center; background:rgba(0,0,0,0.9); padding:20px; z-index:200;">
+                    GAME OVER<br>
+                    <span style="font-size:0.8rem; color:#fff; cursor:pointer;" onclick="restartGame()">TEKRAR OYNA</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="controls-layer" id="mobileControls">
+            <div class="d-pad">
+                <div></div><button class="btn-ctrl" onpointerdown="btnInput('up')">▲</button><div></div>
+                <button class="btn-ctrl" onpointerdown="btnInput('left')">◀</button>
+                <button class="btn-ctrl" onclick="btnInput('center')">●</button>
+                <button class="btn-ctrl" onpointerdown="btnInput('right')">▶</button>
+                <div></div><button class="btn-ctrl" onpointerdown="btnInput('down')">▼</button><div></div>
+            </div>
+            <div class="action-pad">
+                <button class="btn-action" onclick="btnInput('action')">A</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>Odhun.com © 2025 | Retro Games Collection</footer>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const htmlArea = document.getElementById('htmlGameArea');
+        let gameInterval, currentGame = null;
+        let score = 0;
+
+        // --- OYUN MOTORU ---
+        function loadGame(game) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameStage').classList.add('active');
+            currentGame = game;
+            score = 0;
+            updateScore(0);
+            document.getElementById('gameOverMsg').style.display = 'none';
+
+            if(['snake', 'breakout', 'pong', 'space'].includes(game)) {
+                canvas.style.display = 'block';
+                htmlArea.style.display = 'none';
+                if(window.innerWidth <= 900) document.getElementById('mobileControls').style.display = 'flex';
+                startCanvasGame(game);
+            } else {
+                canvas.style.display = 'none';
+                htmlArea.style.display = 'flex';
+                document.getElementById('mobileControls').style.display = 'none'; // HTML oyunlarında dokunmatik yeterli
+                startHtmlGame(game);
+            }
+        }
+
+        function goHome() {
+            clearInterval(gameInterval);
+            document.getElementById('gameStage').classList.remove('active');
+            document.getElementById('mainMenu').style.display = 'flex';
+            document.getElementById('mobileControls').style.display = 'none';
+        }
+
+        function restartGame() {
+            loadGame(currentGame);
+        }
+
+        function updateScore(val) {
+            score = val;
+            document.getElementById('scoreVal').innerText = score;
+        }
+
+        function gameOver() {
+            clearInterval(gameInterval);
+            document.getElementById('gameOverMsg').style.display = 'block';
+        }
+
+        // --- GİRİŞ YÖNETİMİ ---
+        let inputDir = { x: 0, y: 0 };
+        document.addEventListener('keydown', e => {
+            if(currentGame === 'snake') handleSnakeInput(e.key);
+            if(currentGame === 'breakout' || currentGame === 'pong') handlePaddleInput(e.key);
+            if(currentGame === 'space') handleSpaceInput(e.key);
+        });
+
+        function btnInput(dir) {
+            if(currentGame === 'snake') {
+                if(dir==='up') handleSnakeInput('ArrowUp');
+                if(dir==='down') handleSnakeInput('ArrowDown');
+                if(dir==='left') handleSnakeInput('ArrowLeft');
+                if(dir==='right') handleSnakeInput('ArrowRight');
+            }
+            // Diğer oyunlar için de benzer mapping yapılabilir
+             if(currentGame === 'breakout' || currentGame === 'pong') {
+                if(dir==='left') handlePaddleInput('ArrowLeft');
+                if(dir==='right') handlePaddleInput('ArrowRight');
+            }
+            if(currentGame === 'space') {
+                if(dir==='left') handleSpaceInput('ArrowLeft');
+                if(dir==='right') handleSpaceInput('ArrowRight');
+                if(dir==='action') handleSpaceInput(' ');
+            }
+        }
+
+        // --- 1. SNAKE ---
+        let snake, food;
+        function startCanvasGame(game) {
+            if(game === 'snake') {
+                snake = [{x: 10, y: 10}];
+                food = {x: 15, y: 15};
+                inputDir = {x: 0, y: 0};
+                gameInterval = setInterval(updateSnake, 100);
+            }
+            else if(game === 'breakout') initBreakout();
+            else if(game === 'pong') initPong();
+            else if(game === 'space') initSpace();
+        }
+
+        function handleSnakeInput(key) {
+            if(key === 'ArrowUp' && inputDir.y === 0) inputDir = {x: 0, y: -1};
+            if(key === 'ArrowDown' && inputDir.y === 0) inputDir = {x: 0, y: 1};
+            if(key === 'ArrowLeft' && inputDir.x === 0) inputDir = {x: -1, y: 0};
+            if(key === 'ArrowRight' && inputDir.x === 0) inputDir = {x: 1, y: 0};
+        }
+
+        function updateSnake() {
+            const head = {x: snake[0].x + inputDir.x, y: snake[0].y + inputDir.y};
+            const gridSize = 20;
+            const tileCount = 20; // 400 / 20
+
+            if(head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return gameOver();
+            for(let part of snake) if(head.x === part.x && head.y === part.y) return gameOver();
+
+            snake.unshift(head);
+            if(head.x === food.x && head.y === food.y) {
+                score += 10; updateScore(score);
+                food = {x: Math.floor(Math.random()*tileCount), y: Math.floor(Math.random()*tileCount)};
+            } else {
+                snake.pop();
+            }
+
+            // Çizim
+            ctx.fillStyle = 'black'; ctx.fillRect(0,0,400,400);
+            ctx.fillStyle = '#00ff00';
+            snake.forEach(part => ctx.fillRect(part.x*gridSize, part.y*gridSize, gridSize-2, gridSize-2));
+            ctx.fillStyle = '#ff00ff';
+            ctx.fillRect(food.x*gridSize, food.y*gridSize, gridSize-2, gridSize-2);
+        }
+
+        // --- 2. BREAKOUT (BASİT) ---
+        let ball, paddle, bricks;
+        function initBreakout() {
+            ball = {x: 200, y: 200, dx: 4, dy: -4, r: 5};
+            paddle = {x: 150, w: 80, h: 10};
+            bricks = [];
+            for(let c=0; c<5; c++) for(let r=0; r<4; r++) bricks.push({x: c*75+15, y: r*20+30, status: 1});
+            gameInterval = setInterval(updateBreakout, 20);
+        }
+        function handlePaddleInput(key) {
+            if(key === 'ArrowLeft' && paddle.x > 0) paddle.x -= 20;
+            if(key === 'ArrowRight' && paddle.x < 320) paddle.x += 20;
+        }
+        function updateBreakout() {
+            ctx.fillStyle = 'black'; ctx.fillRect(0,0,400,400);
+            
+            ball.x += ball.dx; ball.y += ball.dy;
+            if(ball.x + ball.r > 400 || ball.x - ball.r < 0) ball.dx = -ball.dx;
+            if(ball.y - ball.r < 0) ball.dy = -ball.dy;
+            if(ball.y + ball.r > 400) return gameOver();
+
+            // Paddle Collision
+            if(ball.y+ball.r > 390 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) ball.dy = -ball.dy;
+
+            // Brick Collision
+            bricks.forEach(b => {
+                if(b.status == 1) {
+                    if(ball.x > b.x && ball.x < b.x+70 && ball.y > b.y && ball.y < b.y+15) {
+                        ball.dy = -ball.dy; b.status = 0; score+=10; updateScore(score);
+                    }
+                    ctx.fillStyle = '#00ffff'; ctx.fillRect(b.x, b.y, 70, 15);
+                }
+            });
+
+            ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#ff00ff'; ctx.fillRect(paddle.x, 390, paddle.w, paddle.h);
+        }
+
+        // --- 3. PONG (VS AI) ---
+        let p1Y = 150, cpuY = 150;
+        function initPong() {
+            ball = {x: 200, y: 200, dx: 4, dy: 4, r: 5};
+            gameInterval = setInterval(updatePong, 20);
+        }
+        function updatePong() {
+            ctx.fillStyle = 'black'; ctx.fillRect(0,0,400,400);
+            
+            ball.x += ball.dx; ball.y += ball.dy;
+            if(ball.y < 0 || ball.y > 400) ball.dy = -ball.dy;
+
+            // CPU AI
+            if(cpuY + 40 < ball.y) cpuY += 3; else cpuY -= 3;
+
+            // Collision
+            if(ball.x < 10 && ball.y > p1Y && ball.y < p1Y+80) { ball.dx = -ball.dx; score++; updateScore(score); }
+            if(ball.x > 390 && ball.y > cpuY && ball.y < cpuY+80) ball.dx = -ball.dx;
+
+            if(ball.x < 0 || ball.x > 400) {
+                ball = {x: 200, y: 200, dx: -ball.dx, dy: 4, r: 5}; // Reset
+            }
+
+            // P1 Kontrol (Paddle Input ile aynı fonksiyonu kullanıyor ama dikey)
+            // Dikey paddle için handlePaddleInput'u modifiye etmek yerine basit tuttum:
+            // Paddle değişkenini P1Y olarak kullanabiliriz.
+            // Klavyede Yılan kontrolleri ile çakışmaması için handleSnakeInput benzeri yapı daha iyi.
+            // Basitlik için: P1 otomatik fareyi takip etsin veya mobilde butonlar.
+            
+            ctx.fillStyle = '#fff'; 
+            ctx.fillRect(0, p1Y, 10, 80); // P1
+            ctx.fillRect(390, cpuY, 10, 80); // CPU
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+        }
+
+        // --- 4. SPACE INVADERS (BASİT) ---
+        let shipX = 180, bullets = [], aliens = [];
+        function initSpace() {
+            aliens = [];
+            for(let c=0; c<8; c++) for(let r=0; r<3; r++) aliens.push({x: c*40+20, y: r*30+20, status: 1});
+            gameInterval = setInterval(updateSpace, 20);
+        }
+        function handleSpaceInput(key) {
+            if(key === 'ArrowLeft' && shipX > 0) shipX -= 10;
+            if(key === 'ArrowRight' && shipX < 380) shipX += 10;
+            if(key === ' ') bullets.push({x: shipX + 10, y: 370});
+        }
+        function updateSpace() {
+            ctx.fillStyle = 'black'; ctx.fillRect(0,0,400,400);
+            
+            // Draw Ship
+            ctx.fillStyle = '#00ff00'; 
+            ctx.beginPath(); ctx.moveTo(shipX+10, 380); ctx.lineTo(shipX, 400); ctx.lineTo(shipX+20, 400); ctx.fill();
+
+            // Bullets
+            ctx.fillStyle = '#ffff00';
+            bullets.forEach((b, i) => {
+                b.y -= 5; ctx.fillRect(b.x, b.y, 2, 10);
+                if(b.y < 0) bullets.splice(i, 1);
+                
+                // Collision
+                aliens.forEach(a => {
+                    if(a.status == 1 && b.x > a.x && b.x < a.x+30 && b.y > a.y && b.y < a.y+20) {
+                        a.status = 0; bullets.splice(i, 1); score+=20; updateScore(score);
+                    }
+                });
+            });
+
+            // Aliens
+            ctx.fillStyle = '#ff0000';
+            let allDead = true;
+            aliens.forEach(a => {
+                if(a.status == 1) {
+                    ctx.fillRect(a.x, a.y, 30, 20);
+                    allDead = false;
+                    // Basit hareket
+                    a.x += Math.sin(Date.now()/500) * 1;
+                }
+            });
+            if(allDead) initSpace(); // Yeni dalga
+        }
+
+
+        // --- HTML OYUNLARI (XOX & MEMORY) ---
+        function startHtmlGame(game) {
+            htmlArea.innerHTML = '';
+            if(game === 'xox') {
+                let board = ['', '', '', '', '', '', '', '', ''];
+                let turn = 'X';
+                const grid = document.createElement('div');
+                grid.className = 'xox-board';
+                htmlArea.appendChild(grid);
+                
+                const render = () => {
+                    grid.innerHTML = '';
+                    board.forEach((cell, i) => {
+                        const div = document.createElement('div');
+                        div.className = 'xox-cell ' + (cell === 'X' ? 'x' : 'o');
+                        div.innerText = cell;
+                        div.onclick = () => {
+                            if(!cell) {
+                                board[i] = turn;
+                                turn = turn === 'X' ? 'O' : 'X';
+                                render();
+                                checkWin();
+                            }
+                        };
+                        grid.appendChild(div);
+                    });
+                };
+                
+                const checkWin = () => {
+                    // Basit kazanma kontrolü (satır, sütun, çapraz) - Detaylandırılabilir
+                    // Şimdilik sadece oynanış akışı.
+                };
+                render();
+            }
+            
+            if(game === 'memory') {
+                const icons = ['🚀','👾','🕹️','💎','💣','👻','👽','🤖'];
+                const cards = [...icons, ...icons].sort(() => 0.5 - Math.random());
+                const grid = document.createElement('div');
+                grid.className = 'memory-grid';
+                htmlArea.appendChild(grid);
+                
+                let flipped = [];
+                cards.forEach((icon, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'mem-card';
+                    card.dataset.val = icon;
+                    card.onclick = () => {
+                        if(card.classList.contains('flipped') || flipped.length >= 2) return;
+                        card.innerText = icon;
+                        card.classList.add('flipped');
+                        flipped.push(card);
+                        
+                        if(flipped.length === 2) {
+                            if(flipped[0].dataset.val === flipped[1].dataset.val) {
+                                flipped.forEach(c => c.classList.add('matched'));
+                                flipped = [];
+                                score += 10; updateScore(score);
+                            } else {
+                                setTimeout(() => {
+                                    flipped.forEach(c => { c.innerText = ''; c.classList.remove('flipped'); });
+                                    flipped = [];
+                                }, 1000);
+                            }
+                        }
+                    };
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        // Pong Paddle Kontrolü (Dikey)
+        document.addEventListener('keydown', e => {
+            if(currentGame === 'pong') {
+                if(e.key === 'ArrowUp' && p1Y > 0) p1Y -= 20;
+                if(e.key === 'ArrowDown' && p1Y < 320) p1Y += 20;
+            }
+        });
+    </script>
+
+</body>
+</html>
