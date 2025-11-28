@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Odhun FM | Canlı Radyo</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O<tspan fill=%22%23ff0000%22>FM</tspan></text></svg>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,103 +26,116 @@
         overflow: hidden;
     }
 
-    /* Ana Radyo Kasası */
+    /* --- MASAÜSTÜ DÜZENİ --- */
     .radio-container {
-        width: 900px; max-width: 95%; height: 500px;
+        width: 1000px; max-width: 95%; height: 600px;
         background: var(--panel); border: 2px solid #222; border-radius: 20px;
         box-shadow: 0 0 50px rgba(255, 0, 0, 0.1);
         display: flex; overflow: hidden; position: relative;
     }
 
-    /* Sol Panel */
+    /* SOL LİSTE */
     .stations-panel {
         width: 300px; background: #0a0a0a; border-right: 1px solid #222;
-        display: flex; flex-direction: column;
+        display: flex; flex-direction: column; flex-shrink: 0;
     }
 
     .panel-header {
         padding: 20px; font-size: 1.5rem; font-weight: 700; border-bottom: 1px solid #222;
-        display: flex; align-items: center; gap: 10px; letter-spacing: 1px;
+        display: flex; align-items: center; gap: 10px; letter-spacing: 1px; background: #000;
     }
     .panel-header span { color: var(--accent); }
 
+    .search-box { padding: 10px; border-bottom: 1px solid #222; }
+    .search-box input {
+        width: 100%; background: #151515; border: 1px solid #333; color: #fff;
+        padding: 10px; border-radius: 4px; outline: none; font-family: inherit;
+    }
+
     .station-list {
-        flex: 1; overflow-y: auto; padding: 10px;
+        flex: 1; overflow-y: auto; padding: 0;
     }
     .station-list::-webkit-scrollbar { width: 5px; }
-    .station-list::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; }
+    .station-list::-webkit-scrollbar-thumb { background: #333; }
 
     .station-item {
-        padding: 15px; border-radius: 8px; cursor: pointer; transition: 0.3s;
-        display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 5px; font-size: 1.1rem; color: #aaa; border-left: 3px solid transparent;
+        padding: 15px; cursor: pointer; transition: 0.2s;
+        border-bottom: 1px solid #151515; display: flex; align-items: center; justify-content: space-between;
+        font-size: 1rem; color: #999;
     }
     .station-item:hover { background: #151515; color: #fff; padding-left: 20px; }
     .station-item.active { 
-        background: #1a0000; color: var(--accent); font-weight: bold; 
-        box-shadow: 0 5px 15px rgba(255,0,0,0.3); border-left-color: var(--accent);
+        background: #1a0000; color: var(--accent); border-left: 4px solid var(--accent); 
+        font-weight: bold;
     }
-    
     .playing-icon { display: none; }
     .station-item.active .playing-icon { display: block; animation: pulse 1s infinite; }
 
-    /* Sağ Panel */
+    /* SAĞ PLAYER */
     .player-panel {
         flex: 1; display: flex; flex-direction: column; position: relative;
-        background: radial-gradient(circle at center, #1a1a1a 0%, #0e0e0e 100%);
+        background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
     }
 
     .screen-area {
         flex: 1; display: flex; flex-direction: column;
         align-items: center; justify-content: center; text-align: center;
+        padding: 20px;
     }
 
-    .current-station-logo {
-        font-size: 4rem; color: #222; margin-bottom: 20px;
-        text-shadow: 0 0 5px rgba(255,255,255,0.1); transition: 0.5s;
+    .current-logo {
+        font-size: 5rem; color: #222; margin-bottom: 20px;
+        text-shadow: 0 0 10px rgba(255,255,255,0.05); transition: 0.3s;
     }
-    .playing .current-station-logo { color: var(--accent); text-shadow: 0 0 20px var(--accent); transform: scale(1.1); }
+    .playing .current-logo { color: var(--accent); text-shadow: 0 0 40px var(--accent); transform: scale(1.1); }
 
-    .current-info h2 { font-size: 2.5rem; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
-    .current-info p { color: var(--accent); font-size: 1.2rem; margin: 5px 0 0 0; font-weight: bold; }
+    .info-area h2 { font-size: 3rem; margin: 0; line-height: 1; text-transform: uppercase; letter-spacing: 2px; }
+    .info-area p { color: var(--accent); font-size: 1.2rem; margin: 10px 0 0 0; font-weight: bold; letter-spacing: 3px; }
 
+    /* Visualizer */
     .visualizer {
-        display: flex; gap: 5px; height: 60px; align-items: flex-end; margin-top: 40px;
+        display: flex; gap: 6px; height: 60px; align-items: flex-end; margin-top: 40px;
     }
     .bar {
-        width: 8px; background: var(--accent); border-radius: 5px;
+        width: 10px; background: var(--accent); border-radius: 5px;
         height: 5px; opacity: 0.3; transition: height 0.1s;
     }
-    .playing .bar { opacity: 1; animation: equalizer 1s infinite ease-in-out; }
+    .playing .bar { opacity: 1; animation: equalizer 0.8s infinite ease-in-out; }
 
-    .controls-area {
+    /* Kontroller */
+    .controls {
         height: 100px; background: #080808; border-top: 1px solid #222;
         display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
     }
 
     .play-btn {
-        width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent);
-        background: transparent; color: var(--accent); font-size: 1.5rem;
-        cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;
+        width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent);
+        background: transparent; color: var(--accent); font-size: 2rem;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: 0.2s;
     }
-    .play-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
+    .play-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 30px var(--accent); }
 
-    .volume-ctrl { display: flex; align-items: center; gap: 10px; color: #666; }
-    input[type=range] { accent-color: var(--accent); cursor: pointer; }
+    .volume-box { display: flex; align-items: center; gap: 10px; width: 140px; color: #666; }
+    input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
 
-    .footer-info {
+    .footer-bar {
         position: absolute; bottom: 10px; width: 100%; text-align: center; 
-        font-size: 0.7rem; color: #444; pointer-events: none;
+        font-size: 0.75rem; color: #444; font-family: sans-serif; pointer-events: none;
     }
 
-    @keyframes equalizer { 0% { height: 10px; } 50% { height: 50px; } 100% { height: 10px; } }
+    @keyframes equalizer { 0% { height: 10px; } 50% { height: 60px; } 100% { height: 10px; } }
     @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
+    /* --- MOBİL DÜZEN --- */
     @media (max-width: 800px) {
         .radio-container { flex-direction: column; height: 100vh; width: 100%; border: none; border-radius: 0; }
-        .stations-panel { width: 100%; height: 40%; border-right: none; border-bottom: 1px solid #222; }
-        .player-panel { height: 60%; }
+        .stations-panel { width: 100%; height: 45%; border-right: none; border-bottom: 1px solid #222; }
+        .player-panel { height: 55%; }
         .current-info h2 { font-size: 2rem; }
+        .visualizer { height: 30px; margin-top: 20px; }
+        .footer-bar { display: none; }
+        .controls { padding: 0 20px; }
     }
 </style>
 </head>
@@ -133,45 +146,44 @@
             <div class="panel-header">
                 <i class="fas fa-broadcast-tower"></i> ODHUN<span>FM</span>
             </div>
-            <div class="station-list" id="stationList"></div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Kanal Ara..." onkeyup="filterStations()">
+            </div>
+            <div class="station-list" id="list"></div>
         </div>
 
         <div class="player-panel">
             <div class="screen-area">
-                <div class="current-station-logo" id="logoIcon">
-                    <i class="fas fa-music"></i>
-                </div>
-                <div class="current-info">
-                    <h2 id="displayTitle">RADYO SEÇ</h2>
-                    <p id="statusText">YAYINA HAZIR</p>
+                <div class="current-logo" id="logoIcon"><i class="fas fa-music"></i></div>
+                <div class="info-area">
+                    <h2 id="rName">RADYO SEÇ</h2>
+                    <p id="rStatus">YAYINA HAZIR</p>
                 </div>
 
-                <div class="visualizer" id="visualizer">
-                    <div class="bar" style="animation-delay: 0.1s"></div>
-                    <div class="bar" style="animation-delay: 0.3s"></div>
-                    <div class="bar" style="animation-delay: 0.5s"></div>
-                    <div class="bar" style="animation-delay: 0.2s"></div>
-                    <div class="bar" style="animation-delay: 0.4s"></div>
-                    <div class="bar" style="animation-delay: 0.6s"></div>
-                    <div class="bar" style="animation-delay: 0.3s"></div>
-                    <div class="bar" style="animation-delay: 0.1s"></div>
+                <div class="visualizer" id="viz">
+                    <div class="bar" style="animation-delay:0.1s"></div>
+                    <div class="bar" style="animation-delay:0.3s"></div>
+                    <div class="bar" style="animation-delay:0.5s"></div>
+                    <div class="bar" style="animation-delay:0.2s"></div>
+                    <div class="bar" style="animation-delay:0.4s"></div>
+                    <div class="bar" style="animation-delay:0.6s"></div>
+                    <div class="bar" style="animation-delay:0.3s"></div>
+                    <div class="bar" style="animation-delay:0.1s"></div>
                 </div>
             </div>
 
-            <div class="controls-area">
-                <div class="volume-ctrl">
+            <div class="controls">
+                <div class="volume-box">
                     <i class="fas fa-volume-down"></i>
-                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1" oninput="setVolume(this.value)">
-                    <i class="fas fa-volume-up"></i>
+                    <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVol(this.value)">
                 </div>
-                
-                <button class="play-btn" onclick="togglePlay()" id="playBtn">
+                <div class="play-btn" onclick="togglePlay()" id="playBtn">
                     <i class="fas fa-play"></i>
-                </button>
-                
+                </div>
                 <div style="width: 50px;"></div>
             </div>
-            <div class="footer-info">Odhun.com © 2025 | Kişisel Kullanım İçindir</div>
+            
+            <div class="footer-bar">Odhun.com © 2025 | Sorumluluk Kabul Edilmez</div>
         </div>
     </div>
 
@@ -181,124 +193,128 @@
             { name: "Power FM", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio" },
             { name: "Power Türk", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio" },
             { name: "Power Pop", url: "https://listen.powerapp.com.tr/powerpop/icecast.audio" },
+            { name: "Power Love", url: "https://listen.powerapp.com.tr/powerlove/icecast.audio" },
+            { name: "Kral FM", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" }, 
+            { name: "Süper FM", url: "https://17733.live.streamtheworld.com/SUPER_FM_SC" },
+            { name: "Metro FM", url: "https://17733.live.streamtheworld.com/METRO_FM_SC" },
+            { name: "Joy Türk", url: "https://17753.live.streamtheworld.com/JOY_TURK_SC" },
+            { name: "Joy FM", url: "https://17753.live.streamtheworld.com/JOY_FM_SC" },
+            { name: "Virgin Radio", url: "https://17703.live.streamtheworld.com/VIRGIN_RADIO_SC" },
             { name: "Fenomen", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio" },
             { name: "Fenomen Türk", url: "https://listen.radyofenomen.com/fenomenturk/128/icecast.audio" },
-            { name: "Metro FM", url: "https://17733.live.streamtheworld.com/METRO_FM_SC" }, 
-            { name: "Süper FM", url: "https://17733.live.streamtheworld.com/SUPER_FM_SC" }, 
-            { name: "Joy Türk", url: "https://17753.live.streamtheworld.com/JOY_TURK_SC" }, 
-            { name: "Virgin Radio", url: "https://17703.live.streamtheworld.com/VIRGIN_RADIO_SC" }, 
-            { name: "Number1 FM", url: "https://n10101m.mediatriple.net/numberone" },
-            { name: "Number1 Türk", url: "https://n10101m.mediatriple.net/numberoneturk" },
-            { name: "TRT FM", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
+            { name: "Fenomen Pop", url: "https://listen.radyofenomen.com/fenomenpop/128/icecast.audio" },
+            { name: "Fenomen Rap", url: "https://listen.radyofenomen.com/fenomenrap/128/icecast.audio" },
             { name: "Alem FM", url: "https://turkmedya.radyotvonline.net/alemfm" },
             { name: "Lig Radyo", url: "https://turkmedya.radyotvonline.net/ligradyo" },
-            { name: "Pal FM", url: "https://shoutcast.radyogrup.com/radio/8000/radio.mp3" }
+            { name: "Show Radyo", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" },
+            { name: "Radyo Viva", url: "https://mo.ciner.com.tr/radyoviva/radyo.m3u8" },
+            { name: "CNN Türk Radyo", url: "https://cnnturk.radyotvonline.net/cnnturkradyo/playlist.m3u8" },
+            { name: "Radyo D", url: "https://radyod.radyotvonline.net/radyod/playlist.m3u8" },
+            { name: "Number1 FM", url: "https://n10101m.mediatriple.net/numberone" },
+            { name: "Number1 Türk", url: "https://n10101m.mediatriple.net/numberoneturk" },
+            { name: "Number1 Slow", url: "https://n10101m.mediatriple.net/numberoneslow" },
+            { name: "TRT FM", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
+            { name: "TRT Türkü", url: "https://radios.trt.net.tr/radyoturku/master.m3u8" },
+            { name: "TRT Nağme", url: "https://radios.trt.net.tr/radyonagme/master.m3u8" },
+            { name: "Pal FM", url: "https://shoutcast.radyogrup.com/radio/8000/radio.mp3" },
+            { name: "Pal Nostalji", url: "https://shoutcast.radyogrup.com/radio/8010/radio.mp3" },
+            { name: "Kafa Radyo", url: "https://kafaradyo.artidijitalmedya.com/kafaradyo" },
+            { name: "Radyo 7", url: "https://radyo7.canliyayinda.com/radyo7" },
+            { name: "A Haber Radyo", url: "https://icecast.tring.com.tr/ahaberradyo" },
+            { name: "Vav Radyo", url: "https://icecast.tring.com.tr/vavradyo" }
         ];
 
-        let audio = new Audio();
+        const audio = new Audio();
         let isPlaying = false;
-        let currentStationIndex = -1;
+        let currentIndex = -1;
 
-        const listEl = document.getElementById('stationList');
-        const displayTitle = document.getElementById('displayTitle');
-        const statusText = document.getElementById('statusText');
-        const playBtn = document.getElementById('playBtn');
+        const listEl = document.getElementById('list');
+        const titleEl = document.getElementById('rName');
+        const statusEl = document.getElementById('rStatus');
+        const btnEl = document.getElementById('playBtn');
         const container = document.querySelector('.radio-container');
-        const logoIcon = document.getElementById('logoIcon');
 
-        window.onload = () => renderList();
+        window.onload = () => renderList(stations);
 
-        function renderList() {
+        function renderList(data) {
             listEl.innerHTML = "";
-            stations.forEach((station, index) => {
-                const item = document.createElement('div');
-                item.className = 'station-item';
-                item.onclick = () => playStation(index);
-                item.innerHTML = `
-                    <span>${index + 1}. ${station.name}</span>
+            data.forEach((s, i) => {
+                const div = document.createElement('div');
+                div.className = `station-item`;
+                if(stations.indexOf(s) === currentIndex) div.classList.add('active');
+                
+                div.onclick = () => playStation(stations.indexOf(s));
+                div.innerHTML = `
+                    <span>${s.name}</span>
                     <i class="fas fa-wave-square playing-icon"></i>
                 `;
-                listEl.appendChild(item);
+                listEl.appendChild(div);
             });
         }
 
         function playStation(index) {
-            const items = document.querySelectorAll('.station-item');
-            items.forEach(i => i.classList.remove('active'));
-            items[index].classList.add('active');
+            currentIndex = index;
+            const s = stations[index];
             
-            currentStationIndex = index;
-            const station = stations[index];
+            renderList(stations); // Listeyi güncelle (Aktif class için)
 
-            // UI Güncelle (Yükleniyor...)
-            displayTitle.innerText = station.name;
-            statusText.innerText = "BAĞLANIYOR...";
-            statusText.style.color = "#fff";
+            titleEl.innerText = s.name;
+            statusEl.innerText = "BAĞLANIYOR...";
+            statusEl.style.color = "#fff";
             
-            // Audio Yükle
-            audio.src = station.url;
-            audio.load(); // Zorla yeniden yükle
-
-            // Promise ile oynat
-            var playPromise = audio.play();
-
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // Otomatik başladı
-                    isPlaying = true;
-                    updateUI(true);
-                })
-                .catch(error => {
-                    console.log("Oynatma Hatası:", error);
-                    statusText.innerText = "BAĞLANTI HATASI!";
-                    statusText.style.color = "red";
-                    isPlaying = false;
-                    updateUI(false);
-                });
-            }
+            audio.src = s.url;
+            audio.play().then(() => {
+                isPlaying = true;
+                statusEl.innerText = "CANLI YAYIN";
+                statusEl.style.color = "var(--accent)";
+                btnEl.innerHTML = '<i class="fas fa-pause"></i>';
+                container.classList.add('playing');
+            }).catch(err => {
+                console.log(err);
+                statusEl.innerText = "HATA";
+                statusEl.style.color = "red";
+                isPlaying = false;
+                container.classList.remove('playing');
+                btnEl.innerHTML = '<i class="fas fa-play"></i>';
+            });
         }
 
         function togglePlay() {
-            if (currentStationIndex === -1) { playStation(0); return; }
+            if (currentIndex === -1) { playStation(0); return; }
 
             if (isPlaying) {
                 audio.pause();
                 isPlaying = false;
-                updateUI(false);
-                statusText.innerText = "DURAKLATILDI";
+                statusEl.innerText = "DURAKLATILDI";
+                statusEl.style.color = "#555";
+                btnEl.innerHTML = '<i class="fas fa-play"></i>';
+                container.classList.remove('playing');
             } else {
                 audio.play();
                 isPlaying = true;
-                updateUI(true);
-            }
-        }
-
-        function updateUI(playing) {
-            if (playing) {
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                statusEl.innerText = "CANLI YAYIN";
+                statusEl.style.color = "var(--accent)";
+                btnEl.innerHTML = '<i class="fas fa-pause"></i>';
                 container.classList.add('playing');
-                statusText.innerText = "CANLI YAYIN";
-                statusText.style.color = "var(--accent)";
-                logoIcon.style.color = "var(--accent)";
-            } else {
-                playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                container.classList.remove('playing');
-                statusText.style.color = "#555";
-                logoIcon.style.color = "#222";
             }
         }
 
-        function setVolume(val) {
-            audio.volume = val;
-        }
+        function setVol(val) { audio.volume = val; }
 
-        // Hata Yakalama
-        audio.addEventListener("error", function(e) {
-            console.log("Audio Error:", e);
-            statusText.innerText = "YAYIN ALINAMIYOR";
-            statusText.style.color = "red";
-            container.classList.remove('playing');
-        });
+        function filterStations() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = stations.filter(s => s.name.toLowerCase().includes(term));
+            
+            listEl.innerHTML = "";
+            filtered.forEach((s) => {
+                const realIndex = stations.indexOf(s);
+                const div = document.createElement('div');
+                div.className = `station-item ${realIndex === currentIndex ? 'active' : ''}`;
+                div.onclick = () => playStation(realIndex);
+                div.innerHTML = `<span>${s.name}</span><i class="fas fa-wave-square playing-icon"></i>`;
+                listEl.appendChild(div);
+            });
+        }
 
     </script>
 
