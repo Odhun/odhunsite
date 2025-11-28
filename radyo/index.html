@@ -197,16 +197,13 @@
     </div>
 
     <div class="footer-bar">
-        <strong>Odhun.com</strong> © 2025 | Bu hizmet kişisel kullanım içindir. Yayın hakları ilgili radyolara aittir. Ticari amaç gütmez.
+        <strong>Odhun.com</strong> © 2025 | Bu hizmet kişisel kullanım içindir. Yayın hakları ilgili radyolara aittir.
     </div>
 
     <script>
-        // --- 100+ RADYO LİSTESİ ---
+        // --- GÜNCEL VE GÜVENLİ (HTTPS) RADYO LİSTESİ ---
         const stations = [
-            // ** YENİ EKLENEN YEREL **
-            { name: "Gözde FM (Anamur)", url: "http://yayin.radyosfer.com:8020/gozdefm" }, 
-
-            // --- POWER GRUBU ---
+            // POWER GRUBU
             { name: "Power FM", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio" },
             { name: "Power Türk", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio" },
             { name: "Power Pop", url: "https://listen.powerapp.com.tr/powerpop/icecast.audio" },
@@ -216,8 +213,11 @@
             { name: "Power Gold", url: "https://listen.powerapp.com.tr/powergold/icecast.audio" },
             { name: "Power Rock", url: "https://listen.powerapp.com.tr/powerrock/icecast.audio" },
             { name: "Power Salsa", url: "https://listen.powerapp.com.tr/powersalsa/icecast.audio" },
+            { name: "Power Türk Efsane", url: "https://listen.powerapp.com.tr/powerturkefsane/icecast.audio" },
+            { name: "Power Türk Akustik", url: "https://listen.powerapp.com.tr/powerturkakustik/icecast.audio" },
+            { name: "Power Türk Cover", url: "https://listen.powerapp.com.tr/powerturkcover/icecast.audio" },
             
-            // --- KARNAVAL GRUBU ---
+            // KARNAVAL GRUBU
             { name: "Süper FM", url: "https://17733.live.streamtheworld.com/SUPER_FM_SC" },
             { name: "Metro FM", url: "https://17733.live.streamtheworld.com/METRO_FM_SC" },
             { name: "Joy Türk", url: "https://17753.live.streamtheworld.com/JOY_TURK_SC" },
@@ -227,54 +227,54 @@
             { name: "Joy Türk Rock", url: "https://17703.live.streamtheworld.com/JOY_TURK_ROCK_SC" },
             { name: "Retro Türk", url: "https://17703.live.streamtheworld.com/RETRO_TURK_SC" },
             { name: "Efsane", url: "https://17703.live.streamtheworld.com/EFSANE_SC" },
+            { name: "Mydonose Türk", url: "https://17773.live.streamtheworld.com/RADIO_MYDONOSE_TURK_SC" },
+            { name: "Radyo Mydonose", url: "https://17773.live.streamtheworld.com/RADIO_MYDONOSE_SC" },
             
-            // --- KRAL GRUBU ---
-            { name: "Kral FM", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" },
-            
-            // --- TRT GRUBU ---
-            { name: "TRT FM", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
-            { name: "TRT Türkü", url: "https://radios.trt.net.tr/radyoturku/master.m3u8" },
-            { name: "TRT Nağme", url: "https://radios.trt.net.tr/radyonagme/master.m3u8" },
-            { name: "TRT Radyo 1", url: "https://radios.trt.net.tr/radyo1/master.m3u8" },
-            { name: "TRT Radyo 3", url: "https://radios.trt.net.tr/radyo3/master.m3u8" },
-            
-            // --- FENOMEN GRUBU ---
+            // FENOMEN GRUBU
             { name: "Radyo Fenomen", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio" },
             { name: "Fenomen Türk", url: "https://listen.radyofenomen.com/fenomenturk/128/icecast.audio" },
             { name: "Fenomen Pop", url: "https://listen.radyofenomen.com/fenomenpop/128/icecast.audio" },
             { name: "Fenomen Rap", url: "https://listen.radyofenomen.com/fenomenrap/128/icecast.audio" },
             { name: "Fenomen Karışık", url: "https://listen.radyofenomen.com/fenomenkarisik/128/icecast.audio" },
+            { name: "Fenomen Dans", url: "https://listen.radyofenomen.com/fenomendans/128/icecast.audio" },
+            { name: "Fenomen 2000", url: "https://listen.radyofenomen.com/fenomen2000/128/icecast.audio" },
+            { name: "Fenomen Türkçe Rap", url: "https://listen.radyofenomen.com/fenomenturkcerap/128/icecast.audio" },
+            { name: "Fenomen Akustik", url: "https://listen.radyofenomen.com/fenomenakustik/128/icecast.audio" },
             
-            // --- NUMBER1 GRUBU ---
+            // NUMBER 1 GRUBU
             { name: "Number1 FM", url: "https://n10101m.mediatriple.net/numberone" },
             { name: "Number1 Türk", url: "https://n10101m.mediatriple.net/numberoneturk" },
             { name: "Number1 Slow", url: "https://n10101m.mediatriple.net/numberoneslow" },
+            { name: "Number1 Dance", url: "https://n10101m.mediatriple.net/numberonedance" },
             
-            // --- ULUSAL & HABER & SPOR ---
-            { name: "Alem FM", url: "https://turkmedya.radyotvonline.net/alemfm" },
-            { name: "Lig Radyo", url: "https://turkmedya.radyotvonline.net/ligradyo" },
-            { name: "Radyo D", url: "https://radyod.radyotvonline.net/radyod/playlist.m3u8" },
-            { name: "CNN Türk Radyo", url: "https://cnnturk.radyotvonline.net/cnnturkradyo/playlist.m3u8" },
-            { name: "Show Radyo", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" },
-            { name: "Radyo Viva", url: "https://mo.ciner.com.tr/radyoviva/radyo.m3u8" },
+            // TRT GRUBU
+            { name: "TRT FM", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
+            { name: "TRT Türkü", url: "https://radios.trt.net.tr/radyoturku/master.m3u8" },
+            { name: "TRT Nağme", url: "https://radios.trt.net.tr/radyonagme/master.m3u8" },
+            { name: "TRT Radyo 1", url: "https://radios.trt.net.tr/radyo1/master.m3u8" },
+            { name: "TRT Radyo 3", url: "https://radios.trt.net.tr/radyo3/master.m3u8" },
+            { name: "TRT Arabesk", url: "https://radios.trt.net.tr/trtarabesk/master.m3u8" },
+            
+            // TURKUVAZ
             { name: "A Haber Radyo", url: "https://icecast.tring.com.tr/ahaberradyo" },
             { name: "A Spor Radyo", url: "https://icecast.tring.com.tr/asporradyo" },
             { name: "Vav Radyo", url: "https://icecast.tring.com.tr/vavradyo" },
+            { name: "Radyo Turkuvaz", url: "https://icecast.tring.com.tr/radyoturkuvaz" },
             
-            // --- DİĞER POPÜLER ---
-            { name: "Best FM", url: "http://46.20.7.126:80/" },
-            { name: "Pal FM", url: "https://shoutcast.radyogrup.com/radio/8000/radio.mp3" },
-            { name: "Pal Nostalji", url: "https://shoutcast.radyogrup.com/radio/8010/radio.mp3" },
-            { name: "Baba Radyo", url: "http://37.247.98.8/stream/16/" },
-            { name: "Kafa Radyo", url: "https://kafaradyo.artidijitalmedya.com/kafaradyo" },
-            { name: "Radyo 7", url: "https://radyo7.canliyayinda.com/radyo7" },
-            { name: "Radyo Mydonose", url: "https://stream.radyomydonose.com.tr:8000/stream" },
-            { name: "Joy FM Love", url: "https://17753.live.streamtheworld.com/JOY_FM_SC" },
-            { name: "Karadeniz FM", url: "https://stream.karadenizfm.com.tr:8000/stream" },
+            // CINER & TURKMEDYA & DİĞER
+            { name: "Kral FM", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" }, 
+            { name: "Show Radyo", url: "https://mo.ciner.com.tr/showradyo/radyo.m3u8" },
+            { name: "Radyo Viva", url: "https://mo.ciner.com.tr/radyoviva/radyo.m3u8" },
+            { name: "Alem FM", url: "https://turkmedya.radyotvonline.net/alemfm" },
+            { name: "Lig Radyo", url: "https://turkmedya.radyotvonline.net/ligradyo" },
+            { name: "CNN Türk Radyo", url: "https://cnnturk.radyotvonline.net/cnnturkradyo/playlist.m3u8" },
+            { name: "Radyo D", url: "https://radyod.radyotvonline.net/radyod/playlist.m3u8" },
+            { name: "Slov Radyo", url: "https://radyod.radyotvonline.net/slowradyo/playlist.m3u8" },
             
-            // --- İSLAMİ & YEREL ---
+            // İSLAMİ & YEREL
             { name: "Diyanet Radyo", url: "https://radyo.diyanet.gov.tr/diyanet/live" },
             { name: "Diyanet Kuran", url: "https://radyo.diyanet.gov.tr/kuran/live" },
+            { name: "Risalet Radyo", url: "https://radyo.diyanet.gov.tr/risalet/live" },
             { name: "Semerkand Radyo", url: "https://canli.semerkandradyo.com/live" },
             { name: "Moral FM", url: "https://yayin.moralfm.com.tr:8000/stream" },
             { name: "Polis Radyosu", url: "https://polnet.polisradyosu.pol.tr/polisradyosu" }
@@ -300,7 +300,7 @@
             data.forEach((station, index) => {
                 const item = document.createElement('div');
                 item.className = 'station-item';
-                // Orijinal index'i bulmak için
+                // Orijinal index
                 const originalIndex = stations.indexOf(station);
                 
                 if (originalIndex === currentStationIndex) item.classList.add('active');
@@ -324,7 +324,7 @@
             currentStationIndex = index;
             const station = stations[index];
 
-            // Listeyi güncelle (Aktif sınıfı için)
+            // Listeyi güncelle
             const term = document.getElementById('searchInput').value.toLowerCase();
             const filtered = stations.filter(s => s.name.toLowerCase().includes(term));
             renderList(filtered);
@@ -376,12 +376,7 @@
 
         // Hata Yönetimi
         audio.onerror = function() {
-            // Eğer HTTP hatasıysa kullanıcıya bilgi verelim
-            if (stations[currentStationIndex].url.startsWith("http:")) {
-                statusText.innerText = "Güvenlik Engeli (Mixed Content)!";
-            } else {
-                statusText.innerText = "BAĞLANTI HATASI!";
-            }
+            statusText.innerText = "BAĞLANTI HATASI!";
             statusText.style.color = "red";
             visualizer.classList.remove('playing');
             isPlaying = false;
