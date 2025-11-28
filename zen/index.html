@@ -138,7 +138,7 @@
     /* FOOTER */
     footer {
         position: absolute; bottom: 0; width: 100%; background: #0a0a0a;
-        padding: 15px; text-align: center; font-size: 0.8rem; color: #444;
+        padding: 15px; text-align: center; font-size: 0.8rem; color: #555;
         border-top: 1px solid var(--border);
     }
 
@@ -164,7 +164,7 @@
             <div class="mobile-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
         </div>
         <div class="menu-list">
-            <div class="menu-item active"><i class="fas fa-sliders-h"></i> Ses Mikseri</div>
+            <div class="menu-item active"><i class="fas fa-sliders-h"></i> Mikser</div>
             <div class="menu-item" onclick="stopAllSounds()"><i class="fas fa-power-off"></i> Her Şeyi Durdur</div>
         </div>
         <div style="margin-top: auto; padding: 20px; color: #444; font-size: 0.75rem; line-height: 1.5;">
@@ -191,51 +191,53 @@
             </div>
 
         <footer>
-            Odhun.com © 2025 | Sesler Google Sounds Collection altyapısıyla sağlanmaktadır.
+            Odhun.com © 2025 | Özgür Doğa Sesleri
         </footer>
 
     </div>
 
     <script>
-        // --- SES LİSTESİ ---
+        // --- GÜNCEL SES LİSTESİ (ÇALIŞAN LİNKLER) ---
+        // Not: Pixabay CDN linkleri genellikle uzun süreli çalışır.
         const sounds = [
-            { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' },
-            { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://actions.google.com/sounds/v1/weather/thunderstorm.ogg' },
-            { id: 'fire', name: 'Kamp Ateşi', icon: 'fa-fire', url: 'https://actions.google.com/sounds/v1/ambiences/fire.ogg' },
-            { id: 'wind', name: 'Rüzgar', icon: 'fa-wind', url: 'https://actions.google.com/sounds/v1/weather/wind_blowing.ogg' },
-            { id: 'night', name: 'Gece', icon: 'fa-moon', url: 'https://actions.google.com/sounds/v1/nature/crickets_at_night.ogg' },
-            { id: 'birds', name: 'Kuşlar', icon: 'fa-dove', url: 'https://actions.google.com/sounds/v1/animals/birds_singing.ogg' },
-            { id: 'water', name: 'Dere Sesi', icon: 'fa-water', url: 'https://actions.google.com/sounds/v1/nature/river_small_flow.ogg' },
-            { id: 'coffee', name: 'Kafe Ortamı', icon: 'fa-coffee', url: 'https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg' }
+            { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://cdn.pixabay.com/download/audio/2022/02/16/audio_608863004d.mp3' },
+            { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://cdn.pixabay.com/download/audio/2021/08/09/audio_008903070e.mp3' },
+            { id: 'fire', name: 'Kamp Ateşi', icon: 'fa-fire', url: 'https://cdn.pixabay.com/download/audio/2021/08/09/audio_6937810083.mp3' },
+            { id: 'ocean', name: 'Okyanus', icon: 'fa-water', url: 'https://cdn.pixabay.com/download/audio/2022/03/19/audio_203911e484.mp3' },
+            { id: 'river', name: 'Dere Sesi', icon: 'fa-stream', url: 'https://cdn.pixabay.com/download/audio/2021/08/08/audio_84e8531623.mp3' },
+            { id: 'birds', name: 'Orman & Kuş', icon: 'fa-dove', url: 'https://cdn.pixabay.com/download/audio/2021/09/06/audio_33228a779c.mp3' },
+            { id: 'wind', name: 'Rüzgar', icon: 'fa-wind', url: 'https://cdn.pixabay.com/download/audio/2022/03/09/audio_811869644a.mp3' },
+            { id: 'night', name: 'Gece', icon: 'fa-moon', url: 'https://cdn.pixabay.com/download/audio/2021/09/06/audio_e35e9c240f.mp3' },
+            { id: 'coffee', name: 'Kafe Ortamı', icon: 'fa-coffee', url: 'https://cdn.pixabay.com/download/audio/2021/09/06/audio_c03f419671.mp3' },
+            { id: 'train', name: 'Tren', icon: 'fa-subway', url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_1f473659b2.mp3' },
+            { id: 'keyboard', name: 'Klavye', icon: 'fa-keyboard', url: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_7800373702.mp3' },
+            { id: 'fan', name: 'Vantilatör', icon: 'fa-fan', url: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_8a374d8366.mp3' }
         ];
 
         const audioElements = {};
         const grid = document.getElementById('soundGrid');
 
-        // --- SAYFA YÜKLENİNCE BAŞLAT (Güvenli Yöntem) ---
+        // --- SESLERİ YÜKLE ---
         document.addEventListener('DOMContentLoaded', () => {
-            initSounds();
+            initApp();
         });
 
-        function initSounds() {
+        function initApp() {
             grid.innerHTML = ""; // Temizle
             
             sounds.forEach(sound => {
                 // Audio Objesi Oluştur
-                try {
-                    const audio = new Audio(sound.url);
-                    audio.loop = true;
-                    audioElements[sound.id] = audio;
-                } catch(e) {
-                    console.log("Ses yükleme hatası:", e);
-                }
+                const audio = new Audio();
+                audio.src = sound.url;
+                audio.loop = true;
+                audioElements[sound.id] = audio;
 
                 // Kartı Oluştur
                 const card = document.createElement('div');
                 card.className = 'sound-card';
                 card.id = `card-${sound.id}`;
                 
-                // İçerik
+                // Kart İçeriği
                 card.innerHTML = `
                     <i class="sound-icon fas ${sound.icon}"></i>
                     <div class="sound-name">${sound.name}</div>
@@ -244,7 +246,7 @@
                     </div>
                 `;
 
-                // Tıklama Olayı (Slider'a tıklayınca kart kapanmasın diye kontrol)
+                // Tıklama Olayı
                 card.onclick = (e) => {
                     if (e.target.tagName === 'INPUT') return;
                     toggleSound(sound.id);
@@ -258,10 +260,11 @@
             const audio = audioElements[id];
             const card = document.getElementById(`card-${id}`);
 
-            if (!audio) return;
-
             if (audio.paused) {
-                audio.play().catch(e => console.log("Oynatma engellendi:", e));
+                audio.play().catch(e => {
+                    console.error("Ses çalma hatası:", e);
+                    alert("Ses çalınamadı. Tarayıcı izinlerini kontrol edin.");
+                });
                 card.classList.add('active');
             } else {
                 audio.pause();
@@ -316,7 +319,6 @@
                         clearInterval(timerInterval);
                         isTimerRunning = false;
                         timerBtn.innerHTML = '<i class="fas fa-play"></i> Başlat';
-                        // Bitiş sesi
                         try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(e){}
                         alert("Süre Doldu!");
                     }
