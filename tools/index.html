@@ -19,7 +19,7 @@
         --border: #333;
         --text-main: #ffffff;
         --text-dim: #aaa;
-        --sidebar-width: 250px;
+        --sidebar-width: 260px;
     }
 
     * { box-sizing: border-box; }
@@ -44,13 +44,21 @@
     .logo-area span { color: var(--accent); margin-left: 2px; }
 
     .menu-list { padding: 20px; flex: 1; overflow-y: auto; }
+    .menu-list::-webkit-scrollbar { width: 5px; }
+    .menu-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+    .menu-group-title {
+        font-size: 0.75rem; text-transform: uppercase; color: #666; font-weight: 800;
+        margin: 15px 0 8px 5px; letter-spacing: 1px;
+    }
+
     .menu-item {
-        display: flex; align-items: center; gap: 15px; padding: 15px;
-        color: var(--text-dim); text-decoration: none; font-weight: 600;
-        border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: 0.2s;
+        display: flex; align-items: center; gap: 15px; padding: 12px 15px;
+        color: var(--text-dim); text-decoration: none; font-weight: 500; font-size: 0.9rem;
+        border-radius: 8px; margin-bottom: 4px; cursor: pointer; transition: 0.2s;
     }
     .menu-item:hover, .menu-item.active { background: #1a1a1a; color: #fff; }
-    .menu-item.active { border-left: 4px solid var(--accent); }
+    .menu-item.active { border-left: 4px solid var(--accent); font-weight: 700; }
     .menu-item i { width: 20px; text-align: center; }
 
     /* MAIN CONTENT */
@@ -60,8 +68,8 @@
     }
 
     .tool-container {
-        max-width: 1000px; margin: 0 auto; padding: 40px; width: 100%; display: none;
-        animation: fadeIn 0.3s ease;
+        max-width: 900px; margin: 0 auto; padding: 40px; width: 100%; display: none;
+        animation: fadeIn 0.3s ease; padding-bottom: 100px;
     }
     .tool-container.active { display: block; }
 
@@ -86,25 +94,29 @@
 
     button.action-btn {
         background: var(--accent); color: #000; border: none; padding: 12px 25px;
-        border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 1rem;
+        border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.95rem;
         transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px;
-        width: 100%; justify-content: center;
+        justify-content: center;
     }
     button.action-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    button.secondary { background: #222; color: #fff; border: 1px solid #333; }
+    button.secondary:hover { border-color: #555; }
     
-    /* --- GELİŞMİŞ QR UI --- */
-    .qr-layout {
-        display: flex; gap: 30px; align-items: flex-start;
-    }
-    .qr-controls { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-    .qr-preview-area {
-        width: 350px; background: #fff; padding: 30px; border-radius: 20px;
+    /* Buton Grupları */
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .btn-group button { flex: 1; margin-top: 0; min-width: 100px; }
+
+    /* --- ÖZEL QR KOD STİLLERİ --- */
+    .qr-workspace { display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; }
+    .qr-options { flex: 1; min-width: 300px; }
+    .qr-preview { 
+        width: 300px; background: #fff; padding: 20px; border-radius: 20px; 
         display: flex; flex-direction: column; align-items: center; gap: 20px;
-        position: sticky; top: 20px;
+        box-shadow: 0 0 30px rgba(255, 165, 0, 0.1); position: sticky; top: 20px;
     }
     #canvas { width: 100%; display: flex; justify-content: center; }
 
-    /* Akordiyon (Collapse) Menü */
+    /* Akordiyon (Collapse) */
     details {
         background: #161616; border: 1px solid #333; border-radius: 8px;
         overflow: hidden; margin-bottom: 10px;
@@ -119,17 +131,16 @@
     details[open] summary::after { content: '-'; }
     .details-content { padding: 20px; border-top: 1px solid #333; }
 
-    /* Renk Seçici Özelleştirme */
+    /* Renk Seçici */
     input[type="color"] {
         -webkit-appearance: none; border: none; width: 100%; height: 40px; cursor: pointer;
         background: none; padding: 0; border-radius: 4px;
     }
-    
     .color-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
     .color-row label { margin: 0; flex: 1; font-size: 0.8rem; }
     .color-row input { width: 50px; height: 30px; flex: 0; }
 
-    /* DİĞER ARAÇLAR */
+    /* Diğerleri */
     .file-drop {
         border: 2px dashed #333; padding: 40px; text-align: center; border-radius: 12px;
         cursor: pointer; transition: 0.3s; margin-bottom: 20px; color: #666;
@@ -142,8 +153,14 @@
         border: 1px solid #333;
     }
     .stat-num { font-size: 2rem; font-weight: 900; color: var(--accent); display: block; }
-    
     #previewImg { max-width: 100%; max-height: 300px; margin-top: 20px; border-radius: 8px; display: none; }
+    
+    /* Gradyan Aracı */
+    .gradient-preview { height: 150px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; }
+    .code-block { 
+        background: #000; padding: 15px; border-radius: 8px; font-family: monospace; 
+        color: var(--accent); border: 1px solid #333; word-break: break-all; cursor: pointer;
+    }
 
     /* FOOTER */
     footer {
@@ -154,16 +171,18 @@
     /* MOBİL */
     @media (max-width: 900px) {
         .sidebar { display: none; }
-        .qr-layout { flex-direction: column-reverse; }
-        .qr-preview-area { width: 100%; position: static; }
+        .main-content { padding-bottom: 80px; }
+        .qr-workspace { flex-direction: column-reverse; }
+        .qr-preview { width: 100%; position: static; }
+        
         .mobile-nav {
             display: flex; position: fixed; bottom: 0; left: 0; width: 100%;
             background: #111; border-top: 1px solid #222; z-index: 200;
-            justify-content: space-around; padding: 10px 0; overflow-x: auto;
+            justify-content: flex-start; padding: 10px 0; overflow-x: auto;
         }
         .nav-item {
-            color: #666; text-align: center; font-size: 0.7rem; cursor: pointer;
-            min-width: 60px;
+            color: #666; text-align: center; font-size: 0.65rem; cursor: pointer;
+            min-width: 70px; flex-shrink: 0;
         }
         .nav-item i { display: block; font-size: 1.2rem; margin-bottom: 4px; }
         .nav-item.active { color: var(--accent); }
@@ -176,11 +195,22 @@
     <div class="sidebar">
         <div class="logo-area">ODHUN<span>TOOLS</span></div>
         <div class="menu-list">
+            <div class="menu-group-title">Görsel & Medya</div>
             <div class="menu-item active" onclick="showTool('qr')"><i class="fas fa-qrcode"></i> QR Studio</div>
             <div class="menu-item" onclick="showTool('image')"><i class="fas fa-image"></i> Resim Çevirici</div>
-            <div class="menu-item" onclick="showTool('base64')"><i class="fas fa-code"></i> Base64 Aracı</div>
-            <div class="menu-item" onclick="showTool('unit')"><i class="fas fa-balance-scale"></i> Birim Çevirici</div>
+            <div class="menu-item" onclick="showTool('gradient')"><i class="fas fa-fill-drip"></i> Gradyan Yapıcı</div>
+            
+            <div class="menu-group-title">Yazı & Veri</div>
+            <div class="menu-item" onclick="showTool('case')"><i class="fas fa-text-height"></i> Metin Dönüştür</div>
+            <div class="menu-item" onclick="showTool('list')"><i class="fas fa-list-ol"></i> Liste Düzenle</div>
             <div class="menu-item" onclick="showTool('text')"><i class="fas fa-font"></i> Kelime Sayacı</div>
+            <div class="menu-item" onclick="showTool('json')"><i class="fas fa-code"></i> JSON Formatla</div>
+            <div class="menu-item" onclick="showTool('base64')"><i class="fas fa-lock"></i> Base64</div>
+            <div class="menu-item" onclick="showTool('hash')"><i class="fas fa-fingerprint"></i> Hash Üret</div>
+            <div class="menu-item" onclick="showTool('lorem')"><i class="fas fa-paragraph"></i> Lorem Ipsum</div>
+            
+            <div class="menu-group-title">Yardımcılar</div>
+            <div class="menu-item" onclick="showTool('unit')"><i class="fas fa-balance-scale"></i> Birim Çevirici</div>
             <div class="menu-item" onclick="showTool('color')"><i class="fas fa-palette"></i> Renk Seçici</div>
         </div>
         <div style="margin-top: auto; padding: 20px; color: #444; font-size: 0.75rem;">
@@ -204,24 +234,24 @@
                                 <input type="text" id="qrData" value="https://odhun.com" oninput="updateQR()">
                             </div>
                             <div class="input-group">
-                                <label>Hata Düzeltme Seviyesi (Logo için H önerilir)</label>
+                                <label>Hata Düzeltme (Logo için H seçin)</label>
                                 <select id="qrEcc" onchange="updateQR()">
-                                    <option value="L">L - Düşük (%7)</option>
-                                    <option value="M">M - Orta (%15)</option>
-                                    <option value="Q" selected>Q - Yüksek (%25)</option>
-                                    <option value="H">H - En Yüksek (%30)</option>
+                                    <option value="L">L - Düşük</option>
+                                    <option value="M">M - Orta</option>
+                                    <option value="Q" selected>Q - Yüksek</option>
+                                    <option value="H">H - En Yüksek</option>
                                 </select>
                             </div>
                         </div>
                     </details>
 
                     <details>
-                        <summary>2. Nokta & Renkler</summary>
+                        <summary>2. Renkler & Şekiller</summary>
                         <div class="details-content">
                             <div class="input-group">
                                 <label>Nokta Şekli</label>
                                 <select id="qrDotsType" onchange="updateQR()">
-                                    <option value="square">Kare (Klasik)</option>
+                                    <option value="square">Kare</option>
                                     <option value="dots">Noktalı</option>
                                     <option value="rounded">Yuvarlak</option>
                                     <option value="classy">Zarif</option>
@@ -229,34 +259,23 @@
                                     <option value="extra-rounded">Ekstra Yuvarlak</option>
                                 </select>
                             </div>
-                            <div class="input-group">
-                                <label>Renk Tipi</label>
-                                <select id="qrColorType" onchange="updateQR()">
-                                    <option value="single">Tek Renk</option>
-                                    <option value="gradient">Gradyan (Geçişli)</option>
-                                </select>
-                            </div>
                             <div class="color-row">
                                 <label>Ana Renk</label>
                                 <input type="color" id="qrColor1" value="#000000" oninput="updateQR()">
                             </div>
-                            <div class="color-row" id="gradColorRow" style="display:none;">
-                                <label>İkinci Renk (Gradyan)</label>
-                                <input type="color" id="qrColor2" value="#ff0000" oninput="updateQR()">
-                            </div>
                             <div class="color-row">
-                                <label>Arka Plan Rengi</label>
+                                <label>Arka Plan</label>
                                 <input type="color" id="qrBgColor" value="#ffffff" oninput="updateQR()">
                             </div>
                         </div>
                     </details>
 
                     <details>
-                        <summary>3. Köşe Tasarımı (Gözler)</summary>
+                        <summary>3. Göz (Köşe) Tasarımı</summary>
                         <div class="details-content">
                             <div class="row">
                                 <div class="col input-group">
-                                    <label>Dış Çerçeve Şekli</label>
+                                    <label>Dış Çerçeve</label>
                                     <select id="qrCornerSquareType" onchange="updateQR()">
                                         <option value="">Otomatik</option>
                                         <option value="square">Kare</option>
@@ -265,7 +284,7 @@
                                     </select>
                                 </div>
                                 <div class="col input-group">
-                                    <label>İç Nokta Şekli</label>
+                                    <label>İç Nokta</label>
                                     <select id="qrCornerDotType" onchange="updateQR()">
                                         <option value="">Otomatik</option>
                                         <option value="square">Kare</option>
@@ -274,81 +293,151 @@
                                 </div>
                             </div>
                             <div class="color-row">
-                                <label>Dış Çerçeve Rengi</label>
+                                <label>Dış Renk</label>
                                 <input type="color" id="qrCornerSquareColor" value="#000000" oninput="updateQR()">
                             </div>
                             <div class="color-row">
-                                <label>İç Nokta Rengi</label>
+                                <label>İç Renk</label>
                                 <input type="color" id="qrCornerDotColor" value="#000000" oninput="updateQR()">
                             </div>
                         </div>
                     </details>
 
                     <details>
-                        <summary>4. Logo Ekle</summary>
+                        <summary>4. Logo</summary>
                         <div class="details-content">
                             <input type="file" id="qrLogoInput" accept="image/*" onchange="handleLogoUpload(event)" style="margin-bottom:10px;">
-                            <div class="input-group">
-                                <label>Logo Boyutu</label>
-                                <input type="range" id="qrLogoSize" min="0.1" max="0.5" step="0.05" value="0.4" oninput="updateQR()">
-                            </div>
-                            <button class="action-btn" onclick="clearLogo()" style="background:#333; color:#fff;">Logoyu Kaldır</button>
+                            <button class="action-btn secondary" onclick="clearLogo()">Logoyu Kaldır</button>
                         </div>
                     </details>
                 </div>
 
                 <div class="qr-preview">
                     <div id="canvas"></div>
-                    <div class="input-group" style="width:100%; margin-top:15px;">
-                        <label>Dosya Formatı</label>
-                        <select id="dlFormat">
-                            <option value="png">PNG (Önerilen)</option>
-                            <option value="jpeg">JPEG</option>
-                            <option value="webp">WEBP</option>
-                            <option value="svg">SVG (Vektör)</option>
-                        </select>
-                    </div>
                     <button class="action-btn" onclick="downloadQR()">
-                        <i class="fas fa-download"></i> İNDİR
+                        <i class="fas fa-download"></i> PNG İndir
                     </button>
                 </div>
             </div>
         </div>
 
         <div id="tool-image" class="tool-container">
-            <h2><i class="fas fa-image"></i> Resim Formatı Çevirici</h2>
+            <h2><i class="fas fa-image"></i> Resim Çevirici</h2>
             <div class="file-drop" onclick="document.getElementById('fileInput').click()">
-                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 10px;"></i><br>Resim seçmek için tıklayın
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem;"></i><br>Resim Seçin
                 <input type="file" id="fileInput" accept="image/*" style="display: none" onchange="loadImage(event)">
             </div>
             <div class="input-group" id="convertOptions" style="display:none;">
                 <label>Hedef Format</label>
                 <select id="formatSelect">
-                    <option value="image/jpeg">JPG (JPEG)</option>
+                    <option value="image/jpeg">JPG</option>
                     <option value="image/png">PNG</option>
                     <option value="image/webp">WEBP</option>
                 </select>
-                <br><br>
                 <img id="previewImg">
-                <br><br>
                 <button class="action-btn" onclick="convertImage()"><i class="fas fa-sync-alt"></i> Dönüştür</button>
             </div>
         </div>
 
-        <div id="tool-base64" class="tool-container">
-            <h2><i class="fas fa-code"></i> Base64 Çevirici</h2>
-            <textarea id="b64Input" rows="5" placeholder="Metni buraya yapıştırın..."></textarea>
-            <div class="row" style="margin-top:10px;">
-                <button class="action-btn" onclick="toBase64()"><i class="fas fa-lock"></i> Şifrele</button>
-                <button class="action-btn" style="background:#333; color:#fff;" onclick="fromBase64()"><i class="fas fa-lock-open"></i> Çöz</button>
+        <div id="tool-gradient" class="tool-container">
+            <h2><i class="fas fa-fill-drip"></i> Gradyan Oluşturucu</h2>
+            <div class="gradient-preview" id="gradPreview"></div>
+            <div class="row">
+                <div class="col"><label>Renk 1</label><input type="color" id="gradC1" value="#ffa500" style="width:100%; height:50px;" oninput="updateGradient()"></div>
+                <div class="col"><label>Renk 2</label><input type="color" id="gradC2" value="#ff0000" style="width:100%; height:50px;" oninput="updateGradient()"></div>
+                <div class="col"><label>Yön</label>
+                    <select id="gradDir" onchange="updateGradient()" style="height:50px;">
+                        <option value="to right">Sağa</option>
+                        <option value="to bottom">Aşağı</option>
+                        <option value="to bottom right">Çapraz</option>
+                        <option value="circle">Radyal</option>
+                    </select>
+                </div>
             </div>
-            <textarea id="b64Output" rows="5" readonly style="color:var(--accent); margin-top:20px;" placeholder="Sonuç buraya gelecek..."></textarea>
+            <div style="margin-top:20px;">
+                <label>CSS Kodu (Kopyalamak için tıkla)</label>
+                <div class="code-block" id="gradCode" onclick="copyText(this)"></div>
+            </div>
+        </div>
+
+        <div id="tool-case" class="tool-container">
+            <h2><i class="fas fa-text-height"></i> Metin Dönüştürücü</h2>
+            <textarea id="caseInput" rows="5" placeholder="Metni buraya yazın..."></textarea>
+            <div class="btn-group">
+                <button class="action-btn secondary" onclick="changeCase('upper')">BÜYÜK HARF</button>
+                <button class="action-btn secondary" onclick="changeCase('lower')">küçük harf</button>
+                <button class="action-btn secondary" onclick="changeCase('title')">Başlık Hali</button>
+                <button class="action-btn secondary" onclick="changeCase('sentence')">Cümle düzeni.</button>
+                <button class="action-btn secondary" onclick="changeCase('reverse')">sreT liK</button>
+            </div>
+        </div>
+
+        <div id="tool-list" class="tool-container">
+            <h2><i class="fas fa-list-ol"></i> Liste Düzenleyici</h2>
+            <p class="desc">Her satıra bir öğe gelecek şekilde listenizi yapıştırın.</p>
+            <textarea id="listInput" rows="8" placeholder="Elma&#10;Armut&#10;Elma&#10;Kiraz"></textarea>
+            <div class="btn-group">
+                <button class="action-btn" onclick="processList('sortAZ')"><i class="fas fa-sort-alpha-down"></i> A-Z Sırala</button>
+                <button class="action-btn" onclick="processList('sortZA')"><i class="fas fa-sort-alpha-up"></i> Z-A Sırala</button>
+                <button class="action-btn" onclick="processList('unique')"><i class="fas fa-fingerprint"></i> Tekrarları Sil</button>
+                <button class="action-btn" onclick="processList('shuffle')"><i class="fas fa-random"></i> Karıştır</button>
+            </div>
+        </div>
+
+        <div id="tool-text" class="tool-container">
+            <h2><i class="fas fa-font"></i> Kelime Sayacı</h2>
+            <textarea id="textInput" rows="8" placeholder="Metni buraya yapıştırın..." oninput="analyzeText()"></textarea>
+            <div class="stats-row">
+                <div class="stat-box"><span class="stat-num" id="charCount">0</span><span class="stat-label">Karakter</span></div>
+                <div class="stat-box"><span class="stat-num" id="wordCount">0</span><span class="stat-label">Kelime</span></div>
+            </div>
+        </div>
+
+        <div id="tool-json" class="tool-container">
+            <h2><i class="fas fa-code"></i> JSON Formatlayıcı</h2>
+            <textarea id="jsonInput" rows="8" placeholder='{"ornek":"veri"}' style="font-family:monospace;"></textarea>
+            <div class="btn-group">
+                <button class="action-btn" onclick="formatJSON(true)">Güzelleştir (Beautify)</button>
+                <button class="action-btn secondary" onclick="formatJSON(false)">Sıkıştır (Minify)</button>
+            </div>
+        </div>
+
+        <div id="tool-base64" class="tool-container">
+            <h2><i class="fas fa-lock"></i> Base64 Çevirici</h2>
+            <textarea id="b64Input" rows="4"></textarea>
+            <div class="row" style="margin-top:10px;">
+                <button class="action-btn" onclick="toBase64()">Şifrele</button>
+                <button class="action-btn secondary" onclick="fromBase64()">Çöz</button>
+            </div>
+            <textarea id="b64Output" rows="4" readonly style="color:var(--accent); margin-top:20px;"></textarea>
+        </div>
+
+        <div id="tool-hash" class="tool-container">
+            <h2><i class="fas fa-fingerprint"></i> Hash Üretici</h2>
+            <input type="text" id="hashInput" placeholder="Metni girin..." oninput="generateHash()">
+            <div style="margin-top:20px;">
+                <label>MD5 (Simüle)</label>
+                <input type="text" id="hashMD5" readonly>
+                <label style="margin-top:10px;">SHA-1</label>
+                <input type="text" id="hashSHA1" readonly>
+                <label style="margin-top:10px;">SHA-256</label>
+                <input type="text" id="hashSHA256" readonly>
+            </div>
+        </div>
+
+        <div id="tool-lorem" class="tool-container">
+            <h2><i class="fas fa-paragraph"></i> Lorem Ipsum</h2>
+            <div class="input-group">
+                <label>Paragraf Sayısı</label>
+                <input type="number" id="loremCount" value="3" min="1" max="20">
+            </div>
+            <button class="action-btn" onclick="generateLorem()">Üret</button>
+            <textarea id="loremOutput" rows="8" style="margin-top:20px;"></textarea>
         </div>
 
         <div id="tool-unit" class="tool-container">
             <h2><i class="fas fa-balance-scale"></i> Birim Çevirici</h2>
             <div class="input-group">
-                <label>Dönüştürme Tipi</label>
                 <select id="unitType" onchange="updateUnitUI()">
                     <option value="len">Uzunluk (Metre - Feet)</option>
                     <option value="weight">Ağırlık (Kg - Lb)</option>
@@ -356,23 +445,8 @@
                 </select>
             </div>
             <div class="row">
-                <div class="col input-group">
-                    <label id="unitLabel1">Metre</label>
-                    <input type="number" id="unitInput" oninput="convertUnit()">
-                </div>
-                <div class="col input-group">
-                    <label id="unitLabel2">Feet</label>
-                    <input type="number" id="unitOutput" readonly style="background:#222; color:var(--accent);">
-                </div>
-            </div>
-        </div>
-
-        <div id="tool-text" class="tool-container">
-            <h2><i class="fas fa-font"></i> Kelime Sayacı</h2>
-            <textarea id="textInput" rows="10" placeholder="Metni buraya yapıştırın..." oninput="analyzeText()"></textarea>
-            <div class="stats-row">
-                <div class="stat-box"><span class="stat-num" id="charCount">0</span><span class="stat-label">Karakter</span></div>
-                <div class="stat-box"><span class="stat-num" id="wordCount">0</span><span class="stat-label">Kelime</span></div>
+                <div class="col input-group"><label id="unitLabel1">Metre</label><input type="number" id="unitInput" oninput="convertUnit()"></div>
+                <div class="col input-group"><label id="unitLabel2">Feet</label><input type="number" id="unitOutput" readonly style="background:#222; color:var(--accent);"></div>
             </div>
         </div>
 
@@ -393,9 +467,11 @@
     <div class="mobile-nav">
         <div class="nav-item active" onclick="showTool('qr', this)"><i class="fas fa-qrcode"></i></div>
         <div class="nav-item" onclick="showTool('image', this)"><i class="fas fa-image"></i></div>
-        <div class="nav-item" onclick="showTool('base64', this)"><i class="fas fa-code"></i></div>
-        <div class="nav-item" onclick="showTool('unit', this)"><i class="fas fa-balance-scale"></i></div>
+        <div class="nav-item" onclick="showTool('gradient', this)"><i class="fas fa-fill-drip"></i></div>
         <div class="nav-item" onclick="showTool('text', this)"><i class="fas fa-font"></i></div>
+        <div class="nav-item" onclick="showTool('json', this)"><i class="fas fa-code"></i></div>
+        <div class="nav-item" onclick="showTool('unit', this)"><i class="fas fa-balance-scale"></i></div>
+        <div class="nav-item" onclick="showTool('color', this)"><i class="fas fa-palette"></i></div>
     </div>
 
     <script>
@@ -403,13 +479,11 @@
         function showTool(toolId, mobileEl) {
             document.querySelectorAll('.tool-container').forEach(el => el.classList.remove('active'));
             document.getElementById('tool-' + toolId).classList.add('active');
-
+            
             document.querySelectorAll('.sidebar .menu-item').forEach(el => el.classList.remove('active'));
-            const ids = ['qr', 'image', 'base64', 'unit', 'text', 'color'];
-            const index = ids.indexOf(toolId);
-            if(index > -1 && document.querySelectorAll('.sidebar .menu-item')[index]) {
-                document.querySelectorAll('.sidebar .menu-item')[index].classList.add('active');
-            }
+            // Basitçe ilgili menüyü aktif yap (Manuel eşleştirme yerine class araması yapılabilir ama bu hızlı çözüm)
+            const sidebarLink = document.querySelector(`.sidebar .menu-item[onclick*="'${toolId}'"]`);
+            if(sidebarLink) sidebarLink.classList.add('active');
 
             if (mobileEl) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -417,140 +491,130 @@
             }
         }
 
-        // --- GELİŞMİŞ QR KOD ---
-        let qrCode;
-        let qrLogo = null;
-
-        function initQR() {
+        // --- 1. QR STUDIO ---
+        let qrCode, qrLogo = null;
+        window.onload = () => {
             qrCode = new QRCodeStyling({
-                width: 300, height: 300, 
-                data: "https://odhun.com",
-                image: "",
-                dotsOptions: { color: "#000", type: "square" },
-                backgroundOptions: { color: "#fff" },
-                imageOptions: { crossOrigin: "anonymous", margin: 10 }
+                width: 250, height: 250, data: "https://odhun.com",
+                image: "", dotsOptions: { color: "#000", type: "square" },
+                backgroundOptions: { color: "#fff" }
             });
             qrCode.append(document.getElementById("canvas"));
-        }
-
+            updateGradient(); // Gradyan başlat
+        };
         function updateQR() {
             const data = document.getElementById('qrData').value;
-            const dotsType = document.getElementById('qrDotsType').value;
-            const colorType = document.getElementById('qrColorType').value;
-            const color1 = document.getElementById('qrColor1').value;
-            const color2 = document.getElementById('qrColor2').value;
-            const bgColor = document.getElementById('qrBgColor').value;
-            const cornerSquareType = document.getElementById('qrCornerSquareType').value;
-            const cornerDotType = document.getElementById('qrCornerDotType').value;
-            const cornerSquareColor = document.getElementById('qrCornerSquareColor').value;
-            const cornerDotColor = document.getElementById('qrCornerDotColor').value;
-            const logoSize = document.getElementById('qrLogoSize').value;
+            const color = document.getElementById('qrColor1').value;
+            const bg = document.getElementById('qrBgColor').value;
+            const dots = document.getElementById('qrDotsType').value;
+            const csT = document.getElementById('qrCornerSquareType').value;
+            const cdT = document.getElementById('qrCornerDotType').value;
+            const csC = document.getElementById('qrCornerSquareColor').value;
+            const cdC = document.getElementById('qrCornerDotColor').value;
             const ecc = document.getElementById('qrEcc').value;
-
-            // Gradyan Yönetimi
-            document.getElementById('gradColorRow').style.display = (colorType === 'gradient') ? 'flex' : 'none';
-            
-            let dotsColorOptions = {};
-            if(colorType === 'gradient') {
-                dotsColorOptions = { type: "linear", colorStops: [{ offset: 0, color: color1 }, { offset: 1, color: color2 }] };
-            } else {
-                dotsColorOptions = { color: color1 };
-            }
+            const size = document.getElementById('qrLogoSize').value;
 
             qrCode.update({
                 data: data,
                 qrOptions: { errorCorrectionLevel: ecc },
-                dotsOptions: { ...dotsColorOptions, type: dotsType },
-                backgroundOptions: { color: bgColor },
-                cornersSquareOptions: { type: cornerSquareType || undefined, color: cornerSquareColor },
-                cornersDotOptions: { type: cornerDotType || undefined, color: cornerDotColor },
+                dotsOptions: { color: color, type: dots },
+                backgroundOptions: { color: bg },
+                cornersSquareOptions: { type: csT || undefined, color: csC },
+                cornersDotOptions: { type: cdT || undefined, color: cdC },
                 image: qrLogo,
-                imageOptions: { imageSize: parseFloat(logoSize), margin: 5 }
+                imageOptions: { imageSize: parseFloat(size), margin: 5 }
             });
         }
-
         function handleLogoUpload(e) {
             const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = () => { qrLogo = reader.result; updateQR(); };
-                reader.readAsDataURL(file);
-            }
+            if(file) { const r = new FileReader(); r.onload = () => { qrLogo = r.result; updateQR(); }; r.readAsDataURL(file); }
         }
-        
-        function clearLogo() {
-            qrLogo = null;
-            document.getElementById('qrLogoInput').value = "";
-            updateQR();
-        }
+        function clearLogo() { qrLogo = null; document.getElementById('qrLogoInput').value = ""; updateQR(); }
+        function downloadQR() { qrCode.download({ name: "odhun-qr", extension: document.getElementById('dlFormat').value }); }
 
-        function downloadQR() { 
-            const ext = document.getElementById('dlFormat').value;
-            qrCode.download({ name: "odhun-qr", extension: ext }); 
-        }
-
-        // --- DİĞER ARAÇLAR ---
+        // --- 2. RESİM ---
         let loadedImage = null;
-        function loadImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        loadedImage = img;
-                        const preview = document.getElementById('previewImg');
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                        document.getElementById('convertOptions').style.display = 'block';
-                    }
-                    img.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
+        function loadImage(e) {
+            const f = e.target.files[0];
+            if(f) { const r = new FileReader(); r.onload = (ev) => { const i = new Image(); i.onload = () => { loadedImage = i; document.getElementById('previewImg').src = ev.target.result; document.getElementById('previewImg').style.display='block'; document.getElementById('convertOptions').style.display='block'; }; i.src = ev.target.result; }; r.readAsDataURL(f); }
         }
         function convertImage() {
-            if (!loadedImage) return;
-            const canvas = document.createElement('canvas');
-            canvas.width = loadedImage.width; canvas.height = loadedImage.height;
-            const ctx = canvas.getContext('2d'); ctx.drawImage(loadedImage, 0, 0);
-            const format = document.getElementById('formatSelect').value;
-            const link = document.createElement('a');
-            link.download = `odhun-image.${format.split('/')[1]}`;
-            link.href = canvas.toDataURL(format);
-            link.click();
+            if(!loadedImage) return;
+            const c = document.createElement('canvas'); c.width=loadedImage.width; c.height=loadedImage.height;
+            c.getContext('2d').drawImage(loadedImage,0,0);
+            const fmt = document.getElementById('formatSelect').value;
+            const a = document.createElement('a'); a.download = `odhun-image.${fmt.split('/')[1]}`; a.href = c.toDataURL(fmt); a.click();
         }
 
-        function toBase64() {
-            const input = document.getElementById('b64Input').value;
-            document.getElementById('b64Output').value = btoa(unescape(encodeURIComponent(input)));
+        // --- 3. GRADYAN ---
+        function updateGradient() {
+            const c1 = document.getElementById('gradC1').value;
+            const c2 = document.getElementById('gradC2').value;
+            const dir = document.getElementById('gradDir').value;
+            const css = dir === 'circle' ? `radial-gradient(circle, ${c1}, ${c2})` : `linear-gradient(${dir}, ${c1}, ${c2})`;
+            document.getElementById('gradPreview').style.background = css;
+            document.getElementById('gradCode').innerText = `background: ${css};`;
         }
-        function fromBase64() {
-            const input = document.getElementById('b64Input').value;
-            try { document.getElementById('b64Output').value = decodeURIComponent(escape(atob(input))); } 
-            catch(e) { document.getElementById('b64Output').value = "Hata: Geçersiz Base64 formatı"; }
+        function copyText(el) { navigator.clipboard.writeText(el.innerText); alert('Kopyalandı!'); }
+
+        // --- 4. METİN DÖNÜŞTÜR ---
+        function changeCase(type) {
+            const el = document.getElementById('caseInput');
+            const txt = el.value;
+            if(type === 'upper') el.value = txt.toUpperCase();
+            if(type === 'lower') el.value = txt.toLowerCase();
+            if(type === 'reverse') el.value = txt.split('').reverse().join('');
+            if(type === 'title') el.value = txt.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            if(type === 'sentence') el.value = txt.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
         }
 
-        function updateUnitUI() {
-            const type = document.getElementById('unitType').value;
-            const l1 = document.getElementById('unitLabel1');
-            const l2 = document.getElementById('unitLabel2');
-            if(type === 'len') { l1.innerText="Metre"; l2.innerText="Feet"; }
-            else if(type === 'weight') { l1.innerText="Kilogram"; l2.innerText="Pound (lb)"; }
-            else { l1.innerText="Celsius (°C)"; l2.innerText="Fahrenheit (°F)"; }
-            convertUnit();
+        // --- 5. LİSTE ---
+        function processList(type) {
+            const el = document.getElementById('listInput');
+            let arr = el.value.split('\n').filter(line => line.trim() !== '');
+            if(type === 'sortAZ') arr.sort();
+            if(type === 'sortZA') arr.sort().reverse();
+            if(type === 'unique') arr = [...new Set(arr)];
+            if(type === 'shuffle') arr.sort(() => Math.random() - 0.5);
+            el.value = arr.join('\n');
         }
-        function convertUnit() {
-            const type = document.getElementById('unitType').value;
-            const val = parseFloat(document.getElementById('unitInput').value);
-            const out = document.getElementById('unitOutput');
-            if(isNaN(val)) { out.value = ""; return; }
+
+        // --- 7. JSON ---
+        function formatJSON(pretty) {
+            const el = document.getElementById('jsonInput');
+            try { const o = JSON.parse(el.value); el.value = JSON.stringify(o, null, pretty ? 4 : 0); } catch(e) { alert("Geçersiz JSON!"); }
+        }
+
+        // --- 8. BASE64 ---
+        function toBase64() { document.getElementById('b64Output').value = btoa(unescape(encodeURIComponent(document.getElementById('b64Input').value))); }
+        function fromBase64() { try { document.getElementById('b64Output').value = decodeURIComponent(escape(atob(document.getElementById('b64Input').value))); } catch(e){document.getElementById('b64Output').value="Hata";} }
+
+        // --- 9. HASH ---
+        async function generateHash() {
+            const msg = document.getElementById('hashInput').value;
+            const msgBuffer = new TextEncoder().encode(msg);
             
-            if(type === 'len') out.value = (val * 3.28084).toFixed(2);
-            else if(type === 'weight') out.value = (val * 2.20462).toFixed(2);
-            else out.value = ((val * 9/5) + 32).toFixed(1);
+            // SHA-1
+            const sha1 = await crypto.subtle.digest('SHA-1', msgBuffer);
+            document.getElementById('hashSHA1').value = buf2hex(sha1);
+            
+            // SHA-256
+            const sha256 = await crypto.subtle.digest('SHA-256', msgBuffer);
+            document.getElementById('hashSHA256').value = buf2hex(sha256);
+
+            // MD5 (Simple Simulation for Client-Side without library)
+            document.getElementById('hashMD5').value = "MD5 tarayıcıda yerel desteklenmez (SHA kullanın)";
+        }
+        function buf2hex(buffer) { return [...new Uint8Array(buffer)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+
+        // --- 10. LOREM ---
+        function generateLorem() {
+            const count = document.getElementById('loremCount').value;
+            const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            document.getElementById('loremOutput').value = Array(parseInt(count)).fill(lorem).join('\n\n');
         }
 
+        // --- DİĞER ---
         function analyzeText() {
             const t = document.getElementById('textInput').value;
             document.getElementById('charCount').innerText = t.length;
@@ -563,8 +627,17 @@
             const r = parseInt(c.substr(1,2),16), g = parseInt(c.substr(3,2),16), b = parseInt(c.substr(5,2),16);
             document.getElementById('rgbVal').innerText = `rgb(${r}, ${g}, ${b})`;
         }
-
-        window.onload = () => { initQR(); };
+        function updateUnitUI() { convertUnit(); }
+        function convertUnit() {
+            const t = document.getElementById('unitType').value;
+            const v = parseFloat(document.getElementById('unitInput').value);
+            const o = document.getElementById('unitOutput');
+            const l1=document.getElementById('unitLabel1'), l2=document.getElementById('unitLabel2');
+            
+            if(t==='len') { l1.innerText="Metre"; l2.innerText="Feet"; o.value=(v*3.28084).toFixed(2); }
+            if(t==='weight') { l1.innerText="Kg"; l2.innerText="Lb"; o.value=(v*2.20462).toFixed(2); }
+            if(t==='temp') { l1.innerText="°C"; l2.innerText="°F"; o.value=((v*9/5)+32).toFixed(1); }
+        }
     </script>
 
 </body>
