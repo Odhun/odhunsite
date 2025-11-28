@@ -11,11 +11,9 @@
 <style>
     :root {
         --bg: #000000;
-        --panel: rgba(10, 20, 10, 0.9);
-        --matrix: #00ff41;
+        --matrix: #00ff41; /* Matrix Yeşili */
         --matrix-dim: #003b00;
         --text: #e0e0e0;
-        --border: #00ff41;
         --sidebar-width: 260px;
     }
 
@@ -27,15 +25,17 @@
         overflow: hidden;
     }
 
+    /* MATRIX BACKGROUND */
     #matrixCanvas {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         z-index: 0; opacity: 0.15; pointer-events: none;
     }
 
+    /* SIDEBAR */
     .sidebar {
         width: var(--sidebar-width); background: #050505; 
         border-right: 1px solid var(--matrix-dim); display: flex; flex-direction: column;
-        flex-shrink: 0; z-index: 100; position: relative;
+        flex-shrink: 0; z-index: 100;
     }
 
     .logo-area {
@@ -53,46 +53,60 @@
         text-transform: uppercase;
     }
     .menu-item.active { 
-        background: rgba(0, 255, 65, 0.1); border: 1px solid var(--matrix);
+        background: rgba(0, 255, 65, 0.1); 
+        border: 1px solid var(--matrix);
         box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
     }
 
+    /* MAIN CONTENT */
     .main-content {
         flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
         position: relative; z-index: 10;
     }
 
-    /* REACTOR GAUGE */
+    /* --- YENİ HIZ GÖSTERGESİ (SVG TABANLI - KAYMA YAPMAZ) --- */
     .gauge-container {
-        position: relative; width: 350px; height: 350px;
+        position: relative; width: 320px; height: 320px;
         display: flex; align-items: center; justify-content: center;
         margin-bottom: 30px;
     }
 
-    .gauge-circle {
-        width: 100%; height: 100%; border-radius: 50%;
-        border: 2px solid var(--matrix-dim); position: absolute;
-        box-shadow: 0 0 20px var(--matrix-dim), inset 0 0 20px var(--matrix-dim);
+    /* SVG Ayarları */
+    .gauge-svg {
+        transform: rotate(-90deg); /* Başlangıcı tepeye al */
+        width: 100%; height: 100%;
     }
 
-    .progress-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
-    .progress-ring__circle {
-        stroke: var(--matrix); stroke-width: 8; fill: transparent;
-        stroke-dasharray: 942; stroke-dashoffset: 942; /* 2*PI*150 */
-        transition: stroke-dashoffset 0.3s;
-        filter: drop-shadow(0 0 5px var(--matrix));
+    .gauge-track {
+        fill: none; stroke: var(--matrix-dim); stroke-width: 15;
     }
 
-    .speed-info { z-index: 10; text-align: center; }
-    .speed-value { font-size: 5rem; color: #fff; text-shadow: 0 0 20px #fff; line-height: 1; }
-    .speed-unit { font-size: 1.2rem; color: var(--matrix); letter-spacing: 2px; }
-    .speed-label { font-size: 0.9rem; color: #666; margin-top: 5px; }
+    .gauge-progress {
+        fill: none; stroke: var(--matrix); stroke-width: 15;
+        stroke-dasharray: 880; /* Çemberin çevresi (2 * pi * r) -> r=140 için ~880 */
+        stroke-dashoffset: 880; /* Başlangıçta boş */
+        transition: stroke-dashoffset 0.1s linear; /* Akıcı animasyon */
+        filter: drop-shadow(0 0 8px var(--matrix));
+        stroke-linecap: round;
+    }
 
-    /* STATS */
+    /* Ortadaki Yazılar */
+    .speed-info {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        text-align: center; width: 100%;
+    }
+    .speed-value {
+        font-size: 4.5rem; color: #fff; text-shadow: 0 0 20px #fff; line-height: 1;
+    }
+    .speed-unit { font-size: 1.5rem; color: var(--matrix); letter-spacing: 2px; }
+    .speed-label { font-size: 1rem; color: #888; margin-top: 10px; text-transform: uppercase; }
+
+    /* STATS GRID */
     .stats-grid {
         display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
         width: 90%; max-width: 900px; margin-bottom: 40px;
     }
+
     .stat-box {
         background: rgba(0, 20, 0, 0.6); border: 1px solid var(--matrix-dim);
         padding: 15px; text-align: center; backdrop-filter: blur(5px);
@@ -105,19 +119,23 @@
         padding: 15px 60px; background: transparent; color: var(--matrix);
         border: 2px solid var(--matrix); font-family: 'Share Tech Mono', monospace;
         font-size: 1.5rem; cursor: pointer; transition: 0.3s; text-transform: uppercase;
-        letter-spacing: 3px; position: relative; overflow: hidden;
+        letter-spacing: 3px;
     }
-    .start-btn:hover { background: var(--matrix); color: #000; box-shadow: 0 0 30px var(--matrix); }
-    .start-btn:disabled { opacity: 0.5; cursor: wait; }
+    .start-btn:hover {
+        background: var(--matrix); color: #000; box-shadow: 0 0 30px var(--matrix);
+    }
+    .start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* TERMINAL LOG */
     .terminal-log {
-        position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-        color: #0f0; font-size: 0.8rem; opacity: 0.7; width: 100%; text-align: center;
+        position: absolute; bottom: 20px; width: 100%; text-align: center;
+        color: #0f0; font-size: 0.8rem; opacity: 0.7;
     }
 
+    /* MOBİL */
     @media (max-width: 900px) {
         .sidebar { display: none; }
-        .gauge-container { width: 280px; height: 280px; margin-top: 20px; }
+        .gauge-container { width: 260px; height: 260px; margin-top: 20px; }
         .speed-value { font-size: 3.5rem; }
         .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     }
@@ -132,21 +150,23 @@
         <div class="menu-list">
             <div class="menu-item active"><i class="fas fa-tachometer-alt"></i> Hız Testi</div>
             <div style="margin-top: 20px; padding: 20px; color: #444; font-size: 0.7rem;">
-                > SYSTEM READY<br>> SECURE CONNECTION<br>> 28MB PACKET SIZE
+                > SYSTEM READY<br>> PROTOCOL: HTTPS<br>> SECURE CDN
             </div>
         </div>
     </div>
 
     <div class="main-content">
+        
         <div class="gauge-container">
-            <div class="gauge-circle"></div>
-            <svg class="progress-ring" width="350" height="350">
-                <circle class="progress-ring__circle" stroke="white" stroke-width="8" fill="transparent" r="150" cx="175" cy="175"/>
+            <svg class="gauge-svg" viewBox="0 0 300 300">
+                <circle class="gauge-track" cx="150" cy="150" r="140" />
+                <circle class="gauge-progress" id="gaugeProgress" cx="150" cy="150" r="140" />
             </svg>
+            
             <div class="speed-info">
                 <div class="speed-value" id="mainSpeed">0.0</div>
                 <div class="speed-unit">Mbps</div>
-                <div class="speed-label" id="processLabel">BEKLENİYOR</div>
+                <div class="speed-label" id="processLabel">HAZIR</div>
             </div>
         </div>
 
@@ -161,7 +181,7 @@
             </div>
             <div class="stat-box">
                 <div class="stat-title"><i class="fas fa-globe"></i> IP ADRESİ</div>
-                <div class="stat-val" id="ipResult">Taraniyor...</div>
+                <div class="stat-val" id="ipResult">...</div>
             </div>
             <div class="stat-box">
                 <div class="stat-title"><i class="fas fa-map-marker-alt"></i> KONUM</div>
@@ -169,7 +189,7 @@
             </div>
         </div>
 
-        <button class="start-btn" onclick="startTest()" id="startBtn">BAŞLAT</button>
+        <button class="start-btn" onclick="startFullTest()" id="startBtn">BAŞLAT</button>
         <div class="terminal-log" id="terminalLog">> System Idle...</div>
     </div>
 
@@ -177,7 +197,14 @@
         // --- MATRIX EFEKTİ ---
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
         const letters = "01";
         const fontSize = 14;
         const columns = canvas.width / fontSize;
@@ -186,7 +213,9 @@
         function drawMatrix() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
+            ctx.fillStyle = "#0f0";
+            ctx.font = fontSize + "px monospace";
+
             for (let i = 0; i < drops.length; i++) {
                 const text = letters.charAt(Math.floor(Math.random() * letters.length));
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -196,129 +225,135 @@
         }
         setInterval(drawMatrix, 50);
 
-        // --- GÖSTERGE AYARLARI ---
-        const circle = document.querySelector('.progress-ring__circle');
-        const radius = circle.r.baseVal.value;
-        const circumference = radius * 2 * Math.PI;
-        circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        circle.style.strokeDashoffset = circumference;
-
-        function setProgress(percent) {
-            const offset = circumference - (percent / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-        }
-
-        // --- TEST MANTIĞI ---
-        // Büyük Dosya: 28MB (Wikimedia)
-        const TEST_FILE_URL = "https://upload.wikimedia.org/wikipedia/commons/f/ff/Piz_Bernina_royal_panorama.jpg";
-
+        // --- UI ELEMENTLERİ ---
+        const gaugeProgress = document.getElementById('gaugeProgress');
         const mainSpeed = document.getElementById('mainSpeed');
         const processLabel = document.getElementById('processLabel');
         const termLog = document.getElementById('terminalLog');
         const startBtn = document.getElementById('startBtn');
 
-        window.onload = fetchIPInfo;
+        // Çemberin Çevresi (2 * pi * r) -> r=140 için
+        const CIRCUMFERENCE = 2 * Math.PI * 140;
+        gaugeProgress.style.strokeDasharray = CIRCUMFERENCE;
+        gaugeProgress.style.strokeDashoffset = CIRCUMFERENCE;
 
-        async function fetchIPInfo() {
-            try {
-                termLog.innerText = "> Tracing IP address...";
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                document.getElementById('ipResult').innerText = data.ip;
-                document.getElementById('locResult').innerText = `${data.city}, ${data.country_code}`;
-                termLog.innerText = "> Target locked: " + data.ip;
-            } catch(e) {
-                document.getElementById('ipResult').innerText = "Gizli";
-                document.getElementById('locResult').innerText = "Bilinmiyor";
-            }
+        function setProgress(percent) {
+            const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
+            gaugeProgress.style.strokeDashoffset = offset;
         }
 
-        async function startTest() {
+        // --- IP BİLGİSİ ---
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('ipResult').innerText = data.ip;
+                document.getElementById('locResult').innerText = data.country_code;
+            }).catch(() => {
+                document.getElementById('ipResult').innerText = "Gizli";
+            });
+
+        // --- AKILLI HIZ TESTİ MOTORU ---
+        async function startFullTest() {
             startBtn.disabled = true;
             startBtn.innerText = "ÇALIŞIYOR";
-            
-            // 1. DOWNLOAD
+            setProgress(0);
+
+            // 1. DOWNLOAD TESTİ
             processLabel.innerText = "DOWNLOAD TEST";
-            termLog.innerText = "> Initiating 28MB packet download...";
+            termLog.innerText = "> Initializing secure download stream...";
             
-            // Simülasyonu başlat (Görsel efekt için)
-            let simVal = 0;
-            const simInterval = setInterval(() => {
-                simVal = Math.random() * 100;
-                setProgress(simVal);
-            }, 100);
+            const dlSpeed = await runSpeedTest(true); // true = download
+            document.getElementById('downResult').innerText = dlSpeed.toFixed(1) + " Mbps";
+            mainSpeed.innerText = dlSpeed.toFixed(1);
+
+            // 2. UPLOAD SİMÜLASYONU (Gerçek upload backend gerektirir)
+            processLabel.innerText = "UPLOAD TEST";
+            termLog.innerText = "> Uploading data packets...";
+            setProgress(0);
+            
+            // Upload, Download'un yaklaşık %20-40'ı gibidir
+            const ulFactor = 0.2 + Math.random() * 0.2; 
+            const targetUl = dlSpeed * ulFactor;
+            
+            await animateValue(targetUl);
+            document.getElementById('upResult').innerText = targetUl.toFixed(1) + " Mbps";
+
+            // BİTİŞ
+            processLabel.innerText = "TAMAMLANDI";
+            termLog.innerText = "> Test complete. Connection stable.";
+            startBtn.disabled = false;
+            startBtn.innerText = "TEKRARLA";
+            setProgress(100);
+        }
+
+        // GERÇEK İNDİRME TESTİ (STREAM READER)
+        async function runSpeedTest() {
+            // Unsplash'ten yüksek çözünürlüklü, hızlı bir görsel
+            const fileUrl = "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80";
+            // Cache'i engellemek için random parametre
+            const url = fileUrl + "&d=" + Date.now();
 
             try {
-                const downloadSpeed = await measureDownload();
-                clearInterval(simInterval);
+                const response = await fetch(url);
+                const reader = response.body.getReader();
+                const contentLength = +response.headers.get('Content-Length');
                 
-                // Sonucu Yaz
-                document.getElementById('downResult').innerText = downloadSpeed.toFixed(1) + " Mbps";
-                mainSpeed.innerText = downloadSpeed.toFixed(1);
-                setProgress(100); // Tamamlandı efekti
+                let receivedLength = 0;
+                let startTime = Date.now();
+                let lastSpeed = 0;
 
-                // 2. UPLOAD SİMÜLASYONU
-                // (Upload testi sunucu gerektirdiği için download hızına göre tahmini hesaplanır)
-                await new Promise(r => setTimeout(r, 1000)); // Bekle
-                processLabel.innerText = "UPLOAD TEST";
-                termLog.innerText = "> Uploading data to mainframe...";
-                setProgress(0);
+                while(true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
 
-                const uploadSpeed = await simulateUpload(downloadSpeed);
-                document.getElementById('upResult').innerText = uploadSpeed.toFixed(1) + " Mbps";
+                    receivedLength += value.length;
+                    let currentTime = Date.now();
+                    let duration = (currentTime - startTime) / 1000; // Saniye
 
-                // BİTİŞ
-                processLabel.innerText = "TAMAMLANDI";
-                mainSpeed.innerText = downloadSpeed.toFixed(1); // Ekranda Download hızı kalsın
-                termLog.innerText = "> Test complete. Connection stable.";
-                startBtn.disabled = false;
-                startBtn.innerText = "TEKRARLA";
-                setProgress(100);
+                    // Hız Hesapla: (Bytes * 8) / duration / 1000000 = Mbps
+                    let speedBps = (receivedLength * 8) / duration;
+                    let speedMbps = speedBps / 1000000;
+
+                    // Ekrana yaz (Anlık dalgalanma)
+                    mainSpeed.innerText = speedMbps.toFixed(1);
+                    
+                    // İbreyi hareket ettir (0-100 Mbps skalası varsayalım, üstüyse %100)
+                    let gaugePercent = (speedMbps / 100) * 100;
+                    if(gaugePercent > 100) gaugePercent = 100;
+                    setProgress(gaugePercent);
+
+                    lastSpeed = speedMbps;
+                }
+                return lastSpeed;
 
             } catch (error) {
-                clearInterval(simInterval);
                 console.error(error);
-                termLog.innerText = "> Error: Connection timed out.";
-                startBtn.disabled = false;
-                startBtn.innerText = "HATA";
+                termLog.innerText = "> Error: Connection interrupted.";
+                return 0;
             }
         }
 
-        async function measureDownload() {
-            const startTime = (new Date()).getTime();
-            
-            // Cache'i aşmak için random parametre ekle
-            const response = await fetch(TEST_FILE_URL + "?n=" + Math.random());
-            const blob = await response.blob(); // Dosyayı indir (RAM'e al)
-            
-            const endTime = (new Date()).getTime();
-            const duration = (endTime - startTime) / 1000; // Saniye
-            
-            const bitsLoaded = blob.size * 8; // Byte -> Bit
-            const speedBps = bitsLoaded / duration; // Bit per second
-            const speedMbps = speedBps / 1024 / 1024; // Megabit per second
-            
-            return speedMbps;
-        }
-
-        function simulateUpload(downloadSpeed) {
-            return new Promise((resolve) => {
-                // Türkiye standartlarında Upload genelde Download'un %10-%20'si gibidir.
-                // Fiberde bu oran artabilir. %15 ile %30 arası rastgele bir değer üretiyoruz.
-                const targetUpload = downloadSpeed * (Math.random() * (0.3 - 0.15) + 0.15);
+        // UPLOAD İÇİN SAYAÇ ANİMASYONU
+        function animateValue(target) {
+            return new Promise(resolve => {
                 let current = 0;
-                
+                const step = target / 20;
                 const interval = setInterval(() => {
-                    current += (targetUpload / 15); 
-                    let displayVal = current + (Math.random() * 2); 
-                    if (displayVal > targetUpload) displayVal = targetUpload;
+                    current += step;
+                    // Biraz rastgelelik ekle
+                    let display = current + (Math.random() * 2 - 1);
+                    if(display < 0) display = 0;
                     
-                    mainSpeed.innerText = displayVal.toFixed(1);
-                    setProgress((current / targetUpload) * 100);
+                    mainSpeed.innerText = display.toFixed(1);
+                    
+                    let p = (current / target) * 100;
+                    // Ters orantı yapalım görsel efekt için (Upload genelde yavaştır ama ibre dolu görünsün)
+                    setProgress(p);
 
-                    if (current >= targetUpload) {
+                    if (current >= target) {
                         clearInterval(interval);
-                        resolve(targetUpload);
+                        mainSpeed.innerText = target.toFixed(1);
+                        resolve();
                     }
                 }, 100);
             });
