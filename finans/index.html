@@ -34,8 +34,8 @@
     }
 
     .logo-area {
-        height: 70px; display: flex; align-items: center; padding: 0 20px;
-        font-size: 1.5rem; font-weight: 900; letter-spacing: -1px;
+        height: 50px; display: flex; align-items: center; padding: 0 20px;
+        font-size: 1.4rem; font-weight: 900; letter-spacing: -1px;
         border-bottom: 1px solid var(--border); color: #fff;
     }
     .logo-area span { color: var(--accent); margin-left: 2px; }
@@ -55,7 +55,13 @@
         overflow-y: auto; position: relative;
     }
 
-    /* HEADER */
+    /* KAYAN BANT ALANI (TICKER) */
+    .ticker-wrap {
+        height: 46px; background: #000; border-bottom: 1px solid var(--border);
+        overflow: hidden; flex-shrink: 0; width: 100%;
+    }
+
+    /* HEADER (EKLEME ALANI) */
     header {
         height: 70px; border-bottom: 1px solid var(--border); background: var(--bg-panel);
         display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
@@ -114,7 +120,7 @@
     }
     .btn-delete:hover { color: var(--danger); }
 
-    /* --- YENİ ÇEVİRİCİ BÖLÜMÜ --- */
+    /* CONVERTER SECTION */
     .converter-section {
         background: #161616; border-top: 1px solid var(--border);
         padding: 20px; margin-top: auto; flex-shrink: 0;
@@ -154,7 +160,7 @@
         .dashboard { grid-template-columns: 1fr; padding: 10px; }
         header { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
         .input-group { width: 100%; }
-        .converter-wrapper { flex-direction: column; gap: 15px; align-items: stretch; }
+        .converter-wrapper { flex-direction: column; gap: 10px; align-items: stretch; }
         .swap-btn { align-self: center; margin-top: 0; transform: rotate(90deg); }
         .swap-btn:hover { transform: rotate(270deg); }
     }
@@ -167,19 +173,37 @@
         <div class="menu-list">
             <div class="menu-item active"><i class="fas fa-th-large"></i> Portföyüm</div>
             <div style="margin-top:20px; padding:0 15px; font-size:0.8rem; color:#555;">
-                <p>SEMBOL REHBERİ:</p>
-                <ul style="padding-left:15px; line-height:1.8;">
-                    <li>Dolar: <b>USDTRY</b></li>
-                    <li>Euro: <b>EURTRY</b></li>
-                    <li>Altın: <b>XAUTRYG</b></li>
-                    <li>Bitcoin: <b>BTCUSD</b></li>
-                    <li>THY: <b>THYAO</b></li>
-                </ul>
+                İPUCU:<br>
+                Sembol eklerken tam kodu yazmayı deneyin.<br>
+                Örn: <b>THYAO</b>, <b>GARAN</b>, <b>BTCUSD</b>, <b>EURUSD</b>
             </div>
         </div>
     </div>
 
     <div class="main-content">
+        
+        <div class="ticker-wrap">
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {
+                "symbols": [
+                    { "proName": "FX_IDC:USDTRY", "title": "USD/TRY" },
+                    { "proName": "FX_IDC:EURTRY", "title": "EUR/TRY" },
+                    { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" },
+                    { "proName": "BITSTAMP:ETHUSD", "title": "Ethereum" },
+                    { "description": "Gram Altın", "proName": "FX_IDC:XAUTRYG" },
+                    { "description": "BIST 100", "proName": "BIST:XU100" }
+                ],
+                "showSymbolLogo": true,
+                "colorTheme": "dark",
+                "isTransparent": false,
+                "displayMode": "adaptive",
+                "locale": "tr"
+                }
+                </script>
+            </div>
+        </div>
         
         <header>
             <div class="input-group">
@@ -342,21 +366,15 @@
         // --- ÇEVİRİCİ MANTIĞI ---
         async function fetchRates() {
             try {
-                // USD Bazlı API (Tüm pariteler USD üzerinden hesaplanır)
                 const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
                 const data = await res.json();
                 rates = data.rates;
                 
-                // Altın ve BTC için manuel eklemeler (API'de yoksa yaklaşık değerler)
-                // Not: Ücretsiz API'lerde altın/btc olmayabilir, sabit oran veya başka api gerekebilir.
-                // Burada mantığı göstermek için manuel ekliyorum, canlı veri için Coingecko API eklenebilir.
-                rates.XAU = 1 / 2650; // 1 USD = X ons altın (Yaklaşık) -> Bunu gram TL'ye çevirmek daha sağlıklı olur
-                // Daha basit bir yöntem: Her şeyi TRY'ye çevirip oranlayalım.
-                
+                rates.XAU = 1 / 2650; // Yaklaşık ons/gram dengesi için basit değer
                 // BTC verisi için CoinGecko
                 const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
                 const btcData = await btcRes.json();
-                rates.BTC = 1 / btcData.bitcoin.usd; // 1 USD kaç BTC eder
+                rates.BTC = 1 / btcData.bitcoin.usd;
 
                 calculate();
             } catch (e) { console.log("Kur hatası"); }
@@ -368,25 +386,17 @@
             const currTwo = document.getElementById('currencyTwo').value;
             const resBox = document.getElementById('amountTwo');
 
-            if (!rates[currOne] && currOne !== 'XAU') return; // Altın özel hesaplanacaksa
+            if (!rates[currOne] && currOne !== 'XAU') return;
 
-            // Base: USD
-            // Formül: (Miktar / Kaynak_USD_Oranı) * Hedef_USD_Oranı
-            
             let rateOne = rates[currOne];
             let rateTwo = rates[currTwo];
 
-            // Altın için (Gram Altın TL ~ 3000 TL varsayalım API yoksa)
-            // Bu kısım basit tutuldu, tam entegrasyon için gold-api gerekir.
-            if(currOne === 'XAU') rateOne = 1 / (rates['TRY'] * 3000); // 1 Gram ~ 3000 TL (Örnek)
+            if(currOne === 'XAU') rateOne = 1 / (rates['TRY'] * 3000); 
             if(currTwo === 'XAU') rateTwo = 1 / (rates['TRY'] * 3000);
 
             if (!isNaN(amount) && rateOne && rateTwo) {
-                // USD'ye çevir -> Sonra hedefe çevir
                 const inUSD = amount / rateOne;
                 const result = inUSD * rateTwo;
-                
-                // Biçimlendirme (Kuruşlar vs)
                 resBox.value = result < 0.01 ? result.toFixed(6) : result.toFixed(2);
             }
         }
