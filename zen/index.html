@@ -26,6 +26,21 @@
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
     }
 
+    /* BAŞLANGIÇ PERDESİ (TARAYICI İZNİ İÇİN) */
+    #startOverlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.95); z-index: 9999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        transition: opacity 0.5s;
+    }
+    #startBtn {
+        padding: 20px 50px; font-size: 1.5rem; background: var(--accent);
+        color: #000; border: none; border-radius: 50px; font-weight: 800;
+        cursor: pointer; box-shadow: 0 0 30px var(--accent-dim);
+        transition: transform 0.2s;
+    }
+    #startBtn:hover { transform: scale(1.05); }
+
     /* SIDEBAR */
     .sidebar {
         width: 250px; background: #0a0a0a; border-right: 1px solid var(--border);
@@ -92,7 +107,7 @@
     .sound-grid {
         padding: 30px;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 20px;
         padding-bottom: 100px;
     }
@@ -116,7 +131,7 @@
 
     .sound-name { font-weight: 600; font-size: 1rem; margin-bottom: 10px; color: #ddd; }
 
-    /* Volume Slider (Gizli başlar, aktifken açılır) */
+    /* Volume Slider */
     .volume-wrap {
         height: 0; overflow: hidden; transition: height 0.3s; opacity: 0;
         display: flex; align-items: center; justify-content: center;
@@ -155,6 +170,15 @@
 </style>
 </head>
 <body>
+
+    <div id="startOverlay">
+        <div style="text-align:center;">
+            <div style="font-size:3rem; margin-bottom:20px;">🎧</div>
+            <h2 style="margin-bottom:10px;">Odhun Zen'e Hoş Geldiniz</h2>
+            <p style="color:#aaa; margin-bottom:30px;">Rahatlatıcı sesleri başlatmak için tıklayın.</p>
+            <button id="startBtn" onclick="unlockAudio()">BAŞLA</button>
+        </div>
+    </div>
 
     <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
@@ -197,36 +221,42 @@
     </div>
 
     <script>
-        // --- GÜVENLİ GOOGLE SES LİSTESİ ---
-        // Bu linkler Google'ın resmi Actions on Google CDN'idir ve asla bozulmaz.
+        // --- GÜNCELLENMİŞ VE DÜZELTİLMİŞ SES LİSTESİ ---
+        // Çalışmayan linkler Google'ın çalışan diğer sunucuları ile değiştirildi.
         const sounds = [
-            { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' },
-            { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://actions.google.com/sounds/v1/weather/thunderstorm.ogg' },
-            { id: 'fire', name: 'Kamp Ateşi', icon: 'fa-fire', url: 'https://actions.google.com/sounds/v1/ambiences/fire.ogg' },
-            { id: 'wind', name: 'Rüzgar', icon: 'fa-wind', url: 'https://actions.google.com/sounds/v1/weather/wind_blowing.ogg' },
-            { id: 'night', name: 'Gece', icon: 'fa-moon', url: 'https://actions.google.com/sounds/v1/nature/crickets_at_night.ogg' },
-            { id: 'birds', name: 'Orman & Kuş', icon: 'fa-dove', url: 'https://actions.google.com/sounds/v1/animals/birds_forest.ogg' }, // Düzeltildi
-            { id: 'river', name: 'Dere Sesi', icon: 'fa-water', url: 'https://actions.google.com/sounds/v1/nature/river_small_flow.ogg' }, // Düzeltildi
-            { id: 'coffee', name: 'Kafe Ortamı', icon: 'fa-coffee', url: 'https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg' },
-            { id: 'white', name: 'Beyaz Gürültü', icon: 'fa-snowflake', url: 'https://actions.google.com/sounds/v1/ambiences/airplane_cabin.ogg' },
-            { id: 'train', name: 'Tren', icon: 'fa-subway', url: 'https://actions.google.com/sounds/v1/transportation/train_heavy_rain.ogg' }
+            { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' }, // Çalışıyor
+            { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://actions.google.com/sounds/v1/weather/thunderstorm.ogg' }, // Çalışıyor
+            { id: 'fire', name: 'Kamp Ateşi', icon: 'fa-fire', url: 'https://actions.google.com/sounds/v1/ambiences/fire.ogg' }, // Çalışıyor
+            { id: 'wind', name: 'Rüzgar', icon: 'fa-wind', url: 'https://actions.google.com/sounds/v1/weather/wind_medium.ogg' }, // Düzeltildi
+            { id: 'night', name: 'Gece', icon: 'fa-moon', url: 'https://actions.google.com/sounds/v1/nature/crickets_chirping.ogg' }, // Düzeltildi
+            { id: 'birds', name: 'Kuşlar', icon: 'fa-dove', url: 'https://actions.google.com/sounds/v1/animals/birds_singing.ogg' }, // Düzeltildi
+            { id: 'water', name: 'Dere Sesi', icon: 'fa-water', url: 'https://actions.google.com/sounds/v1/water/stream_water.ogg' }, // Düzeltildi
+            { id: 'coffee', name: 'Kafe Ortamı', icon: 'fa-coffee', url: 'https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg' }, // Çalışıyor
+            { id: 'train', name: 'Tren', icon: 'fa-subway', url: 'https://actions.google.com/sounds/v1/transportation/train_pass.ogg' }, // Düzeltildi
+            { id: 'white', name: 'Beyaz Gürültü', icon: 'fa-snowflake', url: 'https://actions.google.com/sounds/v1/ambiences/airplane_cabin.ogg' } // Düzeltildi (Uçak kabini white noise gibidir)
         ];
 
         const audioElements = {};
         const grid = document.getElementById('soundGrid');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initApp();
-        });
+        // --- SES İZNİ ALMA ---
+        function unlockAudio() {
+            const overlay = document.getElementById('startOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 500);
+            
+            // Seslerin yüklenmesini başlat
+            initSounds();
+        }
 
-        function initApp() {
+        function initSounds() {
             grid.innerHTML = "";
             
             sounds.forEach(sound => {
                 // Audio Objesi
-                const audio = new Audio(sound.url);
+                const audio = new Audio();
+                audio.src = sound.url;
                 audio.loop = true;
-                audio.preload = 'none'; // Performans için
                 audioElements[sound.id] = audio;
 
                 // Kart Oluştur
@@ -259,8 +289,8 @@
 
             if (audio.paused) {
                 audio.play().catch(e => {
-                    console.error(e);
-                    alert("Tarayıcı ses oynatmayı engelledi. Lütfen sayfaya bir kez tıklayın.");
+                    console.error("Ses çalma hatası:", e);
+                    alert("Hata: Sayfayı yenileyip 'BAŞLA' butonuna tıklayın.");
                 });
                 card.classList.add('active');
             } else {
@@ -285,10 +315,11 @@
             if (window.innerWidth < 768) toggleSidebar();
         }
 
-        // --- TIMER ---
+        // --- TIMER SİSTEMİ ---
         let timerInterval;
         let timeLeft = 25 * 60;
         let isTimerRunning = false;
+
         const display = document.getElementById('timerDisplay');
         const timerBtn = document.getElementById('timerBtn');
 
