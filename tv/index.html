@@ -166,20 +166,12 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
 }
 .news-item:hover { background: #1a1a1a; }
 
-/* DÜZELTİLEN KISIM: NEWS META */
 .news-meta { 
-    display: flex; 
-    justify-content: flex-start; /* Sola yasla */
-    align-items: center; /* Ortala */
-    font-size: 0.75rem; 
-    color: #666; 
-    margin-bottom: 5px; 
+    display: flex; justify-content: flex-start; align-items: center;
+    font-size: 0.75rem; color: #666; margin-bottom: 5px; 
 }
 .news-source { 
-    color: var(--accent); 
-    font-weight: 900; /* Kalın font */
-    text-transform: uppercase; 
-    margin-right: 5px; 
+    color: var(--accent); font-weight: 900; text-transform: uppercase; margin-right: 5px;
 }
 .news-time { color: #888; font-weight: 500; }
 
@@ -286,18 +278,18 @@ const rssSelect = document.getElementById('rssSource');
 const sidebar = document.getElementById('sidebar');
 const resizer = document.getElementById('resizer');
 
-// --- KANAL LİSTESİ ---
+// --- KANAL LİSTESİ (ALFABETİK) ---
 const channels = [
-    { name: "Sözcü TV", id: "ztmY_cCtUl0" },
-    { name: "Halk TV", id: "VBU0QX6brew" },
-    { name: "Haber Global", id: "EqoCJ8BPxtE" },
-    { name: "TV100", id: "6g_DvD8e2T0" },
-    { name: "TRT HABER", id: "rD3bKBMXKKY" },
     { name: "CNBC-e", id: "ziYwt0jF1p4" },
-    { name: "Habertürk", id: "RNVNlJSUFoE" },
-    { name: "NTV", id: "pqq5c6k70kk" },
     { name: "CNN Türk", id: "6N8_r2uwLEc" },
-    { name: "TGRT Haber", id: "TsB0xYOH0AU" }
+    { name: "Haber Global", id: "EqoCJ8BPxtE" },
+    { name: "Habertürk", id: "RNVNlJSUFoE" },
+    { name: "Halk TV", id: "VBU0QX6brew" },
+    { name: "NTV", id: "pqq5c6k70kk" },
+    { name: "Sözcü TV", id: "ztmY_cCtUl0" },
+    { name: "TGRT Haber", id: "TsB0xYOH0AU" },
+    { name: "TRT HABER", id: "rD3bKBMXKKY" },
+    { name: "TV100", id: "6g_DvD8e2T0" }
 ];
 
 // --- RSS LİSTESİ ---
@@ -321,7 +313,10 @@ const rssData = [
 
 window.onload = () => {
     renderSidebar();
+    
+    // İlk 9 kanalı otomatik aç
     for(let i=0; i<9; i++) { if(channels[i]) createPlayer(channels[i]); }
+    
     populateRSSMenu();
     fetchAllRSS();
     setInterval(fetchAllRSS, 120000);
@@ -395,7 +390,11 @@ function setGrid(n) {
     grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
     document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
     const btns = document.querySelectorAll('.btn-grid'); 
-    if(btns[n-1]) btns[n-1].classList.add('active');
+    // Button index fix: 0=1x1, 1=2x2, 2=3x3, 3=4x4
+    if(n===1 && btns[0]) btns[0].classList.add('active');
+    if(n===2 && btns[1]) btns[1].classList.add('active');
+    if(n===3 && btns[2]) btns[2].classList.add('active');
+    if(n===4 && btns[3]) btns[3].classList.add('active');
 }
 
 function populateRSSMenu() {
@@ -415,7 +414,7 @@ function changeRSS() {
     else fetchSingleRSS(url);
 }
 
-// --- DÜZELTİLEN İSİM FONKSİYONU ---
+// --- İSİM DÜZELTME ---
 function formatSourceName(rawTitle) {
     let name = rawTitle.replace('RSS', '').replace('Haberler', '').trim();
     if (name.toLowerCase().includes('latest') || name.toLowerCase().includes('euronews')) {
@@ -464,18 +463,14 @@ async function fetchAllRSS() {
     renderNewsList(mixedNews);
 }
 
-// --- DÜZELTİLEN LİSTELEME FONKSİYONU ---
 function renderNewsList(newsList) {
     rssContainer.innerHTML = "";
     newsList.slice(0, 100).forEach(news => {
-        // SAAT FORMATI: Sadece saat ve dakika (Örn: 13:47)
         const timeStr = news.date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-        
         const link = document.createElement('a');
         link.className = 'news-item';
         link.href = news.link;
         link.target = "_blank";
-        
         link.innerHTML = `
             <div class="news-meta">
                 <span class="news-source">${news.source}</span>
