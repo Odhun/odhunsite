@@ -2,108 +2,167 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun | Dijital Araçlar Merkezi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Odhun | Dijital Portal</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O</text></svg>">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* ZEN TEMALI ARKA PLAN RENKLERİ */
-            --bg-gradient-start: #0f172a; /* Derin Gece Mavisi */
-            --bg-gradient-end: #1e293b;   /* Koyu Arduvaz Mavisi */
-            
-            --card-bg: rgba(30, 41, 59, 0.7); /* Yarı saydam kart */
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #e2e8f0; /* Kırık Beyaz */
-            --text-dim: #94a3b8; /* Soluk Mavi-Gri */
+            /* Temel Renkler */
+            --bg-start: #0f172a;
+            --bg-end: #020617;
+            --card-bg: rgba(30, 41, 59, 0.4);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
         }
 
         * { box-sizing: border-box; }
 
         body {
-            margin: 0; padding: 0; 
-            /* ZEN BACKGROUND GRADIENT */
-            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            background-attachment: fixed; /* Arka plan sabit kalsın */
             color: var(--text);
-            font-family: 'Inter', sans-serif; display: flex; flex-direction: column;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            display: flex; flex-direction: column;
+            overflow-x: hidden;
         }
 
         /* HEADER */
         header {
-            text-align: center; padding: 80px 20px 50px;
+            text-align: center; padding: 60px 20px 40px;
+            animation: fadeInDown 0.8s ease;
         }
         .brand {
-            font-size: 3.5rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .brand span { color: #00e5ff; /* Zen Mavisi Vurgu */ }
-        .subtitle { color: var(--text-dim); font-size: 1.2rem; max-width: 600px; margin: 0 auto; font-weight: 400; }
+        .brand span { color: #3b82f6; -webkit-text-fill-color: #3b82f6; } /* Mavi nokta */
+        
+        .subtitle { 
+            color: var(--text-dim); font-size: 1.1rem; max-width: 500px; margin: 0 auto; 
+            line-height: 1.5; font-weight: 400;
+        }
 
-        /* GRID ALANI */
+        /* GRID CONTAINER */
         .container {
             max-width: 1200px; margin: 0 auto; padding: 20px;
             display: grid;
+            /* Responsive Grid: Sığabildiği kadar kolon açar */
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            flex: 1;
+            gap: 20px;
+            width: 100%;
+            flex: 1; /* Footer'ı alta itmek için */
             padding-bottom: 60px;
         }
 
         /* KART TASARIMI */
         .card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 20px; padding: 30px; text-decoration: none;
-            color: inherit; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            text-decoration: none; color: inherit;
             display: flex; flex-direction: column; align-items: flex-start;
             position: relative; overflow: hidden;
-            backdrop-filter: blur(10px); /* Buzlu cam efekti */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Kartın altındaki ince renk çizgisi */
+            border-bottom: 2px solid transparent;
         }
 
+        /* Hover Efektleri */
         .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: var(--card-color);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            background: rgba(30, 41, 59, 0.9); /* Hover'da daha opak */
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(255, 255, 255, 0.2);
+            border-bottom-color: var(--card-color); /* Alt çizgi parlasın */
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 
+                        0 0 20px -10px var(--card-color); /* Neon parlama */
         }
 
         /* İkon Kutusu */
         .icon-box {
-            width: 60px; height: 60px; border-radius: 15px;
+            width: 50px; height: 50px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; margin-bottom: 20px;
-            background: rgba(255,255,255,0.05); color: var(--card-color);
-            transition: 0.3s; box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-        }
-        .card:hover .icon-box { background: var(--card-color); color: #000; box-shadow: 0 0 20px var(--card-color); }
-
-        .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.5px; }
-        .card-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
-
-        .card-arrow {
-            margin-top: auto; padding-top: 25px; font-weight: 700; font-size: 0.9rem;
-            color: var(--card-color); display: flex; align-items: center; gap: 8px;
+            font-size: 1.5rem; margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            color: var(--card-color);
             transition: 0.3s;
         }
-        .card:hover .card-arrow { gap: 15px; transform: translateX(5px); }
-
-        /* Footer */
-        footer {
-            text-align: center; padding: 40px; color: var(--text-dim); font-size: 0.9rem;
-            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border);
+        .card:hover .icon-box {
+            background: var(--card-color); color: #000;
+            transform: scale(1.1) rotate(-5deg);
         }
 
-        /* MOBİL */
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+        
+        .card-desc { 
+            font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; flex: 1;
+            margin-bottom: 20px;
+        }
+
+        .card-arrow {
+            font-size: 0.85rem; font-weight: 700; color: var(--card-color);
+            display: flex; align-items: center; gap: 6px; transition: 0.3s;
+        }
+        .card:hover .card-arrow { gap: 10px; filter: brightness(1.2); }
+
+        /* FOOTER */
+        footer {
+            text-align: center; padding: 40px 20px;
+            background: rgba(2, 6, 23, 0.8);
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem; color: var(--text-dim);
+            margin-top: auto;
+        }
+        .footer-warning {
+            margin-top: 8px; font-size: 0.75rem; opacity: 0.7; max-width: 600px; margin-inline: auto;
+        }
+
+        /* --- MOBİL UYUM (RESPONSIVE) --- */
         @media (max-width: 768px) {
-            header { padding: 60px 20px 30px; }
-            .brand { font-size: 2.8rem; }
-            .container { grid-template-columns: 1fr; padding: 15px; gap: 15px; }
-            .card { padding: 25px; }
+            header { padding: 40px 20px 20px; }
+            .brand { font-size: 2.5rem; }
+            .subtitle { font-size: 1rem; }
+            
+            .container { 
+                grid-template-columns: 1fr; /* Tek sütun */
+                padding: 15px; 
+                gap: 15px;
+            }
+            
+            .card { 
+                padding: 20px; 
+                flex-direction: row; /* Mobilde yatay dizilim */
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .icon-box { margin-bottom: 0; width: 45px; height: 45px; font-size: 1.2rem; flex-shrink: 0; }
+            
+            .card-content { flex: 1; } /* Mobilde metin alanı */
+            
+            .card-desc, .card-arrow { display: none; } /* Mobilde açıklamayı gizle, sade olsun */
+            .card-title { margin-bottom: 0; font-size: 1.1rem; }
+            
+            /* Ok işareti mobilde sağda sabit dursun */
+            .card::after {
+                content: '\f054'; font-family: 'Font Awesome 5 Free'; font-weight: 900;
+                color: var(--text-dim); font-size: 0.9rem;
+            }
+        }
+
+        /* Animasyonlar */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -111,72 +170,109 @@
 
     <header>
         <div class="brand">ODHUN<span>.COM</span></div>
-        <div class="subtitle">Kişisel dijital araçlar, haber akışları ve yaşam asistanları.</div>
+        <div class="subtitle">Hayatı kolaylaştıran, bilgilendiren ve eğlendiren dijital araçlar koleksiyonu.</div>
     </header>
 
     <div class="container">
 
-        <a href="/tv" class="card" style="--card-color: #ff3d3d;">
+        <a href="/tv" class="card" style="--card-color: #ef4444;">
             <div class="icon-box"><i class="fas fa-tv"></i></div>
-            <div class="card-title">Haber Merkezi</div>
-            <div class="card-desc">Çoklu ekran ile 16'ya kadar canlı haber kanalını aynı anda takip edin. Global haber akışı ile entegre.</div>
-            <div class="card-arrow">Panele Git <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Haber Merkezi</div>
+                <div class="card-desc">10+ Haber kanalı ve anlık RSS akışı ile gündemi tek ekrandan takip edin.</div>
+            </div>
+            <div class="card-arrow">İzle <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/radyo" class="card" style="--card-color: #ff6b6b;">
+        <a href="/radyo" class="card" style="--card-color: #f43f5e;">
             <div class="icon-box"><i class="fas fa-broadcast-tower"></i></div>
-            <div class="card-title">Canlı Radyo</div>
-            <div class="card-desc">Türkiye'nin en popüler radyo istasyonlarını kesintisiz dinleyin. Görsel efektli modern arayüz.</div>
-            <div class="card-arrow">Dinlemeye Başla <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Canlı Radyo</div>
+                <div class="card-desc">Türkiye'nin en popüler radyoları, görsel efektli modern oynatıcıda.</div>
+            </div>
+            <div class="card-arrow">Dinle <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/finans" class="card" style="--card-color: #00d26a;">
+        <a href="/finans" class="card" style="--card-color: #10b981;">
             <div class="icon-box"><i class="fas fa-chart-line"></i></div>
-            <div class="card-title">Finans Takip</div>
-            <div class="card-desc">Borsa, Döviz, Altın ve Kripto paraları anlık grafiklerle izleyin. Döviz çevirici asistanı dahil.</div>
-            <div class="card-arrow">Piyasaları Aç <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Finans Takip</div>
+                <div class="card-desc">Borsa, Altın, Döviz ve Kripto verileri. Canlı grafikler ve çevirici.</div>
+            </div>
+            <div class="card-arrow">İncele <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/zen" class="card" style="--card-color: #00e5ff;">
+        <a href="/hiz" class="card" style="--card-color: #0ea5e9;">
+            <div class="icon-box"><i class="fas fa-tachometer-alt"></i></div>
+            <div class="card-content">
+                <div class="card-title">Hız Testi</div>
+                <div class="card-desc">İnternet hızınızı (Ping, Download, Upload) hassas ve şık bir arayüzle ölçün.</div>
+            </div>
+            <div class="card-arrow">Ölç <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="/zen" class="card" style="--card-color: #06b6d4;">
             <div class="icon-box"><i class="fas fa-spa"></i></div>
-            <div class="card-title">Zen & Odaklanma</div>
-            <div class="card-desc">Pomodoro sayacı ve rahatlatıcı ambiyans sesleri (Yağmur, Ateş, Fırtına) ile verimliliğinizi artırın.</div>
-            <div class="card-arrow">Odaklan <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Zen & Odaklanma</div>
+                <div class="card-desc">Pomodoro sayacı ve yağmur, ateş gibi rahatlatıcı ambiyans sesleri.</div>
+            </div>
+            <div class="card-arrow">Rahatla <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/apps" class="card" style="--card-color: #ffa502;">
+        <a href="/araclar" class="card" style="--card-color: #f59e0b;">
+            <div class="icon-box"><i class="fas fa-toolbox"></i></div>
+            <div class="card-content">
+                <div class="card-title">Pro Araçlar</div>
+                <div class="card-desc">QR Kod, Resim Çevirici, Kelime Sayacı ve daha fazlası.</div>
+            </div>
+            <div class="card-arrow">Kullan <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="/apps" class="card" style="--card-color: #eab308;">
             <div class="icon-box"><i class="fas fa-box-open"></i></div>
-            <div class="card-title">Uygulama Deposu</div>
-            <div class="card-desc">Kişisel kullanım için hazırlanan yazılımlar, bat dosyaları ve araçlar arşivi.</div>
-            <div class="card-arrow">Arşive Git <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Dosya Deposu</div>
+                <div class="card-desc">Kişisel kullanım için hazırlanan yazılımlar ve araçlar arşivi.</div>
+            </div>
+            <div class="card-arrow">İndir <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/sifre" class="card" style="--card-color: #c56cf0;">
+        <a href="/sifre" class="card" style="--card-color: #d946ef;">
             <div class="icon-box"><i class="fas fa-key"></i></div>
-            <div class="card-title">Güvenli Şifre</div>
-            <div class="card-desc">Kırılması zor, karmaşık ve güvenli şifreler oluşturun. Tarayıcı tabanlı, %100 güvenli.</div>
-            <div class="card-arrow">Oluştur <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Şifre Üretici</div>
+                <div class="card-desc">Kırılması zor, güvenli ve karmaşık şifreler oluşturun.</div>
+            </div>
+            <div class="card-arrow">Üret <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/yemek" class="card" style="--card-color: #ff9f43;">
+        <a href="/yemek" class="card" style="--card-color: #f97316;">
             <div class="icon-box"><i class="fas fa-utensils"></i></div>
-            <div class="card-title">Ne Pişirsem?</div>
-            <div class="card-desc">Kararsız kaldığınızda rastgele yemek önerisi alın ve tarifine tek tıkla ulaşın.</div>
-            <div class="card-arrow">Yemek Seç <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Ne Pişirsem?</div>
+                <div class="card-desc">Akşam yemeği için kararsız mısın? Rastgele bir öneri al.</div>
+            </div>
+            <div class="card-arrow">Seç <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/tatli" class="card" style="--card-color: #ff6348;">
+        <a href="/tatli" class="card" style="--card-color: #ec4899;">
             <div class="icon-box"><i class="fas fa-ice-cream"></i></div>
-            <div class="card-title">Tatlı Krizi</div>
-            <div class="card-desc">Tatlı krizlerine özel rastgele tatlı önericisi. Tariflere anında erişim.</div>
-            <div class="card-arrow">Tatlı Seç <i class="fas fa-arrow-right"></i></div>
+            <div class="card-content">
+                <div class="card-title">Tatlı Krizi</div>
+                <div class="card-desc">Tatlı krizine özel rastgele tatlı önerisi ve tarif linki.</div>
+            </div>
+            <div class="card-arrow">Seç <i class="fas fa-arrow-right"></i></div>
         </a>
 
     </div>
 
     <footer>
-        <strong>Odhun.com</strong> &copy; 2025 Tüm Hakları Saklıdır.<br>
-        Bu site kişisel projelerin sergilendiği bir portfolyo niteliğindedir.
+        <div><strong>Odhun.com</strong> &copy; 2025 Tüm Hakları Saklıdır.</div>
+        <div class="footer-warning">
+            Bu site, kişisel projelerin sergilendiği, kâr amacı gütmeyen, deneysel bir dijital portfolyodur. 
+            İçeriklerin telif hakları ilgili sağlayıcılara aittir.
+        </div>
     </footer>
 
 </body>
