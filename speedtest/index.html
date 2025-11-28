@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Speed | Precision HUD</title>
+<title>Odhun Speed Test| 3.1 </title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%2300e5ff%22>S</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,9 +12,9 @@
 <style>
     :root {
         --bg-color: #05070a;
-        --panel-bg: rgba(16, 24, 32, 0.9);
-        --cyan: #00e5ff;  
-        --orange: #ff9100; 
+        --panel-bg: rgba(16, 24, 32, 0.95);
+        --cyan: #00e5ff;
+        --orange: #ff9100;
         --text: #e0f7fa;
         --grid-color: rgba(0, 229, 255, 0.1);
     }
@@ -23,36 +23,34 @@
 
     body {
         margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text);
-        font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex;
-        flex-direction: column; align-items: center; justify-content: center;
-        overflow: hidden;
+        font-family: 'Rajdhani', sans-serif; 
+        height: 100vh; height: 100dvh; /* Mobil için dinamik yükseklik */
+        width: 100vw;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        overflow: hidden; /* ASLA SCROLL OLMASIN */
+        
         background-image: 
             linear-gradient(var(--grid-color) 1px, transparent 1px),
             linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
             radial-gradient(circle at center, #0a1520 0%, #000000 90%);
-        background-size: 60px 60px, 60px 60px, 100% 100%;
+        background-size: 50px 50px, 50px 50px, 100% 100%;
         background-position: center center;
-        animation: gridMove 20s linear infinite;
     }
 
-    @keyframes gridMove {
-        0% { background-position: 0 0, 0 0, center center; }
-        100% { background-position: 60px 60px, 60px 60px, center center; }
-    }
-
-    /* ANA KASA */
+    /* ANA KASA (Tam Ekran Sığdırma) */
     .dashboard {
-        width: 95%; max-width: 1200px; height: auto; min-height: 700px;
+        width: 95%; max-width: 1200px; 
+        height: 90%; max-height: 800px; /* Dikeyde ortala */
         background: var(--panel-bg); border: 1px solid rgba(0, 229, 255, 0.3);
-        border-radius: 25px; position: relative;
+        border-radius: 20px; position: relative;
         box-shadow: 0 0 80px rgba(0, 229, 255, 0.15), inset 0 0 150px rgba(0,0,0,0.9);
         backdrop-filter: blur(15px);
-        display: flex; flex-direction: column; overflow: hidden;
-        z-index: 10; margin-bottom: 20px; padding-bottom: 50px; 
+        display: flex; flex-direction: column; 
+        overflow: hidden;
     }
 
     .scan-line {
-        position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+        position: absolute; top: 0; left: 0; width: 100%; height: 2px;
         background: linear-gradient(90deg, transparent, var(--cyan), transparent);
         opacity: 0.5; animation: scan 4s linear infinite; pointer-events: none; z-index: 0;
     }
@@ -60,29 +58,34 @@
 
     /* ÜST BAR */
     .top-bar {
-        display: flex; justify-content: space-between; align-items: center; padding: 20px 50px;
-        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1; height: 100px; flex-shrink: 0;
+        display: flex; justify-content: space-between; align-items: center; 
+        padding: 15px 30px; height: 15%; /* Esnek Yükseklik */
+        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1;
     }
     
-    .brand { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; }
+    .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
     .brand span { color: var(--cyan); }
 
-    .stats-group { display: flex; gap: 40px; }
+    .stats-group { display: flex; gap: 30px; }
     .stat-item { display: flex; flex-direction: column; align-items: flex-end; }
-    .stat-label { font-size: 0.85rem; color: #546e7a; letter-spacing: 1px; font-weight: bold; }
+    .stat-label { font-size: 0.7rem; color: #546e7a; letter-spacing: 1px; font-weight: bold; }
     .stat-val { 
-        font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: #fff; 
-        text-shadow: 0 0 8px rgba(255,255,255,0.3); margin-top: 4px;
+        font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; 
+        text-shadow: 0 0 5px rgba(255,255,255,0.3);
     }
 
-    /* GÖSTERGELER ALANI */
+    /* GÖSTERGELER ALANI (Esnek ve Sıkışık) */
     .gauges-area {
-        flex: 1; display: flex; justify-content: center; align-items: center; gap: 100px;
-        padding: 20px; flex-wrap: wrap; z-index: 1; position: relative; overflow-y: auto;
+        flex: 1; /* Kalan tüm alanı kapla */
+        display: flex; justify-content: center; align-items: center; 
+        gap: 40px; padding: 10px; z-index: 1; position: relative;
     }
 
     .gauge-wrapper {
-        position: relative; width: 360px; height: 360px;
+        position: relative; 
+        /* Dinamik boyutlandırma: Ekran yüksekliğinin %35'i kadar */
+        height: 35vh; width: 35vh; 
+        max-height: 300px; max-width: 300px;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
 
@@ -91,134 +94,117 @@
     }
 
     .gauge-bg { 
-        fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 15; 
+        fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 10; 
         stroke-dasharray: 2, 5; stroke-linecap: round;
     }
     
     .gauge-progress {
-        fill: none; stroke-width: 15; stroke-linecap: round;
+        fill: none; stroke-width: 10; stroke-linecap: round;
         stroke-dasharray: 706; stroke-dashoffset: 706;
         transition: stroke-dashoffset 0.1s linear;
-        filter: drop-shadow(0 0 12px currentColor);
+        filter: drop-shadow(0 0 8px currentColor);
     }
 
     .cyan-gauge .gauge-progress { stroke: var(--cyan); color: var(--cyan); }
     .orange-gauge .gauge-progress { stroke: var(--orange); color: var(--orange); }
 
-    .gauge-content { z-index: 10; text-align: center; position: relative; top: 15px; }
+    .gauge-content { z-index: 10; text-align: center; position: relative; top: 5%; }
     
     .gauge-val {
-        font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700;
-        line-height: 1; color: #fff; text-shadow: 0 0 20px currentColor;
-        min-width: 280px; 
+        font-family: 'Orbitron', sans-serif; font-weight: 700; line-height: 1; color: #fff;
+        text-shadow: 0 0 15px currentColor;
+        font-size: 3rem; /* Masaüstü varsayılan */
+        /* Mobilde font küçültmek için JS kullanacağız veya vw/vh */
+        font-size: min(3rem, 5vh); 
     }
     .cyan-gauge .gauge-val { color: var(--cyan); }
     .orange-gauge .gauge-val { color: var(--orange); }
     
-    .gauge-unit { font-size: 1.2rem; opacity: 0.7; margin-top: 10px; font-weight: bold; letter-spacing: 1px; }
-    
+    .gauge-unit { font-size: 0.8rem; opacity: 0.6; margin-top: 2px; font-weight: bold; letter-spacing: 1px; }
     .gauge-label { 
-        margin-top: 20px; font-size: 1rem; font-weight: 900; letter-spacing: 3px; 
-        background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 6px;
+        margin-top: 10px; font-size: 0.8rem; font-weight: 900; letter-spacing: 2px; 
+        background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 4px;
         display: inline-block; border: 1px solid rgba(255,255,255,0.1);
     }
 
     /* DURUM MESAJI */
     .status-overlay {
         position: absolute; 
-        top: 110px; 
+        top: 10px; /* Gauges area içinde üstte */
         left: 50%; transform: translateX(-50%);
-        font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700;
-        color: #fff; text-transform: uppercase; letter-spacing: 4px;
-        z-index: 20;
-        background: rgba(0, 229, 255, 0.1);
-        border: 1px solid rgba(0, 229, 255, 0.3);
-        padding: 10px 30px; border-radius: 40px;
-        box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-        backdrop-filter: blur(8px);
-        transition: all 0.3s ease;
-        white-space: nowrap;
+        font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 700;
+        color: #fff; text-transform: uppercase; letter-spacing: 3px; z-index: 20;
+        background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3);
+        padding: 5px 20px; border-radius: 30px; backdrop-filter: blur(5px);
     }
 
     /* ALT KONTROL */
     .bottom-bar {
-        height: 100px; border-top: 1px solid rgba(255,255,255,0.05);
+        height: 15%; /* Esnek yükseklik */
+        border-top: 1px solid rgba(255,255,255,0.05);
         display: flex; align-items: center; justify-content: center;
-        position: relative; background: rgba(0,0,0,0.2); z-index: 1; flex-shrink: 0;
+        position: relative; background: rgba(0,0,0,0.2); z-index: 1;
     }
 
     .start-btn {
-        padding: 18px 70px; border-radius: 6px; 
-        border: 1px solid var(--cyan); border-bottom: 5px solid var(--cyan);
+        padding: 12px 50px; border-radius: 6px; 
+        border: 1px solid var(--cyan); border-bottom: 4px solid var(--cyan);
         background: rgba(0, 229, 255, 0.05); color: var(--cyan);
-        font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700;
-        cursor: pointer; letter-spacing: 4px; transition: 0.2s;
-        text-transform: uppercase;
-        box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+        font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700;
+        cursor: pointer; letter-spacing: 3px; transition: 0.2s; text-transform: uppercase;
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
     }
-    .start-btn:hover {
-        background: var(--cyan); color: #000; box-shadow: 0 0 60px var(--cyan);
-        transform: translateY(2px); border-bottom-width: 1px;
-    }
-    .start-btn:active { transform: translateY(6px); border-bottom-width: 0px; }
-    .start-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; border-bottom-width: 5px; }
+    .start-btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 50px var(--cyan); transform: translateY(2px); border-bottom-width: 1px; }
+    .start-btn:active { transform: translateY(4px); border-bottom-width: 0px; }
+    .start-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
 
-    /* FOOTER */
+    /* FOOTER BANNER */
     .footer-banner {
-        position: absolute; bottom: 10px; width: 100%; text-align: center;
-        color: #546e7a; font-size: 0.8rem; z-index: 20;
-        padding: 0 20px; line-height: 1.5; background: transparent;
+        position: absolute; bottom: 5px; width: 100%; text-align: center;
+        color: #546e7a; font-size: 0.65rem; z-index: 20; padding: 0 20px; line-height: 1.2;
     }
     .footer-banner strong { color: #fff; }
 
-    /* --- MOBİL UYUM (ÖNEMLİ DÜZELTMELER) --- */
+    /* --- MOBİL ÖZEL (TEK EKRAN GARANTİSİ) --- */
     @media (max-width: 900px) {
-        body { overflow-y: auto; height: auto; min-height: 100vh; display: block; }
-        
-        .dashboard { 
-            width: 100%; min-height: 100vh; 
-            border: none; border-radius: 0; 
-            margin-bottom: 0; padding-bottom: 0;
+        .dashboard {
+            width: 100%; height: 100%; border-radius: 0; border: none;
         }
         
-        .top-bar { 
-            flex-direction: column; gap: 15px; text-align: center; padding: 20px 10px; height: auto; 
+        .top-bar {
+            flex-direction: row; /* Yan yana kalsın ama küçülsün */
+            padding: 10px 15px; height: auto;
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
         
-        .brand { font-size: 1.5rem; }
+        .brand { font-size: 1.2rem; width: 100%; text-align: center; margin-bottom: 5px; }
         
         .stats-group { 
-            width: 100%; justify-content: space-around; flex-wrap: wrap; gap: 10px; 
+            width: 100%; justify-content: space-between; gap: 0; 
         }
-        .stat-item { align-items: center; }
-        .stat-val { font-size: 1rem; }
+        .stat-item { align-items: center; flex: 1; }
+        .stat-val { font-size: 0.8rem; }
+        .stat-label { font-size: 0.6rem; }
 
-        .status-overlay {
-            position: relative; top: auto; left: auto; transform: none;
-            margin: 10px auto; width: 90%; font-size: 0.9rem;
+        .gauges-area {
+            flex-direction: column; /* Alt alta */
+            gap: 10px; padding: 10px; justify-content: space-evenly;
         }
         
-        .gauges-area { 
-            flex-direction: column; gap: 40px; padding: 20px 0; 
-            overflow: visible; /* Mobilde sayfa scroll olsun */
-            padding-bottom: 140px; /* Footer ve buton için yer */
+        /* Göstergeleri ekrana sığacak kadar küçült */
+        .gauge-wrapper {
+            height: 28vh; width: 28vh; /* Yüksekliğe göre ölçekle */
+            max-height: 200px; max-width: 200px;
         }
+        .gauge-val { font-size: 2rem; } /* Fontu küçült */
+
+        .status-overlay { top: 0; position: relative; margin-bottom: 5px; font-size: 0.8rem; padding: 4px 15px;}
+
+        .bottom-bar { height: auto; padding: 15px 0 35px 0; flex-direction: column; } /* Footer payı */
+        .start-btn { padding: 10px 40px; font-size: 1rem; width: 80%; }
         
-        /* Mobilde daireleri biraz küçült */
-        .gauge-wrapper { width: 260px; height: 260px; } 
-        .gauge-val { font-size: 3rem; min-width: auto; }
-        
-        .bottom-bar { 
-            height: 100px; position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(5, 7, 10, 0.95); border-top: 1px solid #333;
-            backdrop-filter: blur(10px);
-        }
-        .start-btn { padding: 14px 40px; font-size: 1.2rem; }
-        
-        .footer-banner { 
-            position: static; padding: 20px; padding-bottom: 120px; /* Butonun altında kalmasın */
-            font-size: 0.7rem;
-        }
+        .footer-banner { bottom: 5px; font-size: 0.6rem; }
     }
 </style>
 </head>
@@ -228,7 +214,7 @@
         <div class="scan-line"></div>
         
         <div class="top-bar">
-            <div class="brand">ODHUN <span>SPEED TEST</span></div>
+            <div class="brand">ODHUN <span>SPEED</span></div>
             <div class="stats-group">
                 <div class="stat-item">
                     <div class="stat-label">PING</div>
@@ -245,16 +231,15 @@
             </div>
         </div>
 
-        <div class="status-overlay" id="statusText">SİSTEM HAZIR</div>
-
         <div class="gauges-area">
-            
+            <div class="status-overlay" id="statusText">SİSTEM HAZIR</div>
+
             <div class="gauge-wrapper cyan-gauge">
-                <svg class="gauge-svg" viewBox="0 0 340 340">
-                    <circle class="gauge-bg" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="0" transform="rotate(90 170 170)" />
-                    <circle class="gauge-progress" id="dlProgress" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="706" transform="rotate(90 170 170)" />
+                <svg class="gauge-svg" viewBox="0 0 240 240">
+                    <circle class="gauge-bg" cx="120" cy="120" r="100" 
+                        stroke-dasharray="471" stroke-dashoffset="0" transform="rotate(90 120 120)" />
+                    <circle class="gauge-progress" id="dlProgress" cx="120" cy="120" r="100" 
+                        stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
                 </svg>
                 <div class="gauge-content">
                     <div class="gauge-val" id="dlSpeed">0.000</div>
@@ -264,11 +249,11 @@
             </div>
 
             <div class="gauge-wrapper orange-gauge">
-                <svg class="gauge-svg" viewBox="0 0 340 340">
-                    <circle class="gauge-bg" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="0" transform="rotate(90 170 170)" />
-                    <circle class="gauge-progress" id="ulProgress" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="706" transform="rotate(90 170 170)" />
+                <svg class="gauge-svg" viewBox="0 0 240 240">
+                    <circle class="gauge-bg" cx="120" cy="120" r="100" 
+                        stroke-dasharray="471" stroke-dashoffset="0" transform="rotate(90 120 120)" />
+                    <circle class="gauge-progress" id="ulProgress" cx="120" cy="120" r="100" 
+                        stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
                 </svg>
                 <div class="gauge-content">
                     <div class="gauge-val" id="ulSpeed">0.000</div>
@@ -276,22 +261,20 @@
                     <div class="gauge-label"><i class="fas fa-upload"></i> YÜKLEME</div>
                 </div>
             </div>
-
-        </div>
-
-        <div class="footer-banner">
-            <strong>Odhun.com</strong> © 2025 | Bu araç deneysel ve kişisel kullanım amaçlıdır.<br>
-            Sonuçlar sunucu yoğunluğuna göre değişebilir. Yasal sorumluluk kabul edilmez.
         </div>
 
         <div class="bottom-bar">
             <button class="start-btn" onclick="startTest()" id="startBtn">BAŞLAT</button>
         </div>
+
+        <div class="footer-banner">
+            <strong>Odhun.com</strong> © 2025 | Deneysel araçtır. Sonuçlar sunucu yoğunluğuna göre değişebilir.
+        </div>
     </div>
 
     <script>
         const TEST_FILE = "https://speed.cloudflare.com/__down?bytes=157286400"; 
-        const CIRCUMFERENCE = 706; 
+        const CIRCUMFERENCE = 471; 
         
         const dlProgress = document.getElementById('dlProgress');
         const ulProgress = document.getElementById('ulProgress');
@@ -311,8 +294,9 @@
                     let location = data.country_name;
                     if(data.country_name === "Turkey") location = "Türkiye";
                     if(data.city) location += ` / ${data.city}`;
-                    if(data.region && data.region !== data.city) location += ` / ${data.region}`;
-                    locVal.innerText = location;
+                    // Mobilde çok uzun olmaması için sadece Şehir göster
+                    if(window.innerWidth < 900 && data.city) locVal.innerText = data.city;
+                    else locVal.innerText = location;
                 })
                 .catch(() => {
                     ipVal.innerText = "Gizli";
@@ -337,16 +321,19 @@
             dlVal.innerText = "0.000";
             ulVal.innerText = "0.000";
 
+            // 1. PING
             const pStart = Date.now();
             try { await fetch("https://speed.cloudflare.com/__down?bytes=0", {method: 'HEAD'}); } catch(e){}
             const pTime = Date.now() - pStart;
             pingVal.innerText = Math.round(pTime) + " ms";
 
+            // 2. DOWNLOAD
             statusText.innerText = "İNDİRME HIZI ÖLÇÜLÜYOR...";
             statusText.style.borderColor = "var(--cyan)";
             statusText.style.color = "var(--cyan)";
             const dlSpeed = await measureSpeed(true);
             
+            // 3. UPLOAD SİMÜLASYONU
             statusText.innerText = "YÜKLEME HIZI TEST EDİLİYOR...";
             statusText.style.borderColor = "var(--orange)";
             statusText.style.color = "var(--orange)";
