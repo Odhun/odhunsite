@@ -3,334 +3,381 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Speed | Precision HUD</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%2300e5ff%22>S</text></svg>">
+<title>Odhun Screen | Profesyonel Ekran Testi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23007bff%22>O<tspan fill=%22%23ffffff%22>S</tspan></text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
 <style>
     :root {
-        --bg-color: #05070a;
-        --panel-bg: rgba(16, 24, 32, 0.9);
-        --cyan: #00e5ff;  
-        --orange: #ff9100; 
-        --text: #e0f7fa;
-        --grid-color: rgba(0, 229, 255, 0.1);
+        --bg-dark: #111;
+        --panel-bg: rgba(20, 20, 20, 0.95);
+        --accent: #007bff; /* Tech Blue */
+        --text: #fff;
+        --border: #333;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
 
     body {
-        margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text);
-        font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex;
-        flex-direction: column; align-items: center; justify-content: center;
-        overflow: hidden;
-        background-image: 
-            linear-gradient(var(--grid-color) 1px, transparent 1px),
-            linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
-            radial-gradient(circle at center, #0a1520 0%, #000000 90%);
-        background-size: 60px 60px, 60px 60px, 100% 100%;
-        background-position: center center;
-        animation: gridMove 20s linear infinite;
+        margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text);
+        font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
     }
 
-    @keyframes gridMove {
-        0% { background-position: 0 0, 0 0, center center; }
-        100% { background-position: 60px 60px, 60px 60px, center center; }
-    }
-
-    /* ANA KASA */
-    .dashboard {
-        width: 95%; max-width: 1200px; height: auto; min-height: 700px;
-        background: var(--panel-bg); border: 1px solid rgba(0, 229, 255, 0.3);
-        border-radius: 25px; position: relative;
-        box-shadow: 0 0 80px rgba(0, 229, 255, 0.15), inset 0 0 150px rgba(0,0,0,0.9);
-        backdrop-filter: blur(15px);
-        display: flex; flex-direction: column; overflow: hidden;
-        z-index: 10; margin-bottom: 20px; padding-bottom: 50px; 
-    }
-
-    .scan-line {
-        position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-        background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-        opacity: 0.5; animation: scan 4s linear infinite; pointer-events: none; z-index: 0;
-    }
-    @keyframes scan { 0% { top: -10%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
-
-    /* ÜST BAR */
-    .top-bar {
-        display: flex; justify-content: space-between; align-items: center; padding: 20px 50px;
-        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1; height: 100px; flex-shrink: 0;
-    }
-    
-    .brand { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; }
-    .brand span { color: var(--cyan); }
-
-    .stats-group { display: flex; gap: 40px; }
-    .stat-item { display: flex; flex-direction: column; align-items: flex-end; }
-    .stat-label { font-size: 0.85rem; color: #546e7a; letter-spacing: 1px; font-weight: bold; }
-    .stat-val { 
-        font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: #fff; 
-        text-shadow: 0 0 8px rgba(255,255,255,0.3); margin-top: 4px;
-    }
-
-    /* GÖSTERGELER ALANI */
-    .gauges-area {
-        flex: 1; display: flex; justify-content: center; align-items: center; gap: 100px;
-        padding: 20px; flex-wrap: wrap; z-index: 1; position: relative; overflow-y: auto;
-    }
-
-    .gauge-wrapper {
-        position: relative; width: 360px; height: 360px;
+    /* --- ANA KONTROL PANELİ (DASHBOARD) --- */
+    #dashboard {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
+        z-index: 100; background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+        transition: opacity 0.3s;
     }
 
-    .gauge-svg {
-        transform: rotate(135deg); width: 100%; height: 100%; position: absolute; top: 0; left: 0;
+    .brand { font-size: 3rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; }
+    .brand span { color: var(--accent); }
+    .subtitle { color: #888; margin-bottom: 40px; font-size: 1rem; max-width: 500px; text-align: center; line-height: 1.5; }
+
+    .grid-menu {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        max-width: 900px; width: 90%;
     }
 
-    .gauge-bg { 
-        fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 15; 
-        stroke-dasharray: 2, 5; stroke-linecap: round;
+    .menu-card {
+        background: #1a1a1a; border: 1px solid var(--border); border-radius: 16px;
+        padding: 25px; text-align: center; cursor: pointer; transition: 0.2s;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        aspect-ratio: 4/3;
+    }
+    .menu-card:hover { 
+        border-color: var(--accent); transform: translateY(-5px); 
+        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15); 
+        background: #222;
+    }
+    .menu-card i { font-size: 2.5rem; margin-bottom: 15px; color: var(--accent); }
+    .card-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; }
+    .card-desc { font-size: 0.8rem; color: #666; }
+
+    /* --- BİLGİ ÇUBUĞU --- */
+    .info-bar {
+        position: absolute; bottom: 30px; display: flex; gap: 40px;
+        background: rgba(255,255,255,0.05); padding: 10px 30px; border-radius: 50px;
+        backdrop-filter: blur(5px); border: 1px solid #333; font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+    }
+    .info-item { display: flex; flex-direction: column; align-items: center; }
+    .info-label { font-size: 0.7rem; color: #666; margin-bottom: 2px; text-transform: uppercase; }
+    .info-val { font-weight: bold; color: var(--accent); }
+
+    /* --- TEST ALANI (FULL SCREEN) --- */
+    #testLayer {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #000; z-index: 200; display: none; cursor: none; /* Mouse gizle */
     }
     
-    .gauge-progress {
-        fill: none; stroke-width: 15; stroke-linecap: round;
-        stroke-dasharray: 706; stroke-dashoffset: 706;
-        transition: stroke-dashoffset 0.1s linear;
-        filter: drop-shadow(0 0 12px currentColor);
+    /* Test Uyarı Mesajı */
+    #overlayMsg {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.8); padding: 20px 40px; border-radius: 10px;
+        color: #fff; pointer-events: none; z-index: 300; text-align: center;
+        border: 1px solid #444; transition: opacity 0.5s;
+    }
+    .key-hint { 
+        display: inline-block; background: #333; padding: 2px 6px; 
+        border-radius: 4px; font-weight: bold; font-family: monospace; border: 1px solid #555; 
     }
 
-    .cyan-gauge .gauge-progress { stroke: var(--cyan); color: var(--cyan); }
-    .orange-gauge .gauge-progress { stroke: var(--orange); color: var(--orange); }
-
-    .gauge-content { z-index: 10; text-align: center; position: relative; top: 15px; }
-    
-    .gauge-val {
-        font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700;
-        line-height: 1; color: #fff; text-shadow: 0 0 20px currentColor;
-        min-width: 280px; 
+    /* --- HZ TESTİ ELEMENTLERİ --- */
+    #hzContainer {
+        width: 100%; height: 100%; display: none; flex-direction: column;
+        align-items: center; justify-content: center; background: #111;
     }
-    .cyan-gauge .gauge-val { color: var(--cyan); }
-    .orange-gauge .gauge-val { color: var(--orange); }
-    
-    .gauge-unit { font-size: 1.2rem; opacity: 0.7; margin-top: 10px; font-weight: bold; letter-spacing: 1px; }
-    
-    .gauge-label { 
-        margin-top: 20px; font-size: 1rem; font-weight: 900; letter-spacing: 3px; 
-        background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 6px;
-        display: inline-block; border: 1px solid rgba(255,255,255,0.1);
+    .ufo-track { width: 100%; height: 100px; position: relative; border-top: 1px solid #333; border-bottom: 1px solid #333; margin: 20px 0; background: #000; }
+    .ufo { 
+        width: 60px; height: 60px; background: var(--accent); position: absolute; top: 20px; left: 0;
+        border-radius: 50%; box-shadow: 0 0 20px var(--accent);
     }
+    .fps-counter { font-size: 5rem; font-weight: 900; color: #fff; font-family: 'JetBrains Mono'; }
+    .fps-label { font-size: 1.5rem; color: #666; margin-top: -10px; }
 
-    /* DURUM MESAJI */
-    .status-overlay {
-        position: absolute; 
-        top: 110px; 
-        left: 50%; transform: translateX(-50%);
-        font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700;
-        color: #fff; text-transform: uppercase; letter-spacing: 4px;
-        z-index: 20;
-        background: rgba(0, 229, 255, 0.1);
-        border: 1px solid rgba(0, 229, 255, 0.3);
-        padding: 10px 30px; border-radius: 40px;
-        box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-        backdrop-filter: blur(8px);
-        transition: all 0.3s ease;
-        white-space: nowrap;
+    /* --- GRADYAN TESTİ --- */
+    #gradientBox { width: 100%; height: 100%; display: none; }
+
+    /* --- FOOTER --- */
+    .footer-note {
+        position: absolute; bottom: 10px; width: 100%; text-align: center; font-size: 0.75rem; color: #444;
     }
 
-    /* ALT KONTROL */
-    .bottom-bar {
-        height: 100px; border-top: 1px solid rgba(255,255,255,0.05);
-        display: flex; align-items: center; justify-content: center;
-        position: relative; background: rgba(0,0,0,0.2); z-index: 1; flex-shrink: 0;
-    }
-
-    .start-btn {
-        padding: 18px 70px; border-radius: 6px; 
-        border: 1px solid var(--cyan); border-bottom: 5px solid var(--cyan);
-        background: rgba(0, 229, 255, 0.05); color: var(--cyan);
-        font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700;
-        cursor: pointer; letter-spacing: 4px; transition: 0.2s;
-        text-transform: uppercase;
-        box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
-    }
-    .start-btn:hover {
-        background: var(--cyan); color: #000; box-shadow: 0 0 60px var(--cyan);
-        transform: translateY(2px); border-bottom-width: 1px;
-    }
-    .start-btn:active { transform: translateY(6px); border-bottom-width: 0px; }
-    .start-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; border-bottom-width: 5px; }
-
-    /* FOOTER BANNER */
-    .footer-banner {
-        position: absolute; bottom: 10px; width: 100%; text-align: center;
-        color: #546e7a; font-size: 0.8rem; z-index: 20;
-        padding: 0 20px; line-height: 1.5; background: transparent;
-    }
-    .footer-banner strong { color: #fff; }
-
-    /* MOBİL UYUM */
-    @media (max-width: 900px) {
-        body { overflow-y: auto; height: auto; min-height: 100vh; display: block; }
-        
-        .dashboard { 
-            width: 100%; min-height: 100vh; 
-            border: none; border-radius: 0; 
-            margin-bottom: 0; padding-bottom: 0;
-        }
-        
-        .top-bar { 
-            flex-direction: column; gap: 15px; text-align: center; padding: 20px 10px; height: auto; 
-        }
-        
-        .brand { font-size: 1.5rem; margin-bottom: 5px; }
-        
-        .stats-group { 
-            width: 100%; justify-content: space-around; flex-wrap: wrap; gap: 10px; 
-        }
-        .stat-item { align-items: center; }
-        .stat-val { font-size: 1rem; }
-
-        .status-overlay {
-            position: relative; top: auto; left: auto; transform: none;
-            margin: 10px auto; width: 90%; font-size: 0.9rem;
-        }
-        
-        .gauges-area { 
-            flex-direction: column; gap: 40px; padding: 20px 0; 
-            overflow: visible; 
-            padding-bottom: 140px; 
-        }
-        
-        .gauge-wrapper { width: 260px; height: 260px; } 
-        .gauge-val { font-size: 3rem; min-width: auto; }
-        
-        .bottom-bar { 
-            height: 100px; position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(5, 7, 10, 0.95); border-top: 1px solid #333;
-            backdrop-filter: blur(10px);
-        }
-        .start-btn { padding: 14px 40px; font-size: 1.2rem; }
-        
-        .footer-banner { 
-            position: static; padding: 20px; padding-bottom: 120px; 
-            font-size: 0.7rem;
-        }
+    /* Mobil */
+    @media (max-width: 768px) {
+        .grid-menu { grid-template-columns: 1fr 1fr; }
+        .menu-card { aspect-ratio: 1; padding: 15px; }
+        .menu-card i { font-size: 2rem; }
+        .card-title { font-size: 1rem; }
+        .info-bar { display: none; } /* Mobilde yer kaplamasın */
     }
 </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div class="scan-line"></div>
+    <div id="dashboard">
+        <div class="brand">ODHUN <span>SCREEN</span></div>
+        <div class="subtitle">Profesyonel monitör ve ekran test aracı.<br>Ölü piksel, ışık sızması ve yenileme hızı kontrolü.</div>
+
+        <div class="grid-menu">
+            <div class="menu-card" onclick="startPixelTest()">
+                <i class="fas fa-th"></i>
+                <div class="card-title">Ölü Piksel Testi</div>
+                <div class="card-desc">Kırmızı, Yeşil, Mavi, Beyaz</div>
+            </div>
+            <div class="menu-card" onclick="startBleedTest()">
+                <i class="fas fa-moon"></i>
+                <div class="card-title">Işık Sızması</div>
+                <div class="card-desc">Tam Siyah Karanlık Mod</div>
+            </div>
+            <div class="menu-card" onclick="startHzTest()">
+                <i class="fas fa-tachometer-alt"></i>
+                <div class="card-title">Hz & FPS Testi</div>
+                <div class="card-desc">Yenileme Hızı Ölçümü</div>
+            </div>
+            <div class="menu-card" onclick="startGradientTest()">
+                <i class="fas fa-fill-drip"></i>
+                <div class="card-title">Renk Banding</div>
+                <div class="card-desc">Renk Geçiş Kalitesi</div>
+            </div>
+            <div class="menu-card" onclick="startTextTest()">
+                <i class="fas fa-font"></i>
+                <div class="card-title">Keskinlik Testi</div>
+                <div class="card-desc">Yazı Okunabilirliği</div>
+            </div>
+            <div class="menu-card" onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+                <div class="card-title">Tam Ekran</div>
+                <div class="card-desc">F11 Moduna Geç</div>
+            </div>
+        </div>
+
+        <div class="info-bar">
+            <div class="info-item">
+                <span class="info-label">Çözünürlük</span>
+                <span class="info-val" id="resInfo">...</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Piksel Oranı</span>
+                <span class="info-val" id="dprInfo">...</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Renk Derinliği</span>
+                <span class="info-val" id="depthInfo">...</span>
+            </div>
+        </div>
+
+        <div class="footer-note">Odhun.com © 2025 | Profesyonel Araçlar</div>
+    </div>
+
+    <div id="testLayer" onclick="nextStep()">
         
-        <div class="top-bar">
-            <div class="brand">ODHUN <span>SPEED TEST</span></div>
-            <div class="stats-group">
-                <div class="stat-item">
-                    <div class="stat-label">PING</div>
-                    <div class="stat-val" id="pingVal">-- ms</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">IP ADRESİ</div>
-                    <div class="stat-val" id="ipVal">...</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">KONUM</div>
-                    <div class="stat-val" id="locVal">...</div>
-                </div>
-            </div>
+        <div id="overlayMsg">
+            <h2>TEST BAŞLIYOR</h2>
+            <p>Çıkmak için <span class="key-hint">ESC</span> veya çift tıklayın.<br>İlerlemek için ekrana tıklayın.</p>
         </div>
 
-        <div class="status-overlay" id="statusText">SİSTEM HAZIR</div>
-
-        <div class="gauges-area">
-            
-            <div class="gauge-wrapper cyan-gauge">
-                <svg class="gauge-svg" viewBox="0 0 340 340">
-                    <circle class="gauge-bg" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="0" transform="rotate(90 170 170)" />
-                    <circle class="gauge-progress" id="dlProgress" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="706" transform="rotate(90 170 170)" />
-                </svg>
-                <div class="gauge-content">
-                    <div class="gauge-val" id="dlSpeed">0.000</div>
-                    <div class="gauge-unit">Mbps</div>
-                    <div class="gauge-label"><i class="fas fa-download"></i> INDIRME</div>
-                </div>
-            </div>
-
-            <div class="gauge-wrapper orange-gauge">
-                <svg class="gauge-svg" viewBox="0 0 340 340">
-                    <circle class="gauge-bg" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="0" transform="rotate(90 170 170)" />
-                    <circle class="gauge-progress" id="ulProgress" cx="170" cy="170" r="150" 
-                        stroke-dasharray="706" stroke-dashoffset="706" transform="rotate(90 170 170)" />
-                </svg>
-                <div class="gauge-content">
-                    <div class="gauge-val" id="ulSpeed">0.000</div>
-                    <div class="gauge-unit">Mbps</div>
-                    <div class="gauge-label"><i class="fas fa-upload"></i> YÜKLEME</div>
-                </div>
-            </div>
-
+        <div id="hzContainer">
+            <div class="ufo-track"><div class="ufo" id="ufo"></div></div>
+            <div class="fps-counter" id="fpsCount">0</div>
+            <div class="fps-label">FPS / Hz</div>
         </div>
 
-        <div class="footer-banner">
-            <strong>Odhun.com</strong> © 2025 | Bu araç deneysel ve kişisel kullanım amaçlıdır.<br>
-            Sonuçlar sunucu yoğunluğuna göre değişebilir. Yasal sorumluluk kabul edilmez.
-        </div>
-
-        <div class="bottom-bar">
-            <button class="start-btn" onclick="startTest()" id="startBtn">BAŞLAT</button>
-        </div>
+        <div id="gradientBox"></div>
+    
     </div>
 
     <script>
-        const TEST_FILE = "https://speed.cloudflare.com/__down?bytes=157286400"; 
-        const CIRCUMFERENCE = 706; 
+        const testLayer = document.getElementById('testLayer');
+        const overlayMsg = document.getElementById('overlayMsg');
+        const dashboard = document.getElementById('dashboard');
         
-        const dlProgress = document.getElementById('dlProgress');
-        const ulProgress = document.getElementById('ulProgress');
-        const dlVal = document.getElementById('dlSpeed');
-        const ulVal = document.getElementById('ulSpeed');
-        const pingVal = document.getElementById('pingVal');
-        const ipVal = document.getElementById('ipVal');
-        const locVal = document.getElementById('locVal');
-        const startBtn = document.getElementById('startBtn');
-        const statusText = document.getElementById('statusText');
+        let currentTest = null;
+        let stepIndex = 0;
+        let isRunning = false;
+        let animationFrame;
 
-        window.onload = () => {
-            fetch('https://ipapi.co/json/')
-                .then(res => res.json())
-                .then(data => {
-                    ipVal.innerText = data.ip;
-                    let location = data.country_name;
-                    if(data.country_name === "Turkey") location = "Türkiye";
-                    if(data.city) location += ` / ${data.city}`;
-                    if(data.region && data.region !== data.city) location += ` / ${data.region}`;
-                    locVal.innerText = location;
-                })
-                .catch(() => {
-                    ipVal.innerText = "Gizli";
-                    locVal.innerText = "Bilinmiyor";
-                });
-        };
+        // --- SİSTEM BİLGİSİ ---
+        function updateInfo() {
+            document.getElementById('resInfo').innerText = `${window.screen.width} x ${window.screen.height}`;
+            document.getElementById('dprInfo').innerText = window.devicePixelRatio.toFixed(2) + "x";
+            document.getElementById('depthInfo').innerText = window.screen.colorDepth + " bit";
+        }
+        window.onload = updateInfo;
+        window.onresize = updateInfo;
 
-        function setGauge(element, percent) {
-            const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
-            element.style.strokeDashoffset = offset;
+        // --- GENEL TEST FONKSİYONLARI ---
+        function enterTestMode() {
+            document.documentElement.requestFullscreen().catch(e => {}); // Tam ekran dene
+            dashboard.style.opacity = '0';
+            setTimeout(() => { dashboard.style.display = 'none'; }, 300);
+            testLayer.style.display = 'flex';
+            testLayer.style.cursor = 'none';
+            overlayMsg.style.display = 'block';
+            
+            // 2 saniye sonra mesajı gizle
+            setTimeout(() => { overlayMsg.style.opacity = '0'; }, 2000);
+            isRunning = true;
         }
 
-        // --- HATA DÜZELTMELİ TEST FONKSİYONU ---
-        async function startTest() {
-            // 1. Butonu Devre Dışı Bırak
-            startBtn.disabled = true;
-            startBtn.innerText = "ÖLÇÜLÜYOR";
+        function exitTestMode() {
+            if(document.exitFullscreen) document.exitFullscreen().catch(e => {});
+            testLayer.style.display = 'none';
+            dashboard.style.display = 'flex';
+            setTimeout(() => { dashboard.style.opacity = '1'; }, 50);
             
-            // 2. Değerleri Sıfırla
-            setGauge(dlProgress, 0);
-            setGauge(ulProgress, 0);
-            dlVal
+            // Temizlik
+            testLayer.style.background = '#000';
+            document.getElementById('hzContainer').style.display = 'none';
+            document.getElementById('gradientBox').style.display = 'none';
+            testLayer.innerHTML = ''; // Temizle
+            testLayer.appendChild(overlayMsg); // Mesajı geri koy
+            testLayer.appendChild(document.getElementById('hzContainer'));
+            testLayer.appendChild(document.getElementById('gradientBox'));
+            
+            cancelAnimationFrame(animationFrame);
+            isRunning = false;
+            currentTest = null;
+            stepIndex = 0;
+            overlayMsg.style.opacity = '1';
+        }
+
+        // ESC ile Çıkış
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape' && isRunning) exitTestMode();
+        });
+
+        // Çift Tıklama ile Çıkış
+        testLayer.addEventListener('dblclick', exitTestMode);
+
+        // İlerlemek için Tıkla
+        function nextStep() {
+            if (!isRunning) return;
+            stepIndex++;
+
+            if (currentTest === 'pixel') runPixelStep();
+            else if (currentTest === 'bleed') exitTestMode(); // Tek adım
+            else if (currentTest === 'text') runTextStep();
+        }
+
+        // --- 1. ÖLÜ PİKSEL TESTİ ---
+        const pixelColors = ['#FF0000', '#00FF00', '#0000FF', '#FFFFFF', '#000000'];
+        function startPixelTest() {
+            currentTest = 'pixel';
+            stepIndex = 0;
+            enterTestMode();
+            runPixelStep();
+        }
+        function runPixelStep() {
+            if (stepIndex >= pixelColors.length) stepIndex = 0; // Başa dön
+            testLayer.style.backgroundColor = pixelColors[stepIndex];
+        }
+
+        // --- 2. IŞIK SIZMASI TESTİ ---
+        function startBleedTest() {
+            currentTest = 'bleed';
+            enterTestMode();
+            testLayer.style.backgroundColor = '#000000'; // Tam siyah
+            // Ortaya hafif bir metin
+            const txt = document.createElement('div');
+            txt.style.color = '#222'; txt.style.fontFamily = 'sans-serif';
+            txt.innerText = "Işık sızması için kenarları kontrol edin.";
+            testLayer.appendChild(txt);
+        }
+
+        // --- 3. HZ (FPS) TESTİ ---
+        function startHzTest() {
+            currentTest = 'hz';
+            enterTestMode();
+            document.getElementById('hzContainer').style.display = 'flex';
+            
+            let lastTime = performance.now();
+            let frames = 0;
+            const ufo = document.getElementById('ufo');
+            const fpsText = document.getElementById('fpsCount');
+            
+            function loop(time) {
+                if(!isRunning) return;
+                
+                // UFO Hareketi (Ekran genişliğine göre)
+                const progress = (time % 1000) / 1000; // 1 saniyede tur
+                const pos = (Math.sin(time / 200) + 1) / 2 * (window.innerWidth - 60);
+                ufo.style.transform = `translateX(${pos}px)`;
+
+                // FPS Hesapla
+                frames++;
+                if (time - lastTime >= 1000) {
+                    fpsText.innerText = frames;
+                    frames = 0;
+                    lastTime = time;
+                }
+                
+                animationFrame = requestAnimationFrame(loop);
+            }
+            animationFrame = requestAnimationFrame(loop);
+        }
+
+        // --- 4. GRADYAN (BANDING) TESTİ ---
+        function startGradientTest() {
+            currentTest = 'gradient';
+            enterTestMode();
+            const box = document.getElementById('gradientBox');
+            box.style.display = 'block';
+            box.style.background = 'linear-gradient(to right, black, white)';
+        }
+
+        // --- 5. METİN KESKİNLİĞİ TESTİ ---
+        function startTextTest() {
+            currentTest = 'text';
+            stepIndex = 0;
+            enterTestMode();
+            runTextStep();
+        }
+        
+        function runTextStep() {
+            testLayer.innerHTML = ''; // Temizle
+            testLayer.style.background = '#fff';
+            testLayer.style.color = '#000';
+            testLayer.style.display = 'flex';
+            testLayer.style.flexDirection = 'column';
+            testLayer.style.alignItems = 'center';
+            testLayer.style.justifyContent = 'center';
+            testLayer.style.padding = '20px';
+
+            const sizes = [8, 10, 12, 14, 18, 24, 36, 48];
+            const container = document.createElement('div');
+            container.style.textAlign = 'center';
+            container.style.maxWidth = '800px';
+
+            sizes.forEach(s => {
+                const p = document.createElement('p');
+                p.style.fontSize = s + 'px';
+                p.style.margin = '5px 0';
+                p.innerText = `${s}px - Hızlı kahverengi tilki tembel köpeğin üzerinden atlar. 1234567890`;
+                container.appendChild(p);
+            });
+            
+            testLayer.appendChild(container);
+            
+            // Beyaz/Siyah modu değiştir
+            if(stepIndex % 2 !== 0) {
+                testLayer.style.background = '#000';
+                testLayer.style.color = '#fff';
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+    </script>
+
+</body>
+</html>
