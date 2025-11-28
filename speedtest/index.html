@@ -3,385 +3,513 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Speed Test | Ultimate 3.1</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%2300e5ff%22>S</text></svg>">
-
+<title>Odhun TV | Haber Merkezi</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"> 
 
 <style>
-    :root {
-        --bg-color: #05070a;
-        --panel-bg: rgba(16, 24, 32, 0.85);
-        --cyan: #00e5ff;  /* Download Rengi */
-        --orange: #ff9100; /* Upload Rengi */
-        --text: #e0f7fa;
-        --grid-color: rgba(0, 229, 255, 0.1);
-    }
+:root {
+    --bg-dark: #000000;
+    --bg-panel: #111111;
+    --accent: #ff0000;
+    --rss-bg: #0a0a0a;
+    --border: #333;
+    --text-main: #ffffff;
+    --text-dim: #a0a0a0;
+    --sidebar-width: 260px;
+}
 
-    * { box-sizing: border-box; }
+* { box-sizing: border-box; }
 
-    body {
-        margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text);
-        font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex;
-        flex-direction: column; align-items: center; justify-content: center;
-        overflow: hidden;
-        
-        /* HAREKETLİ ARKA PLAN */
-        background-image: 
-            linear-gradient(var(--grid-color) 1px, transparent 1px),
-            linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
-            radial-gradient(circle at center, #0a1520 0%, #000000 90%);
-        background-size: 60px 60px, 60px 60px, 100% 100%;
-        background-position: 0 0, 0 0, center center;
-        
-        /* Animasyon: Hafifçe kayan grid */
-        animation: gridMove 20s linear infinite;
-    }
+body {
+    margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text-main);
+    font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
+}
 
-    /* Arka plan hareket animasyonu */
-    @keyframes gridMove {
-        0% { background-position: 0 0, 0 0, center center; }
-        100% { background-position: 60px 60px, 60px 60px, center center; }
-    }
+/* SIDEBAR */
+.sidebar {
+    width: var(--sidebar-width); background: var(--bg-panel); 
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    flex-shrink: 0; z-index: 50;
+}
+.logo-area {
+    height: 60px; display: flex; align-items: center; padding: 0 20px;
+    font-size: 1.4rem; font-weight: 900; border-bottom: 1px solid var(--border);
+}
+.logo-area span { color: var(--accent); margin-left: 2px; }
+.search-wrapper { padding: 15px; border-bottom: 1px solid var(--border); }
+.search-box {
+    width: 100%; background: #000; border: 1px solid #333;
+    color: white; padding: 10px; border-radius: 4px; outline: none;
+}
+.channel-list { flex: 1; overflow-y: auto; padding: 10px; }
+.channel-list::-webkit-scrollbar { width: 5px; }
+.channel-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
-    /* Ana Kasa */
-    .dashboard {
-        width: 95%; max-width: 1100px; height: auto; min-height: 600px;
-        background: var(--panel-bg); border: 1px solid rgba(0, 229, 255, 0.3);
-        border-radius: 20px; position: relative;
-        box-shadow: 0 0 60px rgba(0, 229, 255, 0.1), inset 0 0 100px rgba(0,0,0,0.8);
-        backdrop-filter: blur(10px);
-        display: flex; flex-direction: column; overflow: hidden;
-        z-index: 10; /* Arka planın önünde durması için */
-    }
+.channel-item {
+    padding: 12px 15px; border-radius: 4px; cursor: pointer; font-weight: 500;
+    display: flex; justify-content: space-between; margin-bottom: 4px; color: #ccc;
+    transition: 0.2s;
+}
+.channel-item:hover { background: #222; color: #fff; padding-left: 18px; }
+.channel-item.fav i { color: #f1c40f; }
 
-    /* Tarayıcı Çizgisi (Dekoratif) */
-    .scan-line {
-        position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-        background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-        opacity: 0.5; animation: scan 4s linear infinite; pointer-events: none; z-index: 0;
-    }
-    @keyframes scan { 0% { top: -10%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+/* MAIN AREA */
+.main-content {
+    flex: 1; display: flex; flex-direction: column; height: 100%; position: relative;
+}
 
-    /* Üst Bilgi Barı */
-    .top-bar {
-        display: flex; justify-content: space-between; align-items: center; padding: 20px 40px;
-        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1;
-    }
-    
-    .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
-    .brand span { color: var(--cyan); }
+/* HEADER */
+header {
+    height: 60px; border-bottom: 1px solid var(--border); background: var(--bg-panel);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+    flex-shrink: 0;
+}
+.controls button {
+    background: #222; border: 1px solid #333; color: #aaa; padding: 6px 12px;
+    border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px;
+}
+.controls button.active { background: var(--accent); color: #fff; }
 
-    /* İstatistikler (IP, Ping, Konum) */
-    .stats-group { display: flex; gap: 30px; }
-    .stat-item { display: flex; flex-direction: column; align-items: flex-end; }
-    .stat-label { font-size: 0.75rem; color: #546e7a; letter-spacing: 1px; font-weight: bold; }
-    .stat-val { 
-        font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; 
-        text-shadow: 0 0 5px rgba(255,255,255,0.3); margin-top: 2px;
-    }
+/* SPLIT SCREEN LAYOUT */
+.split-container {
+    flex: 1; display: flex; overflow: hidden;
+}
 
-    /* Gösterge Alanı */
-    .gauges-area {
-        flex: 1; display: flex; justify-content: center; align-items: center; gap: 60px;
-        padding: 40px; flex-wrap: wrap; z-index: 1;
-    }
+/* GRID ALANI (SOL) */
+#grid-area {
+    flex: 1; 
+    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px;
+    overflow-y: auto;
+    align-content: start;
+    border-right: 1px solid var(--border);
+    transition: flex 0.3s;
+}
+#grid-area::-webkit-scrollbar { width: 8px; }
+#grid-area::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
-    /* --- GÖSTERGE TASARIMI (SVG) --- */
-    .gauge-wrapper {
-        position: relative; width: 280px; height: 280px;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
+.stream-box {
+    position: relative; width: 100%; aspect-ratio: 16 / 9;
+    background: #000; border-radius: 6px; overflow: hidden; border: 1px solid #222;
+}
+iframe { width: 100%; height: 100%; border: none; }
+.label {
+    position: absolute; top: 10px; left: 10px; background: rgba(200,0,0,0.9);
+    padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: bold; color: #fff;
+    pointer-events: none;
+}
+.close {
+    position: absolute; top: 8px; right: 8px; width: 24px; height: 24px;
+    background: rgba(0,0,0,0.8); color: #fff; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; font-size: 12px; border-radius: 4px;
+}
 
-    .gauge-svg {
-        transform: rotate(135deg); /* Başlangıç açısı */
-        width: 100%; height: 100%; position: absolute; top: 0; left: 0;
-    }
+/* RSS HABER PANELİ (SAĞ) */
+#rss-panel {
+    width: 350px; 
+    background: var(--rss-bg);
+    display: flex; flex-direction: column;
+    border-left: 1px solid var(--border);
+    flex-shrink: 0;
+    transition: margin-right 0.3s;
+}
 
-    /* Arka Plan Çemberi */
-    .gauge-bg { 
-        fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 12; 
-        stroke-dasharray: 2, 5; /* Kesik çizgi efekti */
-        stroke-linecap: round;
-    }
-    
-    /* İlerleme Çemberi */
-    .gauge-progress {
-        fill: none; stroke-width: 12; stroke-linecap: round;
-        stroke-dasharray: 565; /* (2 * PI * r) * 0.75 */
-        stroke-dashoffset: 565; /* Boş */
-        transition: stroke-dashoffset 0.1s linear;
-        filter: drop-shadow(0 0 8px currentColor);
-    }
+.rss-header {
+    height: 50px; border-bottom: 1px solid #333; background: #111;
+    display: flex; align-items: center; padding: 0 10px;
+}
 
-    /* Renkler */
-    .cyan-gauge .gauge-progress { stroke: var(--cyan); color: var(--cyan); }
-    .orange-gauge .gauge-progress { stroke: var(--orange); color: var(--orange); }
+/* RSS Select Box */
+.rss-select {
+    width: 100%; background: #222; color: #fff; border: 1px solid #333;
+    padding: 8px; border-radius: 4px; outline: none; font-size: 0.85rem;
+    font-weight: 500; cursor: pointer;
+}
+.rss-select option { color: #fff; background: #222; padding: 5px; }
 
-    /* Ortadaki Metin */
-    .gauge-content { z-index: 10; text-align: center; position: relative; top: 10px; }
-    .gauge-val {
-        font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 700;
-        line-height: 1; color: #fff; text-shadow: 0 0 15px currentColor;
-    }
-    .cyan-gauge .gauge-val { color: var(--cyan); }
-    .orange-gauge .gauge-val { color: var(--orange); }
-    
-    .gauge-unit { font-size: 1rem; opacity: 0.6; margin-top: 5px; font-weight: bold; }
-    .gauge-label { 
-        margin-top: 15px; font-size: 0.9rem; font-weight: 900; letter-spacing: 2px; 
-        background: rgba(255,255,255,0.05); padding: 6px 15px; border-radius: 4px;
-        display: inline-block; border: 1px solid rgba(255,255,255,0.1);
-    }
+.rss-content {
+    flex: 1; overflow-y: auto; padding: 0;
+}
+.rss-content::-webkit-scrollbar { width: 6px; }
+.rss-content::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
-    /* Alt Kontrol Alanı */
-    .bottom-bar {
-        height: 100px; border-top: 1px solid rgba(255,255,255,0.05);
-        display: flex; align-items: center; justify-content: center;
-        position: relative; background: rgba(0,0,0,0.2); z-index: 1;
-    }
+.news-item {
+    padding: 15px; border-bottom: 1px solid #222; transition: 0.2s;
+    display: block; text-decoration: none; color: inherit;
+}
+.news-item:hover { background: #1a1a1a; }
+.news-time { font-size: 0.75rem; color: var(--accent); margin-bottom: 5px; display: block; font-weight: bold; }
+.news-title { font-size: 0.85rem; line-height: 1.4; color: #eee; font-weight: 500; }
+.news-desc { font-size: 0.75rem; color: #888; margin-top: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-    .start-btn {
-        padding: 16px 50px; border-radius: 4px; 
-        border: 1px solid var(--cyan); border-bottom: 4px solid var(--cyan);
-        background: rgba(0, 229, 255, 0.05); color: var(--cyan);
-        font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 700;
-        cursor: pointer; letter-spacing: 3px; transition: 0.2s;
-        text-transform: uppercase;
-        box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
-    }
-    .start-btn:hover {
-        background: var(--cyan); color: #000; box-shadow: 0 0 50px var(--cyan);
-        transform: translateY(2px); border-bottom-width: 1px;
-    }
-    .start-btn:active { transform: translateY(4px); border-bottom-width: 0px; }
-    .start-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; border-bottom-width: 4px; }
+/* --- FOOTER TASARIMI --- */
+footer {
+    background: #0d0d0d;
+    border-top: 1px solid var(--border);
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+    flex-shrink: 0; /* Alan daralsa da footer küçülmesin */
+    z-index: 40;
+}
+footer strong { color: #fff; }
+.footer-warning {
+    margin-top: 5px;
+    font-size: 0.7rem;
+    color: #555;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
+}
+.footer-warning i { color: var(--accent); margin-right: 4px; }
 
-    /* Mobil Uyum */
-    @media (max-width: 900px) {
-        .dashboard { width: 100%; height: 100%; border: none; border-radius: 0; }
-        .gauges-area { flex-direction: column; gap: 40px; padding: 20px; overflow-y: auto; }
-        .gauge-wrapper { width: 220px; height: 220px; }
-        .gauge-val { font-size: 2.8rem; }
-        .top-bar { flex-direction: column; align-items: center; gap: 15px; text-align: center; padding: 15px; }
-        .stats-group { width: 100%; justify-content: space-around; }
-        .stat-item { align-items: center; }
-        .bottom-bar { height: 90px; }
-        .start-btn { padding: 14px 40px; font-size: 1.2rem; }
-    }
-
+/* Mobil */
+@media (max-width: 900px) {
+    .sidebar { display: none; }
+    #rss-panel { display: none; } 
+    #grid-area { grid-template-columns: 1fr !important; }
+    footer { padding: 10px; font-size: 0.7rem; }
+}
 </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div class="scan-line"></div>
-        
-        <div class="top-bar">
-            <div class="brand">ODHUN<span>SPEED</span></div>
-            <div class="stats-group">
-                <div class="stat-item">
-                    <div class="stat-label">PING</div>
-                    <div class="stat-val" id="pingVal">-- ms</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">IP ADRESİ</div>
-                    <div class="stat-val" id="ipVal">...</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">KONUM</div>
-                    <div class="stat-val" id="locVal">...</div>
-                </div>
-            </div>
+<div class="sidebar">
+    <div class="logo-area">ODHUN<span>TV</span></div>
+    <div class="search-wrapper">
+        <input type="text" class="search-box" id="search" placeholder="Kanal Ara..." onkeyup="filterChannels()">
+    </div>
+    <div class="channel-list" id="channelList"></div>
+</div>
+
+<div class="main-content">
+    <header>
+        <div style="font-weight:bold; color:#fff;">CANLI YAYIN MERKEZİ</div>
+        <div class="controls">
+            <button onclick="setGrid(1)">1x1</button>
+            <button onclick="setGrid(2)" class="active">2x2</button>
+            <button onclick="setGrid(3)">3x3</button>
+            <button onclick="toggleRSS()" id="btnRss" style="color:white; border-color:#555;">
+                <i class="fas fa-newspaper"></i> HABERLER
+            </button>
+            <button onclick="resetAll()" style="color:#e74c3c;">TEMİZLE</button>
         </div>
+    </header>
 
-        <div class="gauges-area">
-            
-            <div class="gauge-wrapper cyan-gauge">
-                <svg class="gauge-svg" viewBox="0 0 240 240">
-                    <circle class="gauge-bg" cx="120" cy="120" r="100" 
-                        stroke-dasharray="471" stroke-dashoffset="0" transform="rotate(90 120 120)" />
-                    <circle class="gauge-progress" id="dlProgress" cx="120" cy="120" r="100" 
-                        stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
-                </svg>
-                <div class="gauge-content">
-                    <div class="gauge-val" id="dlSpeed">0.0</div>
-                    <div class="gauge-unit">Mbps</div>
-                    <div class="gauge-label"><i class="fas fa-download"></i> INDIRME</div>
-                </div>
+    <div class="split-container">
+        <div id="grid-area"></div>
+
+        <div id="rss-panel">
+            <div class="rss-header">
+                <select id="rssSource" class="rss-select" onchange="changeRSS()">
+                    </select>
             </div>
-
-            <div class="gauge-wrapper orange-gauge">
-                <svg class="gauge-svg" viewBox="0 0 240 240">
-                    <circle class="gauge-bg" cx="120" cy="120" r="100" 
-                        stroke-dasharray="471" stroke-dashoffset="0" transform="rotate(90 120 120)" />
-                    <circle class="gauge-progress" id="ulProgress" cx="120" cy="120" r="100" 
-                        stroke-dasharray="471" stroke-dashoffset="471" transform="rotate(90 120 120)" />
-                </svg>
-                <div class="gauge-content">
-                    <div class="gauge-val" id="ulSpeed">0.0</div>
-                    <div class="gauge-unit">Mbps</div>
-                    <div class="gauge-label"><i class="fas fa-upload"></i> YÜKLEME</div>
-                </div>
+            <div class="rss-content" id="rssFeed">
+                <div style="padding:20px; text-align:center; color:#555;">Haberler yükleniyor...</div>
             </div>
-
-        </div>
-
-        <div class="bottom-bar">
-            <button class="start-btn" onclick="startTest()" id="startBtn">BAŞLAT</button>
         </div>
     </div>
 
-    <script>
-        // --- AYARLAR ---
-        // Cloudflare Speed Test Endpoint (150 MB)
-        // CORS destekli, global CDN, yüksek hız.
-        const TEST_FILE = "https://speed.cloudflare.com/__down?bytes=157286400"; 
-        const CIRCUMFERENCE = 471; // (2 * PI * 100) * 0.75
-        
-        const dlProgress = document.getElementById('dlProgress');
-        const ulProgress = document.getElementById('ulProgress');
-        const dlVal = document.getElementById('dlSpeed');
-        const ulVal = document.getElementById('ulSpeed');
-        const pingVal = document.getElementById('pingVal');
-        const ipVal = document.getElementById('ipVal');
-        const locVal = document.getElementById('locVal');
-        const startBtn = document.getElementById('startBtn');
+    <footer>
+        <div><strong>Odhun.com</strong> &copy; 2025 Tüm Hakları Saklıdır.</div>
+        <div class="footer-warning">
+            <i class="fas fa-info-circle"></i> 
+            Bu proje, kişisel ve deneysel bir çalışmadır. Ticari amaç gütmemektedir. 
+            Yayınların içerik ve telif hakları ilgili yayın kuruluşlarına aittir. 
+            Olası sistemsel veya yasal sorunlardan geliştirici sorumlu tutulamaz.
+        </div>
+    </footer>
+</div>
 
-        // --- IP VE KONUM (DETAYLI) ---
-        window.onload = () => {
-            initGauges();
-            fetch('https://ipapi.co/json/')
-                .then(res => res.json())
-                .then(data => {
-                    ipVal.innerText = data.ip;
-                    let location = data.country_name;
-                    if(data.country_name === "Turkey") location = "Türkiye";
-                    if(data.city) location += ` / ${data.city}`;
-                    if(data.region && data.region !== data.city) location += ` / ${data.region}`;
-                    locVal.innerText = location;
-                })
-                .catch(() => {
-                    ipVal.innerText = "Gizli";
-                    locVal.innerText = "Bilinmiyor";
-                });
-        };
+<script>
+const grid = document.getElementById('grid-area');
+const channelListEl = document.getElementById('channelList');
+const rssContainer = document.getElementById('rssFeed');
+const rssPanel = document.getElementById('rss-panel');
+const rssSelect = document.getElementById('rssSource');
 
-        function initGauges() {
-            [dlProgress, ulProgress].forEach(circle => {
-                circle.style.strokeDasharray = CIRCUMFERENCE;
-                circle.style.strokeDashoffset = CIRCUMFERENCE;
-            });
+// --- TV KANALLARI ---
+const channels = [
+    { name: "Sözcü TV", id: "ztmY_cCtUl0" },
+    { name: "Halk TV", id: "VBU0QX6brew" },
+    { name: "Haber Global", id: "EqoCJ8BPxtE" },
+    { name: "TV100", id: "6g_DvD8e2T0" },
+    { name: "TRT HABER", id: "rD3bKBMXKKY" },
+    { name: "CNBC-e", id: "ziYwt0jF1p4" },
+    { name: "Habertürk", id: "RNVNlJSUFoE" },
+    { name: "NTV", id: "pqq5c6k70kk" },
+    { name: "CNN Türk", id: "6N8_r2uwLEc" },
+    { name: "TGRT Haber", id: "TsB0xYOH0AU" }
+];
+
+// --- RSS HAVUZU (A-Z Sıralı) ---
+const rssData = [
+    { name: "A Spor", url: "https://www.aspor.com.tr/rss/anasayfa.xml" },
+    { name: "AjansSpor", url: "https://ajansspor.com/rss" },
+    { name: "Anadolu Ajansı", url: "https://www.aa.com.tr/tr/rss/default?cat=guncel" },
+    { name: "Arkeofili", url: "https://arkeofili.com/feed/" },
+    { name: "Arkitera", url: "https://www.arkitera.com/feed/" },
+    { name: "Aydınlık", url: "https://www.aydinlik.com.tr/feed" },
+    { name: "BBC Türkçe", url: "https://feeds.bbci.co.uk/turkce/rss.xml" },
+    { name: "Bant Mag", url: "https://bantmag.com/feed/" },
+    { name: "Bein Sports Haber", url: "https://beinsports.daioncdn.net/beinsportshaber/beinsportshaber.m3u8" },
+    { name: "Beyaz Perde", url: "https://www.beyazperde.com/rss/haberler.xml" },
+    { name: "Bianet", url: "https://bianet.org/biamag.rss" },
+    { name: "BigPara", url: "https://bigpara.hurriyet.com.tr/rss/" },
+    { name: "Bilim ve Gelecek", url: "https://bilimvegelecek.com.tr/index.php/feed/" },
+    { name: "BirGün", url: "https://www.birgun.net/rss/home" },
+    { name: "Bloomberg HT", url: "https://ciner.daioncdn.net/bloomberght/bloomberght.m3u8" },
+    { name: "CNN Türk", url: "https://www.cnnturk.com/feed/rss/all/news" },
+    { name: "Chip Online", url: "https://www.chip.com.tr/rss" },
+    { name: "Cumhuriyet", url: "https://www.cumhuriyet.com.tr/rss/son_dakika.xml" },
+    { name: "DefenceTurk", url: "https://www.defenceturk.net/feed" },
+    { name: "Diken", url: "https://www.diken.com.tr/feed/" },
+    { name: "Donanım Haber", url: "https://www.donanimhaber.com/rss/tum/" },
+    { name: "Döviz.com", url: "https://www.doviz.com/news/rss" },
+    { name: "Edebiyat Haber", url: "https://www.edebiyathaber.net/feed/" },
+    { name: "Ekonomim", url: "https://www.ekonomim.com/export/rss" },
+    { name: "En Son Haber", url: "https://www.ensonhaber.com/rss/ensonhaber.xml" },
+    { name: "Euronews TR", url: "https://tr.euronews.com/rss" },
+    { name: "Evrim Ağacı", url: "https://evrimagaci.org/rss.xml" },
+    { name: "FRPNET", url: "https://frpnet.net/feed" },
+    { name: "Fanatik", url: "https://www.fanatik.com.tr/rss/haberler" },
+    { name: "Fotomaç", url: "https://www.fotomac.com.tr/rss/anasayfa.xml" },
+    { name: "GZT", url: "https://www.gzt.com/rss" },
+    { name: "Gazete Duvar", url: "https://www.gazeteduvar.com.tr/export/rss" },
+    { name: "Haber 7", url: "https://i12.haber7.net/sondakika/newsstand/latest.xml" },
+    { name: "Habertürk", url: "https://www.haberturk.com/rss" },
+    { name: "Halk TV RSS", url: "https://halktv.com.tr/service/rss.php" },
+    { name: "Hürriyet", url: "https://www.hurriyet.com.tr/rss/anasayfa" },
+    { name: "Independent Türkçe", url: "https://www.indyturk.com/rss.xml" },
+    { name: "Investing Haber", url: "https://tr.investing.com/rss/news.rss" },
+    { name: "Kayıp Rıhtım", url: "https://kayiprihtim.com/feed/" },
+    { name: "Kozmik Anafor", url: "https://www.kozmikanafor.com/feed/" },
+    { name: "LOG", url: "https://www.log.com.tr/feed/" },
+    { name: "Milli Gazete", url: "https://www.milligazete.com.tr/rss" },
+    { name: "Milliyet", url: "https://www.milliyet.com.tr/rss/rssnew/sondakikarss.xml" },
+    { name: "Mynet", url: "https://www.mynet.com/haber/rss/sondakika" },
+    { name: "NTV Gündem", url: "https://www.ntv.com.tr/gundem.rss" },
+    { name: "NTV Spor", url: "https://www.ntvspor.net/rss/anasayfa" },
+    { name: "OdaTV", url: "https://www.odatv.com/rss.xml" },
+    { name: "Onedio", url: "https://onedio.com/Publisher/publisher-daily.rss" },
+    { name: "PC Hocası", url: "https://pchocasi.com.tr/feed" },
+    { name: "Play Tuşu", url: "https://playtusu.com/feed/" },
+    { name: "Popular Science TR", url: "https://popsci.com.tr/feed/" },
+    { name: "Sabah", url: "https://www.sabah.com.tr/rss/gundem.xml" },
+    { name: "SavunmaSanayiST", url: "https://www.savunmasanayist.com/feed/" },
+    { name: "ShiftDelete", url: "https://shiftdelete.net/feed" },
+    { name: "Sözcü Son Dakika", url: "https://www.sozcu.com.tr/feeds-son-dakika" },
+    { name: "Sözcü Spor", url: "https://www.sozcu.com.tr/feeds-rss-category-spor" },
+    { name: "T24", url: "https://t24.com.tr/rss" },
+    { name: "TRT Haber", url: "https://www.trthaber.com/sondakika.rss" },
+    { name: "Technopat", url: "https://www.technopat.net/feed/" },
+    { name: "Tele1", url: "https://www.tele1.com.tr/rss" },
+    { name: "Webrazzi", url: "https://webrazzi.com/feed" },
+    { name: "Webtekno", url: "https://www.webtekno.com/rss.xml" },
+    { name: "Yeni Şafak", url: "https://www.yenisafak.com/rss?xml=gundem" }
+];
+
+window.onload = () => {
+    renderSidebar();
+    createPlayer(channels[0]); // Sözcü
+    createPlayer(channels[7]); // NTV
+    
+    // RSS Menüsünü Doldur
+    populateRSSMenu();
+    
+    // İlk RSS'i Çek (Tüm Akış - Otomatik)
+    fetchRSS("MIXED");
+    
+    // Her dakika güncelle
+    setInterval(() => {
+        const currentUrl = rssSelect.value;
+        if(currentUrl) {
+             if(currentUrl === "MIXED") fetchAllRSS();
+             else fetchRSS(currentUrl);
         }
+    }, 60000);
+};
 
-        function setGauge(element, percent) {
-            const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
-            element.style.strokeDashoffset = offset;
+function populateRSSMenu() {
+    rssSelect.innerHTML = "";
+    
+    // Önce Tüm Akış seçeneğini ekle
+    const mixedOption = document.createElement('option');
+    mixedOption.value = "MIXED";
+    mixedOption.innerText = "Tüm Akış (Otomatik)";
+    rssSelect.appendChild(mixedOption);
+    
+    // Diğerlerini ekle
+    rssData.forEach(feed => {
+        const option = document.createElement('option');
+        option.value = feed.url;
+        option.innerText = feed.name;
+        rssSelect.appendChild(option);
+    });
+}
+
+function changeRSS() {
+    const url = rssSelect.value;
+    rssContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#555;">Yükleniyor...</div>';
+    if(url === "MIXED") fetchAllRSS();
+    else fetchRSS(url);
+}
+
+// --- İSİM DÜZELTME FONKSİYONU ---
+function formatSourceName(rawTitle) {
+    let name = rawTitle.replace('RSS', '').replace('Haberler', '').trim();
+    // Eğer isimde 'latest', 'fro' veya 'euronews' geçiyorsa "SON DAKİKA" yap
+    if (name.toLowerCase().includes('latest') || name.toLowerCase().includes('euronews')) {
+        return "SON DAKİKA";
+    }
+    // İsmi çok uzunsa kısalt
+    return name.length > 15 ? name.substring(0, 15) : name;
+}
+
+async function fetchRSS(url) {
+    if(url === "MIXED") { fetchAllRSS(); return; }
+
+    const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
+
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        if (data.status === 'ok') {
+            const sourceName = formatSourceName(data.feed.title);
+            const items = data.items.map(item => ({...item, source: sourceName, date: new Date(item.pubDate)}));
+            renderNewsList(items);
+        } else {
+            rssContainer.innerHTML = '<div style="padding:20px;">Haber kaynağına ulaşılamadı.</div>';
         }
+    } catch (e) {
+        console.error(e);
+        rssContainer.innerHTML = '<div style="padding:20px;">Bağlantı hatası.</div>';
+    }
+}
 
-        // --- TEST BAŞLAT ---
-        async function startTest() {
-            startBtn.disabled = true;
-            startBtn.innerText = "ÖLÇÜLÜYOR...";
-            
-            // Sıfırla
-            setGauge(dlProgress, 0);
-            setGauge(ulProgress, 0);
-            dlVal.innerText = "0.0";
-            ulVal.innerText = "0.0";
+async function fetchAllRSS() {
+    // Rastgele 5 kaynak seç
+    const randomSources = rssData.sort(() => 0.5 - Math.random()).slice(0, 5);
+    let mixedNews = [];
 
-            // 1. PING
-            const pStart = Date.now();
-            try { await fetch("https://speed.cloudflare.com/__down?bytes=0", {method: 'HEAD'}); } catch(e){}
-            const pTime = Date.now() - pStart;
-            pingVal.innerText = Math.round(pTime) + " ms";
-
-            // 2. DOWNLOAD
-            const dlSpeed = await measureSpeed(true);
-            
-            // 3. UPLOAD SİMÜLASYONU
-            // Upload testi browser'dan sunucuya büyük veri atmayı gerektirir ve genelde backend lazımdır.
-            // Burada DL hızına ve TR ortalamalarına orantılı gerçekçi bir simülasyon yapıyoruz.
-            await simulateUpload(dlSpeed);
-
-            startBtn.innerText = "TEKRARLA";
-            startBtn.disabled = false;
-        }
-
-        // Gerçek İndirme Testi (Stream Okuma - Akıllı Boyut)
-        async function measureSpeed(isDownload) {
-            const startTime = Date.now();
-            let loaded = 0;
-            let lastSpeed = 0;
-            let reader;
-            
-            try {
-                // Cache'i aşmak için time parametresi
-                const response = await fetch(TEST_FILE + "&t=" + Date.now());
-                reader = response.body.getReader();
-                
-                while(true) {
-                    const {done, value} = await reader.read();
-                    if(done) break;
-                    
-                    loaded += value.length;
-                    const currentTime = Date.now();
-                    const duration = (currentTime - startTime) / 1000; // Saniye
-                    
-                    // Eğer test 15 saniyeyi geçerse durdur (Kullanıcıyı bekletmemek için)
-                    if (duration > 15) {
-                        reader.cancel();
-                        break;
-                    }
-
-                    // Anlık Hız (Mbps)
-                    const speedBps = (loaded * 8) / duration;
-                    const speedMbps = speedBps / 1000000;
-                    
-                    // UI Güncelle
-                    dlVal.innerText = speedMbps.toFixed(1);
-                    // İbre: 100 Mbps'i %100 al, üstüne çıkarsa yine tam dolu
-                    // Skalayı 1000Mbps (Gigabit) uyumlu yapalım: % = (hız / 100) * 20? Hayır basit tutalım.
-                    // Standart: 100 Mbps skalası. 100 ve üstü full.
-                    let p = (speedMbps / 100) * 100; 
-                    if(p > 100) p = 100;
-                    setGauge(dlProgress, p);
-                    
-                    lastSpeed = speedMbps;
+    const promises = randomSources.map(source => 
+        fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    const sourceName = formatSourceName(data.feed.title);
+                    data.items.forEach(item => {
+                        mixedNews.push({
+                            title: item.title,
+                            desc: cleanText(item.description),
+                            link: item.link,
+                            date: new Date(item.pubDate),
+                            source: sourceName
+                        });
+                    });
                 }
-            } catch(e) { console.error(e); }
-            return lastSpeed;
-        }
+            })
+            .catch(() => {})
+    );
 
-        // Upload Simülasyonu
-        function simulateUpload(dlSpeed) {
-            return new Promise(resolve => {
-                // Türkiye ortalaması: Upload genelde Download'un %10-%30'u (Fiberde %50'ye çıkabilir)
-                const target = dlSpeed * (Math.random() * 0.3 + 0.1); 
-                let current = 0;
-                
-                const interval = setInterval(() => {
-                    current += target / 20;
-                    let display = current + (Math.random() * 1 - 0.5);
-                    if(display < 0) display = 0;
-                    
-                    ulVal.innerText = display.toFixed(1);
-                    
-                    // Upload skalası da 100 üzerinden
-                    let p = (display / 50) * 100; // 50 Mbps üstünü full göster
-                    if(p > 100) p = 100;
-                    setGauge(ulProgress, p);
+    await Promise.all(promises);
+    // Tarihe göre sırala (En yeni en üstte)
+    mixedNews.sort((a, b) => b.date - a.date);
+    renderNewsList(mixedNews);
+}
 
-                    if(current >= target) {
-                        clearInterval(interval);
-                        ulVal.innerText = target.toFixed(1);
-                        resolve();
-                    }
-                }, 100);
-            });
-        }
-    </script>
+function renderNewsList(items) {
+    rssContainer.innerHTML = "";
+    items.forEach(item => {
+        // Saat Düzenlemesi (TR Saati) - Gerekirse offset eklenebilir
+        const timeStr = item.date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
+        const link = document.createElement('a');
+        link.className = 'news-item';
+        link.href = item.link;
+        link.target = "_blank";
+
+        link.innerHTML = `
+            <div class="news-meta">
+                <span class="news-source">${item.source}</span>
+                <span class="news-time"> - ${timeStr}</span>
+            </div>
+            <div class="news-title">${item.title}</div>
+            <div class="news-desc">${item.desc}</div>
+        `;
+        rssContainer.appendChild(link);
+    });
+}
+
+function cleanText(html) {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    let text = tmp.textContent || tmp.innerText || "";
+    return text.length > 100 ? text.substring(0, 100) + "..." : text;
+}
+
+// --- PLAYER FONKSİYONLARI ---
+function renderSidebar() {
+    channelListEl.innerHTML = "";
+    channels.forEach(ch => {
+        const item = document.createElement('div');
+        item.className = 'channel-item';
+        item.innerHTML = `<span>${ch.name}</span> <i class="fas fa-play"></i>`;
+        item.onclick = () => createPlayer(ch);
+        channelListEl.appendChild(item);
+    });
+}
+
+function createPlayer(ch) {
+    const box = document.createElement('div');
+    box.className = 'stream-box';
+    box.innerHTML = `
+        <div class="label">${ch.name}</div>
+        <div class="close"><i class="fas fa-times"></i></div>
+        <iframe src="https://www.youtube.com/embed/${ch.id}?autoplay=1&mute=1&controls=1" allowfullscreen></iframe>
+    `;
+    box.querySelector('.close').onclick = () => box.remove();
+    grid.appendChild(box);
+}
+
+// --- UI KONTROLLERİ ---
+function toggleRSS() {
+    if (rssPanel.style.display === 'none') {
+        rssPanel.style.display = 'flex';
+        document.getElementById('grid-area').style.flex = "1";
+    } else {
+        rssPanel.style.display = 'none';
+    }
+}
+
+function setGrid(n) {
+    grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+    // Butonları bul
+    const buttons = document.querySelectorAll('.controls button');
+    if(n === 1) buttons[0].classList.add('active');
+    if(n === 2) buttons[1].classList.add('active');
+    if(n === 3) buttons[2].classList.add('active');
+}
+
+function resetAll() {
+    if(confirm('Temizlensin mi?')) grid.innerHTML = '';
+}
+
+function filterChannels() {
+    const term = document.getElementById('search').value.toLowerCase();
+    Array.from(channelListEl.children).forEach(item => {
+        const name = item.querySelector('span').innerText.toLowerCase();
+        item.style.display = name.includes(term) ? 'flex' : 'none';
+    });
+}
+</script>
 </body>
 </html>
