@@ -102,26 +102,23 @@ header {
     flex: 1; display: flex; overflow: hidden; position: relative;
 }
 
-/* GRID ALANI */
+/* GRID ALANI (MASAÜSTÜ VARSAYILAN) */
 #grid-area {
     flex: 1; 
-    padding: 15px;
+    padding: 10px;
     display: grid;
     /* Varsayılan 3x3 */
     grid-template-columns: repeat(3, 1fr); 
-    gap: 15px;
-    /* İçeriğe göre yükseklik (taşmayı engeller) */
-    grid-auto-rows: min-content; 
-    overflow-y: auto;
-    align-content: start;
+    grid-template-rows: repeat(3, 1fr); /* Satırlar da eşit */
+    gap: 10px;
+    overflow: hidden; /* Taşmayı engelle, tam sığdır */
+    align-content: stretch;
     border-right: 1px solid var(--border);
 }
-#grid-area::-webkit-scrollbar { width: 8px; }
-#grid-area::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
 .stream-box {
-    position: relative; width: 100%; aspect-ratio: 16 / 9;
-    background: #000; border-radius: 6px; overflow: hidden; border: 1px solid #222;
+    position: relative; width: 100%; height: 100%;
+    background: #000; border-radius: 4px; overflow: hidden; border: 1px solid #222;
     display: flex; flex-direction: column;
 }
 iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
@@ -185,43 +182,46 @@ iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
 
 /* FOOTER */
 footer {
-    background: #0d0d0d; border-top: 1px solid var(--border); padding: 15px 20px;
-    text-align: center; font-size: 0.8rem; color: #666; flex-shrink: 0; z-index: 40;
+    background: #0d0d0d; border-top: 1px solid var(--border); padding: 10px 15px;
+    text-align: center; font-size: 0.75rem; color: #666; flex-shrink: 0; z-index: 40;
 }
 footer strong { color: #fff; }
 .footer-warning {
-    margin-top: 5px; font-size: 0.75rem; color: #555; max-width: 800px;
-    margin-left: auto; margin-right: auto; line-height: 1.4;
+    margin-top: 5px; font-size: 0.7rem; color: #555; max-width: 800px;
+    margin-left: auto; margin-right: auto; line-height: 1.3;
 }
 .footer-warning i { color: var(--accent); margin-right: 4px; }
 
-/* --- MOBİL UYUMLULUK DÜZELTMELERİ --- */
+/* --- RESPONSIVE / MOBİL DÜZELTMELERİ --- */
 @media (max-width: 900px) {
     .sidebar {
         position: fixed; left: -100%; top: 0; height: 100%; width: 85%; max-width: 320px;
         box-shadow: 5px 0 15px rgba(0,0,0,0.8);
     }
     .sidebar.active { left: 0; }
-    
     .mobile-close-btn { display: block; }
     #rss-panel { display: none; }
     #resizer { display: none; }
     
-    /* Grid Mobilde de Grid Olarak Kalacak, Flex Değil */
+    /* MOBİL GRID ALANI */
     #grid-area { 
-        display: grid;
-        padding: 10px; gap: 15px; 
-        overflow-y: auto;
-        padding-bottom: 80px; /* Alttaki videoların kesilmemesi için boşluk */
+        padding: 5px; 
+        gap: 5px; 
+        /* Yükseklik = Ekran - Header - Footer */
+        height: calc(100vh - 60px - 60px); 
+        overflow: hidden; /* Scroll olmasın, tam sığsın */
     }
     
-    /* Mobilde Butonlar Görünsün */
-    .controls { overflow-x: auto; max-width: 70vw; }
-    .controls button { padding: 6px 10px; font-size: 0.75rem; display: inline-block !important; }
+    /* Mobilde Aspect Ratio Zorlamayı Kaldır */
+    .stream-box { 
+        width: 100%; height: 100%; 
+        aspect-ratio: auto; /* Grid hücresine tam otursun */
+    }
     
+    .controls { overflow-x: auto; max-width: 60vw; }
+    .controls .btn-grid { display: inline-block; } 
     header { padding: 0 10px; }
     .header-center-title { display: none; }
-    footer { padding: 10px; font-size: 0.7rem; }
 }
 </style>
 </head>
@@ -275,8 +275,7 @@ footer strong { color: #fff; }
         <div><strong>Odhun.com</strong> &copy; 2025 Tüm Hakları Saklıdır.</div>
         <div class="footer-warning">
             <i class="fas fa-info-circle"></i> 
-            Bu proje, halka açık haber kaynaklarını ve YouTube yayınlarını kişisel takip amacıyla tek ekranda toplayan bir araçtır. 
-            Ticari amaç gütmemektedir. Yayınların içerik ve telif hakları ilgili yayın kuruluşlarına aittir.
+            Kişisel kullanım amaçlıdır. Ticari amaç gütmemektedir.
         </div>
     </footer>
 </div>
@@ -290,6 +289,7 @@ const rssSelect = document.getElementById('rssSource');
 const sidebar = document.getElementById('sidebar');
 const resizer = document.getElementById('resizer');
 
+// --- KANAL LİSTESİ ---
 const channels = [
     { name: "Sözcü TV", id: "ztmY_cCtUl0" },
     { name: "Halk TV", id: "VBU0QX6brew" },
@@ -303,6 +303,7 @@ const channels = [
     { name: "TGRT Haber", id: "TsB0xYOH0AU" }
 ];
 
+// --- RSS LİSTESİ ---
 const rssData = [
     { name: "Tüm Akış (Otomatik)", url: "MIXED" },
     { name: "Euronews TR", url: "https://tr.euronews.com/rss" },
@@ -324,21 +325,19 @@ const rssData = [
 window.onload = () => {
     renderSidebar();
     
-    // Varsayılan kanalları açma mantığı
-    let count = 9;
-    // Mobilde varsayılan olarak sadece 1 kanal açalım ki hızlansın, kullanıcı isterse arttırır
-    if(window.innerWidth < 900) count = 1; 
-
-    for(let i=0; i<count; i++) { if(channels[i]) createPlayer(channels[i]); }
+    // Açılışta: Mobilde 1x1, Masaüstünde 3x3
+    if(window.innerWidth < 900) {
+        createPlayer(channels[0]); // Sadece ilk kanal
+        setGrid(1);
+    } else {
+        for(let i=0; i<9; i++) { if(channels[i]) createPlayer(channels[i]); }
+        setGrid(3);
+    }
     
     populateRSSMenu();
     fetchAllRSS();
     setInterval(fetchAllRSS, 120000);
     initResizer();
-    
-    // Mobilde varsayılan 1x1, masaüstünde 3x3
-    if(window.innerWidth < 900) setGrid(1);
-    else setGrid(3);
 };
 
 function handleQuickAdd(event) {
@@ -404,15 +403,17 @@ function createPlayer(ch) {
     grid.appendChild(box);
 }
 
+// --- DÜZELTİLMİŞ SETGRID FONKSİYONU ---
 function setGrid(n) {
-    // Mobilde ve Masaüstünde çalışması için
+    // Hem sütunları hem satırları ayarla
     grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${n}, 1fr)`; // Satırları da zorla
     
     document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
     const btns = document.querySelectorAll('.btn-grid'); 
     if(btns[n-1]) btns[n-1].classList.add('active');
 
-    // Fazla kanalları kapatma mantığı (Temizlik)
+    // Fazla kanalları kapat (Sadece ilk n*n tane kalsın)
     const totalSlots = n * n; 
     const currentBoxes = Array.from(grid.children);
     if (currentBoxes.length > totalSlots) {
@@ -454,7 +455,11 @@ async function fetchSingleRSS(url) {
         const data = await res.json();
         if(data.status === 'ok') {
             const sourceName = formatSourceName(data.feed.title);
-            const items = data.items.map(item => ({...item, source: sourceName, date: new Date(new Date(item.pubDate).getTime() - 3600000)}));
+            const items = data.items.map(item => ({
+                ...item, 
+                source: sourceName, 
+                date: new Date(new Date(item.pubDate).getTime() - 3600000)
+            }));
             renderNewsList(items);
         }
     } catch(e) { rssContainer.innerHTML = 'Hata oluştu.'; }
