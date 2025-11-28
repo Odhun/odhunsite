@@ -14,11 +14,11 @@
     :root {
         --bg-dark: #050505;
         --panel-bg: #111111;
-        --accent: #ffa500; /* Tools Turuncusu */
+        --accent: #ffa500; 
         --border: #333;
         --text-main: #ffffff;
         --text-dim: #aaa;
-        --sidebar-width: 260px;
+        --sidebar-width: 250px;
     }
 
     * { box-sizing: border-box; }
@@ -32,7 +32,7 @@
     .sidebar {
         width: var(--sidebar-width); background: var(--panel-bg);
         border-right: 1px solid var(--border); display: flex; flex-direction: column;
-        flex-shrink: 0; z-index: 1000; transition: transform 0.3s ease;
+        flex-shrink: 0; z-index: 1000; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .logo-area {
@@ -45,16 +45,14 @@
     .mobile-close-btn { display: none; cursor: pointer; font-size: 1.2rem; color: #fff; }
 
     .menu-list { padding: 20px; flex: 1; overflow-y: auto; }
-    .menu-list::-webkit-scrollbar { width: 5px; }
-    .menu-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
+    
     .menu-group-title {
         font-size: 0.7rem; text-transform: uppercase; color: #666; font-weight: 800;
         margin: 15px 0 8px 5px; letter-spacing: 1px;
     }
 
     .menu-item {
-        display: flex; align-items: center; gap: 12px; padding: 12px 15px;
+        display: flex; align-items: center; gap: 12px; padding: 10px 12px;
         color: var(--text-dim); text-decoration: none; font-weight: 500; font-size: 0.9rem;
         border-radius: 6px; margin-bottom: 4px; cursor: pointer; transition: 0.2s;
     }
@@ -66,20 +64,17 @@
     .main-content {
         flex: 1; display: flex; flex-direction: column; height: 100%; 
         overflow-y: auto; position: relative; background: #080808;
+        padding-top: 0;
     }
 
-    /* MOBİL HEADER (MENU BUTONU) */
-    .mobile-header {
-        display: none; align-items: center; padding: 15px 20px;
-        background: var(--panel-bg); border-bottom: 1px solid var(--border);
-        position: sticky; top: 0; z-index: 50;
+    /* MOBİL HEADER (SADECE BUTON) */
+    .mobile-toggle-btn {
+        display: none; position: absolute; top: 15px; left: 15px; z-index: 900;
+        background: rgba(0,0,0,0.6); border: 1px solid var(--border); color: #fff;
+        width: 40px; height: 40px; border-radius: 8px; cursor: pointer;
+        font-size: 1.2rem; backdrop-filter: blur(5px);
+        align-items: center; justify-content: center;
     }
-    .menu-toggle {
-        background: transparent; border: none; color: white;
-        font-size: 1.4rem; cursor: pointer; margin-right: 15px;
-    }
-    .mobile-title { font-weight: 900; font-size: 1.2rem; }
-    .mobile-title span { color: var(--accent); }
 
     /* TOOLS CONTAINER */
     .tool-container {
@@ -97,12 +92,12 @@
     .input-group { margin-bottom: 15px; width: 100%; }
     label { display: block; margin-bottom: 8px; color: #ccc; font-weight: 600; font-size: 0.85rem; }
     
-    input[type="text"], input[type="number"], textarea, select {
+    input, textarea, select {
         width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff;
         padding: 12px; border-radius: 8px; outline: none; font-family: inherit; font-size: 0.95rem;
         transition: 0.3s; box-sizing: border-box;
     }
-    input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
 
     .row { display: flex; gap: 15px; flex-wrap: wrap; }
     .col { flex: 1; min-width: 140px; }
@@ -154,6 +149,7 @@
     .gradient-preview { height: 120px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
     .code-block { background: #000; padding: 15px; border-radius: 8px; font-family: monospace; color: var(--accent); border: 1px solid #333; word-break: break-all; cursor: pointer; font-size: 0.85rem; }
 
+    /* Footer */
     footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #444; border-top: 1px solid #222; margin-top: auto; }
 
     /* --- MOBİL UYUMLULUK --- */
@@ -166,22 +162,24 @@
         .sidebar.active { left: 0; }
 
         .mobile-close-btn { display: block; }
-        .mobile-header { display: flex; } /* Mobil Header Görünür */
+        
+        /* Sadece küçük bir hamburger butonu göster */
+        .mobile-toggle-btn { display: flex; } 
 
-        .main-content { padding-bottom: 20px; }
+        /* İçerik alanını üstten biraz boşalt (buton için) */
+        .main-content { padding-top: 60px; }
+        
         .tool-container { padding: 20px; }
 
         .qr-layout { flex-direction: column-reverse; gap: 20px; }
+        .qr-options { min-width: 100%; }
         .qr-preview { width: 100%; position: static; margin-bottom: 20px; }
     }
 </style>
 </head>
 <body>
 
-    <div class="mobile-header">
-        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <div class="mobile-title">ODHUN<span>TOOLS</span></div>
-    </div>
+    <button class="mobile-toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
@@ -212,7 +210,7 @@
         </div>
     </div>
 
-    <div class="main-content">
+    <div class="main-content" id="mainContent">
 
         <div id="tool-qr" class="tool-container active">
             <h2><i class="fas fa-qrcode"></i> QR Tasarım Stüdyosu</h2>
@@ -272,7 +270,7 @@
                 <input type="file" id="fileInput" accept="image/*" style="display: none" onchange="loadImage(event)">
             </div>
             <div class="input-group" id="convertOptions" style="display:none;">
-                <label>Hedef Format</label>
+                <label>Format</label>
                 <select id="formatSelect"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WEBP</option></select>
                 <img id="previewImg">
                 <button class="action-btn" onclick="convertImage()">Dönüştür</button>
@@ -356,8 +354,8 @@
             <h2>Birim</h2>
             <select id="unitType" onchange="updateUnitUI()"><option value="len">Uzunluk</option><option value="weight">Ağırlık</option></select>
             <div class="row">
-                <div class="col"><label>Değer</label><input type="number" id="unitInput" oninput="convertUnit()"></div>
-                <div class="col"><label>Sonuç</label><input type="number" id="unitOutput" readonly></div>
+                <div class="col"><label id="unitLabel1">Metre</label><input type="number" id="unitInput" oninput="convertUnit()"></div>
+                <div class="col"><label id="unitLabel2">Feet</label><input type="number" id="unitOutput" readonly></div>
             </div>
         </div>
 
@@ -376,27 +374,25 @@
     </div>
 
     <script>
-        const sidebar = document.getElementById('sidebar');
-
         function toggleSidebar() {
-            if (window.innerWidth <= 900) {
-                sidebar.classList.toggle('active');
-            }
+            document.getElementById('sidebar').classList.toggle('active');
         }
 
         function showTool(id) {
             document.querySelectorAll('.tool-container').forEach(el => el.classList.remove('active'));
             document.getElementById('tool-' + id).classList.add('active');
             
-            // Menü aktifleştirme
             document.querySelectorAll('.sidebar .menu-item').forEach(el => el.classList.remove('active'));
             const deskEl = document.querySelector(`.sidebar .menu-item[onclick*="'${id}'"]`);
             if(deskEl) deskEl.classList.add('active');
-
-            // Mobilde seçim yapınca menüyü kapat
+            
+            // Mobilde menüyü kapat
             if (window.innerWidth <= 900) {
-                sidebar.classList.remove('active');
+                document.getElementById('sidebar').classList.remove('active');
             }
+            
+            // Sayfanın başına git
+            document.querySelector('.main-content').scrollTop = 0;
         }
 
         // --- QR KOD ---
@@ -440,12 +436,7 @@
         function clearLogo() { qrLogo = null; document.getElementById('qrLogoInput').value = ""; updateQR(); }
         function downloadQR() { qrCode.download({ name: "odhun-qr", extension: document.getElementById('dlFormat').value }); }
 
-        // --- DİĞER FONKSİYONLAR ---
-        let loadedImage = null;
-        function loadImage(e) {
-            const f = e.target.files[0];
-            if(f) { const r = new FileReader(); r.onload = (ev) => { document.getElementById('previewImg').src = ev.target.result; document.getElementById('previewImg').style.display='block'; document.getElementById('convertOptions').style.display='block'; loadedImage = new Image(); loadedImage.src = ev.target.result; }; r.readAsDataURL(f); }
-        }
+        // --- DİĞERLERİ ---
         function convertImage() {
             if(!loadedImage) return;
             const c = document.createElement('canvas'); c.width=loadedImage.width; c.height=loadedImage.height;
@@ -453,7 +444,13 @@
             const fmt = document.getElementById('formatSelect').value;
             const a = document.createElement('a'); a.download = `odhun-image.${fmt.split('/')[1]}`; a.href = c.toDataURL(fmt); a.click();
         }
-
+        
+        let loadedImage = null;
+        function loadImage(e) {
+            const f = e.target.files[0];
+            if(f) { const r = new FileReader(); r.onload = (ev) => { document.getElementById('previewImg').src = ev.target.result; document.getElementById('previewImg').style.display='block'; document.getElementById('convertOptions').style.display='block'; loadedImage = new Image(); loadedImage.src = ev.target.result; }; r.readAsDataURL(f); }
+        }
+        
         function updateGradient() {
             const c1=document.getElementById('gradC1').value, c2=document.getElementById('gradC2').value, dir=document.getElementById('gradDir').value;
             const css = dir==='circle' ? `radial-gradient(circle, ${c1}, ${c2})` : `linear-gradient(${dir}, ${c1}, ${c2})`;
@@ -498,7 +495,7 @@
 
         function generateLorem() {
             const count = document.getElementById('loremCount').value;
-            const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+            const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
             document.getElementById('loremOutput').value = Array(parseInt(count)).fill(lorem).join('\n\n');
         }
 
