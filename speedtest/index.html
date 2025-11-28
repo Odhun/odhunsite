@@ -13,8 +13,8 @@
     :root {
         --bg-color: #05070a;
         --panel-bg: rgba(16, 24, 32, 0.9);
-        --cyan: #00e5ff;  /* Download Rengi */
-        --orange: #ff9100; /* Upload Rengi */
+        --cyan: #00e5ff;  
+        --orange: #ff9100; 
         --text: #e0f7fa;
         --grid-color: rgba(0, 229, 255, 0.1);
     }
@@ -40,17 +40,15 @@
         100% { background-position: 60px 60px, 60px 60px, center center; }
     }
 
-    /* ANA KASA - DAHA GENİŞ */
+    /* ANA KASA */
     .dashboard {
-        width: 95%; max-width: 1200px; /* Genişletildi */
-        height: auto; min-height: 700px; /* Yükseklik Artırıldı */
+        width: 95%; max-width: 1200px; height: auto; min-height: 700px;
         background: var(--panel-bg); border: 1px solid rgba(0, 229, 255, 0.3);
         border-radius: 25px; position: relative;
         box-shadow: 0 0 80px rgba(0, 229, 255, 0.15), inset 0 0 150px rgba(0,0,0,0.9);
         backdrop-filter: blur(15px);
         display: flex; flex-direction: column; overflow: hidden;
-        z-index: 10; margin-bottom: 20px;
-        padding-bottom: 50px; 
+        z-index: 10; margin-bottom: 20px; padding-bottom: 50px; 
     }
 
     .scan-line {
@@ -62,8 +60,8 @@
 
     /* ÜST BAR */
     .top-bar {
-        display: flex; justify-content: space-between; align-items: center; padding: 30px 50px;
-        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1; height: 100px;
+        display: flex; justify-content: space-between; align-items: center; padding: 20px 50px;
+        border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1; height: 100px; flex-shrink: 0;
     }
     
     .brand { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; }
@@ -77,14 +75,14 @@
         text-shadow: 0 0 8px rgba(255,255,255,0.3); margin-top: 4px;
     }
 
-    /* GÖSTERGELER ALANI - DAHA FERAH */
+    /* GÖSTERGELER ALANI */
     .gauges-area {
-        flex: 1; display: flex; justify-content: center; align-items: center; gap: 100px; /* Araları açıldı */
-        padding: 50px; flex-wrap: wrap; z-index: 1; position: relative;
+        flex: 1; display: flex; justify-content: center; align-items: center; gap: 100px;
+        padding: 20px; flex-wrap: wrap; z-index: 1; position: relative; overflow-y: auto;
     }
 
     .gauge-wrapper {
-        position: relative; width: 360px; height: 360px; /* Büyütüldü */
+        position: relative; width: 360px; height: 360px;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
 
@@ -93,15 +91,13 @@
     }
 
     .gauge-bg { 
-        fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 15; /* Kalınlaştırıldı */
+        fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 15; 
         stroke-dasharray: 2, 5; stroke-linecap: round;
     }
     
     .gauge-progress {
-        fill: none; stroke-width: 15; /* Kalınlaştırıldı */
-        stroke-linecap: round;
-        stroke-dasharray: 706; /* Yeni çevre (r=150) */
-        stroke-dashoffset: 706;
+        fill: none; stroke-width: 15; stroke-linecap: round;
+        stroke-dasharray: 706; stroke-dashoffset: 706;
         transition: stroke-dashoffset 0.1s linear;
         filter: drop-shadow(0 0 12px currentColor);
     }
@@ -112,7 +108,7 @@
     .gauge-content { z-index: 10; text-align: center; position: relative; top: 15px; }
     
     .gauge-val {
-        font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700; /* Font Büyütüldü */
+        font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700;
         line-height: 1; color: #fff; text-shadow: 0 0 20px currentColor;
         min-width: 280px; 
     }
@@ -130,7 +126,7 @@
     /* DURUM MESAJI */
     .status-overlay {
         position: absolute; 
-        top: 130px; /* Biraz daha aşağı */
+        top: 110px; 
         left: 50%; transform: translateX(-50%);
         font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700;
         color: #fff; text-transform: uppercase; letter-spacing: 4px;
@@ -141,13 +137,14 @@
         box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
         backdrop-filter: blur(8px);
         transition: all 0.3s ease;
+        white-space: nowrap;
     }
 
     /* ALT KONTROL */
     .bottom-bar {
         height: 100px; border-top: 1px solid rgba(255,255,255,0.05);
         display: flex; align-items: center; justify-content: center;
-        position: relative; background: rgba(0,0,0,0.2); z-index: 1;
+        position: relative; background: rgba(0,0,0,0.2); z-index: 1; flex-shrink: 0;
     }
 
     .start-btn {
@@ -166,7 +163,7 @@
     .start-btn:active { transform: translateY(6px); border-bottom-width: 0px; }
     .start-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; border-bottom-width: 5px; }
 
-    /* FOOTER BANNER */
+    /* FOOTER */
     .footer-banner {
         position: absolute; bottom: 10px; width: 100%; text-align: center;
         color: #546e7a; font-size: 0.8rem; z-index: 20;
@@ -174,19 +171,54 @@
     }
     .footer-banner strong { color: #fff; }
 
-    /* MOBİL UYUM */
+    /* --- MOBİL UYUM (ÖNEMLİ DÜZELTMELER) --- */
     @media (max-width: 900px) {
-        .dashboard { width: 100%; height: 100%; border: none; border-radius: 0; margin-bottom: 0; padding-bottom: 0; }
-        .gauges-area { flex-direction: column; gap: 50px; padding: 30px 20px; overflow-y: auto; padding-bottom: 120px; }
-        .gauge-wrapper { width: 280px; height: 280px; }
-        .gauge-val { font-size: 3.2rem; }
-        .top-bar { flex-direction: column; align-items: center; gap: 20px; text-align: center; padding: 20px; height: auto; }
-        .stats-group { width: 100%; justify-content: space-around; flex-wrap: wrap; gap: 15px; }
+        body { overflow-y: auto; height: auto; min-height: 100vh; display: block; }
+        
+        .dashboard { 
+            width: 100%; min-height: 100vh; 
+            border: none; border-radius: 0; 
+            margin-bottom: 0; padding-bottom: 0;
+        }
+        
+        .top-bar { 
+            flex-direction: column; gap: 15px; text-align: center; padding: 20px 10px; height: auto; 
+        }
+        
+        .brand { font-size: 1.5rem; }
+        
+        .stats-group { 
+            width: 100%; justify-content: space-around; flex-wrap: wrap; gap: 10px; 
+        }
         .stat-item { align-items: center; }
-        .bottom-bar { height: 130px; background: #05070a; position: relative; z-index: 50; border-top: 1px solid #222; }
-        .start-btn { padding: 15px 50px; font-size: 1.3rem; }
-        .status-overlay { top: auto; bottom: 150px; font-size: 1rem; width: 85%; }
-        .footer-banner { bottom: 95px; font-size: 0.7rem; }
+        .stat-val { font-size: 1rem; }
+
+        .status-overlay {
+            position: relative; top: auto; left: auto; transform: none;
+            margin: 10px auto; width: 90%; font-size: 0.9rem;
+        }
+        
+        .gauges-area { 
+            flex-direction: column; gap: 40px; padding: 20px 0; 
+            overflow: visible; /* Mobilde sayfa scroll olsun */
+            padding-bottom: 140px; /* Footer ve buton için yer */
+        }
+        
+        /* Mobilde daireleri biraz küçült */
+        .gauge-wrapper { width: 260px; height: 260px; } 
+        .gauge-val { font-size: 3rem; min-width: auto; }
+        
+        .bottom-bar { 
+            height: 100px; position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(5, 7, 10, 0.95); border-top: 1px solid #333;
+            backdrop-filter: blur(10px);
+        }
+        .start-btn { padding: 14px 40px; font-size: 1.2rem; }
+        
+        .footer-banner { 
+            position: static; padding: 20px; padding-bottom: 120px; /* Butonun altında kalmasın */
+            font-size: 0.7rem;
+        }
     }
 </style>
 </head>
@@ -247,19 +279,19 @@
 
         </div>
 
-        <div class="bottom-bar">
-            <button class="start-btn" onclick="startTest()" id="startBtn">BAŞLAT</button>
-        </div>
-
         <div class="footer-banner">
             <strong>Odhun.com</strong> © 2025 | Bu araç deneysel ve kişisel kullanım amaçlıdır.<br>
             Sonuçlar sunucu yoğunluğuna göre değişebilir. Yasal sorumluluk kabul edilmez.
+        </div>
+
+        <div class="bottom-bar">
+            <button class="start-btn" onclick="startTest()" id="startBtn">BAŞLAT</button>
         </div>
     </div>
 
     <script>
         const TEST_FILE = "https://speed.cloudflare.com/__down?bytes=157286400"; 
-        const CIRCUMFERENCE = 706; // 2 * PI * 150 * 0.75 (Yeni yarıçap 150px)
+        const CIRCUMFERENCE = 706; 
         
         const dlProgress = document.getElementById('dlProgress');
         const ulProgress = document.getElementById('ulProgress');
@@ -305,19 +337,16 @@
             dlVal.innerText = "0.000";
             ulVal.innerText = "0.000";
 
-            // 1. PING
             const pStart = Date.now();
             try { await fetch("https://speed.cloudflare.com/__down?bytes=0", {method: 'HEAD'}); } catch(e){}
             const pTime = Date.now() - pStart;
             pingVal.innerText = Math.round(pTime) + " ms";
 
-            // 2. DOWNLOAD
             statusText.innerText = "İNDİRME HIZI ÖLÇÜLÜYOR...";
             statusText.style.borderColor = "var(--cyan)";
             statusText.style.color = "var(--cyan)";
             const dlSpeed = await measureSpeed(true);
             
-            // 3. UPLOAD SIMULASYONU
             statusText.innerText = "YÜKLEME HIZI TEST EDİLİYOR...";
             statusText.style.borderColor = "var(--orange)";
             statusText.style.color = "var(--orange)";
