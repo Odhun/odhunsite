@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odhun Finans | Canlı Piyasa</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg-dark: #000000;
+        --bg-panel: #111111;
+        --accent: #00e676; /* Finans Yeşili */
+        --accent-down: #ff1744; /* Düşüş Kırmızısı */
+        --border: #333;
+        --text-main: #ffffff;
+        --text-dim: #a0a0a0;
+        --sidebar-width: 250px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text-main);
+        font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: var(--sidebar-width); background: var(--bg-panel); 
+        border-right: 1px solid var(--border); display: flex; flex-direction: column;
+        flex-shrink: 0; z-index: 100;
+    }
+
+    .logo-area {
+        height: 70px; display: flex; align-items: center; padding: 0 20px;
+        font-size: 1.5rem; font-weight: 900; letter-spacing: -1px;
+        border-bottom: 1px solid var(--border); color: #fff;
+    }
+    .logo-area span { color: var(--accent); margin-left: 2px; }
+
+    .menu-list { padding: 20px; flex: 1; }
+    .menu-item {
+        display: flex; align-items: center; gap: 10px; padding: 12px 15px;
+        color: var(--text-dim); text-decoration: none; font-weight: 600;
+        border-radius: 8px; margin-bottom: 5px; transition: 0.2s;
+    }
+    .menu-item:hover, .menu-item.active { background: #1a1a1a; color: #fff; }
+    .menu-item.active { border-left: 3px solid var(--accent); }
+    .menu-item i { width: 20px; }
+
+    /* MAIN CONTENT */
+    .main-content {
+        flex: 1; display: flex; flex-direction: column; height: 100%; 
+        overflow-y: auto; position: relative;
+    }
+
+    /* TOP TICKER (Kayan Yazı) */
+    .ticker-wrap {
+        height: 50px; background: #000; border-bottom: 1px solid var(--border);
+        overflow: hidden; flex-shrink: 0;
+    }
+
+    /* DASHBOARD GRID */
+    .dashboard {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* CHART CARDS */
+    .card {
+        background: var(--bg-panel); border: 1px solid var(--border);
+        border-radius: 12px; overflow: hidden; height: 350px;
+        display: flex; flex-direction: column;
+    }
+    .card-header {
+        padding: 15px; border-bottom: 1px solid #222; font-weight: 700;
+        display: flex; justify-content: space-between; align-items: center;
+        font-size: 0.9rem; background: #161616;
+    }
+    .card-body { flex: 1; position: relative; }
+
+    /* CONVERTER SECTION */
+    .converter-section {
+        background: var(--bg-panel); border-top: 1px solid var(--border);
+        padding: 30px; margin-top: auto;
+    }
+    .converter-container {
+        max-width: 800px; margin: 0 auto;
+        display: flex; gap: 20px; align-items: flex-end;
+    }
+    .form-group { flex: 1; }
+    .form-group label { display: block; margin-bottom: 8px; color: var(--text-dim); font-size: 0.85rem; }
+    .form-control {
+        width: 100%; background: #000; border: 1px solid var(--border);
+        color: #fff; padding: 12px; border-radius: 6px; font-size: 1.1rem; outline: none;
+        font-family: 'Inter', sans-serif;
+    }
+    .form-control:focus { border-color: var(--accent); }
+    
+    .result-box {
+        flex: 1; background: #0a0a0a; border: 1px solid var(--accent);
+        color: var(--accent); padding: 12px; border-radius: 6px;
+        font-size: 1.5rem; font-weight: 800; text-align: right;
+        display: flex; align-items: center; justify-content: flex-end; height: 50px;
+    }
+
+    /* Footer */
+    footer {
+        text-align: center; padding: 20px; font-size: 0.8rem; color: #444;
+        border-top: 1px solid #222;
+    }
+
+    /* MOBİL */
+    @media (max-width: 900px) {
+        .sidebar { display: none; }
+        .converter-container { flex-direction: column; }
+        .dashboard { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area">ODHUN<span>FİNANS</span></div>
+        <div class="menu-list">
+            <a href="#" class="menu-item active"><i class="fas fa-chart-line"></i> Piyasa Özeti</a>
+            <a href="#" class="menu-item"><i class="fas fa-coins"></i> Kripto</a>
+            <a href="#" class="menu-item"><i class="fas fa-money-bill-wave"></i> Döviz</a>
+            <a href="#" class="menu-item"><i class="fas fa-gem"></i> Altın & Emtia</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <div class="ticker-wrap">
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {
+                "symbols": [
+                    { "proName": "FX_IDC:USDTRY", "title": "USD/TRY" },
+                    { "proName": "FX_IDC:EURTRY", "title": "EUR/TRY" },
+                    { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" },
+                    { "proName": "BITSTAMP:ETHUSD", "title": "Ethereum" },
+                    { "description": "Gram Altın", "proName": "FX_IDC:XAUTRYG" },
+                    { "description": "BIST 100", "proName": "BIST:XU100" }
+                ],
+                "showSymbolLogo": true,
+                "colorTheme": "dark",
+                "isTransparent": false,
+                "displayMode": "adaptive",
+                "locale": "tr"
+                }
+                </script>
+            </div>
+            </div>
+
+        <div class="dashboard">
+            
+            <div class="card">
+                <div class="card-header">
+                    <span>🇺🇸 DOLAR / TL</span>
+                    <span style="color:var(--accent);"><i class="fas fa-circle" style="font-size:8px;"></i> Canlı</span>
+                </div>
+                <div class="card-body">
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                        {
+                        "symbol": "FX_IDC:USDTRY",
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "tr",
+                        "dateRange": "1D",
+                        "colorTheme": "dark",
+                        "isTransparent": true,
+                        "autosize": true,
+                        "largeChartUrl": ""
+                        }
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>🇪🇺 EURO / TL</span>
+                    <span style="color:var(--accent);"><i class="fas fa-circle" style="font-size:8px;"></i> Canlı</span>
+                </div>
+                <div class="card-body">
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                        {
+                        "symbol": "FX_IDC:EURTRY",
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "tr",
+                        "dateRange": "1D",
+                        "colorTheme": "dark",
+                        "isTransparent": true,
+                        "autosize": true,
+                        "largeChartUrl": ""
+                        }
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>🥇 GRAM ALTIN (TL)</span>
+                    <span style="color:var(--accent);"><i class="fas fa-circle" style="font-size:8px;"></i> Canlı</span>
+                </div>
+                <div class="card-body">
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                        {
+                        "symbol": "FX_IDC:XAUTRYG",
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "tr",
+                        "dateRange": "1D",
+                        "colorTheme": "dark",
+                        "isTransparent": true,
+                        "autosize": true,
+                        "largeChartUrl": ""
+                        }
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>₿ BITCOIN (USD)</span>
+                    <span style="color:var(--accent);"><i class="fas fa-circle" style="font-size:8px;"></i> Canlı</span>
+                </div>
+                <div class="card-body">
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                        {
+                        "symbol": "BINANCE:BTCUSDT",
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "tr",
+                        "dateRange": "1D",
+                        "colorTheme": "dark",
+                        "isTransparent": true,
+                        "autosize": true,
+                        "largeChartUrl": ""
+                        }
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="converter-section">
+            <div style="margin-bottom:20px; font-size:1.2rem; font-weight:bold; color:#fff;">
+                <i class="fas fa-calculator"></i> Hızlı Çevirici
+            </div>
+            <div class="converter-container">
+                <div class="form-group">
+                    <label>Miktar</label>
+                    <input type="number" id="amount" class="form-control" value="1" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Birim</label>
+                    <select id="currency" class="form-control" onchange="calculate()">
+                        <option value="USD">Dolar ($)</option>
+                        <option value="EUR">Euro (€)</option>
+                        <option value="GBP">Sterlin (£)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Yaklaşık Değer (TL)</label>
+                    <div id="result" class="result-box">...</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Odhun.com © 2025 | Veriler TradingView altyapısıyla sağlanmaktadır. Yatırım tavsiyesi değildir.
+        </footer>
+
+    </div>
+
+    <script>
+        // Basit Çevirici Mantığı (Veriler yaklaşık değerlerdir, API kullanmadan hızlı çözüm)
+        // Gerçek projede burayı bir API'den çekmek daha doğru olur ama static site için sabit kurlar veya fetch eklenebilir.
+        // Şimdilik dinamik fetch ekliyorum:
+        
+        let rates = { USD: 35.50, EUR: 38.20, GBP: 45.10 }; // Varsayılan (API çalışmazsa)
+
+        async function fetchRates() {
+            try {
+                // Ücretsiz API (CORS dostu)
+                const res = await fetch('https://api.exchangerate-api.com/v4/latest/TRY');
+                const data = await res.json();
+                // Oranlar ters olduğu için (1 TRY = X USD), bölme işlemi yapacağız
+                rates.USD = 1 / data.rates.USD;
+                rates.EUR = 1 / data.rates.EUR;
+                rates.GBP = 1 / data.rates.GBP;
+                calculate();
+            } catch (e) {
+                console.log('Kur çekilemedi, varsayılan değerler kullanılıyor.');
+            }
+        }
+
+        function calculate() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+            const rate = rates[currency];
+            
+            if (!isNaN(amount) && rate) {
+                const total = (amount * rate).toFixed(2);
+                document.getElementById('result').innerText = total + " ₺";
+            }
+        }
+
+        // Başlangıçta kurları çek
+        fetchRates();
+    </script>
+
+</body>
+</html>
