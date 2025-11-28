@@ -25,7 +25,7 @@
         body {
             margin: 0; padding: 0;
             background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
-            background-attachment: fixed; /* Arka plan sabit kalsın */
+            background-attachment: fixed;
             color: var(--text);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
@@ -46,7 +46,7 @@
         .brand span { color: #3b82f6; -webkit-text-fill-color: #3b82f6; } /* Mavi nokta */
         
         .subtitle { 
-            color: var(--text-dim); font-size: 1.1rem; max-width: 500px; margin: 0 auto; 
+            color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto; 
             line-height: 1.5; font-weight: 400;
         }
 
@@ -179,7 +179,7 @@
             <div class="icon-box"><i class="fas fa-tv"></i></div>
             <div class="card-content">
                 <div class="card-title">Haber Merkezi</div>
-                <div class="card-desc">10+ Haber kanalı ve anlık RSS akışı ile gündemi tek ekrandan takip edin.</div>
+                <div class="card-desc">10+ Canlı haber kanalı ve anlık RSS akışı ile gündemi tek ekrandan takip edin.</div>
             </div>
             <div class="card-arrow">İzle <i class="fas fa-arrow-right"></i></div>
         </a>
@@ -193,15 +193,6 @@
             <div class="card-arrow">Dinle <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/finans" class="card" style="--card-color: #10b981;">
-            <div class="icon-box"><i class="fas fa-chart-line"></i></div>
-            <div class="card-content">
-                <div class="card-title">Finans Takip</div>
-                <div class="card-desc">Borsa, Altın, Döviz ve Kripto verileri. Canlı grafikler ve çevirici.</div>
-            </div>
-            <div class="card-arrow">İncele <i class="fas fa-arrow-right"></i></div>
-        </a>
-
         <a href="/hiz" class="card" style="--card-color: #0ea5e9;">
             <div class="icon-box"><i class="fas fa-tachometer-alt"></i></div>
             <div class="card-content">
@@ -211,22 +202,58 @@
             <div class="card-arrow">Ölç <i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="/zen" class="card" style="--card-color: #06b6d4;">
-            <div class="icon-box"><i class="fas fa-spa"></i></div>
+        <a href="/screen" class="card" style="--card-color: #3b82f6;">
+            <div class="icon-box"><i class="fas fa-desktop"></i></div>
             <div class="card-content">
-                <div class="card-title">Zen & Odaklanma</div>
-                <div class="card-desc">Pomodoro sayacı ve yağmur, ateş gibi rahatlatıcı ambiyans sesleri.</div>
+                <div class="card-title">Ekran Testi</div>
+                <div class="card-desc">Monitörünüzde ölü piksel, ışık sızması, Hz değeri ve renk testi yapın.</div>
             </div>
-            <div class="card-arrow">Rahatla <i class="fas fa-arrow-right"></i></div>
+            <div class="card-arrow">Test Et <i class="fas fa-arrow-right"></i></div>
         </a>
 
         <a href="/araclar" class="card" style="--card-color: #f59e0b;">
             <div class="icon-box"><i class="fas fa-toolbox"></i></div>
             <div class="card-content">
                 <div class="card-title">Pro Araçlar</div>
-                <div class="card-desc">QR Kod, Resim Çevirici, Kelime Sayacı ve daha fazlası.</div>
+                <div class="card-desc">QR Kod, Resim Çevirici, Kelime Sayacı, Renk Seçici ve daha fazlası.</div>
             </div>
             <div class="card-arrow">Kullan <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="/finans" class="card" style="--card-color: #10b981;">
+            <div class="icon-box"><i class="fas fa-chart-line"></i></div>
+            <div class="card-content">
+                <div class="card-title">Finans Takip</div>
+                <div class="card-desc">Borsa, Altın, Döviz ve Kripto verileri. Canlı grafikler ve çevirici.</div>
+            </div>
+            <div class="card-arrow">İncele <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="/zen" class="card" style="--card-color: #06b6d4;">
+            <div class="icon-box"><i class="fas fa-spa"></i></div>
+            <div class="card-content">
+                <div class="card-title">Zen & Odaklanma</div>
+                <div class="card-desc">Pomodoro sayacı ve rahatlatıcı ambiyans sesleri ile verimliliği artırın.</div>
+            </div>
+            <div class="card-arrow">Rahatla <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="/takvim" class="card" style="--card-color: #8b5cf6;">
+            <div class="icon-box"><i class="fas fa-calendar-alt"></i></div>
+            <div class="card-content">
+                <div class="card-title">Akıllı Takvim</div>
+                <div class="card-desc">Resmi tatiller, geri sayımlar, dijital saat ve kişisel not defteri.</div>
+            </div>
+            <div class="card-arrow">Planla <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="/sifre" class="card" style="--card-color: #d946ef;">
+            <div class="icon-box"><i class="fas fa-key"></i></div>
+            <div class="card-content">
+                <div class="card-title">Şifre Üretici</div>
+                <div class="card-desc">Kırılması zor, güvenli ve karmaşık şifreler oluşturun.</div>
+            </div>
+            <div class="card-arrow">Oluştur <i class="fas fa-arrow-right"></i></div>
         </a>
 
         <a href="/apps" class="card" style="--card-color: #eab308;">
@@ -236,15 +263,6 @@
                 <div class="card-desc">Kişisel kullanım için hazırlanan yazılımlar ve araçlar arşivi.</div>
             </div>
             <div class="card-arrow">İndir <i class="fas fa-arrow-right"></i></div>
-        </a>
-
-        <a href="/sifre" class="card" style="--card-color: #d946ef;">
-            <div class="icon-box"><i class="fas fa-key"></i></div>
-            <div class="card-content">
-                <div class="card-title">Şifre Üretici</div>
-                <div class="card-desc">Kırılması zor, güvenli ve karmaşık şifreler oluşturun.</div>
-            </div>
-            <div class="card-arrow">Üret <i class="fas fa-arrow-right"></i></div>
         </a>
 
         <a href="/yemek" class="card" style="--card-color: #f97316;">
