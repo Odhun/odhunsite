@@ -57,23 +57,24 @@
 
     /* HEADER (TIMER AREA) */
     .timer-header {
-        height: 250px; background: radial-gradient(circle at center, #1a2a30 0%, #050505 100%);
+        height: 280px; background: radial-gradient(circle at center, #101a1c 0%, #050505 100%);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         border-bottom: 1px solid var(--border); flex-shrink: 0; position: relative;
     }
 
     .timer-display {
-        font-size: 5rem; font-weight: 200; letter-spacing: 5px; font-variant-numeric: tabular-nums;
+        font-size: 6rem; font-weight: 200; letter-spacing: 5px; font-variant-numeric: tabular-nums;
+        text-shadow: 0 0 20px rgba(0, 229, 255, 0.2); margin: 10px 0;
     }
     
-    .timer-controls { margin-top: 20px; display: flex; gap: 15px; }
+    .timer-controls { display: flex; gap: 15px; }
     
     .btn-timer {
         background: transparent; border: 1px solid var(--accent); color: var(--accent);
-        padding: 10px 25px; border-radius: 30px; font-weight: 600; cursor: pointer;
-        transition: 0.2s; display: flex; align-items: center; gap: 8px;
+        padding: 10px 30px; border-radius: 30px; font-weight: 600; cursor: pointer;
+        transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 1rem;
     }
-    .btn-timer:hover { background: var(--accent); color: #000; }
+    .btn-timer:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent-dim); }
     .btn-timer.secondary { border-color: var(--text-dim); color: var(--text-dim); }
     .btn-timer.secondary:hover { border-color: #fff; color: #fff; background: transparent; }
 
@@ -81,47 +82,49 @@
         position: absolute; top: 20px; right: 20px; display: flex; gap: 10px;
     }
     .mode-btn {
-        background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: #aaa;
-        padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+        background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #aaa;
+        padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s;
     }
-    .mode-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .mode-btn:hover { color: #fff; border-color: #555; }
+    .mode-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
 
     /* SOUND GRID */
     .sound-grid {
         padding: 30px;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 20px;
         padding-bottom: 100px;
     }
 
     .sound-card {
         background: var(--card-bg); border: 1px solid var(--border);
-        border-radius: 12px; padding: 20px; text-align: center;
-        transition: 0.2s; cursor: pointer; position: relative; overflow: hidden;
+        border-radius: 16px; padding: 25px 20px; text-align: center;
+        transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden;
     }
-    .sound-card:hover { transform: translateY(-3px); border-color: #333; }
+    .sound-card:hover { transform: translateY(-3px); border-color: #444; }
     
     .sound-card.active { 
-        border-color: var(--accent); background: rgba(0, 229, 255, 0.05);
-        box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+        border-color: var(--accent); background: rgba(0, 229, 255, 0.03);
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.05);
     }
 
     .sound-icon {
-        font-size: 2rem; color: var(--text-dim); margin-bottom: 15px; transition: 0.3s;
+        font-size: 2.5rem; color: var(--text-dim); margin-bottom: 15px; transition: 0.3s;
     }
-    .sound-card.active .sound-icon { color: var(--accent); transform: scale(1.1); }
+    .sound-card.active .sound-icon { color: var(--accent); transform: scale(1.1); text-shadow: 0 0 10px var(--accent); }
 
-    .sound-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 15px; }
+    .sound-name { font-weight: 600; font-size: 1rem; margin-bottom: 10px; color: #ddd; }
 
-    /* Volume Slider (Gizli başlar, aktifken açılır) */
+    /* Volume Slider */
     .volume-wrap {
         height: 0; overflow: hidden; transition: height 0.3s; opacity: 0;
+        display: flex; align-items: center; justify-content: center;
     }
-    .sound-card.active .volume-wrap { height: 30px; opacity: 1; }
+    .sound-card.active .volume-wrap { height: 20px; opacity: 1; margin-top: 15px; }
     
     input[type=range] {
-        width: 100%; accent-color: var(--accent); height: 4px; cursor: pointer;
+        width: 80%; accent-color: var(--accent); height: 4px; cursor: pointer;
     }
 
     /* MOBİL MENÜ BUTONU */
@@ -135,7 +138,7 @@
     /* FOOTER */
     footer {
         position: absolute; bottom: 0; width: 100%; background: #0a0a0a;
-        padding: 15px; text-align: center; font-size: 0.8rem; color: #555;
+        padding: 15px; text-align: center; font-size: 0.8rem; color: #444;
         border-top: 1px solid var(--border);
     }
 
@@ -144,8 +147,10 @@
         .sidebar.active { left: 0; }
         .mobile-toggle { display: block; }
         .mobile-close { display: block; }
-        .timer-display { font-size: 3.5rem; }
+        .timer-display { font-size: 4rem; }
         .sound-grid { grid-template-columns: repeat(2, 1fr); padding: 15px; gap: 15px; }
+        .timer-header { height: auto; padding: 80px 20px 40px 20px; }
+        .timer-modes { top: 20px; right: auto; width: 100%; justify-content: center; }
     }
 </style>
 </head>
@@ -159,11 +164,11 @@
             <div class="mobile-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
         </div>
         <div class="menu-list">
-            <div class="menu-item active"><i class="fas fa-headphones"></i> Mikser</div>
-            <div class="menu-item" onclick="stopAllSounds()"><i class="fas fa-stop-circle"></i> Her Şeyi Durdur</div>
+            <div class="menu-item active"><i class="fas fa-sliders-h"></i> Ses Mikseri</div>
+            <div class="menu-item" onclick="stopAllSounds()"><i class="fas fa-power-off"></i> Her Şeyi Durdur</div>
         </div>
-        <div style="margin-top: auto; padding: 20px; color: #444; font-size: 0.8rem;">
-            Odaklan. Rahatla.<br>Odhun.com
+        <div style="margin-top: auto; padding: 20px; color: #444; font-size: 0.75rem; line-height: 1.5;">
+            Odaklan. Rahatla. Üret.<br>Odhun.com © 2025
         </div>
     </div>
 
@@ -192,7 +197,7 @@
     </div>
 
     <script>
-        // --- SES LİSTESİ (Google Actions Güvenilir Kaynaklar) ---
+        // --- SES LİSTESİ ---
         const sounds = [
             { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' },
             { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://actions.google.com/sounds/v1/weather/thunderstorm.ogg' },
@@ -207,41 +212,56 @@
         const audioElements = {};
         const grid = document.getElementById('soundGrid');
 
-        // --- SESLERİ YÜKLE ---
-        window.onload = () => {
+        // --- SAYFA YÜKLENİNCE BAŞLAT (Güvenli Yöntem) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initSounds();
+        });
+
+        function initSounds() {
+            grid.innerHTML = ""; // Temizle
+            
             sounds.forEach(sound => {
-                // Audio Objesi Oluştur (Loop: Sonsuz döngü)
-                const audio = new Audio(sound.url);
-                audio.loop = true;
-                audioElements[sound.id] = audio;
+                // Audio Objesi Oluştur
+                try {
+                    const audio = new Audio(sound.url);
+                    audio.loop = true;
+                    audioElements[sound.id] = audio;
+                } catch(e) {
+                    console.log("Ses yükleme hatası:", e);
+                }
 
                 // Kartı Oluştur
                 const card = document.createElement('div');
                 card.className = 'sound-card';
                 card.id = `card-${sound.id}`;
-                card.onclick = (e) => {
-                    // Slider'a tıklayınca kartın kapanmasını engelle
-                    if (e.target.type === 'range') return;
-                    toggleSound(sound.id);
-                };
-
+                
+                // İçerik
                 card.innerHTML = `
                     <i class="sound-icon fas ${sound.icon}"></i>
                     <div class="sound-name">${sound.name}</div>
-                    <div class="volume-wrap">
+                    <div class="volume-wrap" onclick="event.stopPropagation()">
                         <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="setVolume('${sound.id}', this.value)">
                     </div>
                 `;
+
+                // Tıklama Olayı (Slider'a tıklayınca kart kapanmasın diye kontrol)
+                card.onclick = (e) => {
+                    if (e.target.tagName === 'INPUT') return;
+                    toggleSound(sound.id);
+                };
+
                 grid.appendChild(card);
             });
-        };
+        }
 
         function toggleSound(id) {
             const audio = audioElements[id];
             const card = document.getElementById(`card-${id}`);
 
+            if (!audio) return;
+
             if (audio.paused) {
-                audio.play();
+                audio.play().catch(e => console.log("Oynatma engellendi:", e));
                 card.classList.add('active');
             } else {
                 audio.pause();
@@ -259,7 +279,8 @@
             for (const id in audioElements) {
                 audioElements[id].pause();
                 audioElements[id].currentTime = 0;
-                document.getElementById(`card-${id}`).classList.remove('active');
+                const card = document.getElementById(`card-${id}`);
+                if(card) card.classList.remove('active');
             }
             if (window.innerWidth < 768) toggleSidebar();
         }
@@ -292,11 +313,11 @@
                         timeLeft--;
                         updateDisplay();
                     } else {
-                        // Süre Bitti
                         clearInterval(timerInterval);
                         isTimerRunning = false;
                         timerBtn.innerHTML = '<i class="fas fa-play"></i> Başlat';
-                        new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+                        // Bitiş sesi
+                        try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(e){}
                         alert("Süre Doldu!");
                     }
                 }, 1000);
@@ -307,21 +328,35 @@
             clearInterval(timerInterval);
             isTimerRunning = false;
             timerBtn.innerHTML = '<i class="fas fa-play"></i> Başlat';
-            // O anki moda göre resetle (Varsayılan 25)
+            
             const activeMode = document.querySelector('.mode-btn.active');
-            const min = activeMode ? parseInt(activeMode.innerText) : 25;
-            // Regex ile sadece sayıyı al (Pomodoro = 25 gibi)
-            const cleanMin = activeMode.innerText.includes('Kısa') ? 5 : activeMode.innerText.includes('Uzun') ? 15 : 25;
-            timeLeft = cleanMin * 60;
+            let min = 25;
+            if(activeMode) {
+                const txt = activeMode.innerText;
+                if(txt.includes('Kısa')) min = 5;
+                else if(txt.includes('Uzun')) min = 15;
+            }
+            
+            timeLeft = min * 60;
             updateDisplay();
         }
 
         function setMode(minutes, btn) {
-            // Buton stilini güncelle
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            // Süreyi güncelle
             clearInterval(timerInterval);
             isTimerRunning = false;
-            timerBtn.innerHTML = '
+            timerBtn.innerHTML = '<i class="fas fa-play"></i> Başlat';
+            timeLeft = minutes * 60;
+            updateDisplay();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+
+</body>
+</html>
