@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odhun TV | Haber Merkezi</title>
-
+<title>Odhun TV | Haber Komuta Merkezi</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O<tspan fill=%22%23ff0000%22>TV</tspan></text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -38,27 +37,16 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* --- LOGO ALANI (GÜNCELLENDİ) --- */
+/* LOGO ALANI */
 .logo-area {
-    height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+    height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
     background: #000; border-bottom: 1px solid var(--border);
 }
-
-/* Logo Tasarımı (Resim Dosyası Gerektirmez) */
 .brand-logo {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.8rem; /* Boyut */
-    font-weight: 900; /* Kalınlık */
-    color: #ffffff;
-    letter-spacing: -1px; /* Harfleri birbirine yaklaştır */
-    display: flex;
-    align-items: center;
+    font-family: 'Inter', sans-serif; font-size: 1.8rem; font-weight: 900;
+    color: #ffffff; letter-spacing: -1px; display: flex; align-items: center;
 }
-.brand-logo span {
-    color: var(--accent); /* Kırmızı TV */
-}
-
-/* Mobil Kapatma Butonu */
+.brand-logo span { color: var(--accent); }
 .mobile-close-btn { display: none; cursor: pointer; font-size: 1.4rem; color: #fff; }
 
 .search-wrapper { padding: 15px; border-bottom: 1px solid var(--border); }
@@ -88,7 +76,7 @@ body {
 header {
     height: 60px; border-bottom: 1px solid var(--border); background: var(--bg-panel);
     display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
-    z-index: 50;
+    z-index: 50; flex-shrink: 0;
 }
 
 .menu-toggle {
@@ -99,11 +87,10 @@ header {
 .header-center-title {
     font-weight: 900; font-size: 1.2rem; color: #fff; letter-spacing: -0.5px;
 }
-.header-center-title span { color: var(--accent); }
 
 .controls button {
     background: #222; border: 1px solid #333; color: #aaa; padding: 6px 12px;
-    border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; font-size: 0.8rem;
+    border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 3px; font-size: 0.8rem;
 }
 .controls button.active { background: var(--accent); color: #fff; }
 
@@ -112,35 +99,48 @@ header {
     flex: 1; display: flex; overflow: hidden; position: relative;
 }
 
-/* GRID ALANI */
+/* GRID ALANI (DÜZELTİLDİ) */
 #grid-area {
     flex: 1; 
     padding: 15px;
     display: grid;
+    /* Varsayılan grid ayarları */
     grid-template-columns: repeat(3, 1fr); 
     gap: 15px;
+    
+    /* ÖNEMLİ DÜZELTME: Satır yüksekliğini içeriğe göre ayarla, 
+       böylece kutular üst üste binmez */
+    grid-auto-rows: min-content; 
+    
     overflow-y: auto;
-    align-content: start;
+    align-content: start; /* İçeriği yukarı yasla */
     border-right: 1px solid var(--border);
-    transition: flex 0.3s;
+    transition: all 0.3s ease;
 }
 #grid-area::-webkit-scrollbar { width: 8px; }
 #grid-area::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
 .stream-box {
-    position: relative; width: 100%; aspect-ratio: 16 / 9;
+    position: relative; 
+    width: 100%; 
+    /* Kutunun oranını kesinlikle koru */
+    aspect-ratio: 16 / 9;
     background: #000; border-radius: 6px; overflow: hidden; border: 1px solid #222;
+    /* İçerik taşmasını engelle */
+    display: flex; flex-direction: column;
 }
-iframe { width: 100%; height: 100%; border: none; }
+iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
+
 .label {
     position: absolute; top: 10px; left: 10px; background: rgba(200,0,0,0.9);
     padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: bold; color: #fff;
-    pointer-events: none;
+    pointer-events: none; z-index: 10;
 }
 .close {
     position: absolute; top: 8px; right: 8px; width: 24px; height: 24px;
     background: rgba(0,0,0,0.8); color: #fff; display: flex; align-items: center;
     justify-content: center; cursor: pointer; font-size: 12px; border-radius: 4px;
+    z-index: 20;
 }
 
 /* RSS PANEL */
@@ -192,6 +192,7 @@ iframe { width: 100%; height: 100%; border: none; }
     #rss-panel { display: none; }
     
     #grid-area { 
+        /* Mobilde grid yerine flex column kullanarak üst üste binmeyi %100 engelliyoruz */
         display: flex; flex-direction: column; 
         padding: 10px; gap: 20px; 
         height: calc(100vh - 60px); 
@@ -227,7 +228,7 @@ iframe { width: 100%; height: 100%; border: none; }
             <button class="btn-grid" onclick="setGrid(1)">1x1</button>
             <button class="btn-grid" onclick="setGrid(2)">2x2</button>
             <button class="btn-grid active" onclick="setGrid(3)">3x3</button>
-            <button onclick="toggleRSS()" id="btnRss" style="color:white; border-color:#555;">
+            <button class="btn-grid" onclick="setGrid(4)">4x4</button> <button onclick="toggleRSS()" id="btnRss" style="color:white; border-color:#555;">
                 <i class="fas fa-newspaper"></i> <span style="font-size:0.8rem;">AKIŞ</span>
             </button>
             <button onclick="resetAll()" style="color:#e74c3c;">SİL</button>
@@ -274,7 +275,7 @@ const channels = [
 
 // --- RSS LİSTESİ ---
 const rssData = [
-    { name: "Tüm Akış (Otomatik)", url: "MIXED" }, // Özel mod
+    { name: "Tüm Akış (Otomatik)", url: "MIXED" },
     { name: "Euronews TR", url: "https://tr.euronews.com/rss" },
     { name: "En Son Haber", url: "https://www.ensonhaber.com/rss/ensonhaber.xml" },
     { name: "Donanım Haber", url: "https://www.donanimhaber.com/rss/tum/" },
@@ -290,8 +291,6 @@ const rssData = [
     { name: "Onedio", url: "https://onedio.com/Publisher/publisher-daily.rss" },
     { name: "Döviz.com", url: "https://www.doviz.com/news/rss" }
 ];
-
-let allNewsCache = [];
 
 window.onload = () => {
     renderSidebar();
@@ -345,11 +344,15 @@ function createPlayer(ch) {
 
 function setGrid(n) {
     grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
-    document.querySelectorAll('.btn-grid').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+    
+    // Butonları aktif yap
     const btns = document.querySelectorAll('.btn-grid'); 
+    // 0 -> 1x1, 1 -> 2x2, 2 -> 3x3, 3 -> 4x4
     if(n===1 && btns[0]) btns[0].classList.add('active');
     if(n===2 && btns[1]) btns[1].classList.add('active');
     if(n===3 && btns[2]) btns[2].classList.add('active');
+    if(n===4 && btns[3]) btns[3].classList.add('active');
 }
 
 // --- RSS MANTIĞI ---
@@ -374,7 +377,6 @@ function changeRSS() {
     }
 }
 
-// Tek Kaynak
 async function fetchSingleRSS(url) {
     const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
     try {
@@ -388,11 +390,8 @@ async function fetchSingleRSS(url) {
     } catch(e) { rssContainer.innerHTML = 'Hata oluştu.'; }
 }
 
-// Tüm Kaynaklar (MIXED MOD)
 async function fetchAllRSS() {
-    // Sadece URL'si geçerli olanları al (İlk eleman hariç)
     const sourcesToFetch = rssData.slice(1).map(d => d.url);
-    // Rastgele 5 kaynak seç (Hepsini çekmek tarayıcıyı yorar)
     const randomSources = sourcesToFetch.sort(() => 0.5 - Math.random()).slice(0, 5);
     
     let mixedNews = [];
