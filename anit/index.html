@@ -11,9 +11,9 @@
             --stone-dark: #2a2a2a;
             --stone-light: #3d3d3d;
             --stone-highlight: #555;
-            --text-engraved: #111; /* Oyulmuş yazı içi karanlık */
+            --text-engraved: #111; 
             --text-light: #ccc;
-            --accent-gold: #c5a059; /* Eskitilmiş altın/toprak rengi */
+            --accent-gold: #c5a059; 
         }
 
         body {
@@ -38,11 +38,11 @@
             margin-top: 30px;
             letter-spacing: 5px;
             text-transform: uppercase;
-            /* Taşa oyulmuş efekti */
             text-shadow: -1px -1px 1px rgba(255,255,255,0.2), 
                           2px 2px 4px rgba(0,0,0,0.8);
             border-bottom: 2px solid var(--accent-gold);
             padding-bottom: 10px;
+            text-align: center;
         }
         
         .subtitle {
@@ -51,6 +51,7 @@
             font-size: 1rem;
             margin-bottom: 30px;
             letter-spacing: 3px;
+            text-align: center;
         }
 
         /* --- GİRİŞ PANELİ (TAŞ BLOK) --- */
@@ -58,7 +59,7 @@
             background: var(--stone-dark);
             border: 1px solid #444;
             padding: 25px;
-            border-radius: 4px; /* Keskin köşeler, taş gibi */
+            border-radius: 4px;
             width: 100%;
             max-width: 600px;
             display: flex;
@@ -72,17 +73,7 @@
             position: relative;
         }
         
-        /* Dekoratif Köşeler */
-        .input-panel::before, .input-panel::after {
-            content: 'Runik'; /* Süs olarak */
-            font-family: sans-serif; 
-            color: rgba(255,255,255,0.05);
-            font-size: 4rem;
-            position: absolute;
-            pointer-events: none;
-        }
-        .input-panel::before { top: -20px; left: 10px; content: 'IYI'; transform: rotate(-10deg); }
-        .input-panel::after { bottom: -20px; right: 10px; content: 'TNGRI'; transform: rotate(10deg); }
+        /* Dekoratif yazılar kaldırıldı (IYI ve TNGRI yok) */
 
         .input-group { display: flex; flex-direction: column; }
         
@@ -103,7 +94,6 @@
             border-radius: 2px;
             font-family: 'Noto Serif', serif;
             font-size: 1rem;
-            /* İçeri çökük efekt */
             box-shadow: inset 2px 2px 5px rgba(0,0,0,0.9), inset -1px -1px 2px rgba(255,255,255,0.1);
             transition: 0.3s;
         }
@@ -142,9 +132,9 @@
         /* --- ABİDELER (MESAJ LİSTESİ) --- */
         .entries-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Taşlar yan yana dizilsin */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             padding-bottom: 50px;
         }
@@ -156,9 +146,8 @@
             color: #ccc;
             padding: 30px 20px;
             position: relative;
-            /* Monolit Şekli: Üstü hafif oval, altı düz */
-            border-radius: 100px 100px 5px 5px; 
-            border-bottom: 10px solid #222; /* Kaide */
+            border-radius: 100px 100px 5px 5px; /* Monolit şekli */
+            border-bottom: 10px solid #222;
             box-shadow: 
                 10px 10px 20px rgba(0,0,0,0.6),
                 inset 2px 2px 5px rgba(255,255,255,0.1);
@@ -174,11 +163,11 @@
         .entry-message {
             font-size: 1.1rem;
             line-height: 1.6;
-            color: #1a1a1a; /* Koyu renk yazı */
+            color: #1a1a1a;
             font-weight: bold;
             font-family: 'Cinzel', serif;
             margin: 20px 0;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.2), -1px -1px 1px rgba(0,0,0,0.5); /* Oyuk efekti */
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.2), -1px -1px 1px rgba(0,0,0,0.5);
             width: 90%;
             word-wrap: break-word;
         }
@@ -207,7 +196,7 @@
             display: block;
         }
 
-        /* Kaide Süsü (Kaplumbağa benzeri altlık için basit detay) */
+        /* Kaide Süsü */
         .entry-card::after {
             content: '';
             position: absolute;
@@ -261,15 +250,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // --- BURAYA DİKKAT: KENDİ FIREBASE KODUNU TEKRAR YAPIŞTIR ---
+        // SENİN FIREBASE BİLGİLERİN (Otomatik Eklendi)
         const firebaseConfig = {
-            apiKey: "BURAYA_API_KEY_GELECEK",
-            authDomain: "BURAYA_AUTH_DOMAIN_GELECEK",
-            projectId: "BURAYA_PROJECT_ID_GELECEK",
-            storageBucket: "...",
-            messagingSenderId: "...",
-            appId: "...",
-            measurementId: "..."
+            apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
+            authDomain: "anit-805a2.firebaseapp.com",
+            projectId: "anit-805a2",
+            storageBucket: "anit-805a2.firebasestorage.app",
+            messagingSenderId: "840387116828",
+            appId: "1:840387116828:web:3217cb41bd40a0da35c4d9",
+            measurementId: "G-FLZC9NJFNV"
         };
 
         const app = initializeApp(firebaseConfig);
