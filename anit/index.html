@@ -8,79 +8,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --stone-dark: #222;
-            --stone-light: #333;
-            --accent-gold: #c5a059; /* Ateş/Altın Rengi */
+            --stone-dark: #2a2a2a;
+            --stone-light: #3d3d3d;
+            --stone-highlight: #555;
+            --text-engraved: #111; 
             --text-light: #ccc;
-            --bg-color: #111;
+            --accent-gold: #c5a059; 
         }
 
         body {
-            background-color: var(--bg-color);
-            /* İnce bir gürültü (noise) dokusu */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            /* Taş Dokusu Efekti */
+            background-color: #1a1a1a;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
             color: var(--text-light);
             font-family: 'Noto Serif', serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow-x: hidden; /* Yatay kaydırmayı engelle */
-        }
-
-        /* --- YAN SÜSLEMELER (ABİDE SÜTUNLARI) --- */
-        .side-pillar {
-            position: fixed;
-            top: 0;
-            width: 180px; /* Sütun genişliği */
-            height: 100%;
-            background-color: #151515;
-            z-index: -1; /* İçeriğin arkasında kalsın */
-            /* Taş dokusu ve gölgelendirme */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.2'/%3E%3C/svg%3E");
-            border-right: 2px solid #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .side-pillar.left {
-            left: 0;
-            border-right: 2px solid rgba(0,0,0,0.5);
-            box-shadow: inset -10px 0 20px rgba(0,0,0,0.5);
-        }
-
-        .side-pillar.right {
-            right: 0;
-            border-left: 2px solid rgba(0,0,0,0.5);
-            box-shadow: inset 10px 0 20px rgba(0,0,0,0.5);
-        }
-
-        /* Sütunların üzerindeki Runik Yazılar */
-        .runic-pattern {
-            font-family: 'Cinzel', serif; /* Runik font bulunamadığı için benzer mistik bir font kullanıyoruz, istenirse özel font eklenebilir */
-            font-weight: 900;
-            writing-mode: vertical-rl; /* Yazıyı yukarıdan aşağıya çevir */
-            text-orientation: upright;
-            letter-spacing: 15px;
-            font-size: 2rem;
-            color: var(--accent-gold);
-            opacity: 0.15; /* Çok hafif görünür */
-            text-shadow: 0 0 10px var(--accent-gold); /* Hafif parama efekti */
-            user-select: none;
-            white-space: nowrap;
-        }
-
-        /* --- ANA İÇERİK --- */
-        .main-container {
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            margin: 0;
             padding: 20px;
-            max-width: 900px;
-            margin: 0 auto; /* Ortala */
-            position: relative;
-            z-index: 1;
         }
 
         /* --- BAŞLIK ALANI --- */
@@ -91,10 +38,10 @@
             margin-top: 30px;
             letter-spacing: 5px;
             text-transform: uppercase;
-            text-shadow: -1px -1px 1px rgba(255,255,255,0.1), 
-                          2px 2px 5px rgba(0,0,0,0.8);
+            text-shadow: -1px -1px 1px rgba(255,255,255,0.2), 
+                          2px 2px 4px rgba(0,0,0,0.8);
             border-bottom: 2px solid var(--accent-gold);
-            padding-bottom: 15px;
+            padding-bottom: 10px;
             text-align: center;
         }
         
@@ -102,58 +49,58 @@
             font-family: 'Cinzel', serif;
             color: var(--accent-gold);
             font-size: 1rem;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             letter-spacing: 3px;
             text-align: center;
-            opacity: 0.8;
         }
 
         /* --- GİRİŞ PANELİ (TAŞ BLOK) --- */
         .input-panel {
-            background: linear-gradient(145deg, #2a2a2a, #222);
-            border: 1px solid #333;
-            padding: 30px;
+            background: var(--stone-dark);
+            border: 1px solid #444;
+            padding: 25px;
             border-radius: 4px;
             width: 100%;
             max-width: 600px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             box-shadow: 
-                0 10px 30px rgba(0,0,0,0.5),
-                inset 1px 1px 1px rgba(255,255,255,0.05);
-            margin-bottom: 50px;
+                inset 1px 1px 0px rgba(255,255,255,0.1),
+                inset -1px -1px 0px rgba(0,0,0,0.5),
+                10px 10px 30px rgba(0,0,0,0.6);
+            margin-bottom: 40px;
             position: relative;
         }
         
+        /* Dekoratif yazılar kaldırıldı (IYI ve TNGRI yok) */
+
         .input-group { display: flex; flex-direction: column; }
         
         label {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--accent-gold);
             margin-bottom: 8px;
-            font-weight: 700;
+            font-weight: bold;
             font-family: 'Cinzel', serif;
-            letter-spacing: 1px;
         }
 
         /* Oyuk Input Alanları */
         input, textarea {
-            background: #151515;
-            border: 1px solid #2a2a2a;
+            background: #111;
+            border: none;
             color: #dcdcdc;
             padding: 15px;
             border-radius: 2px;
             font-family: 'Noto Serif', serif;
             font-size: 1rem;
-            box-shadow: inset 3px 3px 10px rgba(0,0,0,0.8);
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.9), inset -1px -1px 2px rgba(255,255,255,0.1);
             transition: 0.3s;
         }
 
         input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-            box-shadow: inset 3px 3px 10px rgba(0,0,0,0.9), 0 0 5px rgba(197, 160, 89, 0.3);
+            outline: 1px solid var(--accent-gold);
+            background: #000;
         }
 
         button#saveBtn {
@@ -167,80 +114,68 @@
             font-size: 1.1rem;
             font-family: 'Cinzel', serif;
             letter-spacing: 2px;
-            transition: 0.3s;
+            transition: 0.2s;
             margin-top: 10px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.4), -1px -1px 1px rgba(255,255,255,0.05);
-            text-shadow: 0 0 5px rgba(197, 160, 89, 0.5);
+            box-shadow: 3px 3px 5px rgba(0,0,0,0.5), -1px -1px 2px rgba(255,255,255,0.1);
         }
 
         button#saveBtn:hover {
             color: #fff;
             background: #444;
             transform: translateY(-2px);
-            box-shadow: 7px 7px 20px rgba(0,0,0,0.5);
         }
         button#saveBtn:active {
             transform: translateY(1px);
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.8);
         }
-        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
 
         /* --- ABİDELER (MESAJ LİSTESİ) --- */
         .entries-container {
             width: 100%;
+            max-width: 800px;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 25px;
             padding-bottom: 50px;
         }
 
         /* BENGÜ TAŞ KARTI */
         .entry-card {
-            background-color: #2c2c2c;
-            /* Kart üzeri taş dokusu */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+            background-color: #383838;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
             color: #ccc;
-            padding: 30px 25px;
+            padding: 30px 20px;
             position: relative;
-            border-radius: 120px 120px 4px 4px; /* Monolit şekli */
-            border-bottom: 12px solid #1a1a1a; /* Kaide */
+            border-radius: 100px 100px 5px 5px; /* Monolit şekli */
+            border-bottom: 10px solid #222;
             box-shadow: 
-                15px 15px 30px rgba(0,0,0,0.5),
-                inset 1px 1px 1px rgba(255,255,255,0.05);
+                10px 10px 20px rgba(0,0,0,0.6),
+                inset 2px 2px 5px rgba(255,255,255,0.1);
             animation: riseUp 0.8s ease-out;
-            min-height: 280px;
+            min-height: 250px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        /* Kartların üzerine hafif runik süsleme */
-        .entry-card::before {
-            content: 'IYI'; /* Temsili */
-            position: absolute; top: 20px; font-family: 'Cinzel', serif;
-            font-size: 1.5rem; color: var(--accent-gold); opacity: 0.1; letter-spacing: 5px;
         }
 
+        /* Taşa Oyulmuş Yazı Efekti */
         .entry-message {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             line-height: 1.6;
-            color: #111;
-            font-weight: 600;
+            color: #1a1a1a;
+            font-weight: bold;
             font-family: 'Cinzel', serif;
-            margin: 30px 0;
-            /* Taşa oyulmuş efekti */
-            text-shadow: 1px 1px 1px rgba(255,255,255,0.1), -1px -1px 2px rgba(0,0,0,0.8);
+            margin: 20px 0;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.2), -1px -1px 1px rgba(0,0,0,0.5);
             width: 90%;
             word-wrap: break-word;
-            flex-grow: 1;
-            display: flex; align-items: center; justify-content: center;
         }
 
         .entry-header {
-            border-bottom: 1px solid rgba(0,0,0,0.3);
-            padding-bottom: 15px;
-            width: 85%;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            padding-bottom: 10px;
+            width: 80%;
             margin-bottom: 10px;
         }
 
@@ -249,74 +184,73 @@
             font-weight: 900;
             color: #222;
             font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.2);
-            margin-bottom: 5px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3);
         }
 
         .entry-date {
-            font-size: 0.7rem; color: #555; display: block; font-family: sans-serif;
+            font-size: 0.7rem;
+            color: #444;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Kaide Süsü */
+        .entry-card::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120%;
+            height: 15px;
+            background: #111;
+            border-radius: 5px;
+            z-index: -1;
         }
 
         .empty-state {
-            grid-column: 1 / -1; text-align: center; color: #555;
-            font-style: italic; margin-top: 30px; font-family: 'Cinzel', serif; font-size: 1.2rem;
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #555;
+            font-style: italic;
+            margin-top: 20px;
+            font-family: 'Cinzel', serif;
         }
 
         @keyframes riseUp {
-            from { opacity: 0; transform: translateY(80px); }
+            from { opacity: 0; transform: translateY(50px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- MOBİL UYUMLULUK --- */
-        /* Ekran 1100px'den küçükse yan sütunları gizle */
-        @media (max-width: 1100px) {
-            .side-pillar { display: none; }
-            h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="side-pillar left">
-        <div class="runic-pattern">
-            O D H U N K A G A N L I K T E N G R I T U R K
+    <h1>ODHUN ABİDELERİ</h1>
+    <div class="subtitle">Söz uçar, yazı kalır. Sonsuzluğa kazı.</div>
+
+    <div class="input-panel">
+        <div class="input-group">
+            <label>Adın (Hakan/Hatun)</label>
+            <input type="text" id="userName" placeholder="İsmini taşa vur..." maxlength="20">
         </div>
+        <div class="input-group" style="margin-top:15px;">
+            <label>Geleceğe Sözün</label>
+            <textarea id="userMessage" rows="3" placeholder="Buraya yazılanlar silinmez..." maxlength="140"></textarea>
+        </div>
+        <button id="saveBtn"><i class="fas fa-hammer"></i> TAŞA KAZI</button>
     </div>
 
-    <div class="main-container">
-        <h1>ODHUN ABİDELERİ</h1>
-        <div class="subtitle">Söz uçar, yazı kalır. Sonsuzluğa kazı.</div>
-
-        <div class="input-panel">
-            <div class="input-group">
-                <label>Adın (Hakan/Hatun)</label>
-                <input type="text" id="userName" placeholder="İsmini taşa vur..." maxlength="25">
-            </div>
-            <div class="input-group" style="margin-top:15px;">
-                <label>Geleceğe Sözün</label>
-                <textarea id="userMessage" rows="3" placeholder="Buraya yazılanlar silinmez..." maxlength="160"></textarea>
-            </div>
-            <button id="saveBtn"><i class="fas fa-hammer"></i> TAŞA KAZI</button>
-        </div>
-
-        <div class="entries-container" id="guestbookList">
-            <div class="empty-state">Abideler okunuyor...</div>
-        </div>
-    </div>
-
-    <div class="side-pillar right">
-        <div class="runic-pattern">
-             B I L G E K U L T I G I N O N G I N Y A Z I T
-        </div>
+    <div class="entries-container" id="guestbookList">
+        <div class="empty-state">Abideler okunuyor...</div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // SENİN FIREBASE BİLGİLERİN
+        // SENİN FIREBASE BİLGİLERİN (Otomatik Eklendi)
         const firebaseConfig = {
             apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
             authDomain: "anit-805a2.firebaseapp.com",
@@ -386,19 +320,15 @@
 
                 const card = document.createElement('div');
                 card.className = 'entry-card';
-                // XSS Koruması için basit escape
-                const safeName = escapeHtml(data.name);
-                const safeMsg = escapeHtml(data.message);
-
                 card.innerHTML = `
                     <div class="entry-header">
-                        <span class="entry-name">${safeName}</span>
+                        <span class="entry-name">${escapeHtml(data.name)}</span>
                         <span class="entry-date">${dateStr}</span>
                     </div>
                     <div class="entry-message">
-                        ${safeMsg}
+                        ${escapeHtml(data.message)}
                     </div>
-                    <i class="fas fa-certificate" style="color:#111; margin-top:auto; font-size:1.2rem; opacity:0.3;"></i>
+                    <i class="fas fa-certificate" style="color:#222; margin-top:auto; font-size:1.5rem; opacity:0.5;"></i>
                 `;
                 listContainer.appendChild(card);
             });
