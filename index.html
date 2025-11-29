@@ -1,597 +1,219 @@
- <!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="tr">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <meta name="description" content="Odhun - Haber, Finans, Oyun ve pratik dijital araçların toplandığı kişisel web portalı.">
-
-    <meta name="theme-color" content="#0f172a">
-
-    
-
-    <title>Odhun | Dijital Portal</title>
-
-    
-
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O</text></svg>">
-
-    
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODHUN | Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
     <style>
-
         :root {
-
-            /* Temel Renkler */
-
-            --bg-start: #0f172a;
-
-            --bg-end: #020617;
-
-            --card-bg: rgba(30, 41, 59, 0.4);
-
-            --border: rgba(255, 255, 255, 0.08);
-
-            --text: #f8fafc;
-
-            --text-dim: #94a3b8;
-
+            --blood-red: #8a0303;
+            --fire-orange: #ff4500;
+            --ember-yellow: #ffae00;
+            --dark-bg: #050505;
+            --card-bg: #111;
+            --text-main: #e0e0e0;
         }
 
-
-        * { box-sizing: border-box; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-
-            margin: 0; padding: 0;
-
-            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
-
-            background-attachment: fixed;
-
-            color: var(--text);
-
-            font-family: 'Inter', sans-serif;
-
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
             min-height: 100vh;
-
-            display: flex; flex-direction: column;
-
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             overflow-x: hidden;
-
+            position: relative;
         }
 
+        /* --- ARKA PLAN EFEKTLERİ (KIVILCIMLAR) --- */
+        .embers {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; overflow: hidden;
+            background: radial-gradient(circle at bottom, #1a0000 0%, #000000 70%);
+        }
+        .ember {
+            position: absolute; bottom: -10px;
+            width: 4px; height: 4px;
+            background: var(--fire-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--fire-orange);
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+        }
 
-        /* HEADER */
-
+        /* --- ANA BAŞLIK --- */
         header {
-
-            text-align: center; padding: 60px 20px 40px;
-
-            animation: fadeInDown 0.8s ease;
-
+            margin-top: 80px;
+            text-align: center;
+            z-index: 10;
+        }
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: 10px;
+            color: #fff;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px var(--blood-red), 0 0 40px var(--fire-orange);
+            position: relative;
+            display: inline-block;
+        }
+        h1::after {
+            content: ''; display: block; width: 60%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--fire-orange), transparent);
+            margin: 10px auto 0;
+        }
+        .subtitle {
+            margin-top: 15px; font-size: 1.2rem; color: #aaa; letter-spacing: 3px; font-weight: 300;
+            text-transform: uppercase; opacity: 0.8;
         }
 
-        .brand {
-
-            font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px;
-
-            background: linear-gradient(to right, #fff, #94a3b8);
-
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-
-        }
-
-        .brand span { color: #3b82f6; -webkit-text-fill-color: #3b82f6; } /* Mavi nokta */
-
-        
-
-        .subtitle { 
-
-            color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto; 
-
-            line-height: 1.5; font-weight: 400;
-
-        }
-
-
-        /* GRID CONTAINER */
-
-        .container {
-
-            max-width: 1200px; margin: 0 auto; padding: 20px;
-
+        /* --- KART IZGARASI --- */
+        .portal-grid {
             display: grid;
-
-            /* Responsive Grid: Sığabildiği kadar kolon açar */
-
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-            gap: 20px;
-
-            width: 100%;
-
-            flex: 1; /* Footer'ı alta itmek için */
-
-            padding-bottom: 60px;
-
+            gap: 30px;
+            max-width: 1000px;
+            width: 90%;
+            margin: 60px auto;
+            z-index: 10;
         }
 
-
-        /* KART TASARIMI */
-
-        .card {
-
-            background: var(--card-bg);
-
-            border: 1px solid var(--border);
-
-            border-radius: 20px;
-
-            padding: 25px;
-
-            text-decoration: none; color: inherit;
-
-            display: flex; flex-direction: column; align-items: flex-start;
-
-            position: relative; overflow: hidden;
-
-            backdrop-filter: blur(12px);
-
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-            /* Kartın altındaki ince renk çizgisi */
-
-            border-bottom: 2px solid transparent;
-
+        .portal-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            border-radius: 4px;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-main);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
         }
 
-
-        /* Hover Efektleri */
-
-        .card:hover {
-
-            transform: translateY(-5px);
-
-            background: rgba(30, 41, 59, 0.8);
-
-            border-color: rgba(255, 255, 255, 0.2);
-
-            border-bottom-color: var(--card-color); /* Alt çizgi parlasın */
-
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 
-
-                        0 0 20px -10px var(--card-color); /* Neon parlama */
-
+        .portal-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255, 69, 0, 0.1) 100%);
+            opacity: 0; transition: 0.4s;
         }
 
+        .portal-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--fire-orange);
+            box-shadow: 0 10px 30px rgba(255, 69, 0, 0.2);
+        }
+        .portal-card:hover::before { opacity: 1; }
 
-        /* İkon Kutusu */
-
-        .icon-box {
-
-            width: 50px; height: 50px; border-radius: 12px;
-
-            display: flex; align-items: center; justify-content: center;
-
-            font-size: 1.5rem; margin-bottom: 20px;
-
-            background: rgba(255,255,255,0.05);
-
-            color: var(--card-color);
-
-            transition: 0.3s;
-
+        .card-icon {
+            font-size: 4rem; margin-bottom: 20px;
+            color: #555; transition: 0.4s;
+            text-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+        .portal-card:hover .card-icon {
+            color: var(--ember-yellow);
+            transform: scale(1.1);
+            text-shadow: 0 0 20px var(--fire-orange);
         }
 
-        .card:hover .icon-box {
-
-            background: var(--card-color); color: #000;
-
-            transform: scale(1.1) rotate(-5deg);
-
+        .card-title {
+            font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px;
+            position: relative; z-index: 2;
         }
-
-
-        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
-
         
-
-        .card-desc { 
-
-            font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; flex: 1;
-
-            margin-bottom: 20px;
-
+        .card-desc {
+            font-size: 0.9rem; color: #888; margin-top: 10px; text-align: center;
+            padding: 0 20px; font-weight: 300; z-index: 2;
         }
 
-
-        .card-arrow {
-
-            font-size: 0.85rem; font-weight: 700; color: var(--card-color);
-
-            display: flex; align-items: center; gap: 6px; transition: 0.3s;
-
-        }
-
-        .card:hover .card-arrow { gap: 10px; filter: brightness(1.2); }
-
-
-        /* FOOTER */
-
+        /* --- FOOTER --- */
         footer {
-
-            text-align: center; padding: 40px 20px;
-
-            background: rgba(2, 6, 23, 0.8);
-
-            border-top: 1px solid var(--border);
-
-            font-size: 0.85rem; color: var(--text-dim);
-
-            margin-top: auto;
-
+            margin-top: auto; padding: 30px; color: #444; font-size: 0.8rem; text-align: center;
+            border-top: 1px solid #111; width: 100%; z-index: 10;
         }
-
-        .footer-warning {
-
-            margin-top: 8px; font-size: 0.75rem; opacity: 0.7; max-width: 600px; margin-inline: auto;
-
-        }
-
-
-        /* --- MOBİL UYUM (RESPONSIVE) --- */
 
         @media (max-width: 768px) {
-
-            header { padding: 40px 20px 20px; }
-
-            .brand { font-size: 2.5rem; }
-
-            .subtitle { font-size: 1rem; }
-
-            
-
-            .container { 
-
-                grid-template-columns: 1fr; /* Tek sütun */
-
-                padding: 15px; 
-
-                gap: 15px;
-
-            }
-
-            
-
-            .card { 
-
-                padding: 20px; 
-
-                flex-direction: row; /* Mobilde yatay dizilim */
-
-                align-items: center;
-
-                gap: 15px;
-
-            }
-
-            
-
-            .icon-box { margin-bottom: 0; width: 45px; height: 45px; font-size: 1.2rem; flex-shrink: 0; }
-
-            
-
-            .card-content { flex: 1; } /* Mobilde metin alanı */
-
-            
-
-            .card-desc, .card-arrow { display: none; } /* Mobilde açıklamayı gizle, sade olsun */
-
-            .card-title { margin-bottom: 0; font-size: 1.1rem; }
-
-            
-
-            /* Ok işareti mobilde sağda sabit dursun */
-
-            .card::after {
-
-                content: '\f054'; font-family: 'Font Awesome 5 Free'; font-weight: 900;
-
-                color: var(--text-dim); font-size: 0.9rem;
-
-            }
-
+            h1 { font-size: 3rem; letter-spacing: 5px; }
+            .portal-grid { grid-template-columns: 1fr; max-width: 400px; }
         }
-
-
-        /* Animasyonlar */
-
-        @keyframes fadeInDown {
-
-            from { opacity: 0; transform: translateY(-20px); }
-
-            to { opacity: 1; transform: translateY(0); }
-
-        }
-
     </style>
-
 </head>
-
 <body>
 
+    <div class="embers" id="embers"></div>
 
     <header>
-
-        <div class="brand">ODHUN<span>.COM</span></div>
-
-        <div class="subtitle">Hayatı kolaylaştıran, bilgilendiren ve eğlendiren dijital araçlar koleksiyonu.</div>
-
+        <h1>ODHUN</h1>
+        <div class="subtitle">Dijital Cephanelik & Arşiv</div>
     </header>
 
-
-    <div class="container">
-
-
-        <a href="/tv" class="card" style="--card-color: #ef4444;">
-
-            <div class="icon-box"><i class="fas fa-tv"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Haber Merkezi</div>
-
-                <div class="card-desc">10+ Canlı haber kanalı ve anlık RSS akışı ile gündemi tek ekrandan takip edin.</div>
-
-            </div>
-
-            <div class="card-arrow">İzle <i class="fas fa-arrow-right"></i></div>
-
+    <div class="portal-grid">
+        <a href="odhun_koleksiyon.html" class="portal-card">
+            <i class="card-icon fas fa-car-side"></i>
+            <div class="card-title">GARAJ</div>
+            <div class="card-desc">Hot Wheels Koleksiyon Takibi ve Görsel Arşiv.</div>
         </a>
 
-
-        <a href="/radyo" class="card" style="--card-color: #f43f5e;">
-
-            <div class="icon-box"><i class="fas fa-broadcast-tower"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Canlı Radyo</div>
-
-                <div class="card-desc">Türkiye'nin en popüler radyoları, görsel efektli modern oynatıcıda.</div>
-
-            </div>
-
-            <div class="card-arrow">Dinle <i class="fas fa-arrow-right"></i></div>
-
+        <a href="apps.html" class="portal-card">
+            <i class="card-icon fas fa-terminal"></i>
+            <div class="card-title">ATÖLYE</div>
+            <div class="card-desc">.BAT Dosyaları, Yerel Scriptler ve Taşınabilir Araçlar.</div>
         </a>
 
-
-        <a href="/oyun" class="card" style="--card-color: #6366f1;">
-
-            <div class="icon-box"><i class="fas fa-gamepad"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Oyun Alanı</div>
-
-                <div class="card-desc">Boş vakitler için tarayıcı tabanlı mini oyunlar ve eğlence.</div>
-
-            </div>
-
-            <div class="card-arrow">Oyna <i class="fas fa-arrow-right"></i></div>
-
+        <a href="#" class="portal-card" style="opacity: 0.5; cursor: default;">
+            <i class="card-icon fas fa-scroll"></i>
+            <div class="card-title">KÜTÜPHANE</div>
+            <div class="card-desc">Odhun Karakter Hikayesi & Yapay Zeka Promptları (Yakında).</div>
         </a>
-
-
-        <a href="/speedtest" class="card" style="--card-color: #0ea5e9;">
-
-            <div class="icon-box"><i class="fas fa-tachometer-alt"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Hız Testi</div>
-
-                <div class="card-desc">İnternet hızınızı (Ping, Download, Upload) hassas ve şık bir arayüzle ölçün.</div>
-
-            </div>
-
-            <div class="card-arrow">Ölç <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/screentest" class="card" style="--card-color: #3b82f6;">
-
-            <div class="icon-box"><i class="fas fa-desktop"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Ekran Testi</div>
-
-                <div class="card-desc">Monitörünüzde ölü piksel, ışık sızması, Hz değeri ve renk testi yapın.</div>
-
-            </div>
-
-            <div class="card-arrow">Test Et <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/tools" class="card" style="--card-color: #f59e0b;">
-
-            <div class="icon-box"><i class="fas fa-toolbox"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Pro Araçlar</div>
-
-                <div class="card-desc">QR Kod, Resim Çevirici, Kelime Sayacı, Renk Seçici ve daha fazlası.</div>
-
-            </div>
-
-            <div class="card-arrow">Kullan <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/finans" class="card" style="--card-color: #10b981;">
-
-            <div class="icon-box"><i class="fas fa-chart-line"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Finans Takip</div>
-
-                <div class="card-desc">Borsa, Altın, Döviz ve Kripto verileri. Canlı grafikler ve çevirici.</div>
-
-            </div>
-
-            <div class="card-arrow">İncele <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/zen" class="card" style="--card-color: #06b6d4;">
-
-            <div class="icon-box"><i class="fas fa-spa"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Zen & Odaklanma</div>
-
-                <div class="card-desc">Pomodoro sayacı ve rahatlatıcı ambiyans sesleri ile verimliliği artırın.</div>
-
-            </div>
-
-            <div class="card-arrow">Rahatla <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/takvim" class="card" style="--card-color: #8b5cf6;">
-
-            <div class="icon-box"><i class="fas fa-calendar-alt"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Akıllı Takvim</div>
-
-                <div class="card-desc">Resmi tatiller, geri sayımlar, dijital saat ve kişisel not defteri.</div>
-
-            </div>
-
-            <div class="card-arrow">Planla <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/sifre" class="card" style="--card-color: #d946ef;">
-
-            <div class="icon-box"><i class="fas fa-key"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Şifre Üretici</div>
-
-                <div class="card-desc">Kırılması zor, güvenli ve karmaşık şifreler oluşturun.</div>
-
-            </div>
-
-            <div class="card-arrow">Oluştur <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/apps" class="card" style="--card-color: #eab308;">
-
-            <div class="icon-box"><i class="fas fa-box-open"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Dosya Deposu</div>
-
-                <div class="card-desc">Kişisel kullanım için hazırlanan yazılımlar ve araçlar arşivi.</div>
-
-            </div>
-
-            <div class="card-arrow">İndir <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/yemek" class="card" style="--card-color: #f97316;">
-
-            <div class="icon-box"><i class="fas fa-utensils"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Ne Pişirsem?</div>
-
-                <div class="card-desc">Akşam yemeği için kararsız mısın? Rastgele bir öneri al.</div>
-
-            </div>
-
-            <div class="card-arrow">Seç <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
-        <a href="/tatli" class="card" style="--card-color: #ec4899;">
-
-            <div class="icon-box"><i class="fas fa-ice-cream"></i></div>
-
-            <div class="card-content">
-
-                <div class="card-title">Tatlı Krizi</div>
-
-                <div class="card-desc">Tatlı krizine özel rastgele tatlı önerisi ve tarif linki.</div>
-
-            </div>
-
-            <div class="card-arrow">Seç <i class="fas fa-arrow-right"></i></div>
-
-        </a>
-
-
     </div>
 
-
     <footer>
-
-        <div><strong>Odhun.com</strong> &copy; <span id="year"></span> Tüm Hakları Saklıdır.</div>
-
-        <div class="footer-warning">
-
-            Bu site, kişisel projelerin sergilendiği, kâr amacı gütmeyen, deneysel bir dijital portfolyodur. 
-
-            İçeriklerin telif hakları ilgili sağlayıcılara aittir.
-
-        </div>
-
+        <p>ODHUN.COM © 2025 | Ateş ve Kan ile Kodlandı.</p>
     </footer>
 
-
     <script>
+        // Kıvılcım Animasyonu Oluşturucu
+        const embersContainer = document.getElementById('embers');
+        
+        function createEmber() {
+            const ember = document.createElement('div');
+            ember.classList.add('ember');
+            
+            // Rastgele pozisyon ve animasyon süresi
+            const startX = Math.random() * 100;
+            const duration = Math.random() * 3 + 2; // 2 ile 5 saniye arası
+            const size = Math.random() * 4 + 1; // boyutu 1-5px arası
+            
+            ember.style.left = startX + '%';
+            ember.style.width = size + 'px';
+            ember.style.height = size + 'px';
+            ember.style.animationDuration = duration + 's';
+            
+            embersContainer.appendChild(ember);
+            
+            // Animasyon bitince elementi sil (performans için)
+            setTimeout(() => {
+                ember.remove();
+            }, duration * 1000);
+        }
 
-        // Yılı otomatik güncelle
-
-        document.getElementById('year').textContent = new Date().getFullYear();
-
+        // Sürekli kıvılcım üret
+        setInterval(createEmber, 100);
     </script>
 
-
 </body>
-
-</html> 
+</html>
