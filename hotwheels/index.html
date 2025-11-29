@@ -25,14 +25,19 @@ body {
 /* HEADER */
 header {
     background: linear-gradient(135deg, #003060, var(--hw-blue));
-    padding: 20px; text-align: center; border-bottom: 5px solid var(--hw-orange);
+    padding: 25px 20px; text-align: center; border-bottom: 5px solid var(--hw-orange);
     position: sticky; top: 0; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
 }
 .brand {
     font-family: 'Russo One', sans-serif; font-size: 2.2rem; color: #fff;
     text-shadow: 2px 2px 0px var(--hw-orange); font-style: italic; letter-spacing: 1px;
+    line-height: 1.1;
 }
 .brand span { color: var(--hw-yellow); }
+.sub-brand {
+    font-family: 'Roboto', sans-serif; font-size: 1rem; color: #ddd;
+    margin-top: 5px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+}
 
 /* KONTROLLER */
 .controls {
@@ -116,7 +121,8 @@ footer {
 
 @media (max-width: 600px) {
     .car-list { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px 80px; }
-    .brand { font-size: 1.8rem; }
+    .brand { font-size: 1.6rem; }
+    .sub-brand { font-size: 0.8rem; }
     .google-search-hint { display: block; opacity: 0.8; padding: 2px 5px; font-size: 0.6rem; }
 }
 </style>
@@ -124,7 +130,8 @@ footer {
 <body>
 
 <header>
-<div class="brand">ODHUN <span>WHEELS</span></div>
+<div class="brand">ODHUN <span>HOT WHEELS</span></div>
+<div class="sub-brand">KOLEKSİYON TAKİBİ</div>
 </header>
 
 <div class="controls">
@@ -156,11 +163,11 @@ footer {
 <div class="car-list" id="list"></div>
 
 <footer>
-Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi
+Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi v1.1
 </footer>
 
 <script>
-// --- MERKEZİ VERİ TABANI (TÜM ARAÇLAR EKLENDİ) ---
+// --- MERKEZİ VERİ TABANI (v1.1) ---
 const db = {
 "2023": [
     {n:"1", t:"Volvo P1800 Gasser", s:"Dream Garage", i:"https://static.wikia.nocookie.net/hotwheels/images/0/08/Volvo_P1800_Gasser_%28%2723_Mainline%29.jpg"},
