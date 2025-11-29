@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Odhun Çiz | Dijital Tuval</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ff0055%22>O<tspan fill=%22%23ffffff%22>Ç</tspan></text></svg>">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg-dark: #050505;
+        --panel-bg: #111111;
+        --accent: #ff0055; /* Sanat Pembesi */
+        --border: #333;
+        --text: #fff;
+        --sidebar-width: 280px;
+    }
+
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+
+    body {
+        margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text);
+        font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
+        touch-action: none; /* Mobilde sayfa kaydırmayı engelle */
+    }
+
+    /* --- SIDEBAR (ARAÇLAR) --- */
+    .sidebar {
+        width: var(--sidebar-width); background: var(--panel-bg);
+        border-right: 1px solid var(--border); display: flex; flex-direction: column;
+        flex-shrink: 0; z-index: 100; transition: transform 0.3s ease;
+    }
+
+    .logo-area {
+        height: 70px; display: flex; align-items: center; padding: 0 25px;
+        font-size: 1.5rem; font-weight: 900; border-bottom: 1px solid var(--border);
+        letter-spacing: -1px; justify-content: space-between;
+    }
+    .logo-area span { color: var(--accent); margin-left: 2px; }
+    
+    .mobile-close-btn { display: none; cursor: pointer; font-size: 1.2rem; }
+
+    .tools-container {
+        padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 25px;
+    }
+
+    /* Araç Grupleri */
+    .tool-group-title {
+        font-size: 0.75rem; text-transform: uppercase; color: #666; font-weight: 800;
+        margin-bottom: 10px; letter-spacing: 1px;
+    }
+
+    /* Renk Paleti */
+    .color-grid {
+        display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+    }
+    .color-btn {
+        width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+        border: 2px solid transparent; transition: transform 0.2s;
+    }
+    .color-btn:hover { transform: scale(1.1); }
+    .color-btn.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+    
+    input[type="color"] {
+        -webkit-appearance: none; border: none; width: 36px; height: 36px;
+        border-radius: 50%; padding: 0; background: none; cursor: pointer;
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: 2px solid #444; border-radius: 50%; }
+
+    /* Kalem Ayarları */
+    .range-wrap { display: flex; flex-direction: column; gap: 5px; }
+    .range-val { font-size: 0.8rem; color: #888; text-align: right; }
+    input[type=range] {
+        width: 100%; accent-color: var(--accent); height: 4px; cursor: pointer;
+    }
+
+    /* Araç Butonları */
+    .tool-btn {
+        background: #1a1a1a; border: 1px solid #333; color: #aaa; padding: 12px;
+        border-radius: 8px; cursor: pointer; font-weight: 600; display: flex;
+        align-items: center; gap: 10px; transition: 0.2s; font-size: 0.9rem;
+    }
+    .tool-btn:hover { background: #222; color: #fff; }
+    .tool-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .tool-btn i { width: 20px; text-align: center; }
+
+    /* Aksiyonlar */
+    .actions {
+        padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px;
+    }
+    .action-btn {
+        flex: 1; padding: 12px; border-radius: 6px; border: none; cursor: pointer;
+        font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+    .btn-clear { background: #222; color: #fff; border: 1px solid #333; }
+    .btn-save { background: var(--accent); color: #fff; }
+    
+    /* --- TUVAL ALANI --- */
+    .canvas-area {
+        flex: 1; position: relative; background: #181818;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden; cursor: crosshair;
+    }
+    
+    /* Arka plan ızgarası (Rehber) */
+    .canvas-bg {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: radial-gradient(#333 1px, transparent 1px);
+        background-size: 20px 20px; opacity: 0.3; pointer-events: none;
+    }
+
+    canvas {
+        background: #fff; /* Kağıt rengi */
+        box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        /* Canvas boyutu JS ile ayarlanacak */
+    }
+
+    /* MOBİL MENÜ BUTONU */
+    .mobile-toggle {
+        position: absolute; top: 15px; left: 15px; z-index: 500;
+        background: #111; border: 1px solid #333; color: #fff;
+        width: 45px; height: 45px; border-radius: 8px; cursor: pointer;
+        display: none; align-items: center; justify-content: center; font-size: 1.2rem;
+    }
+
+    /* FOOTER */
+    footer {
+        position: absolute; bottom: 10px; width: 100%; text-align: center;
+        font-size: 0.75rem; color: #555; pointer-events: none;
+    }
+
+    /* MOBİL UYUM */
+    @media (max-width: 768px) {
+        .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+        .sidebar.active { left: 0; }
+        .mobile-toggle { display: flex; }
+        .mobile-close-btn { display: block; }
+        
+        /* Mobilde canvas tam ekran olsun */
+        .canvas-area { padding: 0; background: #fff; }
+        canvas { box-shadow: none; }
+        
+        .actions { padding-bottom: 80px; } /* Mobilde altta boşluk */
+    }
+</style>
+</head>
+<body>
+
+    <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="logo-area">
+            ODHUN<span>ÇİZ</span>
+            <div class="mobile-close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
+        </div>
+
+        <div class="tools-container">
+            
+            <div>
+                <div class="tool-group-title">Araçlar</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="tool-btn active" id="btnBrush" onclick="setTool('brush')">
+                        <i class="fas fa-pencil-alt"></i> Kalem
+                    </button>
+                    <button class="tool-btn" id="btnEraser" onclick="setTool('eraser')">
+                        <i class="fas fa-eraser"></i> Silgi
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <div class="tool-group-title" style="display:flex; justify-content:space-between;">
+                    Kalınlık <span id="sizeVal" class="range-val">5px</span>
+                </div>
+                <input type="range" id="brushSize" min="1" max="50" value="5" oninput="setSize(this.value)">
+            </div>
+
+            <div>
+                <div class="tool-group-title">Renkler</div>
+                <div class="color-grid">
+                    <div class="color-btn active" style="background:#000000" onclick="setColor('#000000', this)"></div>
+                    <div class="color-btn" style="background:#ff0055" onclick="setColor('#ff0055', this)"></div>
+                    <div class="color-btn" style="background:#00e5ff" onclick="setColor('#00e5ff', this)"></div>
+                    <div class="color-btn" style="background:#00ff41" onclick="setColor('#00ff41', this)"></div>
+                    <div class="color-btn" style="background:#ffbe0b" onclick="setColor('#ffbe0b', this)"></div>
+                    <div class="color-btn" style="background:#8338ec" onclick="setColor('#8338ec', this)"></div>
+                    <div class="color-btn" style="background:#fb5607" onclick="setColor('#fb5607', this)"></div>
+                    <div class="color-btn" style="background:#3a86ff" onclick="setColor('#3a86ff', this)"></div>
+                    <input type="color" onchange="setColor(this.value, null)" title="Özel Renk">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <button class="action-btn btn-clear" onclick="clearCanvas()"><i class="fas fa-trash"></i> Temizle</button>
+            <button class="action-btn btn-save" onclick="saveCanvas()"><i class="fas fa-download"></i> Kaydet</button>
+        </div>
+    </div>
+
+    <div class="canvas-area" id="canvasArea">
+        <div class="canvas-bg"></div>
+        <canvas id="drawingBoard"></canvas>
+    </div>
+
+    <footer>
+        Odhun.com © 2025 | Dijital Tuval
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('drawingBoard');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvasArea');
+        const sidebar = document.getElementById('sidebar');
+
+        let isDrawing = false;
+        let currentTool = 'brush';
+        let brushColor = '#000000';
+        let brushSize = 5;
+        
+        // Canvas Boyutlandırma
+        function resizeCanvas() {
+            // Mobilde tam ekran, masaüstünde A4 oranlı ortalı kağıt
+            if (window.innerWidth <= 768) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            } else {
+                // A4 Oranı (veya ekranın %80'i)
+                canvas.width = container.clientWidth - 100;
+                canvas.height = container.clientHeight - 100;
+            }
+            // Arka planı beyaza boya (yoksa şeffaf olur)
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        // İlk yükleme
+        window.onload = resizeCanvas;
+
+        // --- ÇİZİM FONKSİYONLARI ---
+        
+        // Mouse Olayları
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('mouseout', stopDraw);
+
+        // Dokunmatik Olayları (Mobil)
+        canvas.addEventListener('touchstart', (e) => {
+            // Mobilde sayfa kaydırmayı engellemek için preventDefault
+            e.preventDefault(); 
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent("mousedown", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent("mousemove", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', () => {
+            const mouseEvent = new MouseEvent("mouseup", {});
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        function startDraw(e) {
+            isDrawing = true;
+            draw(e); // Tıklar tıklamaz nokta koy
+        }
+
+        function stopDraw() {
+            isDrawing = false;
+            ctx.beginPath(); // Yolu sıfırla
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            // Canvas üzerindeki koordinatı hesapla
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round'; // Yuvarlak uç
+            ctx.lineJoin = 'round'; // Yuvarlak dönüş
+
+            if (currentTool === 'eraser') {
+                ctx.strokeStyle = '#ffffff'; // Silgi beyaza boyar
+            } else {
+                ctx.strokeStyle = brushColor;
+            }
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        // --- ARAÇ YÖNETİMİ ---
+        function setTool(tool) {
+            currentTool = tool;
+            document.getElementById('btnBrush').classList.remove('active');
+            document.getElementById('btnEraser').classList.remove('active');
+            
+            if(tool === 'brush') document.getElementById('btnBrush').classList.add('active');
+            else document.getElementById('btnEraser').classList.add('active');
+            
+            // Mobilde araç seçince menüyü kapat
+            if (window.innerWidth <= 768) toggleSidebar();
+        }
+
+        function setColor(color, btn) {
+            brushColor = color;
+            setTool('brush'); // Renk seçince fırçaya dön
+            
+            // Aktif sınıfını güncelle
+            if (btn) {
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        }
+
+        function setSize(val) {
+            brushSize = val;
+            document.getElementById('sizeVal').innerText = val + 'px';
+        }
+
+        function clearCanvas() {
+            if(confirm('Tuval temizlensin mi?')) {
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function saveCanvas() {
+            const link = document.createElement('a');
+            link.download = 'odhun-cizim.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+        }
+
+    </script>
+
+</body>
+</html>
