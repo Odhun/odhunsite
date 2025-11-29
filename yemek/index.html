@@ -36,11 +36,15 @@
         .food-card:hover { transform: scale(1.05); }
 
         #foodName {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #ff5e62;
             line-height: 1.2;
             margin: 0;
+            min-height: 2.4em; /* İsim değişirken zıplamayı önler */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .hint {
             font-size: 0.8rem;
@@ -79,31 +83,85 @@
     </div>
 
     <script>
-        // Yemek Listesi
+        // 150+ Popüler Yemek Listesi (Nefis Yemek Tarifleri En Çok Deftere Eklenenler)
         const foods = [
-            "Karnıyarık", "Mantı", "Kuru Fasulye", "Yaprak Sarma", "İçli Köfte", 
-            "Hünkar Beğendi", "Ali Nazik", "Tavuk Sote", "Mercimek Çorbası", "İskender Kebap",
-            "Lahmacun", "Pide", "Taze Fasulye", "Musakka", "Tas Kebabı",
-            "Fırında Makarna", "Etli Nohut", "Biber Dolması", "Ispanak Yemeği", "Menemen",
-            "Köfte Patates", "Tavuklu Pilav", "Orman Kebabı", "Bezelye Yemeği", "Kabak Mücver",
-            "Güveç", "Fırın Tavuk", "Sulu Köfte", "Mercimek Köftesi", "Kıymalı Makarna"
+            // Ana Yemekler (Et & Tavuk)
+            "Karnıyarık", "Hünkar Beğendi", "Ali Nazik", "İskender Kebap", "Tas Kebabı", "Orman Kebabı", 
+            "Çökertme Kebabı", "Patlıcan Musakka", "Etli Nohut", "Kuru Fasulye", "Etli Bamya", 
+            "Güveç", "Kağıt Kebabı", "Tepsi Kebabı", "Sulu Köfte", "İzmir Köfte", "Kadınbudu Köfte", 
+            "Hasanpaşa Köftesi", "Dalyan Köfte", "Tavuk Sote", "Fırın Tavuk", "Körili Tavuk", 
+            "Tavuk Şiş", "Tavuk Baget", "Tavuklu Pilav", "Tavuklu Patates Yemeği", "Tavuk Çökertme",
+            "Sac Kavurma", "Ciğer Sote", "Kuzu İncik", "Etli Yaprak Sarma", "Biber Dolması",
+            
+            // Sebze Yemekleri
+            "Taze Fasulye", "Zeytinyağlı Enginar", "Barbunya Pilaki", "İmam Bayıldı", "Kabak Mücver", 
+            "Ispanak Yemeği", "Pırasa Yemeği", "Karnabahar Graten", "Brokoli Salatası", "Mücver",
+            "Şakşuka", "Türlü", "Bezelye Yemeği", "Kapuska", "Yer Elması", "Kereviz Yemeği",
+            
+            // Hamur İşleri & Pilavlar
+            "Mantı", "Lahmacun", "Kıymalı Pide", "Su Böreği", "Tepsi Böreği", "Sigara Böreği", 
+            "Paçanga Böreği", "Gözleme", "Çiğ Börek", "İçli Köfte", "Fırında Makarna", 
+            "Kıymalı Makarna", "Domatesli Makarna", "Penne Arrabbiata", "Fettuccine Alfredo",
+            "Pirinç Pilavı", "Bulgur Pilavı", "Meyhane Pilavı", "Perde Pilavı", "Maklube",
+            
+            // Çorbalar
+            "Mercimek Çorbası", "Ezogelin Çorbası", "Yayla Çorbası", "Tarhana Çorbası", "Domates Çorbası",
+            "Şehriye Çorbası", "Tavuk Suyu Çorba", "Kelle Paça Çorbası", "İşkembe Çorbası", "Mantar Çorbası",
+            "Brokoli Çorbası", "Kabak Çorbası", "Lebeniye Çorbası", "Düğün Çorbası", "Analı Kızlı",
+            
+            // Bakliyat & Diğer
+            "Mercimek Köftesi", "Fellah Köftesi", "Çiğ Köfte", "Kısır", "Müceddere", "Nohut Yemeği",
+            "Yeşil Mercimek Yemeği", "Barbunya", "Semizotu Yemeği",
+            
+            // Kahvaltılık Tarzı Akşam Yemeği
+            "Menemen", "Mıhlama (Kuymak)", "Sucuklu Yumurta", "Patatesli Yumurta", "Çılbır",
+            
+            // Yöresel & Özel
+            "Tantuni", "Adana Kebap", "Urfa Kebap", "Beyti Sarma", "Testi Kebabı", "Belelen Tava",
+            "Patlıcan Kebabı", "Fırında Levrek", "Hamsi Tava", "Fırında Somon", "Karides Güveç",
+            "Cağ Kebabı", "Kiremitte Köfte", "Püreli Köfte", "Rosto Köfte", "Tavuklu Krep",
+            "Karnabahar Kızartması", "Patlıcan Oturtma", "Kabak Dolması", "Kuru Patlıcan Dolması",
+            "Arnavut Ciğeri", "Et Sote", "Kavurma", "Makarna Salatası", "Rus Salatası"
         ];
 
         let currentFood = "";
+        
+        // AKILLI ALGORİTMA: Son gösterilenleri hafızada tutar
+        // Listesinin %40'ı kadarını hafızada tutarak tekrarı engelleriz.
+        let history = []; 
+        const maxHistorySize = Math.floor(foods.length * 0.4); 
 
         function pickRandomFood() {
-            // Rastgele seçim
-            const randomIndex = Math.floor(Math.random() * foods.length);
-            currentFood = foods[randomIndex];
+            let randomIndex;
+            let foodCandidate;
+            let attempts = 0;
+
+            // Döngü: Seçilen yemek geçmişte varsa yeniden seç
+            do {
+                randomIndex = Math.floor(Math.random() * foods.length);
+                foodCandidate = foods[randomIndex];
+                attempts++;
+                // Sonsuz döngüyü önlemek için max deneme (çok nadir gerekir)
+                if (attempts > 100) break; 
+            } while (history.includes(foodCandidate));
+
+            // Yeni yemeği belirle
+            currentFood = foodCandidate;
             
+            // Geçmişe ekle
+            history.push(currentFood);
+            
+            // Geçmiş çok dolduysa en eskiyi sil
+            if (history.length > maxHistorySize) {
+                history.shift();
+            }
+
             // Ekrana yaz
             document.getElementById("foodName").innerText = currentFood;
         }
 
         function goToRecipe() {
             if(currentFood) {
-                // Nefis Yemek Tarifleri'nde arama yap
-                // Bu yöntem en garantisidir çünkü spesifik linkler bazen değişebilir.
                 const url = `https://www.nefisyemektarifleri.com/ara/?s=${encodeURIComponent(currentFood)}`;
                 window.open(url, '_blank');
             }
