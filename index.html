@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ODHUN | Projeler </title>
+    <title>ODHUN | Portal</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
     <style>
@@ -49,7 +49,7 @@
             100% { transform: translateY(-110vh) scale(0); opacity: 0; }
         }
 
-        /* --- HEADER VE BAŞLIK EFEKTLERİ --- */
+        /* --- HEADER --- */
         header { 
             margin-top: 50px; 
             text-align: center; 
@@ -83,11 +83,11 @@
             font-weight: 300; text-transform: uppercase; opacity: 0.8;
         }
 
-        /* --- GRID YAPISI (DÜZELTİLDİ) --- */
+        /* --- GRID YAPISI --- */
         .portal-container {
             width: 100%;
-            max-width: 1400px; /* İçerik genişliği */
-            padding: 40px 20px 80px 20px; /* Kenar boşlukları */
+            max-width: 1400px;
+            padding: 40px 20px 80px 20px;
             z-index: 10;
             display: flex;
             justify-content: center;
@@ -95,7 +95,6 @@
 
         .portal-grid {
             display: grid;
-            /* Auto-fit: Sığabildiği kadar sığdırır, sığmazsa alta atar */
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
             gap: 25px;
             width: 100%;
@@ -120,7 +119,6 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        /* Kart Parlama Efekti */
         .portal-card::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: radial-gradient(circle, rgba(255, 69, 0, 0.15) 0%, transparent 60%);
@@ -159,7 +157,6 @@
         }
         .portal-card:hover .card-desc { opacity: 1; transform: translateY(0); color: #ddd; }
 
-        /* --- FOOTER --- */
         footer {
             margin-top: auto; padding: 25px; color: #555; font-size: 0.85rem; 
             text-align: center; border-top: 1px solid #222; width: 100%; z-index: 10;
@@ -188,100 +185,124 @@
     <div class="portal-container">
         <div class="portal-grid">
             
+            <a href="anit/" class="portal-card">
+                <i class="card-icon fas fa-monument"></i>
+                <div class="card-title">Abideler</div>
+                <div class="card-desc">Anıt Defteri & Mesajlar</div>
+            </a>
+
             <a href="hotwheels/" class="portal-card">
                 <i class="card-icon fas fa-car-side"></i>
                 <div class="card-title">Hot Wheels</div>
-                <div class="card-desc">Koleksiyon Takip Sistemi</div>
+                <div class="card-desc">Koleksiyon Takip</div>
             </a>
 
             <a href="apps/" class="portal-card">
                 <i class="card-icon fas fa-rocket"></i>
                 <div class="card-title">Apps</div>
-                <div class="card-desc">Taşınabilir Yazılımlar</div>
+                <div class="card-desc">Taşınabilir Araçlar</div>
             </a>
 
             <a href="finans/" class="portal-card">
                 <i class="card-icon fas fa-coins"></i>
                 <div class="card-title">Finans</div>
-                <div class="card-desc">Borç & Alacak Yönetimi</div>
+                <div class="card-desc">Borç Takibi</div>
             </a>
 
             <a href="cv/" class="portal-card">
                 <i class="card-icon fas fa-id-card"></i>
                 <div class="card-title">CV</div>
-                <div class="card-desc">Kişisel Portfolyo</div>
+                <div class="card-desc">Özgeçmiş</div>
+            </a>
+
+            <a href="keyboardtest/" class="portal-card">
+                <i class="card-icon fas fa-keyboard"></i>
+                <div class="card-title">Klavye Testi</div>
+                <div class="card-desc">Tuş Kontrolü</div>
+            </a>
+
+            <a href="savas/" class="portal-card">
+                <i class="card-icon fas fa-crosshairs"></i>
+                <div class="card-title">Savaş</div>
+                <div class="card-desc">Oyun Hesaplayıcı</div>
+            </a>
+
+            <a href="ses/" class="portal-card">
+                <i class="card-icon fas fa-volume-up"></i>
+                <div class="card-title">Ses Paneli</div>
+                <div class="card-desc">Efektler & Replikler</div>
             </a>
 
             <a href="oyun/" class="portal-card">
                 <i class="card-icon fas fa-gamepad"></i>
                 <div class="card-title">Oyun</div>
-                <div class="card-desc">Web Tabanlı Oyunlar</div>
+                <div class="card-desc">Web Oyunları</div>
             </a>
 
             <a href="tv/" class="portal-card">
                 <i class="card-icon fas fa-tv"></i>
                 <div class="card-title">TV</div>
-                <div class="card-desc">Canlı Yayın Akışları</div>
+                <div class="card-desc">Canlı Yayınlar</div>
             </a>
 
             <a href="radyo/" class="portal-card">
                 <i class="card-icon fas fa-radio"></i>
                 <div class="card-title">Radyo</div>
-                <div class="card-desc">Online Müzik İstasyonu</div>
+                <div class="card-desc">Online Radyo</div>
             </a>
 
             <a href="yemek/" class="portal-card">
                 <i class="card-icon fas fa-utensils"></i>
                 <div class="card-title">Yemek</div>
-                <div class="card-desc">Lezzetli Tarifler</div>
+                <div class="card-desc">Tarifler</div>
             </a>
 
             <a href="tatli/" class="portal-card">
                 <i class="card-icon fas fa-cookie-bite"></i>
                 <div class="card-title">Tatlı</div>
-                <div class="card-desc">Tatlı & Pasta Tarifleri</div>
+                <div class="card-desc">Tatlı Tarifleri</div>
             </a>
 
             <a href="tuval/" class="portal-card">
                 <i class="card-icon fas fa-palette"></i>
                 <div class="card-title">Tuval</div>
-                <div class="card-desc">Serbest Çizim Alanı</div>
+                <div class="card-desc">Çizim Alanı</div>
             </a>
 
             <a href="zen/" class="portal-card">
                 <i class="card-icon fas fa-yin-yang"></i>
                 <div class="card-title">Zen</div>
-                <div class="card-desc">Rahatlama Modu</div>
+                <div class="card-desc">Rahatlama</div>
             </a>
 
             <a href="tools/" class="portal-card">
                 <i class="card-icon fas fa-toolbox"></i>
                 <div class="card-title">Tools</div>
-                <div class="card-desc">Faydalı Web Araçları</div>
+                <div class="card-desc">Araçlar</div>
             </a>
 
             <a href="sifre/" class="portal-card">
                 <i class="card-icon fas fa-key"></i>
                 <div class="card-title">Şifre</div>
-                <div class="card-desc">Güvenli Şifre Üretici</div>
+                <div class="card-desc">Şifre Üretici</div>
             </a>
 
             <a href="takvim/" class="portal-card">
                 <i class="card-icon fas fa-calendar-alt"></i>
                 <div class="card-title">Takvim</div>
-                <div class="card-desc">Dijital Ajanda</div>
+                <div class="card-desc">Ajanda</div>
             </a>
 
             <a href="speedtest/" class="portal-card">
                 <i class="card-icon fas fa-gauge-high"></i>
                 <div class="card-title">SpeedTest</div>
-                <div class="card-desc">İnternet Hız Testi</div>
+                <div class="card-desc">Hız Testi</div>
             </a>
 
             <a href="screentest/" class="portal-card">
                 <i class="card-icon fas fa-desktop"></i>
                 <div class="card-title">ScreenTest</div>
-                <div class="card-desc">Ekran & Piksel Testi</div>
+                <div class="card-desc">Ekran Testi</div>
             </a>
 
         </div>
@@ -292,38 +313,32 @@
     </footer>
 
     <script>
-        // --- GELİŞMİŞ KIVILCIM EFEKTİ ---
         const embersContainer = document.getElementById('embers');
-        
-        // Renk paleti (Kırmızı, Turuncu, Altın Sarısı)
         const emberColors = ['#ff4500', '#ffae00', '#8a0303', '#ff6a00'];
 
         function createEmber() {
             const ember = document.createElement('div');
             ember.classList.add('ember');
             
-            // Rastgele özellikler
-            const startX = Math.random() * 100; // Ekranın neresinden çıkacak
-            const duration = Math.random() * 3 + 3; // 3 ile 6 saniye arası sürsün
-            const size = Math.random() * 5 + 2; // 2px ile 7px arası boyut
+            const startX = Math.random() * 100;
+            const duration = Math.random() * 3 + 3;
+            const size = Math.random() * 5 + 2;
             const color = emberColors[Math.floor(Math.random() * emberColors.length)];
             
             ember.style.left = startX + '%';
             ember.style.width = size + 'px';
             ember.style.height = size + 'px';
             ember.style.backgroundColor = color;
-            ember.style.boxShadow = `0 0 ${size * 2}px ${color}`; // Parlama efekti boyuta göre
+            ember.style.boxShadow = `0 0 ${size * 2}px ${color}`;
             ember.style.animationDuration = duration + 's';
             
             embersContainer.appendChild(ember);
             
-            // Animasyon bitince sil (DOM şişmesin)
             setTimeout(() => {
                 ember.remove();
             }, duration * 1000);
         }
 
-        // Daha sık kıvılcım üret (Efekt yoğunluğu)
         setInterval(createEmber, 70); 
     </script>
 
