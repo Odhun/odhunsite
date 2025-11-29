@@ -30,7 +30,7 @@
             position: relative;
         }
 
-        /* --- ARKA PLAN EFEKTLERİ (KIVILCIMLAR) --- */
+        /* --- EFEKTLER --- */
         .embers {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; pointer-events: none; overflow: hidden;
@@ -50,22 +50,12 @@
             100% { transform: translateY(-100vh) scale(0); opacity: 0; }
         }
 
-        /* --- ANA BAŞLIK --- */
-        header {
-            margin-top: 80px;
-            text-align: center;
-            z-index: 10;
-        }
+        /* --- HEADER --- */
+        header { margin-top: 60px; text-align: center; z-index: 10; padding: 0 20px; }
         h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 5rem;
-            font-weight: 900;
-            letter-spacing: 10px;
-            color: #fff;
-            text-transform: uppercase;
+            font-family: 'Cinzel', serif; font-size: 4rem; font-weight: 900;
+            letter-spacing: 8px; color: #fff; text-transform: uppercase;
             text-shadow: 0 0 20px var(--blood-red), 0 0 40px var(--fire-orange);
-            position: relative;
-            display: inline-block;
         }
         h1::after {
             content: ''; display: block; width: 60%; height: 2px;
@@ -73,26 +63,28 @@
             margin: 10px auto 0;
         }
         .subtitle {
-            margin-top: 15px; font-size: 1.2rem; color: #aaa; letter-spacing: 3px; font-weight: 300;
-            text-transform: uppercase; opacity: 0.8;
+            margin-top: 10px; font-size: 1.1rem; color: #aaa; letter-spacing: 3px; 
+            font-weight: 300; text-transform: uppercase; opacity: 0.8;
         }
 
-        /* --- KART IZGARASI --- */
+        /* --- GRID YAPISI --- */
         .portal-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1000px;
-            width: 90%;
-            margin: 60px auto;
+            /* Kart boyutlarını ekrana göre ayarlar */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            width: 95%;
+            margin: 50px auto;
             z-index: 10;
+            padding-bottom: 50px;
         }
 
         .portal-card {
-            background: rgba(20, 20, 20, 0.8);
+            background: rgba(20, 20, 20, 0.6);
             border: 1px solid #333;
-            border-radius: 4px;
-            height: 350px;
+            border-radius: 8px;
+            height: 220px; /* Daha kompakt kartlar */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -101,54 +93,59 @@
             color: var(--text-main);
             position: relative;
             overflow: hidden;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
             backdrop-filter: blur(5px);
         }
 
         .portal-card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(45deg, transparent 40%, rgba(255, 69, 0, 0.1) 100%);
+            background: linear-gradient(135deg, transparent 40%, rgba(255, 69, 0, 0.1) 100%);
             opacity: 0; transition: 0.4s;
         }
 
         .portal-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             border-color: var(--fire-orange);
-            box-shadow: 0 10px 30px rgba(255, 69, 0, 0.2);
+            box-shadow: 0 5px 20px rgba(255, 69, 0, 0.15);
+            background: rgba(30, 30, 30, 0.9);
         }
         .portal-card:hover::before { opacity: 1; }
 
         .card-icon {
-            font-size: 4rem; margin-bottom: 20px;
-            color: #555; transition: 0.4s;
-            text-shadow: 0 5px 10px rgba(0,0,0,0.5);
+            font-size: 2.5rem; margin-bottom: 15px;
+            color: #666; transition: 0.4s;
         }
         .portal-card:hover .card-icon {
             color: var(--ember-yellow);
-            transform: scale(1.1);
-            text-shadow: 0 0 20px var(--fire-orange);
+            transform: scale(1.2);
+            text-shadow: 0 0 15px var(--fire-orange);
         }
 
         .card-title {
-            font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 2px;
-            position: relative; z-index: 2;
+            font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; z-index: 2;
         }
         
         .card-desc {
-            font-size: 0.9rem; color: #888; margin-top: 10px; text-align: center;
-            padding: 0 20px; font-weight: 300; z-index: 2;
+            font-size: 0.8rem; color: #888; margin-top: 5px; text-align: center;
+            padding: 0 15px; font-weight: 300; z-index: 2; opacity: 0.7;
         }
+        .portal-card:hover .card-desc { opacity: 1; color: #bbb; }
 
         /* --- FOOTER --- */
         footer {
-            margin-top: auto; padding: 30px; color: #444; font-size: 0.8rem; text-align: center;
-            border-top: 1px solid #111; width: 100%; z-index: 10;
+            margin-top: auto; padding: 20px; color: #444; font-size: 0.8rem; 
+            text-align: center; border-top: 1px solid #222; width: 100%; z-index: 10;
+            background: #000;
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 3rem; letter-spacing: 5px; }
-            .portal-grid { grid-template-columns: 1fr; max-width: 400px; }
+            h1 { font-size: 2.5rem; }
+            .portal-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .portal-card { height: 180px; }
+            .card-icon { font-size: 2rem; }
+            .card-title { font-size: 1rem; }
+            .card-desc { display: none; } /* Mobilde yer kazanmak için açıklamayı gizledim */
         }
     </style>
 </head>
@@ -158,45 +155,123 @@
 
     <header>
         <h1>ODHUN</h1>
-        <div class="subtitle">Dijital Cephanelik & Arşiv</div>
+        <div class="subtitle">Dijital Cephanelik</div>
     </header>
 
     <div class="portal-grid">
-        <a href="odhun_koleksiyon.html" class="portal-card">
+        
+        <a href="hotwheels/" class="portal-card">
             <i class="card-icon fas fa-car-side"></i>
-            <div class="card-title">GARAJ</div>
-            <div class="card-desc">Hot Wheels Koleksiyon Takibi ve Görsel Arşiv.</div>
+            <div class="card-title">Hot Wheels</div>
+            <div class="card-desc">Koleksiyon Takip & Galeri</div>
         </a>
 
-        <a href="apps.html" class="portal-card">
-            <i class="card-icon fas fa-terminal"></i>
-            <div class="card-title">ATÖLYE</div>
-            <div class="card-desc">.BAT Dosyaları, Yerel Scriptler ve Taşınabilir Araçlar.</div>
+        <a href="apps/" class="portal-card">
+            <i class="card-icon fas fa-rocket"></i>
+            <div class="card-title">Apps</div>
+            <div class="card-desc">Taşınabilir Uygulamalar</div>
         </a>
 
-        <a href="#" class="portal-card" style="opacity: 0.5; cursor: default;">
-            <i class="card-icon fas fa-scroll"></i>
-            <div class="card-title">KÜTÜPHANE</div>
-            <div class="card-desc">Odhun Karakter Hikayesi & Yapay Zeka Promptları (Yakında).</div>
+        <a href="finans/" class="portal-card">
+            <i class="card-icon fas fa-coins"></i>
+            <div class="card-title">Finans</div>
+            <div class="card-desc">Borç & Alacak Takibi</div>
         </a>
+
+        <a href="cv/" class="portal-card">
+            <i class="card-icon fas fa-id-card"></i>
+            <div class="card-title">CV</div>
+            <div class="card-desc">Özgeçmiş & Portfolyo</div>
+        </a>
+
+        <a href="oyun/" class="portal-card">
+            <i class="card-icon fas fa-gamepad"></i>
+            <div class="card-title">Oyun</div>
+            <div class="card-desc">Tarayıcı Oyunları</div>
+        </a>
+
+        <a href="tv/" class="portal-card">
+            <i class="card-icon fas fa-tv"></i>
+            <div class="card-title">TV</div>
+            <div class="card-desc">Canlı Yayınlar</div>
+        </a>
+
+        <a href="radyo/" class="portal-card">
+            <i class="card-icon fas fa-radio"></i>
+            <div class="card-title">Radyo</div>
+            <div class="card-desc">Online Radyo İstasyonu</div>
+        </a>
+
+        <a href="yemek/" class="portal-card">
+            <i class="card-icon fas fa-utensils"></i>
+            <div class="card-title">Yemek</div>
+            <div class="card-desc">Tarifler & Mutfak</div>
+        </a>
+
+        <a href="tatli/" class="portal-card">
+            <i class="card-icon fas fa-cookie-bite"></i>
+            <div class="card-title">Tatlı</div>
+            <div class="card-desc">Tatlı Tarifleri</div>
+        </a>
+
+        <a href="tools/" class="portal-card">
+            <i class="card-icon fas fa-toolbox"></i>
+            <div class="card-title">Tools</div>
+            <div class="card-desc">Faydalı Araçlar</div>
+        </a>
+
+        <a href="sifre/" class="portal-card">
+            <i class="card-icon fas fa-key"></i>
+            <div class="card-title">Şifre</div>
+            <div class="card-desc">Güvenli Şifre Üretici</div>
+        </a>
+
+        <a href="speedtest/" class="portal-card">
+            <i class="card-icon fas fa-gauge-high"></i>
+            <div class="card-title">Hız Testi</div>
+            <div class="card-desc">İnternet Hız Kontrolü</div>
+        </a>
+
+        <a href="screentest/" class="portal-card">
+            <i class="card-icon fas fa-desktop"></i>
+            <div class="card-title">Ekran Testi</div>
+            <div class="card-desc">Ölü Piksel Testi</div>
+        </a>
+
+        <a href="takvim/" class="portal-card">
+            <i class="card-icon fas fa-calendar-alt"></i>
+            <div class="card-title">Takvim</div>
+            <div class="card-desc">Ajanda & Planlayıcı</div>
+        </a>
+
+        <a href="tuval/" class="portal-card">
+            <i class="card-icon fas fa-palette"></i>
+            <div class="card-title">Tuval</div>
+            <div class="card-desc">Çizim Alanı</div>
+        </a>
+
+        <a href="zen/" class="portal-card">
+            <i class="card-icon fas fa-yin-yang"></i>
+            <div class="card-title">Zen</div>
+            <div class="card-desc">Odaklanma & Rahatlama</div>
+        </a>
+
     </div>
 
     <footer>
-        <p>ODHUN.COM © 2025 | Ateş ve Kan ile Kodlandı.</p>
+        <p>ODHUN.COM © 2025 | Tüm Projeler Tek Çatı Altında.</p>
     </footer>
 
     <script>
-        // Kıvılcım Animasyonu Oluşturucu
+        // Arka Plan Kıvılcım Efekti
         const embersContainer = document.getElementById('embers');
         
         function createEmber() {
             const ember = document.createElement('div');
             ember.classList.add('ember');
-            
-            // Rastgele pozisyon ve animasyon süresi
             const startX = Math.random() * 100;
-            const duration = Math.random() * 3 + 2; // 2 ile 5 saniye arası
-            const size = Math.random() * 4 + 1; // boyutu 1-5px arası
+            const duration = Math.random() * 3 + 2; 
+            const size = Math.random() * 4 + 1; 
             
             ember.style.left = startX + '%';
             ember.style.width = size + 'px';
@@ -204,14 +279,8 @@
             ember.style.animationDuration = duration + 's';
             
             embersContainer.appendChild(ember);
-            
-            // Animasyon bitince elementi sil (performans için)
-            setTimeout(() => {
-                ember.remove();
-            }, duration * 1000);
+            setTimeout(() => { ember.remove(); }, duration * 1000);
         }
-
-        // Sürekli kıvılcım üret
         setInterval(createEmber, 100);
     </script>
 
