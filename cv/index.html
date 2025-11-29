@@ -13,7 +13,7 @@
     :root {
         --bg: #eef2f6;
         --sidebar-width: 420px;
-        --primary: #6c5ce7; /* Modern Mor */
+        --primary: #6c5ce7; 
         --text-color: #333;
         --border: #ddd;
     }
@@ -25,7 +25,7 @@
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
     }
 
-    /* --- SOL EDİTÖR (SCROLL DÜZELTİLDİ) --- */
+    /* --- SOL EDİTÖR --- */
     .editor {
         width: var(--sidebar-width); background: #fff; border-right: 1px solid #ddd;
         display: flex; flex-direction: column; height: 100%; z-index: 20;
@@ -35,14 +35,14 @@
     .editor-header {
         padding: 20px; border-bottom: 1px solid #eee; background: #fff;
         display: flex; justify-content: space-between; align-items: center;
-        flex-shrink: 0; /* Header sıkışmasın */
+        flex-shrink: 0;
     }
     .brand { font-size: 1.4rem; font-weight: 900; letter-spacing: -1px; color: #333; }
     .brand span { color: var(--primary); }
 
     /* SCROLL ALANI */
     .editor-scroll { 
-        flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; /* Alt boşluk */
+        flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px;
     }
     .editor-scroll::-webkit-scrollbar { width: 6px; }
     .editor-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
@@ -64,7 +64,7 @@
     input:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1); }
     textarea { resize: vertical; min-height: 80px; }
 
-    /* Dinamik Liste Öğesi */
+    /* Dinamik Liste */
     .dynamic-item {
         background: #f8f9fa; border: 1px solid #eee; border-left: 3px solid var(--primary);
         padding: 15px; border-radius: 6px; margin-bottom: 10px; position: relative;
@@ -84,7 +84,7 @@
     }
     .btn-add:hover { background: #e0e4e8; color: #333; border-color: #999; }
 
-    /* Ayarlar Paneli */
+    /* Ayarlar */
     .config-box {
         background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 15px;
         margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
@@ -102,8 +102,8 @@
     .swatch { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
     .swatch:hover { transform: scale(1.2); }
     .swatch.active { border-color: #333; transform: scale(1.1); }
-
-    /* Footer Butonları */
+    
+    /* Footer */
     .editor-footer {
         padding: 15px 20px; border-top: 1px solid #eee; background: #fff;
         display: flex; gap: 10px; flex-shrink: 0; z-index: 30;
@@ -118,68 +118,46 @@
 
     /* --- SAĞ PANEL (ÖNİZLEME) --- */
     .preview-area {
-        flex: 1; padding: 40px; overflow-y: auto; display: flex; justify-content: center;
-        background: #525659; /* PDF Viewer Grisi */
+        flex: 1; background: #525659; padding: 40px; overflow-y: auto; 
+        display: flex; justify-content: center; align-items: flex-start;
     }
 
-    /* A4 KAĞIT STANDARDI */
+    /* A4 KAĞIT */
     .a4-page {
-        width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.3);
-        position: relative; color: #333; transform-origin: top center;
+        width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        position: relative; color: #333; transform-origin: top center; margin-bottom: 40px;
     }
 
-    /* --- TEMA STİLLERİ (DİNAMİK) --- */
+    /* --- TEMA STİLLERİ --- */
     
-    /* 1. MODERN TEMA (Sol Renkli Sütun) */
-    .page[data-theme="modern"] {
-        display: grid; grid-template-columns: 32% 68%; padding: 0;
-    }
-    .page[data-theme="modern"] .col-left {
-        background: var(--primary); color: #fff; padding: 30px 25px; height: 100%; min-height: 297mm;
-    }
+    /* MODERN */
+    .page[data-theme="modern"] { display: grid; grid-template-columns: 32% 68%; padding: 0; }
+    .page[data-theme="modern"] .col-left { background: var(--primary); color: #fff; padding: 30px 25px; height: 100%; min-height: 297mm; }
     .page[data-theme="modern"] .col-right { padding: 35px 30px; }
-    
     .page[data-theme="modern"] h1 { font-size: 2rem; font-weight: 900; line-height: 1.1; margin: 0 0 5px 0; text-transform: uppercase; }
     .page[data-theme="modern"] .job-title { font-size: 1rem; opacity: 0.9; font-weight: 500; margin-bottom: 30px; }
-    
-    .page[data-theme="modern"] .section-head {
-        font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-        border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; margin: 25px 0 15px; color: #fff;
-    }
-    .page[data-theme="modern"] .col-right .section-head {
-        color: var(--primary); border-bottom-color: #eee;
-    }
-    
+    .page[data-theme="modern"] .section-head { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; margin: 25px 0 15px; color: #fff; }
+    .page[data-theme="modern"] .col-right .section-head { color: var(--primary); border-bottom-color: #eee; }
     .page[data-theme="modern"] .contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.85rem; }
     .page[data-theme="modern"] .contact-item i { width: 16px; text-align: center; opacity: 0.8; }
     
-    /* 2. KLASİK TEMA (Üstten Aşağı) */
+    /* CLASSIC */
     .page[data-theme="classic"] { padding: 40px 50px; font-family: 'Merriweather', serif; }
     .page[data-theme="classic"] header { text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 20px; margin-bottom: 30px; }
     .page[data-theme="classic"] h1 { font-size: 2.4rem; color: #000; margin-bottom: 5px; }
     .page[data-theme="classic"] .job-title { font-size: 1.1rem; color: #666; font-style: italic; }
     .page[data-theme="classic"] .contact-info { justify-content: center; margin-top: 10px; gap: 20px; }
-    .page[data-theme="classic"] .section-head { 
-        font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid #000; 
-        margin: 25px 0 15px; padding-bottom: 3px; text-transform: uppercase;
-    }
+    .page[data-theme="classic"] .section-head { font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid #000; margin: 25px 0 15px; padding-bottom: 3px; text-transform: uppercase; }
 
-    /* 3. YARATICI TEMA (Renkli Header) */
+    /* CREATIVE */
     .page[data-theme="creative"] { padding: 0; font-family: 'Inter', sans-serif; }
-    .page[data-theme="creative"] .header-bg {
-        background: var(--primary); color: #fff; padding: 40px 50px;
-        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-    }
+    .page[data-theme="creative"] .header-bg { background: var(--primary); color: #fff; padding: 40px 50px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
     .page[data-theme="creative"] h1 { font-size: 2.8rem; font-family: 'Playfair Display', serif; margin: 0; }
     .page[data-theme="creative"] .job-title { opacity: 0.9; font-size: 1.2rem; letter-spacing: 1px; }
     .page[data-theme="creative"] .content-pad { padding: 20px 50px; }
-    .page[data-theme="creative"] .section-head {
-        color: var(--primary); font-weight: 900; font-size: 1.1rem; letter-spacing: 1px;
-        border-left: 4px solid var(--primary); padding-left: 10px; margin: 30px 0 15px;
-        background: linear-gradient(90deg, #f3f4f6 0%, #fff 100%);
-    }
+    .page[data-theme="creative"] .section-head { color: var(--primary); font-weight: 900; font-size: 1.1rem; letter-spacing: 1px; border-left: 4px solid var(--primary); padding-left: 10px; margin: 30px 0 15px; background: linear-gradient(90deg, #f3f4f6 0%, #fff 100%); }
 
-    /* 4. MINIMALIST TEMA (Sade) */
+    /* MINIMAL */
     .page[data-theme="minimal"] { padding: 40px 50px; font-family: 'Inter', sans-serif; }
     .page[data-theme="minimal"] header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
     .page[data-theme="minimal"] h1 { font-size: 3rem; font-weight: 800; margin: 0; line-height: 0.8; color: #000; }
@@ -187,7 +165,7 @@
     .page[data-theme="minimal"] .contact-info { flex-direction: column; align-items: flex-end; gap: 2px; font-size: 0.85rem; }
     .page[data-theme="minimal"] .section-head { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #888; margin: 30px 0 15px; }
 
-    /* ORTAK İÇERİK STİLLERİ */
+    /* ORTAK */
     .item-row { margin-bottom: 15px; }
     .item-head { display: flex; justify-content: space-between; align-items: baseline; }
     .item-title { font-weight: 700; font-size: 1rem; color: #000; }
@@ -201,11 +179,11 @@
     .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .skill-tag { background: #f1f5f9; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; color: #334155; }
 
-    /* Yazıcı Ayarları */
+    /* Yazıcı */
     @media print {
         body { background: #fff; height: auto; overflow: visible; }
-        .editor, .preview { display: none; }
-        .page { width: 100%; height: auto; box-shadow: none; margin: 0; padding: 0; print-color-adjust: exact; }
+        .editor, .preview-area { display: none; }
+        .a4-page { width: 100%; height: auto; box-shadow: none; margin: 0; padding: 0; print-color-adjust: exact; }
         @page { margin: 0; }
     }
 
@@ -214,8 +192,9 @@
         body { flex-direction: column; overflow: auto; }
         .editor { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #ddd; }
         .preview-area { padding: 10px; background: #eee; }
-        .page { width: 100%; height: auto; transform: scale(1); }
+        .a4-page { width: 100%; height: auto; transform: scale(1); }
         .editor-footer { position: sticky; bottom: 0; box-shadow: 0 -5px 10px rgba(0,0,0,0.1); }
+        .preview-area { padding-bottom: 100px; }
     }
 </style>
 </head>
@@ -248,15 +227,15 @@
             </div>
 
             <div class="section-head">Kişisel Bilgiler</div>
-            <div class="form-group"><label>Ad Soyad</label><input type="text" id="inpName" oninput="render()" placeholder="Ahmet Yılmaz"></div>
-            <div class="form-group"><label>Meslek / Ünvan</label><input type="text" id="inpJob" oninput="render()" placeholder="Yazılım Uzmanı"></div>
+            <div class="form-group"><label>Ad Soyad</label><input type="text" id="inpName" oninput="saveAndRender()" placeholder="Ahmet Yılmaz"></div>
+            <div class="form-group"><label>Meslek / Ünvan</label><input type="text" id="inpJob" oninput="saveAndRender()" placeholder="Yazılım Uzmanı"></div>
             <div class="row" style="display:flex; gap:10px">
-                <div class="form-group" style="flex:1"><label>Telefon</label><input type="text" id="inpPhone" oninput="render()" placeholder="0555 123 45 67"></div>
-                <div class="form-group" style="flex:1"><label>Şehir</label><input type="text" id="inpLoc" oninput="render()" placeholder="İstanbul"></div>
+                <div class="form-group" style="flex:1"><label>Telefon</label><input type="text" id="inpPhone" oninput="saveAndRender()" placeholder="0555 123 45 67"></div>
+                <div class="form-group" style="flex:1"><label>Şehir</label><input type="text" id="inpLoc" oninput="saveAndRender()" placeholder="İstanbul"></div>
             </div>
-            <div class="form-group"><label>E-Posta</label><input type="text" id="inpEmail" oninput="render()" placeholder="iletisim@mail.com"></div>
-            <div class="form-group"><label>Web / LinkedIn</label><input type="text" id="inpLink" oninput="render()" placeholder="linkedin.com/in/ahmet"></div>
-            <div class="form-group"><label>Hakkımda</label><textarea id="inpAbout" oninput="render()" placeholder="Deneyimli bir yazılım uzmanıyım..."></textarea></div>
+            <div class="form-group"><label>E-Posta</label><input type="text" id="inpEmail" oninput="saveAndRender()" placeholder="iletisim@mail.com"></div>
+            <div class="form-group"><label>Web / LinkedIn</label><input type="text" id="inpLink" oninput="saveAndRender()" placeholder="linkedin.com/in/ahmet"></div>
+            <div class="form-group"><label>Hakkımda</label><textarea id="inpAbout" oninput="saveAndRender()" placeholder="Deneyimli bir yazılım uzmanıyım..."></textarea></div>
 
             <div class="section-head">İş Deneyimi <button class="btn-add" style="width:auto; padding:4px 10px;" onclick="addExp()">+</button></div>
             <div id="expInputs"></div>
@@ -265,7 +244,7 @@
             <div id="eduInputs"></div>
 
             <div class="section-head">Yetenekler</div>
-            <div class="form-group"><textarea id="inpSkills" oninput="render()" placeholder="HTML, CSS, Proje Yönetimi, İngilizce..."></textarea></div>
+            <div class="form-group"><textarea id="inpSkills" oninput="saveAndRender()" placeholder="HTML, CSS, Proje Yönetimi, İngilizce... (Virgülle ayırın)"></textarea></div>
 
         </div>
 
@@ -276,12 +255,11 @@
     </div>
 
     <div class="preview-area">
-        <div id="cvPage" class="page" data-theme="modern">
-            </div>
+        <div id="cvPage" class="a4-page" data-theme="modern"></div>
     </div>
 
     <script>
-        // --- VARSAYILAN TASLAK VERİLERİ (PLACEHOLDER) ---
+        // --- VARSAYILAN TASLAK (PLACEHOLDER) ---
         const defaults = {
             name: "AHMET YILMAZ",
             job: "Yazılım Geliştirici",
@@ -301,48 +279,64 @@
         };
 
         // Kullanıcı verisi (LocalStorage)
-        let userData = JSON.parse(localStorage.getItem('odhunCV_user')) || {
+        let userData = JSON.parse(localStorage.getItem('odhunCV_data')) || {
             theme: 'modern',
             color: '#6c5ce7',
             basics: {},
-            exp: [],
+            exp: [], // Eğer boşsa default gösterilecek
             edu: [],
             skills: ''
         };
 
+        // --- BAŞLANGIÇ ---
         window.onload = () => {
-            restoreInputs();
-            render();
+            // Inputları doldur (Eğer veri varsa)
+            fillInputs();
+            // Dinamik inputları oluştur
+            renderDynamicInputs();
+            // Önizlemeyi oluştur
+            renderPreview();
         };
 
-        function save() {
-            localStorage.setItem('odhunCV_user', JSON.stringify(userData));
-            render();
+        function saveAndRender() {
+            // Inputlardan veriyi çek
+            userData.basics = {
+                name: document.getElementById('inpName').value,
+                job: document.getElementById('inpJob').value,
+                phone: document.getElementById('inpPhone').value,
+                email: document.getElementById('inpEmail').value,
+                loc: document.getElementById('inpLoc').value,
+                link: document.getElementById('inpLink').value,
+                about: document.getElementById('inpAbout').value
+            };
+            userData.skills = document.getElementById('inpSkills').value;
+            
+            localStorage.setItem('odhunCV_data', JSON.stringify(userData));
+            renderPreview();
         }
 
-        // --- RENDER MOTORU ---
-        function render() {
+        // --- RENDER (ÖNİZLEME) ---
+        function renderPreview() {
             const page = document.getElementById('cvPage');
             page.setAttribute('data-theme', userData.theme);
             document.documentElement.style.setProperty('--primary', userData.color);
 
-            // Veri Birleştirme (Kullanıcı verisi yoksa Taslak verisi kullan)
+            // Eğer input boşsa -> Varsayılanı kullan
             const d = {
-                name: document.getElementById('inpName').value || defaults.name,
-                job: document.getElementById('inpJob').value || defaults.job,
-                phone: document.getElementById('inpPhone').value || defaults.phone,
-                email: document.getElementById('inpEmail').value || defaults.email,
-                loc: document.getElementById('inpLoc').value || defaults.loc,
-                link: document.getElementById('inpLink').value || defaults.link,
-                about: document.getElementById('inpAbout').value || defaults.about,
-                skills: document.getElementById('inpSkills').value ? document.getElementById('inpSkills').value.split(',') : defaults.skills,
-                
-                // Dinamik listeler için: Eğer kullanıcı eklemişse onu kullan, yoksa taslak
+                name: userData.basics.name || defaults.name,
+                job: userData.basics.job || defaults.job,
+                phone: userData.basics.phone || defaults.phone,
+                email: userData.basics.email || defaults.email,
+                loc: userData.basics.loc || defaults.loc,
+                link: userData.basics.link || defaults.link,
+                about: userData.basics.about || defaults.about,
+                skills: userData.skills ? userData.skills.split(',') : defaults.skills,
+                // Liste boşsa varsayılanları göster
                 exp: userData.exp.length > 0 ? userData.exp : defaults.exp,
                 edu: userData.edu.length > 0 ? userData.edu : defaults.edu
             };
 
-            // Parçaları Oluştur
+            // Parçaları HTML'e çevir
             const contactHtml = `
                 <div class="contact-item"><i class="fas fa-phone"></i> ${d.phone}</div>
                 <div class="contact-item"><i class="fas fa-envelope"></i> ${d.email}</div>
@@ -354,10 +348,7 @@
 
             const expHtml = d.exp.map(e => `
                 <div class="item-row">
-                    <div class="item-head">
-                        <span class="item-title">${e.title}</span>
-                        <span class="item-date">${e.date}</span>
-                    </div>
+                    <div class="item-head"><span class="item-title">${e.title}</span><span class="item-date">${e.date}</span></div>
                     <div class="item-sub">${e.company}</div>
                     <div class="item-desc">${e.desc}</div>
                 </div>
@@ -365,109 +356,47 @@
 
             const eduHtml = d.edu.map(e => `
                 <div class="item-row">
-                    <div class="item-head">
-                        <span class="item-title">${e.school}</span>
-                        <span class="item-date">${e.date}</span>
-                    </div>
+                    <div class="item-head"><span class="item-title">${e.school}</span><span class="item-date">${e.date}</span></div>
                     <div class="item-sub">${e.degree}</div>
                 </div>
             `).join('');
 
-            // --- TEMA ŞABLONLARI ---
+            // Tema Şablonu Seçimi
             let html = '';
-
             if (userData.theme === 'modern') {
                 html = `
                     <div class="col-left">
-                        <h1>${d.name}</h1>
-                        <div class="job-title">${d.job}</div>
-                        <div class="section-head">İLETİŞİM</div>
-                        <div style="margin-top:15px; line-height:1.8; font-size:0.85rem; opacity:0.9">${contactHtml}</div>
-                        <div class="section-head">YETENEKLER</div>
-                        <div style="margin-top:15px; line-height:1.6; font-size:0.9rem; opacity:0.9">${d.skills.join(' • ')}</div>
+                        <h1>${d.name}</h1><div class="job-title">${d.job}</div>
+                        <div class="section-head">İLETİŞİM</div><div style="margin-top:15px; line-height:1.8; font-size:0.85rem; opacity:0.9">${contactHtml}</div>
+                        <div class="section-head">YETENEKLER</div><div style="margin-top:15px; line-height:1.6; font-size:0.9rem; opacity:0.9">${d.skills.join(' • ')}</div>
                     </div>
                     <div class="col-right">
-                        <div class="section-head" style="margin-top:0; color:var(--primary); border-bottom-color:#eee;">PROFİL</div>
-                        <div class="item-desc" style="margin-bottom:25px">${d.about}</div>
-                        <div class="section-head" style="color:var(--primary); border-bottom-color:#eee;">İŞ DENEYİMİ</div>
-                        ${expHtml}
-                        <div class="section-head" style="color:var(--primary); border-bottom-color:#eee;">EĞİTİM</div>
-                        ${eduHtml}
-                    </div>
-                `;
+                        <div class="section-head" style="margin-top:0; color:var(--primary); border-bottom-color:#eee;">PROFİL</div><div class="item-desc" style="margin-bottom:25px">${d.about}</div>
+                        <div class="section-head" style="color:var(--primary); border-bottom-color:#eee;">İŞ DENEYİMİ</div>${expHtml}
+                        <div class="section-head" style="color:var(--primary); border-bottom-color:#eee;">EĞİTİM</div>${eduHtml}
+                    </div>`;
             } else if (userData.theme === 'creative') {
                 html = `
-                    <div class="header-bg">
-                        <h1>${d.name}</h1>
-                        <div class="job-title">${d.job}</div>
-                        <div style="display:flex; gap:20px; margin-top:15px; font-size:0.9rem; opacity:0.9">${contactHtml}</div>
-                    </div>
+                    <div class="header-bg"><h1>${d.name}</h1><div class="job-title">${d.job}</div><div style="display:flex; gap:20px; margin-top:15px; font-size:0.9rem; opacity:0.9">${contactHtml}</div></div>
                     <div class="content-pad">
-                        <div class="section-head">HAKKIMDA</div>
-                        <div class="item-desc" style="margin-bottom:25px">${d.about}</div>
-                        <div class="section-head">DENEYİM</div>
-                        ${expHtml}
-                        <div class="section-head">EĞİTİM</div>
-                        ${eduHtml}
-                        <div class="section-head">YETENEKLER</div>
-                        ${skillsHtml}
-                    </div>
-                `;
+                        <div class="section-head">HAKKIMDA</div><div class="item-desc" style="margin-bottom:25px">${d.about}</div>
+                        <div class="section-head">DENEYİM</div>${expHtml}
+                        <div class="section-head">EĞİTİM</div>${eduHtml}
+                        <div class="section-head">YETENEKLER</div>${skillsHtml}
+                    </div>`;
             } else { // Classic & Minimal
                 html = `
-                    <header>
-                        <div>
-                            <h1>${d.name}</h1>
-                            <div class="job-title">${d.job}</div>
-                        </div>
-                        <div class="contact-info">${contactHtml}</div>
-                    </header>
-                    <div class="section-head">Hakkımda</div>
-                    <div class="item-desc" style="margin-bottom:20px">${d.about}</div>
-                    <div class="section-head">İş Deneyimi</div>
-                    ${expHtml}
-                    <div class="section-head">Eğitim</div>
-                    ${eduHtml}
-                    <div class="section-head">Yetenekler</div>
-                    ${skillsHtml}
+                    <header><div><h1>${d.name}</h1><div class="job-title">${d.job}</div></div><div class="contact-info">${contactHtml}</div></header>
+                    <div class="section-head">Hakkımda</div><div class="item-desc" style="margin-bottom:20px">${d.about}</div>
+                    <div class="section-head">İş Deneyimi</div>${expHtml}
+                    <div class="section-head">Eğitim</div>${eduHtml}
+                    <div class="section-head">Yetenekler</div>${skillsHtml}
                 `;
             }
-
             page.innerHTML = html;
         }
 
-        // --- İNPUT YÖNETİMİ ---
-        function restoreInputs() {
-            // Basit Alanlar
-            const fields = ['inpName', 'inpJob', 'inpPhone', 'inpEmail', 'inpLoc', 'inpLink', 'inpAbout', 'inpSkills'];
-            fields.forEach(id => {
-                const key = id.replace('inp', '').toLowerCase(); // name, job...
-                if(userData.basics[key]) document.getElementById(id).value = userData.basics[key];
-            });
-            
-            // Tema Butonları
-            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.theme-btn[onclick*="'${userData.theme}'"]`)?.classList.add('active');
-
-            // Listeler
-            renderDynamicInputs();
-        }
-
-        // Input Event Listener (Basit alanlar için)
-        document.querySelectorAll('input[type="text"], textarea').forEach(el => {
-            el.addEventListener('input', (e) => {
-                const key = e.target.id.replace('inp', '').toLowerCase();
-                // Sadece basit alanları basics objesine kaydet
-                if(['name','job','phone','email','loc','link','about'].includes(key)) {
-                    userData.basics[key] = e.target.value;
-                } else if (key === 'skills') {
-                    userData.skills = e.target.value; // Skills ayrı tutuluyor
-                }
-                save();
-            });
-        });
-
-        // --- DİNAMİK LİSTE YÖNETİMİ ---
+        // --- DİNAMİK İNPUTLAR ---
         function renderDynamicInputs() {
             const expDiv = document.getElementById('expInputs');
             expDiv.innerHTML = '';
@@ -495,25 +424,41 @@
             });
         }
 
-        function addExp() { userData.exp.push({title:'', company:'', date:'', desc:''}); renderDynamicInputs(); save(); }
-        function remExp(i) { userData.exp.splice(i, 1); renderDynamicInputs(); save(); }
-        function updExp(i, key, val) { userData.exp[i][key] = val; save(); }
+        function addExp() { userData.exp.push({title:'', company:'', date:'', desc:''}); renderDynamicInputs(); saveAndRender(); }
+        function remExp(i) { userData.exp.splice(i, 1); renderDynamicInputs(); saveAndRender(); }
+        function updExp(i, k, v) { userData.exp[i][k] = v; saveAndRender(); }
+        function addEdu() { userData.edu.push({school:'', degree:'', date:''}); renderDynamicInputs(); saveAndRender(); }
+        function remEdu(i) { userData.edu.splice(i, 1); renderDynamicInputs(); saveAndRender(); }
+        function updEdu(i, k, v) { userData.edu[i][k] = v; saveAndRender(); }
 
-        function addEdu() { userData.edu.push({school:'', degree:'', date:''}); renderDynamicInputs(); save(); }
-        function remEdu(i) { userData.edu.splice(i, 1); renderDynamicInputs(); save(); }
-        function updEdu(i, key, val) { userData.edu[i][key] = val; save(); }
+        // --- YARDIMCILAR ---
+        function fillInputs() {
+            document.getElementById('inpName').value = userData.basics.name || '';
+            document.getElementById('inpJob').value = userData.basics.job || '';
+            document.getElementById('inpPhone').value = userData.basics.phone || '';
+            document.getElementById('inpEmail').value = userData.basics.email || '';
+            document.getElementById('inpLoc').value = userData.basics.loc || '';
+            document.getElementById('inpLink').value = userData.basics.link || '';
+            document.getElementById('inpAbout').value = userData.basics.about || '';
+            document.getElementById('inpSkills').value = userData.skills || '';
+            
+            // Tema butonunu aktif yap
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector(`.theme-btn[onclick*="'${userData.theme}'"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+        }
 
         function setTheme(t) {
             userData.theme = t;
             document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            save();
+            saveAndRender();
         }
-        function setColor(c) { userData.color = c; save(); }
+        function setColor(c) { userData.color = c; saveAndRender(); }
         
         function resetCV() {
             if(confirm('Tüm bilgileriniz silinecek. Emin misiniz?')) {
-                localStorage.removeItem('odhunCV_user');
+                localStorage.removeItem('odhunCV_data');
                 location.reload();
             }
         }
