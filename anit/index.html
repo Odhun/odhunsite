@@ -3,91 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odhun | Yazıt</title>
+    <title>Odhun | Anıt Defteri</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #050505; color: #d4c5a9; font-family: 'Courier Prime', monospace;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0;
+        :root {
+            --bg: #050505;
+            --card-bg: #111;
+            --accent: #ff4500; /* Ateş Turuncusu */
+            --text: #e0e0e0;
+            --border: #333;
         }
-        h1 { font-family: 'Cinzel', serif; color: #ff4500; margin-top: 20px; letter-spacing: 3px; }
-        
-        .notepad-container {
-            width: 90%; max-width: 800px; height: 70vh; margin-top: 20px;
-            background: #111; border: 1px solid #333; border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); display: flex; flex-direction: column;
-        }
-        
-        .toolbar {
-            background: #1a1a1a; padding: 10px; border-bottom: 1px solid #333;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        
-        .status { font-size: 0.8rem; color: #666; }
-        
-        textarea {
-            flex: 1; background: #0a0a0a; color: #e0e0e0; border: none; padding: 20px;
-            font-family: 'Courier Prime', monospace; font-size: 1.1rem; line-height: 1.6; resize: none;
-        }
-        textarea:focus { outline: none; }
-        
-        .btn {
-            background: #333; color: #aaa; border: 1px solid #444; padding: 5px 15px;
-            cursor: pointer; border-radius: 3px; transition: 0.2s; font-size: 0.8rem;
-        }
-        .btn:hover { background: #ff4500; color: #fff; border-color: #ff4500; }
 
-        /* Kaydırma çubuğu */
-        textarea::-webkit-scrollbar { width: 8px; }
-        textarea::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent);
+            margin-top: 20px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+        }
+
+        /* --- GİRİŞ PANELİ --- */
+        .input-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(255, 69, 0, 0.3);
+        }
+
+        button#saveBtn {
+            background: linear-gradient(45deg, #8a0303, var(--accent));
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button#saveBtn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        /* --- MESAJ LİSTESİ --- */
+        .entries-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .entry-card {
+            background: rgba(20, 20, 20, 0.8);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 4px;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 5px;
+        }
+
+        .entry-name {
+            font-weight: bold;
+            color: var(--accent);
+            font-family: 'Cinzel', serif;
+        }
+
+        .entry-date {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .entry-message {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #ddd;
+            word-break: break-word; /* Uzun kelimeleri kır */
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #444;
+            cursor: pointer;
+            font-size: 0.8rem;
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            transition: 0.2s;
+        }
+        .delete-btn:hover { color: red; }
+
+        .empty-state {
+            text-align: center;
+            color: #555;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <h1><i class="fas fa-scroll"></i> YAZIT</h1>
+    <h1><i class="fas fa-book-dead"></i> ANIT DEFTERİ</h1>
 
-    <div class="notepad-container">
-        <div class="toolbar">
-            <span class="status" id="status">Hazır</span>
-            <div>
-                <button class="btn" onclick="copyText()"><i class="fas fa-copy"></i> Kopyala</button>
-                <button class="btn" onclick="clearText()"><i class="fas fa-trash"></i> Temizle</button>
-            </div>
+    <div class="input-panel">
+        <div class="input-group">
+            <label>İsim / Rumuz</label>
+            <input type="text" id="userName" placeholder="Adını buraya kazı..." maxlength="30">
         </div>
-        <textarea id="editor" placeholder="Düşüncelerini buraya kazı..."></textarea>
+        <div class="input-group" style="margin-top:10px;">
+            <label>Bırakılacak Not</label>
+            <textarea id="userMessage" rows="3" placeholder="Geleceğe bir hatıra bırak..." maxlength="280"></textarea>
+        </div>
+        <button id="saveBtn" onclick="addEntry()">KAZI VE KAYDET</button>
+    </div>
+
+    <div class="entries-container" id="guestbookList">
+        </div>
+
+    <div style="margin-top: 30px;">
+        <button onclick="clearAll()" style="background:none; border:1px solid #333; color:#555; padding:5px 10px; border-radius:4px; cursor:pointer;">
+            <i class="fas fa-trash"></i> Tüm Defteri Yak
+        </button>
     </div>
 
     <script>
-        const editor = document.getElementById('editor');
-        const status = document.getElementById('status');
+        // Veritabanını (LocalStorage) Başlat
+        let guestbookData = JSON.parse(localStorage.getItem('odhun_guestbook')) || [];
 
-        // Sayfa yüklendiğinde veriyi çek
+        // Sayfa Yüklendiğinde Listeyi Çek
         window.onload = () => {
-            const savedNote = localStorage.getItem('odhun_yazit');
-            if (savedNote) editor.value = savedNote;
+            renderEntries();
         };
 
-        // Her tuşa basıldığında kaydet
-        editor.addEventListener('input', () => {
-            localStorage.setItem('odhun_yazit', editor.value);
-            status.innerText = "Kaydedildi " + new Date().toLocaleTimeString();
-            status.style.color = "#ff4500";
-            setTimeout(() => { status.style.color = "#666"; }, 1000);
-        });
+        // Yeni Kayıt Ekleme Fonksiyonu
+        function addEntry() {
+            const nameInput = document.getElementById('userName');
+            const msgInput = document.getElementById('userMessage');
 
-        function copyText() {
-            editor.select();
-            document.execCommand('copy');
-            status.innerText = "Kopyalandı!";
+            const name = nameInput.value.trim();
+            const message = msgInput.value.trim();
+
+            if (name === "" || message === "") {
+                alert("Lütfen ismini ve mesajını eksiksiz gir.");
+                return;
+            }
+
+            // Tarih Oluşturma
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('tr-TR') + ' - ' + now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+
+            // Yeni Obje
+            const newEntry = {
+                id: Date.now(), // Benzersiz ID
+                name: name,
+                message: message,
+                date: dateStr
+            };
+
+            // Listeye Ekle (En başa)
+            guestbookData.unshift(newEntry);
+
+            // Kaydet ve Yenile
+            saveToLocal();
+            renderEntries();
+
+            // Kutuları Temizle
+            nameInput.value = "";
+            msgInput.value = "";
         }
 
-        function clearText() {
-            if(confirm("Tüm yazıtı silmek istediğine emin misin?")) {
-                editor.value = "";
-                localStorage.removeItem('odhun_yazit');
-                status.innerText = "Silindi";
+        // Listeyi Ekrana Basma Fonksiyonu
+        function renderEntries() {
+            const listContainer = document.getElementById('guestbookList');
+            listContainer.innerHTML = "";
+
+            if (guestbookData.length === 0) {
+                listContainer.innerHTML = '<div class="empty-state">Henüz hiç kimse buraya bir iz bırakmadı. İlk sen ol.</div>';
+                return;
             }
+
+            guestbookData.forEach(entry => {
+                const card = document.createElement('div');
+                card.className = 'entry-card';
+                card.innerHTML = `
+                    <div class="entry-header">
+                        <span class="entry-name">${escapeHtml(entry.name)}</span>
+                        <span class="entry-date"><i class="far fa-clock"></i> ${entry.date}</span>
+                    </div>
+                    <div class="entry-message">${escapeHtml(entry.message)}</div>
+                    <button class="delete-btn" onclick="deleteEntry(${entry.id})" title="Sil"><i class="fas fa-times"></i></button>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        // Tekil Kayıt Silme
+        function deleteEntry(id) {
+            if(confirm("Bu hatırayı silmek istediğine emin misin?")) {
+                guestbookData = guestbookData.filter(entry => entry.id !== id);
+                saveToLocal();
+                renderEntries();
+            }
+        }
+
+        // Hepsini Silme
+        function clearAll() {
+            if(confirm("DİKKAT: Tüm anıt defteri yakılacak. Geri dönüşü yok. Emin misin?")) {
+                guestbookData = [];
+                localStorage.removeItem('odhun_guestbook');
+                renderEntries();
+            }
+        }
+
+        // LocalStorage Kaydetme Yardımcısı
+        function saveToLocal() {
+            localStorage.setItem('odhun_guestbook', JSON.stringify(guestbookData));
+        }
+
+        // HTML Enjeksiyonunu Önleme (Güvenlik)
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
     </script>
 </body>
