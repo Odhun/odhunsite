@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ODHUN | Portal</title>
+    <title>ODHUN | Projeler </title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
     <style>
@@ -30,61 +30,83 @@
             position: relative;
         }
 
-        /* --- EFEKTLER --- */
+        /* --- ARKA PLAN EFEKTLERİ --- */
         .embers {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; pointer-events: none; overflow: hidden;
-            background: radial-gradient(circle at bottom, #1a0000 0%, #000000 70%);
+            background: radial-gradient(circle at bottom, #1a0000 0%, #020202 80%);
         }
         .ember {
-            position: absolute; bottom: -10px;
-            width: 4px; height: 4px;
-            background: var(--fire-orange);
+            position: absolute; bottom: -20px;
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--fire-orange);
-            animation: floatUp linear infinite;
             opacity: 0;
+            animation: floatUp linear infinite;
+            filter: blur(1px);
         }
         @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-110vh) scale(0); opacity: 0; }
         }
 
-        /* --- HEADER --- */
-        header { margin-top: 60px; text-align: center; z-index: 10; padding: 0 20px; }
-        h1 {
-            font-family: 'Cinzel', serif; font-size: 4rem; font-weight: 900;
-            letter-spacing: 8px; color: #fff; text-transform: uppercase;
-            text-shadow: 0 0 20px var(--blood-red), 0 0 40px var(--fire-orange);
+        /* --- HEADER VE BAŞLIK EFEKTLERİ --- */
+        header { 
+            margin-top: 50px; 
+            text-align: center; 
+            z-index: 10; 
+            padding: 0 20px;
+            animation: fadeIn 1.5s ease-out;
         }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 {
+            font-family: 'Cinzel', serif; font-size: 4.5rem; font-weight: 900;
+            letter-spacing: 10px; color: #fff; text-transform: uppercase;
+            text-shadow: 0 0 10px var(--blood-red);
+            animation: textGlow 3s infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px var(--blood-red), 0 0 20px var(--fire-orange); }
+            100% { text-shadow: 0 0 20px var(--blood-red), 0 0 40px var(--ember-yellow), 0 0 60px var(--fire-orange); }
+        }
+
         h1::after {
-            content: ''; display: block; width: 60%; height: 2px;
+            content: ''; display: block; width: 150px; height: 3px;
             background: linear-gradient(90deg, transparent, var(--fire-orange), transparent);
-            margin: 10px auto 0;
+            margin: 15px auto 0;
+            box-shadow: 0 0 10px var(--fire-orange);
         }
         .subtitle {
-            margin-top: 10px; font-size: 1.1rem; color: #aaa; letter-spacing: 3px; 
+            margin-top: 15px; font-size: 1.2rem; color: #aaa; letter-spacing: 4px; 
             font-weight: 300; text-transform: uppercase; opacity: 0.8;
         }
 
-        /* --- GRID YAPISI --- */
-        .portal-grid {
-            display: grid;
-            /* Kart boyutlarını ekrana göre ayarlar */
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            max-width: 1400px;
-            width: 95%;
-            margin: 50px auto;
+        /* --- GRID YAPISI (DÜZELTİLDİ) --- */
+        .portal-container {
+            width: 100%;
+            max-width: 1400px; /* İçerik genişliği */
+            padding: 40px 20px 80px 20px; /* Kenar boşlukları */
             z-index: 10;
-            padding-bottom: 50px;
+            display: flex;
+            justify-content: center;
         }
 
+        .portal-grid {
+            display: grid;
+            /* Auto-fit: Sığabildiği kadar sığdırır, sığmazsa alta atar */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 25px;
+            width: 100%;
+        }
+
+        /* --- KART TASARIMI --- */
         .portal-card {
-            background: rgba(20, 20, 20, 0.6);
+            background: rgba(20, 20, 20, 0.5);
             border: 1px solid #333;
-            border-radius: 8px;
-            height: 220px; /* Daha kompakt kartlar */
+            border-radius: 12px;
+            height: 200px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -93,59 +115,64 @@
             color: var(--text-main);
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
+        /* Kart Parlama Efekti */
         .portal-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, transparent 40%, rgba(255, 69, 0, 0.1) 100%);
-            opacity: 0; transition: 0.4s;
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255, 69, 0, 0.15) 0%, transparent 60%);
+            opacity: 0; transform: scale(0.5); transition: 0.5s;
         }
 
         .portal-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
             border-color: var(--fire-orange);
-            box-shadow: 0 5px 20px rgba(255, 69, 0, 0.15);
-            background: rgba(30, 30, 30, 0.9);
+            box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3), inset 0 0 10px rgba(255, 69, 0, 0.1);
+            background: rgba(30, 30, 30, 0.8);
         }
-        .portal-card:hover::before { opacity: 1; }
+        .portal-card:hover::before { opacity: 1; transform: scale(1); }
 
         .card-icon {
-            font-size: 2.5rem; margin-bottom: 15px;
-            color: #666; transition: 0.4s;
+            font-size: 2.8rem; margin-bottom: 15px;
+            color: #777; transition: 0.4s;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
         }
         .portal-card:hover .card-icon {
             color: var(--ember-yellow);
-            transform: scale(1.2);
-            text-shadow: 0 0 15px var(--fire-orange);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px var(--fire-orange));
         }
 
         .card-title {
-            font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 700;
+            font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 1px; z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
         
         .card-desc {
-            font-size: 0.8rem; color: #888; margin-top: 5px; text-align: center;
-            padding: 0 15px; font-weight: 300; z-index: 2; opacity: 0.7;
+            font-size: 0.75rem; color: #999; margin-top: 8px; text-align: center;
+            padding: 0 10px; font-weight: 300; z-index: 2; opacity: 0;
+            transform: translateY(10px); transition: 0.3s;
         }
-        .portal-card:hover .card-desc { opacity: 1; color: #bbb; }
+        .portal-card:hover .card-desc { opacity: 1; transform: translateY(0); color: #ddd; }
 
         /* --- FOOTER --- */
         footer {
-            margin-top: auto; padding: 20px; color: #444; font-size: 0.8rem; 
+            margin-top: auto; padding: 25px; color: #555; font-size: 0.85rem; 
             text-align: center; border-top: 1px solid #222; width: 100%; z-index: 10;
-            background: #000;
+            background: #020202; letter-spacing: 1px;
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            .portal-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .portal-card { height: 180px; }
-            .card-icon { font-size: 2rem; }
-            .card-title { font-size: 1rem; }
-            .card-desc { display: none; } /* Mobilde yer kazanmak için açıklamayı gizledim */
+            h1 { font-size: 2.8rem; letter-spacing: 5px; }
+            .portal-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .portal-card { height: 160px; }
+            .card-icon { font-size: 2rem; margin-bottom: 10px; }
+            .card-title { font-size: 0.9rem; }
+            .card-desc { display: none; }
         }
     </style>
 </head>
@@ -155,133 +182,149 @@
 
     <header>
         <h1>ODHUN</h1>
-        <div class="subtitle">Dijital Cephanelik</div>
+        <div class="subtitle">Dijital Portal</div>
     </header>
 
-    <div class="portal-grid">
-        
-        <a href="hotwheels/" class="portal-card">
-            <i class="card-icon fas fa-car-side"></i>
-            <div class="card-title">Hot Wheels Koleksiyon</div>
-            <div class="card-desc">Koleksiyon Takip & Galeri</div>
-        </a>
+    <div class="portal-container">
+        <div class="portal-grid">
+            
+            <a href="hotwheels/" class="portal-card">
+                <i class="card-icon fas fa-car-side"></i>
+                <div class="card-title">Hot Wheels</div>
+                <div class="card-desc">Koleksiyon Takip Sistemi</div>
+            </a>
 
-        <a href="apps/" class="portal-card">
-            <i class="card-icon fas fa-rocket"></i>
-            <div class="card-title">Apps</div>
-            <div class="card-desc">Taşınabilir Uygulamalar</div>
-        </a>
+            <a href="apps/" class="portal-card">
+                <i class="card-icon fas fa-rocket"></i>
+                <div class="card-title">Apps</div>
+                <div class="card-desc">Taşınabilir Yazılımlar</div>
+            </a>
 
-        <a href="finans/" class="portal-card">
-            <i class="card-icon fas fa-coins"></i>
-            <div class="card-title">Finans</div>
-            <div class="card-desc">Borç & Alacak Takibi</div>
-        </a>
+            <a href="finans/" class="portal-card">
+                <i class="card-icon fas fa-coins"></i>
+                <div class="card-title">Finans</div>
+                <div class="card-desc">Borç & Alacak Yönetimi</div>
+            </a>
 
-        <a href="cv/" class="portal-card">
-            <i class="card-icon fas fa-id-card"></i>
-            <div class="card-title">CV</div>
-            <div class="card-desc">Özgeçmiş & Portfolyo</div>
-        </a>
+            <a href="cv/" class="portal-card">
+                <i class="card-icon fas fa-id-card"></i>
+                <div class="card-title">CV</div>
+                <div class="card-desc">Kişisel Portfolyo</div>
+            </a>
 
-        <a href="oyun/" class="portal-card">
-            <i class="card-icon fas fa-gamepad"></i>
-            <div class="card-title">Oyun</div>
-            <div class="card-desc">Tarayıcı Oyunları</div>
-        </a>
+            <a href="oyun/" class="portal-card">
+                <i class="card-icon fas fa-gamepad"></i>
+                <div class="card-title">Oyun</div>
+                <div class="card-desc">Web Tabanlı Oyunlar</div>
+            </a>
 
-        <a href="tv/" class="portal-card">
-            <i class="card-icon fas fa-tv"></i>
-            <div class="card-title">TV</div>
-            <div class="card-desc">Canlı Yayınlar</div>
-        </a>
+            <a href="tv/" class="portal-card">
+                <i class="card-icon fas fa-tv"></i>
+                <div class="card-title">TV</div>
+                <div class="card-desc">Canlı Yayın Akışları</div>
+            </a>
 
-        <a href="radyo/" class="portal-card">
-            <i class="card-icon fas fa-radio"></i>
-            <div class="card-title">Radyo</div>
-            <div class="card-desc">Online Radyo İstasyonu</div>
-        </a>
+            <a href="radyo/" class="portal-card">
+                <i class="card-icon fas fa-radio"></i>
+                <div class="card-title">Radyo</div>
+                <div class="card-desc">Online Müzik İstasyonu</div>
+            </a>
 
-        <a href="yemek/" class="portal-card">
-            <i class="card-icon fas fa-utensils"></i>
-            <div class="card-title">Yemek</div>
-            <div class="card-desc">Tarifler & Mutfak</div>
-        </a>
+            <a href="yemek/" class="portal-card">
+                <i class="card-icon fas fa-utensils"></i>
+                <div class="card-title">Yemek</div>
+                <div class="card-desc">Lezzetli Tarifler</div>
+            </a>
 
-        <a href="tatli/" class="portal-card">
-            <i class="card-icon fas fa-cookie-bite"></i>
-            <div class="card-title">Tatlı</div>
-            <div class="card-desc">Tatlı Tarifleri</div>
-        </a>
+            <a href="tatli/" class="portal-card">
+                <i class="card-icon fas fa-cookie-bite"></i>
+                <div class="card-title">Tatlı</div>
+                <div class="card-desc">Tatlı & Pasta Tarifleri</div>
+            </a>
 
-        <a href="tools/" class="portal-card">
-            <i class="card-icon fas fa-toolbox"></i>
-            <div class="card-title">Tools</div>
-            <div class="card-desc">Faydalı Araçlar</div>
-        </a>
+            <a href="tuval/" class="portal-card">
+                <i class="card-icon fas fa-palette"></i>
+                <div class="card-title">Tuval</div>
+                <div class="card-desc">Serbest Çizim Alanı</div>
+            </a>
 
-        <a href="sifre/" class="portal-card">
-            <i class="card-icon fas fa-key"></i>
-            <div class="card-title">Şifre</div>
-            <div class="card-desc">Güvenli Şifre Üretici</div>
-        </a>
+            <a href="zen/" class="portal-card">
+                <i class="card-icon fas fa-yin-yang"></i>
+                <div class="card-title">Zen</div>
+                <div class="card-desc">Rahatlama Modu</div>
+            </a>
 
-        <a href="speedtest/" class="portal-card">
-            <i class="card-icon fas fa-gauge-high"></i>
-            <div class="card-title">Hız Testi</div>
-            <div class="card-desc">İnternet Hız Kontrolü</div>
-        </a>
+            <a href="tools/" class="portal-card">
+                <i class="card-icon fas fa-toolbox"></i>
+                <div class="card-title">Tools</div>
+                <div class="card-desc">Faydalı Web Araçları</div>
+            </a>
 
-        <a href="screentest/" class="portal-card">
-            <i class="card-icon fas fa-desktop"></i>
-            <div class="card-title">Ekran Testi</div>
-            <div class="card-desc">Ölü Piksel Testi</div>
-        </a>
+            <a href="sifre/" class="portal-card">
+                <i class="card-icon fas fa-key"></i>
+                <div class="card-title">Şifre</div>
+                <div class="card-desc">Güvenli Şifre Üretici</div>
+            </a>
 
-        <a href="takvim/" class="portal-card">
-            <i class="card-icon fas fa-calendar-alt"></i>
-            <div class="card-title">Takvim</div>
-            <div class="card-desc">Ajanda & Planlayıcı</div>
-        </a>
+            <a href="takvim/" class="portal-card">
+                <i class="card-icon fas fa-calendar-alt"></i>
+                <div class="card-title">Takvim</div>
+                <div class="card-desc">Dijital Ajanda</div>
+            </a>
 
-        <a href="tuval/" class="portal-card">
-            <i class="card-icon fas fa-palette"></i>
-            <div class="card-title">Tuval</div>
-            <div class="card-desc">Çizim Alanı</div>
-        </a>
+            <a href="speedtest/" class="portal-card">
+                <i class="card-icon fas fa-gauge-high"></i>
+                <div class="card-title">SpeedTest</div>
+                <div class="card-desc">İnternet Hız Testi</div>
+            </a>
 
-        <a href="zen/" class="portal-card">
-            <i class="card-icon fas fa-yin-yang"></i>
-            <div class="card-title">Zen</div>
-            <div class="card-desc">Odaklanma & Rahatlama</div>
-        </a>
+            <a href="screentest/" class="portal-card">
+                <i class="card-icon fas fa-desktop"></i>
+                <div class="card-title">ScreenTest</div>
+                <div class="card-desc">Ekran & Piksel Testi</div>
+            </a>
 
+        </div>
     </div>
 
     <footer>
-        <p>ODHUN.COM © 2025 | Ateş ve Kan ile Kodlandı.</p>
+        <p>ODHUN.COM © 2025 | Tüm Projeler Tek Çatı Altında.</p>
     </footer>
 
     <script>
-        // Arka Plan Kıvılcım Efekti
+        // --- GELİŞMİŞ KIVILCIM EFEKTİ ---
         const embersContainer = document.getElementById('embers');
         
+        // Renk paleti (Kırmızı, Turuncu, Altın Sarısı)
+        const emberColors = ['#ff4500', '#ffae00', '#8a0303', '#ff6a00'];
+
         function createEmber() {
             const ember = document.createElement('div');
             ember.classList.add('ember');
-            const startX = Math.random() * 100;
-            const duration = Math.random() * 3 + 2; 
-            const size = Math.random() * 4 + 1; 
+            
+            // Rastgele özellikler
+            const startX = Math.random() * 100; // Ekranın neresinden çıkacak
+            const duration = Math.random() * 3 + 3; // 3 ile 6 saniye arası sürsün
+            const size = Math.random() * 5 + 2; // 2px ile 7px arası boyut
+            const color = emberColors[Math.floor(Math.random() * emberColors.length)];
             
             ember.style.left = startX + '%';
             ember.style.width = size + 'px';
             ember.style.height = size + 'px';
+            ember.style.backgroundColor = color;
+            ember.style.boxShadow = `0 0 ${size * 2}px ${color}`; // Parlama efekti boyuta göre
             ember.style.animationDuration = duration + 's';
             
             embersContainer.appendChild(ember);
-            setTimeout(() => { ember.remove(); }, duration * 1000);
+            
+            // Animasyon bitince sil (DOM şişmesin)
+            setTimeout(() => {
+                ember.remove();
+            }, duration * 1000);
         }
-        setInterval(createEmber, 100);
+
+        // Daha sık kıvılcım üret (Efekt yoğunluğu)
+        setInterval(createEmber, 70); 
     </script>
 
 </body>
