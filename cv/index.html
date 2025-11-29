@@ -25,7 +25,7 @@
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
     }
 
-    /* --- SOL EDİTÖR (SCROLL DÜZELTİLDİ) --- */
+    /* --- SOL EDİTÖR --- */
     .editor {
         width: var(--sidebar-width); background: #fff; border-right: 1px solid #ddd;
         display: flex; flex-direction: column; height: 100%; z-index: 20;
@@ -35,19 +35,18 @@
     .editor-header {
         padding: 20px; border-bottom: 1px solid #eee; background: #fff;
         display: flex; justify-content: space-between; align-items: center;
-        flex-shrink: 0; /* Header sıkışmasın */
+        flex-shrink: 0; 
     }
     .brand { font-size: 1.4rem; font-weight: 900; letter-spacing: -1px; color: #333; }
     .brand span { color: var(--primary); }
 
-    /* SCROLL ALANI */
     .editor-scroll { 
-        flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; /* Alt boşluk */
+        flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; 
     }
     .editor-scroll::-webkit-scrollbar { width: 6px; }
     .editor-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 
-    /* Form Grupları */
+    /* Form Stilleri */
     .section-head {
         font-size: 0.85rem; font-weight: 800; color: var(--primary); text-transform: uppercase;
         margin: 25px 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid #f0f0f0;
@@ -64,7 +63,7 @@
     input:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1); }
     textarea { resize: vertical; min-height: 80px; }
 
-    /* Dinamik Liste Öğesi */
+    /* Dinamik Liste */
     .dynamic-item {
         background: #f8f9fa; border: 1px solid #eee; border-left: 3px solid var(--primary);
         padding: 15px; border-radius: 6px; margin-bottom: 10px; position: relative;
@@ -84,7 +83,7 @@
     }
     .btn-add:hover { background: #e0e4e8; color: #333; border-color: #999; }
 
-    /* Ayarlar Paneli */
+    /* Ayarlar */
     .config-box {
         background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 15px;
         margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
@@ -116,70 +115,58 @@
     .btn-print:hover { filter: brightness(1.1); }
     .btn-reset { background: #fff; border: 1px solid #ddd; color: #666; padding: 12px; border-radius: 6px; cursor: pointer; }
 
-    /* --- SAĞ PANEL (ÖNİZLEME) --- */
+    /* --- SAĞ PANEL: GERÇEK A4 SİMÜLASYONU --- */
     .preview-area {
-        flex: 1; padding: 40px; overflow-y: auto; display: flex; justify-content: center;
-        background: #525659; /* PDF Viewer Grisi */
+        flex: 1; 
+        background: #525659; /* Koyu Gri Arka Plan */
+        padding: 40px; 
+        overflow-y: auto; 
+        display: flex; 
+        justify-content: center; 
+        align-items: flex-start; /* Üstten başla */
     }
 
-    /* A4 KAĞIT STANDARDI */
+    /* A4 KAĞIT STANDARDI (Birebir Boyutlar) */
     .a4-page {
-        width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.3);
-        position: relative; color: #333; transform-origin: top center;
+        width: 210mm; 
+        min-height: 297mm; 
+        background: #fff; 
+        box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Derin gölge */
+        position: relative; 
+        color: #333; 
+        margin-bottom: 40px; /* Alt boşluk */
     }
 
-    /* --- TEMA STİLLERİ (DİNAMİK) --- */
+    /* --- TEMA STİLLERİ --- */
     
-    /* 1. MODERN TEMA (Sol Renkli Sütun) */
-    .page[data-theme="modern"] {
-        display: grid; grid-template-columns: 32% 68%; padding: 0;
-    }
-    .page[data-theme="modern"] .col-left {
-        background: var(--primary); color: #fff; padding: 30px 25px; height: 100%; min-height: 297mm;
-    }
+    /* 1. MODERN TEMA */
+    .page[data-theme="modern"] { display: grid; grid-template-columns: 32% 68%; padding: 0; }
+    .page[data-theme="modern"] .col-left { background: var(--primary); color: #fff; padding: 30px 25px; height: 100%; min-height: 297mm; }
     .page[data-theme="modern"] .col-right { padding: 35px 30px; }
-    
     .page[data-theme="modern"] h1 { font-size: 2rem; font-weight: 900; line-height: 1.1; margin: 0 0 5px 0; text-transform: uppercase; }
     .page[data-theme="modern"] .job-title { font-size: 1rem; opacity: 0.9; font-weight: 500; margin-bottom: 30px; }
-    
-    .page[data-theme="modern"] .section-head {
-        font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-        border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; margin: 25px 0 15px; color: #fff;
-    }
-    .page[data-theme="modern"] .col-right .section-head {
-        color: var(--primary); border-bottom-color: #eee;
-    }
-    
+    .page[data-theme="modern"] .section-head { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; margin: 25px 0 15px; color: #fff; }
+    .page[data-theme="modern"] .col-right .section-head { color: var(--primary); border-bottom-color: #eee; }
     .page[data-theme="modern"] .contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.85rem; }
     .page[data-theme="modern"] .contact-item i { width: 16px; text-align: center; opacity: 0.8; }
     
-    /* 2. KLASİK TEMA (Üstten Aşağı) */
+    /* 2. KLASİK TEMA */
     .page[data-theme="classic"] { padding: 40px 50px; font-family: 'Merriweather', serif; }
     .page[data-theme="classic"] header { text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 20px; margin-bottom: 30px; }
     .page[data-theme="classic"] h1 { font-size: 2.4rem; color: #000; margin-bottom: 5px; }
     .page[data-theme="classic"] .job-title { font-size: 1.1rem; color: #666; font-style: italic; }
     .page[data-theme="classic"] .contact-info { justify-content: center; margin-top: 10px; gap: 20px; }
-    .page[data-theme="classic"] .section-head { 
-        font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid #000; 
-        margin: 25px 0 15px; padding-bottom: 3px; text-transform: uppercase;
-    }
+    .page[data-theme="classic"] .section-head { font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid #000; margin: 25px 0 15px; padding-bottom: 3px; text-transform: uppercase; }
 
-    /* 3. YARATICI TEMA (Renkli Header) */
+    /* 3. YARATICI TEMA */
     .page[data-theme="creative"] { padding: 0; font-family: 'Inter', sans-serif; }
-    .page[data-theme="creative"] .header-bg {
-        background: var(--primary); color: #fff; padding: 40px 50px;
-        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-    }
+    .page[data-theme="creative"] .header-bg { background: var(--primary); color: #fff; padding: 40px 50px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
     .page[data-theme="creative"] h1 { font-size: 2.8rem; font-family: 'Playfair Display', serif; margin: 0; }
     .page[data-theme="creative"] .job-title { opacity: 0.9; font-size: 1.2rem; letter-spacing: 1px; }
     .page[data-theme="creative"] .content-pad { padding: 20px 50px; }
-    .page[data-theme="creative"] .section-head {
-        color: var(--primary); font-weight: 900; font-size: 1.1rem; letter-spacing: 1px;
-        border-left: 4px solid var(--primary); padding-left: 10px; margin: 30px 0 15px;
-        background: linear-gradient(90deg, #f3f4f6 0%, #fff 100%);
-    }
+    .page[data-theme="creative"] .section-head { color: var(--primary); font-weight: 900; font-size: 1.1rem; letter-spacing: 1px; border-left: 4px solid var(--primary); padding-left: 10px; margin: 30px 0 15px; background: linear-gradient(90deg, #f3f4f6 0%, #fff 100%); }
 
-    /* 4. MINIMALIST TEMA (Sade) */
+    /* 4. MINIMALIST TEMA */
     .page[data-theme="minimal"] { padding: 40px 50px; font-family: 'Inter', sans-serif; }
     .page[data-theme="minimal"] header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
     .page[data-theme="minimal"] h1 { font-size: 3rem; font-weight: 800; margin: 0; line-height: 0.8; color: #000; }
@@ -187,29 +174,27 @@
     .page[data-theme="minimal"] .contact-info { flex-direction: column; align-items: flex-end; gap: 2px; font-size: 0.85rem; }
     .page[data-theme="minimal"] .section-head { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #888; margin: 30px 0 15px; }
 
-    /* ORTAK İÇERİK STİLLERİ */
+    /* ORTAK İÇERİK */
     .item-row { margin-bottom: 15px; }
     .item-head { display: flex; justify-content: space-between; align-items: baseline; }
     .item-title { font-weight: 700; font-size: 1rem; color: #000; }
     .item-date { font-size: 0.85rem; color: #666; font-weight: 500; }
     .item-sub { font-weight: 500; font-size: 0.9rem; color: var(--primary); margin-bottom: 4px; }
     .item-desc { font-size: 0.9rem; line-height: 1.5; color: #444; white-space: pre-line; }
-    
     .contact-info { display: flex; gap: 15px; flex-wrap: wrap; font-size: 0.9rem; }
     .contact-item { display: flex; align-items: center; gap: 5px; }
-    
     .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .skill-tag { background: #f1f5f9; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; color: #334155; }
 
-    /* Yazıcı Ayarları */
+    /* YAZICI AYARLARI */
     @media print {
         body { background: #fff; height: auto; overflow: visible; }
-        .editor, .preview { display: none; }
+        .editor, .preview-area { display: none; } 
         .page { width: 100%; height: auto; box-shadow: none; margin: 0; padding: 0; print-color-adjust: exact; }
-        @page { margin: 0; }
+        @page { margin: 0; size: auto; }
     }
-
-    /* Mobil */
+    
+    /* MOBİL */
     @media (max-width: 1000px) {
         body { flex-direction: column; overflow: auto; }
         .editor { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #ddd; }
@@ -265,7 +250,7 @@
             <div id="eduInputs"></div>
 
             <div class="section-head">Yetenekler</div>
-            <div class="form-group"><textarea id="inpSkills" oninput="render()" placeholder="HTML, CSS, Proje Yönetimi, İngilizce..."></textarea></div>
+            <div class="form-group"><textarea id="inpSkills" oninput="render()" placeholder="HTML, CSS, Proje Yönetimi, İngilizce... (Virgülle ayırın)"></textarea></div>
 
         </div>
 
@@ -276,7 +261,7 @@
     </div>
 
     <div class="preview-area">
-        <div id="cvPage" class="page" data-theme="modern">
+        <div id="cvPage" class="a4-page" data-theme="modern">
             </div>
     </div>
 
