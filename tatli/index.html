@@ -36,11 +36,15 @@
         .food-card:hover { transform: scale(1.05); }
 
         #foodName {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #c33764;
             line-height: 1.2;
             margin: 0;
+            min-height: 2.4em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .hint {
             font-size: 0.8rem;
@@ -79,31 +83,85 @@
     </div>
 
     <script>
-        // Tatlı Listesi
+        // 150+ Popüler Tatlı Listesi (Şerbetli, Sütlü, Pasta, Kek, Kurabiye)
         const desserts = [
-            "Sütlaç", "Baklava", "Künefe", "Magnolia", "Trileçe", 
-            "Mozaik Pasta", "Revani", "Şekerpare", "Kazandibi", "Waffle",
-            "Brownie", "Islak Kek", "Profiterol", "Supangle", "Aşure",
-            "Kemalpaşa Tatlısı", "Kalburabastı", "Elmalı Turta", "Cheesecake", "Tiramisu",
-            "İrmik Helvası", "Un Helvası", "Kabak Tatlısı", "Ayva Tatlısı", "Pankek",
-            "Sufle", "Muhallebi", "Kadayıf", "Tulumba", "Lokma"
+            // Şerbetli Tatlılar
+            "Baklava", "Künefe", "Revani", "Şekerpare", "Tulumba", "Lokma", "Kadayıf", 
+            "Kalburabastı", "Kemalpaşa Tatlısı", "Hira Tatlısı", "Sambali", "Ekmek Kadayıfı", 
+            "Halka Tatlısı", "Nevzine", "Vezir Parmağı", "Bülbül Yuvası", "Sütlü Nuriye", 
+            "Şöbiyet", "Fıstıklı Sarma", "Dilber Dudağı", "Hanım Göbeği", "Peynir Tatlısı",
+            "İrmik Helvası", "Un Helvası", "Höşmerim", "Trileçe", "Kıbrıs Tatlısı", "Haşhaşlı Revani",
+
+            // Sütlü Tatlılar
+            "Sütlaç", "Fırın Sütlaç", "Kazandibi", "Tavuk Göğsü", "Muhallebi", "Keşkül", 
+            "Güllaç", "Magnolia", "Supangle", "Profiterol", "Ekler", "Saray Muhallebisi", 
+            "İncir Uyutması", "Sakızlı Muhallebi", "Karamelli Trileçe", "Sütlü İrmik Tatlısı", 
+            "Kedi Dili Pasta", "Muhallebili Kadayıf", "Panna Cotta", "Krem Karamel", "Zerde",
+
+            // Pastalar & Kekler
+            "Mozaik Pasta", "Islak Kek", "Brownie", "Cheesecake", "Tiramisu", "Köstebek Pasta", 
+            "Ağlayan Kek", "Alman Pastası", "Rulo Pasta", "Kırmızı Kadife Pasta (Red Velvet)", 
+            "Havuçlu Kek", "Limonlu Kek", "Muzlu Rulo Pasta", "Çikolatalı Sufle", "Volkan Kek", 
+            "San Sebastian Cheesecake", "Bisküvili Pasta", "Piramit Pasta", "Dankek", "Muffin",
+            "Zebra Kek", "Sade Kek", "Portakallı Kek", "Çikolata Soslu Kek", "Malaga Pasta",
+
+            // Kurabiyeler & Atıştırmalıklar
+            "Elmalı Turta", "Elmalı Kurabiye", "Un Kurabiyesi", "Tırtıl Kurabiye", "Perişan Kurabiye", 
+            "Çatlak Kurabiye", "Coco Kurabiye", "Mantarkaya Kurabiye", "Kavala Kurabiyesi", 
+            "Tahinli Kurabiye", "Tuzlu Kurabiye", "Brownie Kurabiye", "Damla Çikolatalı Kurabiye", 
+            "Pankek", "Waffle", "Krep", "Lokum", "Cezerye", "Pişmaniye",
+
+            // Diğer & Geleneksel
+            "Aşure", "Kabak Tatlısı", "Ayva Tatlısı", "İncir Tatlısı", "Armut Tatlısı", 
+            "Sufle", "Fıstıklı Katmer", "Çikolatalı Fondü", "Dondurmalı İrmik", "Dondurma", 
+            "Parfe", "Kup", "Meyve Salatası", "Çilekli Tart", "Limonlu Tart", "Laz Böreği", 
+            "Kerebiç", "Mamul", "Tahinli Piyaz (Antalya Usulü)", "Tahin Pekmez",
+            "Bici Bici", "Kar Helvası", "Hayrabolu Tatlısı", "Baba Tatlısı", "Sultan Sarması"
         ];
 
         let currentFood = "";
+        
+        // AKILLI ALGORİTMA: Son gösterilenleri hafızada tutar
+        let history = []; 
+        const maxHistorySize = Math.floor(desserts.length * 0.4); // Listenin %40'ı kadarını hatırla
 
         function pickRandomFood() {
-            const randomIndex = Math.floor(Math.random() * desserts.length);
-            currentFood = desserts[randomIndex];
+            let randomIndex;
+            let foodCandidate;
+            let attempts = 0;
+
+            // Döngü: Seçilen tatlı geçmişte varsa yeniden seç
+            do {
+                randomIndex = Math.floor(Math.random() * desserts.length);
+                foodCandidate = desserts[randomIndex];
+                attempts++;
+                if (attempts > 100) break; // Sonsuz döngü koruması
+            } while (history.includes(foodCandidate));
+
+            // Yeni tatlıyı belirle
+            currentFood = foodCandidate;
+            
+            // Geçmişe ekle
+            history.push(currentFood);
+            
+            // Geçmiş dolduysa en eskiyi sil
+            if (history.length > maxHistorySize) {
+                history.shift();
+            }
+
+            // Ekrana yaz
             document.getElementById("foodName").innerText = currentFood;
         }
 
         function goToRecipe() {
             if(currentFood) {
+                // Nefis Yemek Tarifleri arama linki
                 const url = `https://www.nefisyemektarifleri.com/ara/?s=${encodeURIComponent(currentFood)}`;
                 window.open(url, '_blank');
             }
         }
 
+        // Sayfa açılınca çalıştır
         window.onload = pickRandomFood;
     </script>
 
