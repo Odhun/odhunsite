@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Wheels | Koleksiyon Takip</title>
+<title>Odhun Hot Wheels | Koleksiyon Takip</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%230057b8%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2250%22 fill=%22%23ffc107%22>H</text></svg>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -78,41 +78,50 @@ header {
 
 /* LISTE */
 .car-list {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 15px; padding: 0 20px 80px; max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Kartlar biraz daha genişledi */
+    gap: 20px; padding: 0 20px 80px; max-width: 1200px; margin: 0 auto; width: 100%;
 }
 .car-card {
-    background: var(--card-bg); border-radius: 10px; overflow: hidden;
+    background: var(--card-bg); border-radius: 12px; overflow: hidden;
     position: relative; cursor: pointer; transition: 0.2s; border: 2px solid transparent;
+    display: flex; flex-direction: column;
 }
-.car-card:hover { transform: translateY(-3px); z-index: 5; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.car-card:hover { transform: translateY(-5px); z-index: 5; box-shadow: 0 8px 20px rgba(0,0,0,0.5); border-color: #444;}
 .car-card.owned { border-color: var(--hw-blue); background: #0d1b2a; }
 .car-card.owned .car-img { opacity: 1; filter: none; }
-.car-card:not(.owned) .car-img { opacity: 0.6; filter: grayscale(100%); }
+.car-card:not(.owned) .car-img { opacity: 0.8; filter: grayscale(80%); }
+.car-card:not(.owned):hover .car-img { opacity: 1; filter: grayscale(0%); }
 
 .car-img-box {
-    width: 100%; aspect-ratio: 16/9; background: #fff; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    width: 100%; aspect-ratio: 16/9; background: #fff; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
 }
-.car-img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s; }
-
-.google-search-hint {
-    position: absolute; bottom: 5px; right: 5px;
-    background: rgba(0,0,0,0.8); color: #fff; text-decoration: none;
-    font-size: 0.65rem; padding: 4px 8px; border-radius: 4px;
-    display: none; z-index: 10; border: 1px solid #444;
+.car-img { 
+    width: 100%; height: 100%; object-fit: contain; transition: 0.3s; 
+    background-color: #ddd; /* Resim yüklenirken gri arka plan */
 }
-.car-card:hover .google-search-hint { display: block; }
-.google-search-hint:hover { background: var(--hw-blue); border-color: var(--hw-blue); }
 
-.car-details { padding: 10px; }
-.car-num { font-size: 0.75rem; font-weight: 900; color: var(--hw-orange); display: flex; justify-content: space-between; }
-.car-title { font-size: 0.9rem; font-weight: 700; margin: 5px 0; line-height: 1.2; height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.car-series { font-size: 0.7rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.placeholder-text {
+    position: absolute; color: #555; font-size: 0.7rem; font-weight: bold; text-align: center;
+    pointer-events: none; z-index: 0;
+}
+
+.search-hint {
+    position: absolute; bottom: 5px; right: 5px; z-index: 10;
+    background: rgba(0,0,0,0.7); color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.6rem;
+    text-decoration: none; display: none;
+}
+.car-card:hover .search-hint { display: block; }
+
+.car-details { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.car-num { font-size: 0.8rem; font-weight: 900; color: var(--hw-orange); display: flex; justify-content: space-between; margin-bottom: 5px;}
+.car-title { font-size: 1rem; font-weight: 700; margin: 0 0 5px 0; line-height: 1.2; }
+.car-series { font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .status-badge {
-    font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: #333; color: #aaa;
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background: #333; color: #aaa; font-weight: normal;
 }
-.car-card.owned .status-badge { background: var(--hw-blue); color: #fff; }
+.car-card.owned .status-badge { background: var(--hw-blue); color: #fff; font-weight: bold;}
 
 footer {
     text-align: center; padding: 20px; font-size: 0.75rem; color: #444;
@@ -123,7 +132,7 @@ footer {
     .car-list { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px 80px; }
     .brand { font-size: 1.6rem; }
     .sub-brand { font-size: 0.8rem; }
-    .google-search-hint { display: block; opacity: 0.8; padding: 2px 5px; font-size: 0.6rem; }
+    .car-title { font-size: 0.85rem; }
 }
 </style>
 </head>
@@ -144,7 +153,7 @@ footer {
 
 <div class="control-row">
     <div class="search-box">
-        <input type="text" id="search" placeholder="Model veya Numara Ara..." onkeyup="renderCars()">
+        <input type="text" id="search" placeholder="Araç ara..." onkeyup="renderCars()">
         <i class="fas fa-search"></i>
     </div>
     <div style="display:flex; gap:5px; flex:1;">
@@ -163,16 +172,18 @@ footer {
 <div class="car-list" id="list"></div>
 
 <footer>
-Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi v1.1
+Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi v1.2
 </footer>
 
 <script>
-// --- MERKEZİ VERİ TABANI (v1.1) ---
+// --- VERİ TABANI ---
+// Not: 'i' alanına resim linki yapıştırıldığında otomatik görünür.
+// Örnek olarak bazılarına gerçek linkler ekledim.
 const db = {
 "2023": [
     {n:"1", t:"Volvo P1800 Gasser", s:"Dream Garage", i:"https://static.wikia.nocookie.net/hotwheels/images/0/08/Volvo_P1800_Gasser_%28%2723_Mainline%29.jpg"},
-    {n:"2", t:"'87 Ford Sierra Cosworth", s:"The 80s", i:""},
-    {n:"3", t:"Classic TV Series Batmobile", s:"Batman", i:""},
+    {n:"2", t:"'87 Ford Sierra Cosworth", s:"The 80s", i:"https://static.wikia.nocookie.net/hotwheels/images/a/ab/%2787_Ford_Sierra_Cosworth_%28%2723_Mainline%29.jpg"},
+    {n:"3", t:"Classic TV Series Batmobile", s:"Batman", i:"https://static.wikia.nocookie.net/hotwheels/images/2/29/Classic_TV_Series_Batmobile_%28%2723_Mainline%29.jpg"},
     {n:"4", t:"Ford Escort RS2000", s:"Retro Racers", i:""},
     {n:"5", t:"Dimachinni Veloce", s:"Retro Racers", i:""},
     {n:"6", t:"HW K.I.T.T. Concept", s:"Screen Time", i:""},
@@ -423,7 +434,7 @@ const db = {
 ],
 "2024": [
     {n:"1", t:"Mazda Autozam AZ-1", s:"Dream Garage", i:"https://static.wikia.nocookie.net/hotwheels/images/4/43/Mazda_Autozam_AZ-1_%28%2724_Mainline%29.jpg"},
-    {n:"2", t:"Batman Arkham Asylum Batmobile", s:"Batman", i:""},
+    {n:"2", t:"Batman Arkham Asylum Batmobile", s:"Batman", i:"https://static.wikia.nocookie.net/hotwheels/images/8/88/Batman_Arkham_Asylum_Batmobile_%28%2724_Mainline%29.jpg"},
     {n:"3", t:"Monster High Ghoul Mobile", s:"Screen Time", i:""},
     {n:"4", t:"Custom Otto", s:"Dream Garage", i:""},
     {n:"5", t:"'15 Dodge Charger SRT", s:"First Response", i:""},
@@ -674,256 +685,256 @@ const db = {
     {n:"250", t:"Ain't Fare", s:"Experimotors", i:""}
 ],
 "2025": [
-    {n:"1", t:"Kei Swap", s:"HW Art Cars"},
-    {n:"2", t:"Super Twin Mill", s:"HW Let's Race"},
-    {n:"3", t:"Morgan Super 3", s:"Factory Fresh"},
-    {n:"4", t:"Mazda MX-5 Miata", s:"HW Dream Garage"},
-    {n:"5", t:"Ford Mustang GTD", s:"Mustang 60th"},
-    {n:"6", t:"'66 Buick Riviera", s:"HW Modified"},
-    {n:"7", t:"Maserati Shamal", s:"HW Metro"},
-    {n:"8", t:"Tesla Cyberquad", s:"HW Dirt"},
-    {n:"9", t:"McLaren W1", s:"HW Race Day"},
-    {n:"10", t:"Optimus Prime", s:"HW Screen Time"},
-    {n:"11", t:"Honda Civic Si", s:"Factory Fresh"},
-    {n:"12", t:"Nissan Skyline GT-R", s:"J-Imports"},
-    {n:"13", t:"GMC Hummer EV", s:"HW Green Speed"},
-    {n:"14", t:"'87 Dodge D100", s:"HW Reverse Rake"},
-    {n:"15", t:"Porsche 911 Rallye", s:"HW Dirt"},
-    {n:"16", t:"Hiway Hauler 2", s:"HW Haulers"},
-    {n:"17", t:"Ford Performance Supervan 4", s:"HW Green Speed (TH)"},
-    {n:"18", t:"Bone Shaker", s:"HW Dream Garage"},
-    {n:"19", t:"Batmobile", s:"Batman"},
-    {n:"20", t:"Track Manga", s:"HW Art Cars"},
-    {n:"21", t:"Brickin' Delivery", s:"Brick Rides"},
-    {n:"22", t:"HW450F", s:"HW Moto"},
-    {n:"23", t:"Custom '68 Camaro", s:"HW Art Cars"},
-    {n:"24", t:"Punk Rod", s:"Rod Squad"},
-    {n:"25", t:"Deora II", s:"HW Legends"},
-    {n:"26", t:"Nissan Skyline 2000GT-R LBWK", s:"J-Imports"},
-    {n:"27", t:"Rally Speciale", s:"HW Dirt"},
-    {n:"28", t:"'90 Honda Civic EF", s:"70s vs 90s"},
-    {n:"29", t:"Porsche 911 GT3 RS", s:"Then and Now"},
-    {n:"30", t:"Road Bandit", s:"HW Metro"},
-    {n:"31", t:"X-34 Landspeeder", s:"Screen Time"},
-    {n:"32", t:"Tooligan", s:"Experimotors"},
-    {n:"33", t:"Dessert Drifter", s:"Sweet Rides"},
-    {n:"34", t:"Ford Mustang GTD", s:"Mustang 60th"},
-    {n:"35", t:"Drift'n Break", s:"HW Modified"},
-    {n:"36", t:"Audi RS e-tron GT", s:"HW Green Speed"},
-    {n:"37", t:"Crescendo", s:"X-Raycers"},
-    {n:"38", t:"Proton Saga", s:"Factory Fresh"},
-    {n:"39", t:"Ain't Fare", s:"HW Metro"},
-    {n:"40", t:"Corvette C6", s:"HW Roadsters"},
-    {n:"41", t:"Roadster Bite", s:"HW Roadsters"},
-    {n:"42", t:"Volkswagen T2 Pickup", s:"HW Hot Trucks"},
-    {n:"43", t:"'19 Ford Ranger Raptor", s:"HW Hot Trucks"},
-    {n:"44", t:"Nissan Skyline RS (KDR30)", s:"J-Imports"},
-    {n:"45", t:"Honda Civic Si", s:"J-Imports"},
-    {n:"46", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh"},
-    {n:"47", t:"'72 Stingray Convertible", s:"Factory Fresh"},
-    {n:"48", t:"Subaru BRZ", s:"J-Imports"},
-    {n:"49", t:"Honda CB750 Café", s:"HW Moto"},
-    {n:"50", t:"'66 Buick Riviera", s:"Modified"},
-    {n:"51", t:"El Segundo Coupe", s:"HW Turbo"},
-    {n:"52", t:"Knight Draggin'", s:"HW Celebration"},
-    {n:"53", t:"1978 Dodge Li'l Red Express Truck", s:"HW Celebration"},
-    {n:"54", t:"Batman Arkham Asylum Batmobile", s:"Batman"},
-    {n:"55", t:"Batmobile (Animated)", s:"Batman"},
-    {n:"56", t:"Terenator", s:"HW Rescue"},
-    {n:"57", t:"'07 Chevy Tahoe", s:"HW Rescue"},
-    {n:"58", t:"Maserati Shamal", s:"Metro"},
-    {n:"59", t:"Oracle Red Bull Racing", s:"Track Aces"},
-    {n:"60", t:"Delorean Time Machine", s:"Screen Time"},
-    {n:"61", t:"Mod Rod", s:"HW Art Cars"},
-    {n:"62", t:"Datsun 240Z", s:"J-Imports"},
-    {n:"63", t:"Monteracer", s:"X-Raycers"},
-    {n:"64", t:"Arrow Dynamic", s:"X-Raycers"},
-    {n:"65", t:"Surfin' School Bus", s:"HW Sports"},
-    {n:"66", t:"Hotweiler", s:"HW Mega Bite"},
-    {n:"67", t:"BMW 507", s:"HW Roadsters"},
-    {n:"68", t:"'57 Jeep FC", s:"HW Hot Trucks"},
-    {n:"69", t:"'15 Mazda MX-5 Miata", s:"J-Imports"},
-    {n:"70", t:"McLaren Solus GT", s:"HW Modified"},
-    {n:"71", t:"Corvette Grand Sport", s:"HW Roadsters"},
-    {n:"72", t:"Custom '72 Chevy LUV", s:"HW Hot Trucks"},
-    {n:"73", t:"Mighty K", s:"Compact Kings"},
-    {n:"74", t:"Porsche 911 GT3", s:"Race Day"},
-    {n:"75", t:"Jaguar MK1", s:"Race Day"},
-    {n:"76", t:"Chevy Silverado", s:"HW Art Cars"},
-    {n:"77", t:"Audi 90 quattro", s:"Factory Fresh"},
-    {n:"78", t:"Toon'd '83 Chevy Silverado", s:"Tooned"},
-    {n:"79", t:"Mazda 787B", s:"Race Day"},
-    {n:"80", t:"Volvo P1800 Gasser", s:"HW Gassers"},
-    {n:"81", t:"'91 Mazda MX-5 Miata", s:"J-Imports"},
-    {n:"82", t:"Tesla Cyberquad", s:"HW Dirt"},
-    {n:"83", t:"K.I.T.T.", s:"Screen Time"},
-    {n:"84", t:"Gotta Go", s:"HW Designed"},
-    {n:"85", t:"Street Weiner", s:"Fast Foodie"},
-    {n:"86", t:"Chevy Silverado EV RST", s:"HW EV"},
-    {n:"87", t:"'70 Plymouth Superbird", s:"Art Cars"},
-    {n:"88", t:"Fish'd & Chip'd", s:"Fast Foodie (TH)"},
-    {n:"89", t:"Fast-Bed Hauler", s:"HW Haulers"},
-    {n:"90", t:"HW450F", s:"HW Moto"},
-    {n:"91", t:"LB Super Silhouette Nissan Silvia", s:"HW Modified"},
-    {n:"92", t:"Dune It Up", s:"Track Aces"},
-    {n:"93", t:"Porsche 718 Cayman GT4", s:"Factory Fresh"},
-    {n:"94", t:"'99 Ford F-150 SVT Lightning", s:"Hot Trucks"},
-    {n:"95", t:"Pedal Driver", s:"Experimotors (TH)"},
-    {n:"96", t:"'21 Toyota GR Supra", s:"Then and Now"},
-    {n:"97", t:"Fiat 500D Modificado", s:"Compact Kings"},
-    {n:"98", t:"Mitsubishi 3000GT VR-4", s:"J-Imports"},
-    {n:"99", t:"Nissan Skyline GT-R (BNR32)", s:"J-Imports"},
-    {n:"100", t:"Lamborghini Countach LPI 800-4", s:"HW Exotics"},
-    {n:"103", t:"TV Series Batmobile", s:"Batman"},
-    {n:"104", t:"'86 Ford Thunderbird Pro Stock", s:"Drag Strip"},
-    {n:"105", t:"'24 Honda Civic Type-R", s:"J-Imports"},
-    {n:"106", t:"Mazda 323 GTR", s:"HW Rally"},
-    {n:"107", t:"Acura Integra GSR", s:"J-Imports"},
-    {n:"108", t:"Meyers Manx", s:"HW Dirt"},
-    {n:"109", t:"Power Rocket", s:"X-Raycers"},
-    {n:"110", t:"Rig Storm", s:"HW Graphics (TH)"},
-    {n:"111", t:"Pontiac Aztek Custom", s:"HW Modified"},
-    {n:"112", t:"Later Crater", s:"Reverse Rake"},
-    {n:"113", t:"Mercedes-Benz E 36 AMG", s:"Factory Fresh"},
-    {n:"114", t:"'67 Volkswagen Samba Bus", s:"HW Vans"},
-    {n:"115", t:"BMW M3", s:"The 80s"},
-    {n:"116", t:"Porsche 935", s:"Race Day"},
-    {n:"117", t:"Flippin Fast", s:"Experimotors"},
-    {n:"118", t:"Skull Shaker", s:"Experimotors"},
-    {n:"119", t:"Toyota Land Cruiser FJ43", s:"HW Hot Trucks"},
-    {n:"120", t:"Custom Kia EV6", s:"HW EV"},
-    {n:"121", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh"},
-    {n:"122", t:"'16 Bugatti Chiron", s:"HW Exotics"},
-    {n:"123", t:"'18 Honda Civic Type R", s:"Then and Now"},
-    {n:"124", t:"Futurismo", s:"Race Day"},
-    {n:"125", t:"Meyers Manx", s:"HW Dirt"},
-    {n:"126", t:"'08 Mercedes-Benz CLK 63 AMG", s:"Factory Fresh"},
-    {n:"127", t:"Maserati MC20", s:"HW Exotics"},
-    {n:"128", t:"'24 Toyota Tacoma TRD Pro", s:"HW Hot Trucks"},
-    {n:"129", t:"'98 Toyota Altezza", s:"J-Imports"},
-    {n:"130", t:"'17 Ford GT", s:"Exotics"},
-    {n:"131", t:"'80 Mercedes-Benz 500 SLC", s:"HW Rally"},
-    {n:"132", t:"'95 Lamborghini Diablo SV", s:"Exotics"},
-    {n:"133", t:"Mitsubishi Pajero Evolution", s:"Dirt"},
-    {n:"134", t:"'77 Pontiac Firebird T/A", s:"Muscle Mania"},
-    {n:"135", t:"'94 Nissan Primera", s:"J-Imports"},
-    {n:"136", t:"Ford GT LM", s:"Race Day"},
-    {n:"137", t:"Nissan Laurel 2000 SGX", s:"J-Imports"},
-    {n:"138", t:"'75 Ford Bronco", s:"HW Hot Trucks"},
-    {n:"139", t:"Lamborghini Temerario", s:"HW Exotics"},
-    {n:"140", t:"Ford RS200", s:"HW Rally"},
-    {n:"141", t:"'85 Honda City Turbo II", s:"J-Imports (TH)"},
-    {n:"142", t:"BMW M3 GTR", s:"Race Day"},
-    {n:"143", t:"Birthday Burner", s:"Celebration Racers (TH)"},
-    {n:"144", t:"Nissan Skyline GT-R (BCNR33)", s:"J-Imports"},
-    {n:"145", t:"'78 Dodge Li'l Red Express", s:"HW Hot Trucks"},
-    {n:"146", t:"Lamborghini Gallardo LP 570-4", s:"HW Exotics"},
-    {n:"147", t:"Toyota GR Yaris", s:"HW Rally"},
-    {n:"148", t:"Cone Shaker", s:"HW Metro"},
-    {n:"149", t:"Quick Bite", s:"Fast Foodie"},
-    {n:"150", t:"'89 Mercedes-Benz 560 SEC AMG", s:"HW Modified"},
-    {n:"151", t:"Rodger Dodger 2.0", s:"HW EV"},
-    {n:"154", t:"Porsche 911 Rallye", s:"Dirt"},
-    {n:"158", t:"Hoto Roto", s:"Rod Squad"},
-    {n:"159", t:"Ford GT", s:"Modified"},
-    {n:"163", t:"'95 Mazda RX-7 Drift", s:"70s vs 90s"},
-    {n:"166", t:"Disney Steamboat", s:"Screen Time"},
-    {n:"167", t:"Mattel Dream Mobile", s:"Celebration"},
-    {n:"169", t:"'67 Austin Mini Van", s:"Art Cars"},
-    {n:"174", t:"Peugeot 9X8 Hypercar", s:"Exotics"},
-    {n:"186", t:"'89 Mercedes-Benz 560 SEC AMG", s:"Turbo"},
-    {n:"187", t:"Porsche 911 Carrera Clip", s:"Experimotors"},
-    {n:"194", t:"Formula E Gen3", s:"Track Aces"},
-    {n:"195", t:"Alfa Romeo Giulia TI Super", s:"Compact Kings"},
-    {n:"196", t:"Mazda RX-3", s:"J-Imports"},
-    {n:"198", t:"Ferrari F40 Competizione", s:"Exotics"},
-    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit"},
-    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit"},
-    {n:"201", t:"Honda Civic Custom", s:"Reverse Rake"},
-    {n:"203", t:"Lil 'Roar'", s:"Safari Mode"},
-    {n:"204", t:"Terra-Tracktly", s:"Track Champs"},
-    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody"},
-    {n:"206", t:"Speed Drive", s:"Experimotors"},
-    {n:"207", t:"Ravenger S/T", s:"Muscle Mania"},
-    {n:"208", t:"'69 Dodge Coronet Super Bee", s:"Muscle Mania"},
-    {n:"209", t:"McLaren Speedtail", s:"Exotics"},
-    {n:"210", t:"Land Rover Defender 90", s:"Then and Now"},
-    {n:"211", t:"Custom '18 Ford Mustang GT", s:"Mustang 60th"},
-    {n:"212", t:"Honda S800 Racing", s:"Compact Kings"},
-    {n:"213", t:"Lotus Cortina", s:"Compact Kings"},
-    {n:"215", t:"Blitzspeeder", s:"Track Champs"},
-    {n:"216", t:"Quick Chat", s:"Experimotors"},
-    {n:"217", t:"King Kuda", s:"Muscle Mania"},
-    {n:"218", t:"Mod Mill", s:"Muscle Mania"},
-    {n:"224", t:"Honda VFR750R RC30", s:"Moto"},
-    {n:"227", t:"Volvo 240 Drift Wagon", s:"HW Wagons"},
-    {n:"233", t:"Custom '56 Ford Truck", s:"Celebration"},
-    {n:"234", t:"Feline Lucky", s:"Celebration"},
-    {n:"235", t:"'66 Triumph Tiger 100", s:"HW Moto (TH)"},
-    {n:"236", t:"Limited Grip", s:"Peak Pursuit"},
-    {n:"238", t:"Jaguar XJC V12 Coupe", s:"Wild WideBody"},
-    {n:"239", t:"Porsche 911 Turbo Cabriolet", s:"Then and Now"},
-    {n:"240", t:"Dodge Charger SRT Hellcat", s:"Muscle Mania"},
-    {n:"244", t:"Gone Mad", s:"HW Wagons"},
-    {n:"245", t:"BMW M3 Wagon", s:"Wagons"},
-    {n:"247", t:"Ford RS200", s:"Rally"},
-    {n:"248", t:"Polestar TRX", s:"EV"},
-    {n:"250", t:"Volvo 240 Drift", s:"Drift"}
+    {n:"1", t:"Kei Swap", s:"HW Art Cars", i:""},
+    {n:"2", t:"Super Twin Mill", s:"HW Let's Race", i:""},
+    {n:"3", t:"Morgan Super 3", s:"Factory Fresh", i:""},
+    {n:"4", t:"Mazda MX-5 Miata", s:"HW Dream Garage", i:""},
+    {n:"5", t:"Ford Mustang GTD", s:"Mustang 60th", i:"https://static.wikia.nocookie.net/hotwheels/images/0/00/Ford_Mustang_GTD_%28%2725_Mainline%29.jpg"},
+    {n:"6", t:"'66 Buick Riviera", s:"HW Modified", i:""},
+    {n:"7", t:"Maserati Shamal", s:"HW Metro", i:""},
+    {n:"8", t:"Tesla Cyberquad", s:"HW Dirt", i:""},
+    {n:"9", t:"McLaren W1", s:"HW Race Day", i:""},
+    {n:"10", t:"Optimus Prime", s:"HW Screen Time", i:""},
+    {n:"11", t:"Honda Civic Si", s:"Factory Fresh", i:""},
+    {n:"12", t:"Nissan Skyline GT-R", s:"J-Imports", i:""},
+    {n:"13", t:"GMC Hummer EV", s:"HW Green Speed", i:""},
+    {n:"14", t:"'87 Dodge D100", s:"HW Reverse Rake", i:""},
+    {n:"15", t:"Porsche 911 Rallye", s:"HW Dirt", i:""},
+    {n:"16", t:"Hiway Hauler 2", s:"HW Haulers", i:""},
+    {n:"17", t:"Ford Performance Supervan 4", s:"HW Green Speed (TH)", i:""},
+    {n:"18", t:"Bone Shaker", s:"HW Dream Garage", i:""},
+    {n:"19", t:"Batmobile", s:"Batman", i:""},
+    {n:"20", t:"Track Manga", s:"HW Art Cars", i:""},
+    {n:"21", t:"Brickin' Delivery", s:"Brick Rides", i:""},
+    {n:"22", t:"HW450F", s:"HW Moto", i:""},
+    {n:"23", t:"Custom '68 Camaro", s:"HW Art Cars", i:""},
+    {n:"24", t:"Punk Rod", s:"Rod Squad", i:""},
+    {n:"25", t:"Deora II", s:"HW Legends", i:""},
+    {n:"26", t:"Nissan Skyline 2000GT-R LBWK", s:"J-Imports", i:""},
+    {n:"27", t:"Rally Speciale", s:"HW Dirt", i:""},
+    {n:"28", t:"'90 Honda Civic EF", s:"70s vs 90s", i:""},
+    {n:"29", t:"Porsche 911 GT3 RS", s:"Then and Now", i:""},
+    {n:"30", t:"Road Bandit", s:"HW Metro", i:""},
+    {n:"31", t:"X-34 Landspeeder", s:"Screen Time", i:""},
+    {n:"32", t:"Tooligan", s:"Experimotors", i:""},
+    {n:"33", t:"Dessert Drifter", s:"Sweet Rides", i:""},
+    {n:"34", t:"Ford Mustang GTD", s:"Mustang 60th", i:""},
+    {n:"35", t:"Drift'n Break", s:"HW Modified", i:""},
+    {n:"36", t:"Audi RS e-tron GT", s:"HW Green Speed", i:""},
+    {n:"37", t:"Crescendo", s:"X-Raycers", i:""},
+    {n:"38", t:"Proton Saga", s:"Factory Fresh", i:""},
+    {n:"39", t:"Ain't Fare", s:"HW Metro", i:""},
+    {n:"40", t:"Corvette C6", s:"HW Roadsters", i:""},
+    {n:"41", t:"Roadster Bite", s:"HW Roadsters", i:""},
+    {n:"42", t:"Volkswagen T2 Pickup", s:"HW Hot Trucks", i:""},
+    {n:"43", t:"'19 Ford Ranger Raptor", s:"HW Hot Trucks", i:""},
+    {n:"44", t:"Nissan Skyline RS (KDR30)", s:"J-Imports", i:""},
+    {n:"45", t:"Honda Civic Si", s:"J-Imports", i:""},
+    {n:"46", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh", i:""},
+    {n:"47", t:"'72 Stingray Convertible", s:"Factory Fresh", i:""},
+    {n:"48", t:"Subaru BRZ", s:"J-Imports", i:""},
+    {n:"49", t:"Honda CB750 Café", s:"HW Moto", i:""},
+    {n:"50", t:"'66 Buick Riviera", s:"Modified", i:""},
+    {n:"51", t:"El Segundo Coupe", s:"HW Turbo", i:""},
+    {n:"52", t:"Knight Draggin'", s:"HW Celebration", i:""},
+    {n:"53", t:"1978 Dodge Li'l Red Express Truck", s:"HW Celebration", i:""},
+    {n:"54", t:"Batman Arkham Asylum Batmobile", s:"Batman", i:""},
+    {n:"55", t:"Batmobile (Animated)", s:"Batman", i:""},
+    {n:"56", t:"Terenator", s:"HW Rescue", i:""},
+    {n:"57", t:"'07 Chevy Tahoe", s:"HW Rescue", i:""},
+    {n:"58", t:"Maserati Shamal", s:"Metro", i:""},
+    {n:"59", t:"Oracle Red Bull Racing", s:"Track Aces", i:""},
+    {n:"60", t:"Delorean Time Machine", s:"Screen Time", i:""},
+    {n:"61", t:"Mod Rod", s:"HW Art Cars", i:""},
+    {n:"62", t:"Datsun 240Z", s:"J-Imports", i:""},
+    {n:"63", t:"Monteracer", s:"X-Raycers", i:""},
+    {n:"64", t:"Arrow Dynamic", s:"X-Raycers", i:""},
+    {n:"65", t:"Surfin' School Bus", s:"HW Sports", i:""},
+    {n:"66", t:"Hotweiler", s:"HW Mega Bite", i:""},
+    {n:"67", t:"BMW 507", s:"HW Roadsters", i:""},
+    {n:"68", t:"'57 Jeep FC", s:"HW Hot Trucks", i:""},
+    {n:"69", t:"'15 Mazda MX-5 Miata", s:"J-Imports", i:""},
+    {n:"70", t:"McLaren Solus GT", s:"HW Modified", i:""},
+    {n:"71", t:"Corvette Grand Sport", s:"HW Roadsters", i:""},
+    {n:"72", t:"Custom '72 Chevy LUV", s:"HW Hot Trucks", i:""},
+    {n:"73", t:"Mighty K", s:"Compact Kings", i:""},
+    {n:"74", t:"Porsche 911 GT3", s:"Race Day", i:""},
+    {n:"75", t:"Jaguar MK1", s:"Race Day", i:""},
+    {n:"76", t:"Chevy Silverado", s:"HW Art Cars", i:""},
+    {n:"77", t:"Audi 90 quattro", s:"Factory Fresh", i:""},
+    {n:"78", t:"Toon'd '83 Chevy Silverado", s:"Tooned", i:""},
+    {n:"79", t:"Mazda 787B", s:"Race Day", i:""},
+    {n:"80", t:"Volvo P1800 Gasser", s:"HW Gassers", i:""},
+    {n:"81", t:"'91 Mazda MX-5 Miata", s:"J-Imports", i:""},
+    {n:"82", t:"Tesla Cyberquad", s:"HW Dirt", i:""},
+    {n:"83", t:"K.I.T.T.", s:"Screen Time", i:""},
+    {n:"84", t:"Gotta Go", s:"HW Designed", i:""},
+    {n:"85", t:"Street Weiner", s:"Fast Foodie", i:""},
+    {n:"86", t:"Chevy Silverado EV RST", s:"HW EV", i:""},
+    {n:"87", t:"'70 Plymouth Superbird", s:"Art Cars", i:""},
+    {n:"88", t:"Fish'd & Chip'd", s:"Fast Foodie (TH)", i:""},
+    {n:"89", t:"Fast-Bed Hauler", s:"HW Haulers", i:""},
+    {n:"90", t:"HW450F", s:"HW Moto", i:""},
+    {n:"91", t:"LB Super Silhouette Nissan Silvia", s:"HW Modified", i:""},
+    {n:"92", t:"Dune It Up", s:"Track Aces", i:""},
+    {n:"93", t:"Porsche 718 Cayman GT4", s:"Factory Fresh", i:""},
+    {n:"94", t:"'99 Ford F-150 SVT Lightning", s:"Hot Trucks", i:""},
+    {n:"95", t:"Pedal Driver", s:"Experimotors (TH)", i:""},
+    {n:"96", t:"'21 Toyota GR Supra", s:"Then and Now", i:""},
+    {n:"97", t:"Fiat 500D Modificado", s:"Compact Kings", i:""},
+    {n:"98", t:"Mitsubishi 3000GT VR-4", s:"J-Imports", i:""},
+    {n:"99", t:"Nissan Skyline GT-R (BNR32)", s:"J-Imports", i:""},
+    {n:"100", t:"Lamborghini Countach LPI 800-4", s:"HW Exotics", i:""},
+    {n:"103", t:"TV Series Batmobile", s:"Batman", i:""},
+    {n:"104", t:"'86 Ford Thunderbird Pro Stock", s:"Drag Strip", i:""},
+    {n:"105", t:"'24 Honda Civic Type-R", s:"J-Imports", i:""},
+    {n:"106", t:"Mazda 323 GTR", s:"HW Rally", i:""},
+    {n:"107", t:"Acura Integra GSR", s:"J-Imports", i:""},
+    {n:"108", t:"Meyers Manx", s:"HW Dirt", i:""},
+    {n:"109", t:"Power Rocket", s:"X-Raycers", i:""},
+    {n:"110", t:"Rig Storm", s:"HW Graphics (TH)", i:""},
+    {n:"111", t:"Pontiac Aztek Custom", s:"HW Modified", i:""},
+    {n:"112", t:"Later Crater", s:"Reverse Rake", i:""},
+    {n:"113", t:"Mercedes-Benz E 36 AMG", s:"Factory Fresh", i:""},
+    {n:"114", t:"'67 Volkswagen Samba Bus", s:"HW Vans", i:""},
+    {n:"115", t:"BMW M3", s:"The 80s", i:""},
+    {n:"116", t:"Porsche 935", s:"Race Day", i:""},
+    {n:"117", t:"Flippin Fast", s:"Experimotors", i:""},
+    {n:"118", t:"Skull Shaker", s:"Experimotors", i:""},
+    {n:"119", t:"Toyota Land Cruiser FJ43", s:"HW Hot Trucks", i:""},
+    {n:"120", t:"Custom Kia EV6", s:"HW EV", i:""},
+    {n:"121", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh", i:""},
+    {n:"122", t:"'16 Bugatti Chiron", s:"HW Exotics", i:""},
+    {n:"123", t:"'18 Honda Civic Type R", s:"Then and Now", i:""},
+    {n:"124", t:"Futurismo", s:"Race Day", i:""},
+    {n:"125", t:"Meyers Manx", s:"HW Dirt", i:""},
+    {n:"126", t:"'08 Mercedes-Benz CLK 63 AMG", s:"Factory Fresh", i:""},
+    {n:"127", t:"Maserati MC20", s:"HW Exotics", i:""},
+    {n:"128", t:"'24 Toyota Tacoma TRD Pro", s:"HW Hot Trucks", i:""},
+    {n:"129", t:"'98 Toyota Altezza", s:"J-Imports", i:""},
+    {n:"130", t:"'17 Ford GT", s:"Exotics", i:""},
+    {n:"131", t:"'80 Mercedes-Benz 500 SLC", s:"HW Rally", i:""},
+    {n:"132", t:"'95 Lamborghini Diablo SV", s:"Exotics", i:""},
+    {n:"133", t:"Mitsubishi Pajero Evolution", s:"Dirt", i:""},
+    {n:"134", t:"'77 Pontiac Firebird T/A", s:"Muscle Mania", i:""},
+    {n:"135", t:"'94 Nissan Primera", s:"J-Imports", i:""},
+    {n:"136", t:"Ford GT LM", s:"Race Day", i:""},
+    {n:"137", t:"Nissan Laurel 2000 SGX", s:"J-Imports", i:""},
+    {n:"138", t:"'75 Ford Bronco", s:"HW Hot Trucks", i:""},
+    {n:"139", t:"Lamborghini Temerario", s:"HW Exotics", i:""},
+    {n:"140", t:"Ford RS200", s:"HW Rally", i:""},
+    {n:"141", t:"'85 Honda City Turbo II", s:"J-Imports (TH)", i:""},
+    {n:"142", t:"BMW M3 GTR", s:"Race Day", i:""},
+    {n:"143", t:"Birthday Burner", s:"Celebration Racers (TH)", i:""},
+    {n:"144", t:"Nissan Skyline GT-R (BCNR33)", s:"J-Imports", i:""},
+    {n:"145", t:"'78 Dodge Li'l Red Express", s:"HW Hot Trucks", i:""},
+    {n:"146", t:"Lamborghini Gallardo LP 570-4", s:"HW Exotics", i:""},
+    {n:"147", t:"Toyota GR Yaris", s:"HW Rally", i:""},
+    {n:"148", t:"Cone Shaker", s:"HW Metro", i:""},
+    {n:"149", t:"Quick Bite", s:"Fast Foodie", i:""},
+    {n:"150", t:"'89 Mercedes-Benz 560 SEC AMG", s:"HW Modified", i:""},
+    {n:"151", t:"Rodger Dodger 2.0", s:"HW EV", i:""},
+    {n:"154", t:"Porsche 911 Rallye", s:"Dirt", i:""},
+    {n:"158", t:"Hoto Roto", s:"Rod Squad", i:""},
+    {n:"159", t:"Ford GT", s:"Modified", i:""},
+    {n:"163", t:"'95 Mazda RX-7 Drift", s:"70s vs 90s", i:""},
+    {n:"166", t:"Disney Steamboat", s:"Screen Time", i:""},
+    {n:"167", t:"Mattel Dream Mobile", s:"Celebration", i:""},
+    {n:"169", t:"'67 Austin Mini Van", s:"Art Cars", i:""},
+    {n:"174", t:"Peugeot 9X8 Hypercar", s:"Exotics", i:""},
+    {n:"186", t:"'89 Mercedes-Benz 560 SEC AMG", s:"Turbo", i:""},
+    {n:"187", t:"Porsche 911 Carrera Clip", s:"Experimotors", i:""},
+    {n:"194", t:"Formula E Gen3", s:"Track Aces", i:""},
+    {n:"195", t:"Alfa Romeo Giulia TI Super", s:"Compact Kings", i:""},
+    {n:"196", t:"Mazda RX-3", s:"J-Imports", i:""},
+    {n:"198", t:"Ferrari F40 Competizione", s:"Exotics", i:""},
+    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit", i:""},
+    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit", i:""},
+    {n:"201", t:"Honda Civic Custom", s:"Reverse Rake", i:""},
+    {n:"203", t:"Lil 'Roar'", s:"Safari Mode", i:""},
+    {n:"204", t:"Terra-Tracktly", s:"Track Champs", i:""},
+    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody", i:""},
+    {n:"206", t:"Speed Drive", s:"Experimotors", i:""},
+    {n:"207", t:"Ravenger S/T", s:"Muscle Mania", i:""},
+    {n:"208", t:"'69 Dodge Coronet Super Bee", s:"Muscle Mania", i:""},
+    {n:"209", t:"McLaren Speedtail", s:"Exotics", i:""},
+    {n:"210", t:"Land Rover Defender 90", s:"Then and Now", i:""},
+    {n:"211", t:"Custom '18 Ford Mustang GT", s:"Mustang 60th", i:""},
+    {n:"212", t:"Honda S800 Racing", s:"Compact Kings", i:""},
+    {n:"213", t:"Lotus Cortina", s:"Compact Kings", i:""},
+    {n:"215", t:"Blitzspeeder", s:"Track Champs", i:""},
+    {n:"216", t:"Quick Chat", s:"Experimotors", i:""},
+    {n:"217", t:"King Kuda", s:"Muscle Mania", i:""},
+    {n:"218", t:"Mod Mill", s:"Muscle Mania", i:""},
+    {n:"224", t:"Honda VFR750R RC30", s:"Moto", i:""},
+    {n:"227", t:"Volvo 240 Drift Wagon", s:"HW Wagons", i:""},
+    {n:"233", t:"Custom '56 Ford Truck", s:"Celebration", i:""},
+    {n:"234", t:"Feline Lucky", s:"Celebration", i:""},
+    {n:"235", t:"'66 Triumph Tiger 100", s:"HW Moto (TH)", i:""},
+    {n:"236", t:"Limited Grip", s:"Peak Pursuit", i:""},
+    {n:"238", t:"Jaguar XJC V12 Coupe", s:"Wild WideBody", i:""},
+    {n:"239", t:"Porsche 911 Turbo Cabriolet", s:"Then and Now", i:""},
+    {n:"240", t:"Dodge Charger SRT Hellcat", s:"Muscle Mania", i:""},
+    {n:"244", t:"Gone Mad", s:"HW Wagons", i:""},
+    {n:"245", t:"BMW M3 Wagon", s:"Wagons", i:""},
+    {n:"247", t:"Ford RS200", s:"Rally", i:""},
+    {n:"248", t:"Polestar TRX", s:"EV", i:""},
+    {n:"250", t:"Volvo 240 Drift", s:"Drift", i:""}
 ],
 "2026": [
-    {n:"3", t:"Gordon Murray Automotive T.33", s:"Exoticars"},
-    {n:"4", t:"Batmobile (The Batman)", s:"Batman"},
-    {n:"5", t:"Pass 'N Gasser", s:"Drop Tops"},
-    {n:"6", t:"RD-06", s:"X-Raycers"},
-    {n:"7", t:"Solar Reflex", s:"HW EV"},
-    {n:"8", t:"Ford Mustang Mach-E 1400", s:"HW EV"},
-    {n:"9", t:"'87 Buick Regal GNX", s:"Night Speed (TH)"},
-    {n:"10", t:"2020 Ford Mustang Shelby GT500", s:"Night Speed"},
-    {n:"11", t:"2018 Honda Civic Type R", s:"Night Speed"},
-    {n:"12", t:"Carbonator", s:"Experimotors"},
-    {n:"13", t:"Drift-Ender", s:"Truckin' Along"},
-    {n:"14", t:"'20 Jeep Gladiator", s:"Truckin' Along"},
-    {n:"15", t:"Porsche 911 Carrera T", s:"Factory Fresh"},
-    {n:"16", t:"Maserati Shamal", s:"Factory Fresh"},
-    {n:"17", t:"Bounce'N Bass", s:"Layin' Low"},
-    {n:"18", t:"Deora II", s:"HW Fan Driven"},
-    {n:"19", t:"Rodger Dodger", s:"HW Fan Driven"},
-    {n:"20", t:"McLaren Formula 1 Team", s:"Formula 1"},
-    {n:"21", t:"Barbie Dream Camper", s:"Mattel"},
-    {n:"22", t:"Instant Boost", s:"HW Starting Grid"},
-    {n:"23", t:"'69 Dodge Charger Daytona", s:"HW Starting Grid"},
-    {n:"24", t:"Track Ripper", s:"HW Starting Grid"},
-    {n:"29", t:"'92 Dodge Viper RT/10", s:"Drop Tops (TH)"},
-    {n:"30", t:"X-Steam", s:"X-Raycers"},
-    {n:"32", t:"5 Alarm", s:"HW Heavyweights"},
-    {n:"33", t:"Haulerback", s:"HW Heavyweights"},
-    {n:"34", t:"Porsche Taycan Turbo S", s:"HW EV"},
-    {n:"35", t:"Watzup", s:"HW EV"},
-    {n:"36", t:"'70 Dodge Hemi Challenger", s:"Night Speed"},
-    {n:"37", t:"Cupra E-Racer", s:"Night Speed"},
-    {n:"38", t:"24/Seven", s:"Night Speed"},
-    {n:"39", t:"Roller Toaster", s:"Experimotors"},
-    {n:"40", t:"Braille Racer - Twin Mill", s:"HW All Drivers Welcome"},
-    {n:"41", t:"Lamborghini Huracán Sterrato", s:"Safari Mode"},
-    {n:"42", t:"'83 Chevy Silverado", s:"Truckin' Along"},
-    {n:"43", t:"Ford Mustang GTD", s:"Factory Refresh"},
-    {n:"44", t:"'59 Chevy Impala", s:"Layin' Low"},
-    {n:"45", t:"'47 Chevy Fleetline", s:"Layin' Low"},
-    {n:"46", t:"Purple Passion", s:"HW Fan Driven"},
-    {n:"47", t:"High-Tail Chaser", s:"HW Mods"},
-    {n:"66", t:"Street Shrieker", s:"HW Let's Race"},
-    {n:"128", t:"RRRoadster", s:"Compact Kings"},
-    {n:"142", t:"McLaren W1", s:"Race Day"},
-    {n:"150", t:"Honda CB750 Cafe", s:"HW Moto"},
-    {n:"157", t:"'83 Chevy Silverado", s:"Hot Trucks"},
-    {n:"162", t:"2018 Bentley Continental GT3", s:"Race Day"},
-    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit"},
-    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit"},
-    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody"},
-    {n:"207", t:"Ravenger S/T", s:"Muscle Mania"},
-    {n:"210", t:"Land Rover Defender 90", s:"Then and Now"},
-    {n:"216", t:"Quick Chat", s:"Experimotors"},
-    {n:"218", t:"Mod Mill", s:"Muscle Mania"}
+    {n:"3", t:"Gordon Murray Automotive T.33", s:"Exoticars", i:""},
+    {n:"4", t:"Batmobile (The Batman)", s:"Batman", i:""},
+    {n:"5", t:"Pass 'N Gasser", s:"Drop Tops", i:""},
+    {n:"6", t:"RD-06", s:"X-Raycers", i:""},
+    {n:"7", t:"Solar Reflex", s:"HW EV", i:""},
+    {n:"8", t:"Ford Mustang Mach-E 1400", s:"HW EV", i:""},
+    {n:"9", t:"'87 Buick Regal GNX", s:"Night Speed (TH)", i:""},
+    {n:"10", t:"2020 Ford Mustang Shelby GT500", s:"Night Speed", i:""},
+    {n:"11", t:"2018 Honda Civic Type R", s:"Night Speed", i:""},
+    {n:"12", t:"Carbonator", s:"Experimotors", i:""},
+    {n:"13", t:"Drift-Ender", s:"Truckin' Along", i:""},
+    {n:"14", t:"'20 Jeep Gladiator", s:"Truckin' Along", i:""},
+    {n:"15", t:"Porsche 911 Carrera T", s:"Factory Fresh", i:""},
+    {n:"16", t:"Maserati Shamal", s:"Factory Fresh", i:""},
+    {n:"17", t:"Bounce'N Bass", s:"Layin' Low", i:""},
+    {n:"18", t:"Deora II", s:"HW Fan Driven", i:""},
+    {n:"19", t:"Rodger Dodger", s:"HW Fan Driven", i:""},
+    {n:"20", t:"McLaren Formula 1 Team", s:"Formula 1", i:""},
+    {n:"21", t:"Barbie Dream Camper", s:"Mattel", i:""},
+    {n:"22", t:"Instant Boost", s:"HW Starting Grid", i:""},
+    {n:"23", t:"'69 Dodge Charger Daytona", s:"HW Starting Grid", i:""},
+    {n:"24", t:"Track Ripper", s:"HW Starting Grid", i:""},
+    {n:"29", t:"'92 Dodge Viper RT/10", s:"Drop Tops (TH)", i:""},
+    {n:"30", t:"X-Steam", s:"X-Raycers", i:""},
+    {n:"32", t:"5 Alarm", s:"HW Heavyweights", i:""},
+    {n:"33", t:"Haulerback", s:"HW Heavyweights", i:""},
+    {n:"34", t:"Porsche Taycan Turbo S", s:"HW EV", i:""},
+    {n:"35", t:"Watzup", s:"HW EV", i:""},
+    {n:"36", t:"'70 Dodge Hemi Challenger", s:"Night Speed", i:""},
+    {n:"37", t:"Cupra E-Racer", s:"Night Speed", i:""},
+    {n:"38", t:"24/Seven", s:"Night Speed", i:""},
+    {n:"39", t:"Roller Toaster", s:"Experimotors", i:""},
+    {n:"40", t:"Braille Racer - Twin Mill", s:"HW All Drivers Welcome", i:""},
+    {n:"41", t:"Lamborghini Huracán Sterrato", s:"Safari Mode", i:""},
+    {n:"42", t:"'83 Chevy Silverado", s:"Truckin' Along", i:""},
+    {n:"43", t:"Ford Mustang GTD", s:"Factory Refresh", i:""},
+    {n:"44", t:"'59 Chevy Impala", s:"Layin' Low", i:""},
+    {n:"45", t:"'47 Chevy Fleetline", s:"Layin' Low", i:""},
+    {n:"46", t:"Purple Passion", s:"HW Fan Driven", i:""},
+    {n:"47", t:"High-Tail Chaser", s:"HW Mods", i:""},
+    {n:"66", t:"Street Shrieker", s:"HW Let's Race", i:""},
+    {n:"128", t:"RRRoadster", s:"Compact Kings", i:""},
+    {n:"142", t:"McLaren W1", s:"Race Day", i:""},
+    {n:"150", t:"Honda CB750 Cafe", s:"HW Moto", i:""},
+    {n:"157", t:"'83 Chevy Silverado", s:"Hot Trucks", i:""},
+    {n:"162", t:"2018 Bentley Continental GT3", s:"Race Day", i:""},
+    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit", i:""},
+    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit", i:""},
+    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody", i:""},
+    {n:"207", t:"Ravenger S/T", s:"Muscle Mania", i:""},
+    {n:"210", t:"Land Rover Defender 90", s:"Then and Now", i:""},
+    {n:"216", t:"Quick Chat", s:"Experimotors", i:""},
+    {n:"218", t:"Mod Mill", s:"Muscle Mania", i:""}
 ]
 };
 
@@ -937,7 +948,7 @@ for (let i = 1; i <= 250; i++) {
     if (!existingNums.includes(i)) {
         list.push({ 
             n: i.toString(), 
-            t: `${year} Gizli Model / Veri Yok`, 
+            t: `${year} Gizli Model`, 
             s: "TBA", 
             i: "" 
         });
@@ -947,7 +958,6 @@ for (let i = 1; i <= 250; i++) {
 list.sort((a, b) => parseInt(a.n) - parseInt(b.n));
 }
 
-// Tüm yıllar için boşlukları doldur
 ["2023", "2024", "2025", "2026"].forEach(y => fillGaps(y));
 
 // --- UYGULAMA MANTIĞI ---
@@ -955,9 +965,7 @@ let currentYear = "2024";
 let currentFilter = "all";
 let userCollection = {};
 
-// Sayfa Yüklendiğinde
 window.onload = () => {
-// LocalStorage'dan veriyi çek
 const saved = localStorage.getItem('odhunWheels_full_collection');
 if (saved) {
     userCollection = JSON.parse(saved);
@@ -968,10 +976,8 @@ updateProgress();
 
 function setYear(y) {
 currentYear = y;
-// Tab stilini güncelle
 document.querySelectorAll('.year-tab').forEach(b => b.classList.remove('active'));
 event.target.classList.add('active');
-
 renderCars();
 updateProgress();
 }
@@ -991,29 +997,40 @@ grid.innerHTML = "";
 const cars = db[currentYear];
 
 cars.forEach(car => {
-    // Benzersiz ID: YIL-NO
     const carId = `${currentYear}-${car.n}`;
     const isOwned = userCollection[carId] === true;
 
-    // Filtreleme
     if (searchTerm && !car.t.toLowerCase().includes(searchTerm) && !car.n.includes(searchTerm)) return;
     if (currentFilter === 'owned' && !isOwned) return;
     if (currentFilter === 'missing' && isOwned) return;
 
-    // Kart Oluşturma
     const card = document.createElement('div');
     card.className = `car-card ${isOwned ? 'owned' : ''}`;
     card.onclick = () => toggleCar(carId);
 
-    // Resim (Google Arama linki eklenmiş)
-    const imgUrl = car.i ? car.i : `https://via.placeholder.com/300x200/222/555?text=HW+${car.n}`;
+    // Resim Mantığı (Varsa göster, yoksa placeholder + Google linki)
+    let imgHTML = '';
     const googleUrl = `https://www.google.com/search?tbm=isch&q=Hot+Wheels+${currentYear}+${car.t.replace(/ /g,'+')}+${car.n}`;
+    
+    // Varsayılan Logo (Base64) - Hızlı Yüklenmesi İçin
+    const placeholderImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%23333'%3E%3Cpath d='M50 20 L80 80 L20 80 Z' /%3E%3Ctext x='50%25' y='50%25' fill='%23555' font-size='10' text-anchor='middle'%3EHW%3C/text%3E%3C/svg%3E";
+
+    if (car.i && car.i.length > 5) {
+        // Resim Linki Var
+        imgHTML = `<img src="${car.i}" alt="${car.t}" class="car-img" loading="lazy" onerror="this.onerror=null;this.src='${placeholderImg}';">`;
+    } else {
+        // Resim Linki Yok -> Placeholder Göster
+        imgHTML = `
+            <img src="${placeholderImg}" class="car-img" style="object-fit:cover; opacity:0.1;">
+            <div class="placeholder-text">GÖRSEL YOK</div>
+        `;
+    }
 
     card.innerHTML = `
         <div class="car-img-box">
-            <img src="${imgUrl}" alt="${car.t}" class="car-img" loading="lazy">
-            <a href="${googleUrl}" target="_blank" class="google-search-hint" onclick="event.stopPropagation()">
-                <i class="fas fa-search"></i> Görsel Ara
+            ${imgHTML}
+            <a href="${googleUrl}" target="_blank" class="search-hint" onclick="event.stopPropagation()">
+                <i class="fas fa-search"></i> Google'da Ara
             </a>
         </div>
         <div class="car-details">
@@ -1039,17 +1056,13 @@ if (userCollection[id]) {
 } else {
     userCollection[id] = true;
 }
-// Kaydet
 localStorage.setItem('odhunWheels_full_collection', JSON.stringify(userCollection));
-
-// Sadece ilgili kartı güncellemek yerine tümünü render ediyoruz (basitlik için)
-renderCars();
+renderCars(); // Görsel durumu güncellemek için yeniden render
 updateProgress();
 }
 
 function updateProgress() {
 const total = 250;
-// Mevcut yıl için sahip olunanları say
 const ownedCount = Object.keys(userCollection).filter(key => key.startsWith(currentYear + "-")).length;
 const percent = Math.round((ownedCount / total) * 100);
 
