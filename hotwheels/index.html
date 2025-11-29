@@ -161,8 +161,10 @@
     <div class="controls">
         <div style="display:flex; gap:10px; width:100%; max-width:400px;">
             <select class="year-select" id="yearSelect" onchange="changeYear()">
-                <option value="2025">2025 Serisi</option>
-                <option value="2024" selected>2024 Serisi</option>
+                <option value="2026">2026 Serisi</option>
+                <option value="2025" selected>2025 Serisi</option>
+                <option value="2024">2024 Serisi</option>
+                <option value="2023">2023 Serisi</option>
             </select>
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Model ara..." onkeyup="filterCars()">
@@ -191,36 +193,52 @@
     </footer>
 
     <script>
-        // --- VERİ TABANI (ÖRNEK 2024 LİSTESİ - BURAYI GENİŞLETEBİLİRSİN) ---
-        // Not: Resimler temsilidir. Gerçek proje için imgur veya kendi hostundaki resimleri kullan.
+        // --- VERİ TABANI (ÖNEMLİ MODELLER) ---
+        // Gerçek proje için bu listeyi 250 araca tamamlayabilirsin.
         const carsDatabase = {
+            "2026": [
+                 { id: "2026-001", num: "1/250", name: "Gordon Murray T.33", series: "Exoticars", img: "https://static.wikia.nocookie.net/hotwheels/images/a/a5/Gordon_Murray_Automotive_T.33_%28%2726_Mainline%29.jpg" },
+                 { id: "2026-002", num: "2/250", name: "Batmobile (The Batman)", series: "Batman", img: "https://static.wikia.nocookie.net/hotwheels/images/8/84/The_Batman_Batmobile_%28%2726_Mainline%29.jpg" },
+                 { id: "2026-003", num: "3/250", name: "Pass 'N Gasser", series: "Drop Tops", img: "https://static.wikia.nocookie.net/hotwheels/images/0/00/Pass_%27N_Gasser_%28%2726_Mainline%29.jpg" },
+                 { id: "2026-004", num: "4/250", name: "Solar Reflex", series: "HW EV", img: "https://static.wikia.nocookie.net/hotwheels/images/1/15/Solar_Reflex_%28%2726_Mainline%29.jpg" },
+                 { id: "2026-005", num: "5/250", name: "Ford Mustang Mach-E 1400", series: "HW EV", img: "https://static.wikia.nocookie.net/hotwheels/images/0/09/Ford_Mustang_Mach-E_1400_%28%2724_Mainline%29.jpg" }
+            ],
+            "2025": [
+                { id: "2025-001", num: "1/250", name: "Kei Swap", series: "HW Art Cars", img: "https://static.wikia.nocookie.net/hotwheels/images/8/8a/Kei_Swap_%28%2725_Mainline%29.jpg" },
+                { id: "2025-002", num: "2/250", name: "Super Twin Mill", series: "HW Let's Race", img: "https://static.wikia.nocookie.net/hotwheels/images/5/56/Super_Twin_Mill_%28%2725_Mainline%29.jpg" },
+                { id: "2025-003", num: "3/250", name: "Morgan Super 3", series: "Factory Fresh", img: "https://static.wikia.nocookie.net/hotwheels/images/4/4c/Morgan_Super_3_%28%2725_Mainline%29.jpg" },
+                { id: "2025-004", num: "4/250", name: "Mazda MX-5 Miata", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/9/9d/2024_15_Mazda_MX-5_Miata.jpg" },
+                { id: "2025-005", num: "5/250", name: "Ford Mustang GTD", series: "Mustang 60th", img: "https://static.wikia.nocookie.net/hotwheels/images/e/e1/2025_Ford_Mustang_GTD.jpg" },
+                { id: "2025-006", num: "6/250", name: "'66 Buick Riviera", series: "HW Modified", img: "https://static.wikia.nocookie.net/hotwheels/images/b/b5/%2766_Buick_Riviera_%28%2725_Mainline%29.jpg" },
+                { id: "2025-007", num: "7/250", name: "Maserati Shamal", series: "HW Metro", img: "https://static.wikia.nocookie.net/hotwheels/images/1/1d/Maserati_Shamal_%28%2725_Mainline%29.jpg" },
+                { id: "2025-008", num: "8/250", name: "Tesla Cyberquad", series: "HW Dirt", img: "https://static.wikia.nocookie.net/hotwheels/images/3/3e/Tesla_Cyberquad_%28%2725_Mainline%29.jpg" },
+                { id: "2025-009", num: "9/250", name: "McLaren W1", series: "HW Race Day", img: "https://static.wikia.nocookie.net/hotwheels/images/9/99/McLaren_W1_%28%2725_Mainline%29.jpg" },
+                { id: "2025-010", num: "10/250", name: "Optimus Prime", series: "HW Screen Time", img: "https://static.wikia.nocookie.net/hotwheels/images/f/f6/Optimus_Prime_%28%2725_Mainline%29.jpg" }
+            ],
             "2024": [
-                { id: "2024-001", num: "1/250", name: "Mazda 787B", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/2/2e/Mazda_787B_%28%2724_Mainline%29.jpg" },
-                { id: "2024-002", num: "2/250", name: "'15 Mazda MX-5 Miata", series: "HW Modified", img: "https://static.wikia.nocookie.net/hotwheels/images/9/9d/2024_15_Mazda_MX-5_Miata.jpg" },
-                { id: "2024-003", num: "3/250", name: "Batmobile", series: "Batman", img: "https://static.wikia.nocookie.net/hotwheels/images/8/88/Batman_Arkham_Asylum_Batmobile_%28%2724_Mainline%29.jpg" },
-                { id: "2024-004", num: "4/250", name: "Custom '68 Camaro", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/5/55/Custom_%2768_Camaro_%28%2724_Mainline%29.jpg" },
-                { id: "2024-005", num: "5/250", name: "Mod Rod", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/a/a2/Mod_Rod_%28%2724_Mainline%29.jpg" },
-                { id: "2024-006", num: "6/250", name: "DMC DeLorean", series: "HW 80s", img: "https://static.wikia.nocookie.net/hotwheels/images/6/60/DMC_DeLorean_%28%2724_Mainline%29.jpg" },
+                { id: "2024-001", num: "1/250", name: "Mazda Autozam", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/4/43/Mazda_Autozam_AZ-1_%28%2724_Mainline%29.jpg" },
+                { id: "2024-002", num: "2/250", name: "Batmobile", series: "Batman", img: "https://static.wikia.nocookie.net/hotwheels/images/8/88/Batman_Arkham_Asylum_Batmobile_%28%2724_Mainline%29.jpg" },
+                { id: "2024-003", num: "3/250", name: "Monster High Ghoul Mobile", series: "HW Screen Time", img: "https://static.wikia.nocookie.net/hotwheels/images/2/28/Monster_High_Ghoul_Mobile_%28%2724_Mainline%29.jpg" },
+                { id: "2024-004", num: "4/250", name: "Custom Otto", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/7/7c/Custom_Otto_%28%2724_Mainline%29.jpg" },
+                { id: "2024-005", num: "5/250", name: "'15 Dodge Charger SRT", series: "HW First Response", img: "https://static.wikia.nocookie.net/hotwheels/images/b/b7/%2715_Dodge_Charger_SRT_%28%2724_Mainline%29.jpg" },
+                { id: "2024-006", num: "6/250", name: "Tesla Model Y", series: "HW Green Speed", img: "https://static.wikia.nocookie.net/hotwheels/images/5/5d/Tesla_Model_Y_%28%2724_Mainline%29.jpg" },
                 { id: "2024-007", num: "7/250", name: "Proton Saga", series: "Compact Kings", img: "https://static.wikia.nocookie.net/hotwheels/images/7/72/Proton_Saga_%28%2724_Mainline%29.jpg" },
                 { id: "2024-008", num: "8/250", name: "Honda Civic Si", series: "Factory Fresh", img: "https://static.wikia.nocookie.net/hotwheels/images/0/0b/Honda_Civic_Si_%28%2724_Mainline%29.jpg" },
                 { id: "2024-009", num: "9/250", name: "'18 Camaro SS", series: "Then and Now", img: "https://static.wikia.nocookie.net/hotwheels/images/e/e9/2018_Camaro_SS_%28%2724_Mainline%29.jpg" },
-                { id: "2024-010", num: "10/250", name: "Volkswagen Beetle", series: "Compact Kings", img: "https://static.wikia.nocookie.net/hotwheels/images/f/fb/Volkswagen_Beetle_%28%2724_Mainline%29.jpg" },
-                { id: "2024-011", num: "11/250", name: "Nissan Skyline GT-R (R33)", series: "J-Imports", img: "https://static.wikia.nocookie.net/hotwheels/images/5/5d/Nissan_Skyline_GT-R_%28R33%29_%28%2724_Mainline%29.jpg" },
-                { id: "2024-012", num: "12/250", name: "Rimac Nevera", series: "HW Green Speed", img: "https://static.wikia.nocookie.net/hotwheels/images/5/51/Rimac_Nevera_%28%2724_Mainline%29.jpg" },
-                { id: "2024-013", num: "13/250", name: "Corvette C8.R", series: "HW Race Day", img: "https://static.wikia.nocookie.net/hotwheels/images/3/35/Corvette_C8.R_%28%2724_Mainline%29.jpg" },
-                { id: "2024-014", num: "14/250", name: "Bugatti Bolide", series: "HW Exotics", img: "https://static.wikia.nocookie.net/hotwheels/images/2/24/Bugatti_Bolide_%28%2724_Mainline%29.jpg" },
-                { id: "2024-015", num: "15/250", name: "Ford Mustang Mach-E", series: "HW Green Speed", img: "https://static.wikia.nocookie.net/hotwheels/images/0/09/Ford_Mustang_Mach-E_1400_%28%2724_Mainline%29.jpg" }
-                // ... Buraya 250'ye kadar devam edebilirsin ...
+                { id: "2024-010", num: "10/250", name: "Volkswagen Beetle", series: "Compact Kings", img: "https://static.wikia.nocookie.net/hotwheels/images/f/fb/Volkswagen_Beetle_%28%2724_Mainline%29.jpg" }
             ],
-            "2025": [
-                { id: "2025-001", num: "1/250", name: "'92 Honda Civic EG", series: "J-Imports", img: "https://static.wikia.nocookie.net/hotwheels/images/b/b8/%2792_Honda_Civic_EG_%28%2725_Mainline%29.jpg" },
-                { id: "2025-002", num: "2/250", name: "Lamborghini Huracán Sterrato", series: "HW Dirt", img: "https://static.wikia.nocookie.net/hotwheels/images/d/d7/Lamborghini_Huracan_Sterrato_%28%2725_Mainline%29.jpg" }
+            "2023": [
+                { id: "2023-001", num: "1/250", name: "Volvo P1800 Gasser", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/0/08/Volvo_P1800_Gasser_%28%2723_Mainline%29.jpg" },
+                { id: "2023-002", num: "2/250", name: "'87 Ford Sierra Cosworth", series: "HW The 80s", img: "https://static.wikia.nocookie.net/hotwheels/images/4/48/%2787_Ford_Sierra_Cosworth_%28%2723_Mainline%29.jpg" },
+                { id: "2023-003", num: "3/250", name: "Classic TV Series Batmobile", series: "Batman", img: "https://static.wikia.nocookie.net/hotwheels/images/2/2f/Classic_TV_Series_Batmobile_%28%2723_Mainline%29.jpg" },
+                { id: "2023-004", num: "4/250", name: "Ford Escort RS2000", series: "Retro Racers", img: "https://static.wikia.nocookie.net/hotwheels/images/c/c1/Ford_Escort_RS2000_%28%2723_Mainline%29.jpg" },
+                { id: "2023-005", num: "5/250", name: "Dimachinni Veloce", series: "Retro Racers", img: "https://static.wikia.nocookie.net/hotwheels/images/6/6a/Dimachinni_Veloce_%28%2723_Mainline%29.jpg" }
             ]
         };
 
         // --- KULLANICI VERİSİ ---
         let userCollection = JSON.parse(localStorage.getItem('odhunWheels_collection')) || [];
-        let currentYear = "2024";
+        let currentYear = "2025";
         let currentFilter = "all";
 
         window.onload = () => {
@@ -236,7 +254,6 @@
 
         function filterType(type, btn) {
             currentFilter = type;
-            // Buton stilini güncelle
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderCars();
@@ -252,16 +269,13 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             grid.innerHTML = "";
 
-            // O yıla ait verileri al
             const cars = carsDatabase[currentYear] || [];
 
             cars.forEach(car => {
                 const isOwned = userCollection.includes(car.id);
                 
-                // Arama Filtresi
+                // Filtreleme
                 if (searchTerm && !car.name.toLowerCase().includes(searchTerm) && !car.num.includes(searchTerm)) return;
-
-                // Tip Filtresi
                 if (currentFilter === 'owned' && !isOwned) return;
                 if (currentFilter === 'missing' && isOwned) return;
 
@@ -293,32 +307,27 @@
         // --- İŞLEM ---
         function toggleCar(id) {
             if (userCollection.includes(id)) {
-                // Varsa çıkar
                 userCollection = userCollection.filter(item => item !== id);
             } else {
-                // Yoksa ekle
                 userCollection.push(id);
             }
-            // Kaydet
             localStorage.setItem('odhunWheels_collection', JSON.stringify(userCollection));
-            
-            // Yenile
             renderCars();
             updateProgress();
         }
 
         function updateProgress() {
-            const total = carsDatabase[currentYear] ? carsDatabase[currentYear].length : 0;
-            if(total === 0) return;
-
-            // O yıla ait sahip olunanları say
-            const ownedCount = carsDatabase[currentYear].filter(c => userCollection.includes(c.id)).length;
-            const percent = Math.round((ownedCount / total) * 100);
+            // Gerçek toplam sayı (250) üzerinden hesapla
+            // Eğer veritabanında 250 araç yoksa bile yüzdeyi 250 üzerinden gösteririz ki hedef belli olsun
+            const totalTarget = 250; 
+            
+            // O yıla ait sahip olunanları say (Sadece ID'si o yılla başlayanlar)
+            const ownedCount = userCollection.filter(id => id.startsWith(currentYear)).length;
+            const percent = Math.round((ownedCount / totalTarget) * 100);
 
             document.getElementById('progressFill').style.width = percent + "%";
-            document.getElementById('progressText').innerText = `${ownedCount} / ${total} (%${percent}) Tamamlandı`;
+            document.getElementById('progressText').innerText = `${ownedCount} / ${totalTarget} (%${percent}) Tamamlandı`;
         }
-
     </script>
 
 </body>
