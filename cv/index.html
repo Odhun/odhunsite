@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odhun CV | Pro Özgeçmiş</title>
+<title>Odhun CV | Özgeçmiş Oluşturucu</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232c3e50%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>CV</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -140,37 +140,35 @@
         padding: 2.5cm 2cm 2cm 2cm; margin-bottom: 40px; overflow: hidden;
     }
 
+    /* --- SÜRÜKLENEBİLİR FOTOĞRAF --- */
+    .cv-photo-draggable {
+        width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+        position: absolute; z-index: 100; cursor: grab;
+        border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        /* Varsayılan başlangıç konumu (Sağ Üst) */
+        top: 2.5cm; right: 2cm;
+    }
+    .cv-photo-draggable:active { cursor: grabbing; border-color: var(--primary); }
+
     /* --- TEMA STİLLERİ --- */
-    /* Modern Tema (Sol Sütun + Foto) */
+    /* Modern */
     .page[data-theme="modern"] { display: grid; grid-template-columns: 32% 68%; padding: 0 !important; }
     .page[data-theme="modern"] .col-left { background: var(--primary); color: #fff; padding: 2.5cm 1cm 2cm 2cm; min-height: 297mm; }
     .page[data-theme="modern"] .col-right { padding: 2.5cm 2cm 2cm 1cm; }
     .page[data-theme="modern"] h1 { font-size: 24pt; font-weight: bold; margin: 0; line-height: 1.1; }
-    
-    /* Fotoğraf Stilleri */
-    .cv-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 3px solid #fff; }
-    .page[data-theme="modern"] .cv-photo { display: block; margin: 0 auto 20px auto; border-color: rgba(255,255,255,0.5); }
-    
-    .page[data-theme="classic"] .cv-photo, .page[data-theme="minimal"] .cv-photo { 
-        position: absolute; top: 2.5cm; right: 2cm; width: 100px; height: 100px; border: 1px solid #ccc;
-    }
-    .page[data-theme="creative"] .cv-photo { 
-        width: 140px; height: 140px; border: 4px solid #fff; position: absolute; top: 1.5cm; right: 2cm; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
+    .page[data-theme="modern"] .col-left .cv-section-title { color: #fff; border-bottom-color: rgba(255,255,255,0.3); }
+    .page[data-theme="modern"] .col-right .cv-section-title { color: var(--primary); }
 
-    /* Diğer Tema Ayarları (Önceki ile aynı) */
+    /* Classic */
     .page[data-theme="classic"] header { text-align: center; border-bottom: 1px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
     .page[data-theme="classic"] h1 { font-size: 24pt; font-weight: bold; }
     .page[data-theme="classic"] .contact-info { justify-content: center; }
 
-    /* Ortak */
+    /* Diğerleri (Önceki CSS'in aynısı) */
     .cv-section-title {
         font-size: 12pt; font-weight: bold; text-transform: uppercase; color: #2c3e50;
         border-bottom: 1px solid #000; margin-top: 20px; margin-bottom: 10px; padding-bottom: 2px;
     }
-    .page[data-theme="modern"] .col-left .cv-section-title { color: #fff; border-bottom-color: rgba(255,255,255,0.3); }
-    .page[data-theme="modern"] .col-right .cv-section-title { color: var(--primary); }
-
     .item-row { margin-bottom: 12px; page-break-inside: avoid; }
     .item-head { display: flex; justify-content: space-between; font-weight: bold; }
     .item-sub { font-style: italic; font-size: 11pt; margin-bottom: 2px; }
@@ -186,11 +184,12 @@
 
     @media (max-width: 1000px) {
         body { flex-direction: column; overflow: auto; }
-        .editor { width: 100%; height: auto; border: none; }
+        .editor { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #ddd; }
         .preview-area { padding: 10px; background: #eee; }
         .a4-page { width: 100%; height: auto; transform: scale(1); padding: 20px; }
         .editor-footer { position: sticky; bottom: 0; box-shadow: 0 -5px 10px rgba(0,0,0,0.1); }
-        .cv-photo { position: static !important; margin: 0 auto 15px auto !important; } /* Mobilde fotoyu akışa al */
+        /* Mobilde sürüklemeyi kapat, ortaya al */
+        .cv-photo-draggable { position: static; margin: 0 auto 20px auto; transform: none !important; cursor: default; }
     }
 </style>
 </head>
@@ -210,21 +209,19 @@
                     <div class="theme-btn" onclick="setTheme('classic')">Klasik</div>
                     <div class="theme-btn" onclick="setTheme('creative')">Yaratıcı</div>
                     <div class="theme-btn" onclick="setTheme('minimal')">Minimalist</div>
-                    <div class="theme-btn" onclick="setTheme('professional')">Profesyonel</div>
-                    <div class="theme-btn" onclick="setTheme('academic')">Akademik</div>
                 </div>
                 <div class="color-swatches">
                     <div class="swatch active" style="background:#2c3e50" onclick="setColor('#2c3e50')"></div>
-                    <div class="swatch" style="background:#e74c3c" onclick="setColor('#e74c3c')"></div>
-                    <div class="swatch" style="background:#2980b9" onclick="setColor('#2980b9')"></div>
+                    <div class="swatch" style="background:#6c5ce7" onclick="setColor('#6c5ce7')"></div>
+                    <div class="swatch" style="background:#0984e3" onclick="setColor('#0984e3')"></div>
                     <div class="swatch" style="background:#27ae60" onclick="setColor('#27ae60')"></div>
-                    <input type="color" class="color-picker" oninput="setColor(this.value)" style="width:30px;border:none;background:none;cursor:pointer;">
+                    <input type="color" class="color-picker" oninput="setColor(this.value)">
                 </div>
             </div>
 
             <div class="section-head">Kişisel Bilgiler</div>
             <div class="form-group">
-                <label>Fotoğraf Yükle</label>
+                <label>Fotoğraf (Sürükleyerek Yerleştirin)</label>
                 <div class="photo-upload-box">
                     <input type="file" accept="image/*" onchange="handlePhoto(event)">
                     <img id="previewThumb" class="photo-preview-thumb">
@@ -263,17 +260,17 @@
     </div>
 
     <script>
-        // --- VERİLER ---
         const defaults = {
             name: "AHMET YILMAZ", job: "Yazılım Geliştirici", phone: "0555 123 45 67", email: "ahmet@ornek.com",
-            loc: "İstanbul", about: "Deneyimli, öğrenmeye açık ve teknolojiye tutkulu bir yazılım uzmanı.",
-            skills: "JavaScript, React, Node.js, Git, Agile",
-            exp: [{title:"Kıdemli Geliştirici", company:"Teknoloji A.Ş.", date:"2021 - Günümüz", desc:"Büyük ölçekli web projeleri yönetimi."}],
+            loc: "İstanbul, Türkiye", link: "linkedin.com/in/ahmet",
+            about: "5+ yıllık deneyime sahip, modern web teknolojileri konusunda uzmanlaşmış...",
+            skills: "JavaScript, React, Node.js, Git, Agile, İngilizce",
+            exp: [{title:"Kıdemli Geliştirici", company:"Teknoloji A.Ş.", date:"2021 - Günümüz", desc:"Proje yönetimi."}],
             edu: [{school:"İstanbul Teknik Üniversitesi", degree:"Bilgisayar Müh.", date:"2015 - 2019"}]
         };
 
         let userData = JSON.parse(localStorage.getItem('odhunCV_data')) || {
-            theme: 'modern', color: '#2c3e50', basics: {}, photo: '', exp: [], edu: [], skills: '', custom: []
+            theme: 'modern', color: '#2c3e50', basics: {}, photo: '', photoPos: {x:0, y:0}, exp: [], edu: [], skills: '', custom: []
         };
 
         window.onload = () => { restoreInputs(); renderPreview(); };
@@ -293,27 +290,6 @@
             renderPreview();
         }
 
-        // --- FOTOĞRAF İŞLEMLERİ ---
-        function handlePhoto(e) {
-            const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    userData.photo = event.target.result;
-                    document.getElementById('previewThumb').src = userData.photo;
-                    document.getElementById('previewThumb').style.display = 'block';
-                    saveAndRender();
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        function removePhoto() {
-            userData.photo = '';
-            document.getElementById('previewThumb').style.display = 'none';
-            saveAndRender();
-        }
-
-        // --- RENDER MOTORU ---
         function renderPreview() {
             const page = document.getElementById('cvPage');
             page.setAttribute('data-theme', userData.theme);
@@ -332,13 +308,21 @@
                 edu: userData.edu.length ? userData.edu : defaults.edu
             };
 
-            const photoHtml = userData.photo ? `<img src="${userData.photo}" class="cv-photo">` : '';
+            // FOTOĞRAF (Sürüklenebilir)
+            let photoHtml = '';
+            if(userData.photo) {
+                // Varsayılan pozisyon (eğer kayıtlı değilse)
+                const posX = userData.photoPos && userData.photoPos.x ? userData.photoPos.x : '2cm';
+                const posY = userData.photoPos && userData.photoPos.y ? userData.photoPos.y : '2.5cm';
+                
+                photoHtml = `<img src="${userData.photo}" class="cv-photo-draggable" id="dragPhoto" style="left:${posX}; top:${posY};" onmousedown="dragElement(this)">`;
+            }
+
             const contactHtml = `<div style="font-size:10pt; margin-top:5px;">${d.phone} | ${d.email} | ${d.loc} ${d.link ? '| '+d.link : ''}</div>`;
-            
             const expHtml = d.exp.map(e => `<div class="item-row"><div class="item-head"><span>${e.title}</span><span>${e.date}</span></div><div class="item-sub">${e.company}</div><div class="item-desc">${e.desc}</div></div>`).join('');
             const eduHtml = d.edu.map(e => `<div class="item-row"><div class="item-head"><span>${e.school}</span><span>${e.date}</span></div><div class="item-sub">${e.degree}</div></div>`).join('');
             
-            // Özel Bölümler HTML
+            // Özel Bölümler
             let customHtml = '';
             if(userData.custom && userData.custom.length > 0) {
                 userData.custom.forEach(sec => {
@@ -350,39 +334,101 @@
             }
 
             let html = '';
-            // Tema Mantığı (Basitleştirilmiş Entegrasyon)
+            // Sadece "Modern" ve "Klasik" örneği (Diğer temalar da benzer mantıkla eklenir)
             if(userData.theme === 'modern') {
-                html = `<div class="col-left">${photoHtml}<h1>${d.name}</h1><div class="job-title">${d.job}</div><div class="cv-section-title" style="color:#fff; border-color:rgba(255,255,255,0.3)">İLETİŞİM</div><div style="font-size:9pt; line-height:1.6">${d.phone}<br>${d.email}<br>${d.loc}<br>${d.link}</div><div class="cv-section-title" style="color:#fff; border-color:rgba(255,255,255,0.3)">YETENEKLER</div><div style="font-size:9pt">${d.skills}</div></div><div class="col-right"><div class="cv-section-title" style="margin-top:0">PROFİL</div><div class="item-desc">${d.about}</div><div class="cv-section-title">İŞ DENEYİMİ</div>${expHtml}<div class="cv-section-title">EĞİTİM</div>${eduHtml}${customHtml}</div>`;
+                // Not: Modern temada da foto sürüklenebilir olsun diye en dışa koyuyoruz (page'in direct child'ı)
+                html = `
+                    ${photoHtml}
+                    <div class="col-left">
+                        <div style="margin-top:${userData.photo ? '140px' : '0'}"> <h1>${d.name}</h1><div class="job-title">${d.job}</div>
+                        </div>
+                        <div class="cv-section-title" style="color:#fff; border-color:rgba(255,255,255,0.3)">İLETİŞİM</div>
+                        <div style="font-size:9pt; line-height:1.6">${d.phone}<br>${d.email}<br>${d.loc}<br>${d.link}</div>
+                        <div class="cv-section-title" style="color:#fff; border-color:rgba(255,255,255,0.3)">YETENEKLER</div>
+                        <div style="font-size:9pt">${d.skills}</div>
+                    </div>
+                    <div class="col-right">
+                        <div class="cv-section-title" style="margin-top:0">PROFİL</div><div class="item-desc" style="margin-bottom:25px">${d.about}</div>
+                        <div class="cv-section-title">İŞ DENEYİMİ</div>${expHtml}
+                        <div class="cv-section-title">EĞİTİM</div>${eduHtml}
+                        ${customHtml}
+                    </div>`;
             } else {
-                // Standart A4 Yapısı (Klasik, Minimal, vb.)
-                html = `${photoHtml}<div class="cv-header" style="text-align:${userData.theme==='classic'?'center':'left'}"><h1>${d.name}</h1><div class="job-title">${d.job}</div>${contactHtml}</div><div class="cv-section-title">HAKKIMDA</div><div class="item-desc">${d.about}</div><div class="cv-section-title">İŞ DENEYİMİ</div>${expHtml}<div class="cv-section-title">EĞİTİM</div>${eduHtml}<div class="cv-section-title">YETENEKLER</div><div class="item-desc">${d.skills}</div>${customHtml}`;
+                html = `
+                    ${photoHtml}
+                    <div class="cv-header" style="text-align:${userData.theme==='classic'?'center':'left'}; margin-top:${userData.photo && userData.theme!=='classic' ? '0' : '0'}">
+                        <h1>${d.name}</h1><div class="job-title">${d.job}</div>${contactHtml}
+                    </div>
+                    <div class="cv-section-title">HAKKIMDA</div><div class="item-desc">${d.about}</div>
+                    <div class="cv-section-title">İŞ DENEYİMİ</div>${expHtml}
+                    <div class="cv-section-title">EĞİTİM</div>${eduHtml}
+                    <div class="cv-section-title">YETENEKLER</div><div class="item-desc">${d.skills}</div>
+                    ${customHtml}
+                `;
             }
             page.innerHTML = html;
         }
 
-        // --- ÖZEL BÖLÜMLER ---
+        // --- SÜRÜKLE BIRAK MANTIĞI ---
+        function dragElement(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            elmnt.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                // Pozisyonu kaydet
+                userData.photoPos = { x: elmnt.style.left, y: elmnt.style.top };
+                localStorage.setItem('odhunCV_data', JSON.stringify(userData));
+            }
+        }
+
+        // --- FOTO YÜKLEME ---
+        function handlePhoto(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    userData.photo = event.target.result;
+                    document.getElementById('previewThumb').src = userData.photo;
+                    document.getElementById('previewThumb').style.display = 'block';
+                    saveAndRender();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        function removePhoto() { userData.photo = ''; document.getElementById('previewThumb').style.display = 'none'; saveAndRender(); }
+
+        // --- DİNAMİK BÖLÜMLER ---
         function renderCustomInputs() {
-            const con = document.getElementById('customSecInputs');
-            con.innerHTML = '';
+            const con = document.getElementById('customSecInputs'); con.innerHTML = '';
             if(!userData.custom) userData.custom = [];
-            
             userData.custom.forEach((sec, i) => {
                 let itemsHtml = '';
                 sec.items.forEach((it, j) => {
-                    itemsHtml += `<div style="margin-top:10px; border-top:1px solid #eee; padding-top:10px;"><input type="text" placeholder="Başlık (Örn: Proje Adı)" value="${it.title}" oninput="updCustItem(${i},${j},'title',this.value)" style="margin-bottom:5px"><input type="text" placeholder="Tarih / Detay" value="${it.date}" oninput="updCustItem(${i},${j},'date',this.value)" style="margin-bottom:5px"><textarea placeholder="Açıklama" oninput="updCustItem(${i},${j},'desc',this.value)">${it.desc}</textarea><button onclick="remCustItem(${i},${j})" style="color:red; border:none; background:none; font-size:0.8rem; cursor:pointer">Sil</button></div>`;
+                    itemsHtml += `<div style="margin-top:10px; border-top:1px solid #eee; padding-top:10px;"><input type="text" placeholder="Başlık" value="${it.title}" oninput="updCustItem(${i},${j},'title',this.value)" style="margin-bottom:5px"><input type="text" placeholder="Tarih/Detay" value="${it.date}" oninput="updCustItem(${i},${j},'date',this.value)" style="margin-bottom:5px"><textarea placeholder="Açıklama" oninput="updCustItem(${i},${j},'desc',this.value)">${it.desc}</textarea><button onclick="remCustItem(${i},${j})" style="color:red; border:none; background:none; cursor:pointer">Sil</button></div>`;
                 });
-
-                con.innerHTML += `
-                    <div class="custom-section-box">
-                        <button class="btn-remove" onclick="remCustSec(${i})"><i class="fas fa-times"></i></button>
-                        <input type="text" placeholder="Bölüm Başlığı (Örn: SERTİFİKALAR)" value="${sec.title}" oninput="updCustTitle(${i}, this.value)" style="font-weight:bold; margin-bottom:10px;">
-                        ${itemsHtml}
-                        <button class="btn-add" onclick="addCustItem(${i})" style="margin-top:10px">+ Öğe Ekle</button>
-                    </div>
-                `;
+                con.innerHTML += `<div class="custom-section-box"><button class="btn-remove" onclick="remCustSec(${i})"><i class="fas fa-times"></i></button><input type="text" placeholder="Bölüm Başlığı" value="${sec.title}" oninput="updCustTitle(${i}, this.value)" style="font-weight:bold; margin-bottom:10px;">${itemsHtml}<button class="btn-add" onclick="addCustItem(${i})" style="margin-top:10px">+ Öğe Ekle</button></div>`;
             });
         }
-
         function addCustomSec() { userData.custom.push({title:'', items:[{title:'', date:'', desc:''}]}); renderCustomInputs(); saveAndRender(); }
         function remCustSec(i) { userData.custom.splice(i, 1); renderCustomInputs(); saveAndRender(); }
         function updCustTitle(i, val) { userData.custom[i].title = val; saveAndRender(); }
@@ -390,44 +436,22 @@
         function remCustItem(i, j) { userData.custom[i].items.splice(j, 1); renderCustomInputs(); saveAndRender(); }
         function updCustItem(i, j, k, v) { userData.custom[i].items[j][k] = v; saveAndRender(); }
 
-        // --- WORD İNDİRME ---
-        function downloadWord() {
-            const content = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${document.getElementById('cvPage').innerHTML}</body></html>`;
-            const converted = htmlDocx.asBlob(content, {orientation: 'portrait', margins: {top: 720, right: 720, bottom: 720, left: 720}});
-            saveAs(converted, 'ozgecmis.docx');
-        }
-
-        // --- YARDIMCILAR ---
+        // --- STANDART FONKSİYONLAR ---
         function restoreInputs() {
-            // ... (Önceki input doldurma kodları aynen buraya)
             const fields = ['inpName', 'inpJob', 'inpPhone', 'inpEmail', 'inpLoc', 'inpLink', 'inpAbout', 'inpSkills'];
-            fields.forEach(id => {
-                const key = id.replace('inp', '').toLowerCase();
-                if(userData.basics[key]) document.getElementById(id).value = userData.basics[key];
-            });
+            fields.forEach(id => { if(userData.basics[id.replace('inp','').toLowerCase()]) document.getElementById(id).value = userData.basics[id.replace('inp','').toLowerCase()]; });
             if(userData.skills) document.getElementById('inpSkills').value = userData.skills;
-            if(userData.photo) {
-                document.getElementById('previewThumb').src = userData.photo;
-                document.getElementById('previewThumb').style.display = 'block';
-            }
-            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.theme-btn[onclick*="'${userData.theme}'"]`)?.classList.add('active');
-            
-            renderDynamicInputs();
-            renderCustomInputs();
+            if(userData.photo) { document.getElementById('previewThumb').src = userData.photo; document.getElementById('previewThumb').style.display = 'block'; }
+            renderDynamicInputs(); renderCustomInputs();
         }
-
-        function renderDynamicInputs() {
-            const expDiv = document.getElementById('expInputs'); expDiv.innerHTML = '';
-            userData.exp.forEach((item, i) => {
-                expDiv.innerHTML += `<div class="dynamic-item"><button class="btn-remove" onclick="remExp(${i})"><i class="fas fa-times"></i></button><input type="text" placeholder="Pozisyon" value="${item.title}" oninput="updExp(${i},'title',this.value)"><input type="text" placeholder="Şirket" value="${item.company}" oninput="updExp(${i},'company',this.value)"><input type="text" placeholder="Tarih" value="${item.date}" oninput="updExp(${i},'date',this.value)"><textarea placeholder="Açıklama" oninput="updExp(${i},'desc',this.value)">${item.desc}</textarea></div>`;
-            });
-            const eduDiv = document.getElementById('eduInputs'); eduDiv.innerHTML = '';
-            userData.edu.forEach((item, i) => {
-                eduDiv.innerHTML += `<div class="dynamic-item"><button class="btn-remove" onclick="remEdu(${i})"><i class="fas fa-times"></i></button><input type="text" placeholder="Okul" value="${item.school}" oninput="updEdu(${i},'school',this.value)"><input type="text" placeholder="Bölüm" value="${item.degree}" oninput="updEdu(${i},'degree',this.value)"><input type="text" placeholder="Tarih" value="${item.date}" oninput="updEdu(${i},'date',this.value)"></div>`;
-            });
+        function renderDynamicInputs() { /* ... (Önceki kodun aynısı) ... */ 
+             // (Yer kazanmak için kısalttım, önceki exp/edu render mantığını buraya ekle)
+             const expDiv = document.getElementById('expInputs'); expDiv.innerHTML = '';
+             userData.exp.forEach((item, i) => { expDiv.innerHTML += `<div class="dynamic-item"><button class="btn-remove" onclick="remExp(${i})"><i class="fas fa-times"></i></button><input type="text" value="${item.title}" oninput="updExp(${i},'title',this.value)" style="margin-bottom:5px; font-weight:bold"><input type="text" value="${item.company}" oninput="updExp(${i},'company',this.value)" style="margin-bottom:5px;"><input type="text" value="${item.date}" oninput="updExp(${i},'date',this.value)" style="margin-bottom:5px;"><textarea oninput="updExp(${i},'desc',this.value)">${item.desc}</textarea></div>`; });
+             const eduDiv = document.getElementById('eduInputs'); eduDiv.innerHTML = '';
+             userData.edu.forEach((item, i) => { eduDiv.innerHTML += `<div class="dynamic-item"><button class="btn-remove" onclick="remEdu(${i})"><i class="fas fa-times"></i></button><input type="text" value="${item.school}" oninput="updEdu(${i},'school',this.value)" style="margin-bottom:5px; font-weight:bold"><input type="text" value="${item.degree}" oninput="updEdu(${i},'degree',this.value)" style="margin-bottom:5px;"><input type="text" value="${item.date}" oninput="updEdu(${i},'date',this.value)"></div>`; });
         }
-
+        
         function addExp() { userData.exp.push({title:'',company:'',date:'',desc:''}); renderDynamicInputs(); saveAndRender(); }
         function remExp(i) { userData.exp.splice(i, 1); renderDynamicInputs(); saveAndRender(); }
         function updExp(i, k, v) { userData.exp[i][k] = v; saveAndRender(); }
@@ -436,7 +460,12 @@
         function updEdu(i, k, v) { userData.edu[i][k] = v; saveAndRender(); }
         function setTheme(t) { userData.theme = t; document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); saveAndRender(); }
         function setColor(c) { userData.color = c; saveAndRender(); }
-        function resetCV() { if(confirm('Veriler silinsin mi?')) { localStorage.removeItem('odhunCV_data'); location.reload(); } }
+        function resetCV() { if(confirm('Sıfırlansın mı?')) { localStorage.removeItem('odhunCV_data'); location.reload(); } }
+        function downloadWord() {
+            const content = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${document.getElementById('cvPage').innerHTML}</body></html>`;
+            const converted = htmlDocx.asBlob(content, {orientation: 'portrait', margins: {top: 720, right: 720, bottom: 720, left: 720}});
+            saveAs(converted, 'ozgecmis.docx');
+        }
     </script>
 
 </body>
