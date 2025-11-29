@@ -1,392 +1,224 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odhun Wheels | Koleksiyon Takip</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%230057b8%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2250%22 fill=%22%23ffc107%22>H</text></svg>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --hw-blue: #0057b8;
-            --hw-orange: #ff6200;
-            --hw-yellow: #ffc107;
-            --bg: #111;
-            --card-bg: #1e1e1e;
-            --text: #fff;
-            --text-dim: #aaa;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0; padding: 0; background-color: var(--bg); color: var(--text);
-            font-family: 'Roboto', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
-        }
-        /* HEADER */
-        header {
-            background: linear-gradient(135deg, #003060, var(--hw-blue));
-            padding: 20px; text-align: center; border-bottom: 5px solid var(--hw-orange);
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .brand {
-            font-family: 'Russo One', sans-serif; font-size: 2.2rem; color: #fff;
-            text-shadow: 2px 2px 0px var(--hw-orange); font-style: italic; letter-spacing: 1px;
-        }
-        .brand span { color: var(--hw-yellow); }
-        
-        /* KONTROLLER */
-        .controls {
-            padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%;
-            display: flex; flex-direction: column; gap: 15px;
-        }
-        .year-tabs { display: flex; background: #222; border-radius: 8px; padding: 5px; overflow-x: auto; gap: 5px; }
-        .year-tab {
-            padding: 10px 20px; cursor: pointer; border-radius: 6px; color: #aaa; font-weight: bold;
-            transition: 0.2s; white-space: nowrap; flex: 1; text-align: center;
-        }
-        .year-tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
-        .year-tab.active { background: var(--hw-blue); color: #fff; box-shadow: 0 2px 10px rgba(0,87,184,0.4); }
-        
-        .control-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .search-box { position: relative; flex: 1; min-width: 250px; }
-        .search-box input {
-            width: 100%; padding: 12px 40px 12px 15px; border-radius: 8px; border: 1px solid #333;
-            background: #222; color: #fff; font-size: 1rem; outline: none; transition: 0.3s;
-        }
-        .search-box input:focus { border-color: var(--hw-orange); background: #000; }
-        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; }
-        
-        .filter-btn {
-            padding: 10px 20px; border-radius: 8px; border: 1px solid #333;
-            background: #222; color: #aaa; cursor: pointer; font-weight: 600; flex: 1;
-        }
-        .filter-btn.active { background: var(--hw-orange); color: #fff; border-color: var(--hw-orange); }
-
-        /* İSTATİSTİK */
-        .stats-bar {
-            background: #222; padding: 15px; border-radius: 12px; margin: 0 auto 20px; max-width: 1200px; width: 95%;
-            display: flex; align-items: center; gap: 15px; border: 1px solid #333;
-        }
-        .progress-track { flex: 1; height: 10px; background: #000; border-radius: 5px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--hw-orange); width: 0%; transition: 0.5s; }
-        .stats-text { font-size: 0.9rem; font-weight: bold; color: var(--hw-yellow); white-space: nowrap; }
-
-        /* LISTE */
-        .car-list {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px; padding: 0 20px 80px; max-width: 1200px; margin: 0 auto; width: 100%;
-        }
-        .car-card {
-            background: var(--card-bg); border-radius: 10px; overflow: hidden;
-            position: relative; cursor: pointer; transition: 0.2s; border: 2px solid transparent;
-        }
-        .car-card:hover { transform: translateY(-3px); z-index: 5; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .car-card.owned { border-color: var(--hw-blue); background: #0d1b2a; }
-        .car-card.owned .car-img { opacity: 1; filter: none; }
-        .car-card:not(.owned) .car-img { opacity: 0.6; filter: grayscale(100%); }
-
-        .car-img-box {
-            width: 100%; aspect-ratio: 16/9; background: #fff; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
-        }
-        .car-img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s; }
-        
-        .google-search-hint {
-            position: absolute; bottom: 5px; right: 5px;
-            background: rgba(0,0,0,0.8); color: #fff; text-decoration: none;
-            font-size: 0.65rem; padding: 4px 8px; border-radius: 4px;
-            display: none; z-index: 10; border: 1px solid #444;
-        }
-        .car-card:hover .google-search-hint { display: block; }
-        .google-search-hint:hover { background: var(--hw-blue); border-color: var(--hw-blue); }
-
-        .car-details { padding: 10px; }
-        .car-num { font-size: 0.75rem; font-weight: 900; color: var(--hw-orange); display: flex; justify-content: space-between; }
-        .car-title { font-size: 0.9rem; font-weight: 700; margin: 5px 0; line-height: 1.2; height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .car-series { font-size: 0.7rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .status-badge {
-            font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: #333; color: #aaa;
-        }
-        .car-card.owned .status-badge { background: var(--hw-blue); color: #fff; }
-
-        footer {
-            text-align: center; padding: 20px; font-size: 0.75rem; color: #444;
-            border-top: 1px solid #222; margin-top: auto; background: #111;
-        }
-
-        @media (max-width: 600px) {
-            .car-list { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px 80px; }
-            .brand { font-size: 1.8rem; }
-            .google-search-hint { display: block; opacity: 0.8; padding: 2px 5px; font-size: 0.6rem; }
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Odhun Wheels | Koleksiyon Takip</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230057b8'/><text x='50' y='55' dominant-baseline='middle' text-anchor='middle' font-family=Arial font-weight='700' font-size='50' fill='%23ffc107'>H</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--hw-blue:#0057b8;--hw-orange:#ff6200;--hw-yellow:#ffc107;--bg:#111;--card-bg:#1e1e1e;--text:#fff}
+*{box-sizing:border-box}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+header{background:linear-gradient(135deg,#003060,var(--hw-blue));padding:18px;text-align:center;border-bottom:4px solid var(--hw-orange);position:sticky;top:0;z-index:100}
+.brand{font-family:'Russo One',sans-serif;font-size:2rem;color:#fff;text-shadow:2px 2px 0 var(--hw-orange);letter-spacing:1px}
+.brand span{color:var(--hw-yellow)}
+.controls{padding:16px;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.year-tabs{display:flex;background:#222;border-radius:8px;padding:5px;gap:6px;overflow:auto}
+.year-tab{padding:8px 14px;border-radius:6px;color:#aaa;font-weight:700;cursor:pointer;white-space:nowrap;text-align:center;flex:0 0 auto}
+.year-tab.active{background:var(--hw-blue);color:#fff;box-shadow:0 2px 10px rgba(0,87,184,0.3)}
+.control-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search-box{position:relative;flex:1;min-width:220px}
+.search-box input{width:100%;padding:10px 38px 10px 12px;border-radius:8px;border:1px solid #333;background:#222;color:#fff;outline:none}
+.search-box i{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#666}
+.filter-btn{padding:8px 14px;border-radius:8px;border:1px solid #333;background:#222;color:#aaa;cursor:pointer;font-weight:600}
+.filter-btn.active{background:var(--hw-orange);color:#fff;border-color:var(--hw-orange)}
+.stats-bar{background:#222;padding:12px;border-radius:12px;margin:10px auto;max-width:1200px;width:95%;display:flex;align-items:center;gap:12px;border:1px solid #333}
+.progress-track{flex:1;height:10px;background:#000;border-radius:6px;overflow:hidden}
+.progress-fill{height:100%;background:var(--hw-orange);width:0%;transition:0.4s}
+.stats-text{font-size:0.9rem;font-weight:700;color:var(--hw-yellow);white-space:nowrap}
+.collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;padding:0 20px 80px;max-width:1200px;margin:0 auto;width:100%}
+.car-card{background:var(--card-bg);border-radius:10px;overflow:hidden;position:relative;cursor:pointer;transition:0.18s;border:2px solid transparent}
+.car-card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,0.35)}
+.car-card.owned{border-color:var(--hw-blue);background:#0d1b2a}
+.car-img-box{width:100%;aspect-ratio:16/9;background:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.car-img{width:100%;height:100%;object-fit:contain;transition:0.25s}
+.car-card:not(.owned) .car-img{filter:grayscale(100%);opacity:0.65}
+.google-search-hint{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;text-decoration:none;font-size:0.72rem;padding:4px 8px;border-radius:6px;border:1px solid #444;display:none}
+.car-card:hover .google-search-hint{display:block}
+.car-details{padding:10px}
+.car-num{font-size:0.75rem;font-weight:900;color:var(--hw-orange);display:flex;justify-content:space-between}
+.car-title{font-size:0.9rem;font-weight:700;margin:6px 0;line-height:1.2;height:2.6em;overflow:hidden}
+.car-series{font-size:0.75rem;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-badge{font-size:0.7rem;padding:3px 6px;border-radius:6px;background:#333;color:#aaa}
+.car-card.owned .status-badge{background:var(--hw-blue);color:#fff}
+.footer{padding:18px;text-align:center;color:#888;border-top:1px solid #222;margin-top:auto;background:#0b0b0b}
+@media(max-width:600px){.collection-grid{grid-template-columns:repeat(2,1fr);gap:10px;padding:0 10px 80px}.brand{font-size:1.5rem}.google-search-hint{display:block;opacity:0.9}}
+</style>
 </head>
 <body>
-
 <header>
-    <div class="brand">ODHUN <span>WHEELS</span></div>
+  <div class="brand">ODHUN <span>WHEELS</span></div>
 </header>
 
 <div class="controls">
-    <div class="year-tabs">
-        <div class="year-tab" onclick="setYear('2023')">2023</div>
-        <div class="year-tab active" onclick="setYear('2024')">2024</div>
-        <div class="year-tab" onclick="setYear('2025')">2025</div>
-        <div class="year-tab" onclick="setYear('2026')">2026</div>
-    </div>
+  <div class="year-tabs" role="tablist" aria-label="Yıllar" id="yearTabs"></div>
 
-    <div class="control-row">
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Model veya Numara Ara..." onkeyup="renderCars()">
-            <i class="fas fa-search"></i>
-        </div>
-        <div style="display:flex; gap:5px; flex:1;">
-            <button class="filter-btn active" onclick="setFilter('all', this)">Tümü</button>
-            <button class="filter-btn" onclick="setFilter('owned', this)">Var</button>
-            <button class="filter-btn" onclick="setFilter('missing', this)">Yok</button>
-        </div>
+  <div class="control-row">
+    <div class="search-box">
+      <input id="searchInput" type="text" placeholder="Model veya Numara Ara..." />
+      <i class="fas fa-search"></i>
     </div>
+    <div style="display:flex;gap:8px">
+      <button class="filter-btn active" data-filter="all">Tümü</button>
+      <button class="filter-btn" data-filter="owned">Var</button>
+      <button class="filter-btn" data-filter="missing">Yok</button>
+    </div>
+  </div>
 </div>
 
 <div class="stats-bar">
-    <div class="progress-track"><div class="progress-fill" id="pBar"></div></div>
-    <div class="stats-text" id="pText">0/250</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="stats-text" id="progressText">0 / 250 (%0)</div>
 </div>
 
-<div class="car-list" id="list"></div>
+<div class="collection-grid" id="grid" aria-live="polite"></div>
 
-<footer>
-    Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi
-</footer>
+<div class="footer">Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi</div>
 
 <script>
-// --- MERKEZİ VERİ TABANI ---
-const db = {
-    "2023": [
-        {n:"1", t:"Volvo P1800 Gasser", s:"Dream Garage", i:"https://static.wikia.nocookie.net/hotwheels/images/0/08/Volvo_P1800_Gasser_%28%2723_Mainline%29.jpg"},
-        {n:"2", t:"'87 Ford Sierra Cosworth", s:"The 80s"}, {n:"3", t:"Classic TV Series Batmobile", s:"Batman"},
-        {n:"4", t:"Ford Escort RS2000", s:"Retro Racers"}, {n:"5", t:"Dimachinni Veloce", s:"Retro Racers"},
-        {n:"6", t:"HW K.I.T.T. Concept", s:"Screen Time"}, {n:"7", t:"Bricking Trails", s:"Brick Rides"},
-        {n:"10", t:"Raijin Express", s:"HW Haulers"}, {n:"12", t:"Roadster Bite", s:"Roadsters"},
-        {n:"17", t:"LB Super Silhouette Nissan Silvia (S15)", s:"Modified"}, {n:"20", t:"Nissan Patrol Custom", s:"J-Imports"},
-        {n:"21", t:"Subaru WRX STI", s:"J-Imports"}, {n:"22", t:"Draggin' Wagon", s:"Experimotors"},
-        {n:"28", t:"Custom '11 Camaro", s:"Muscle Mania"}, {n:"36", t:"Tesla Model Y", s:"Green Speed"},
-        {n:"46", t:"2023 Nissan Z", s:"J-Imports"}, {n:"47", t:"Nissan Maxima Drift Car", s:"J-Imports"},
-        {n:"53", t:"Honda Civic Si", s:"J-Imports"}, {n:"60", t:"Bone Shaker", s:"Dream Garage"},
-        {n:"69", t:"Nissan Skyline GT-R (R32)", s:"J-Imports"}, {n:"70", t:"Rimac Nevera", s:"Green Speed"},
-        {n:"72", t:"Pagani Zonda R", s:"Turbo"}, {n:"81", t:"Ford Mustang Mach-E 1400", s:"Drag Strip"},
-        {n:"84", t:"Lotus Evija", s:"Green Speed"}, {n:"91", t:"Nissan Leaf Nismo RC_02", s:"Modified"},
-        {n:"103", t:"Batmobile (1989)", s:"Batman"}, {n:"117", t:"'73 Honda Civic Custom", s:"J-Imports"},
-        {n:"121", t:"Lotus Emira", s:"Factory Fresh"}, {n:"122", t:"Corvette C7 Z06", s:"Factory Fresh"},
-        {n:"123", t:"Porsche Taycan Turbo S", s:"Factory Fresh"}, {n:"134", t:"Renault Sport RS 01", s:"Exotics"},
-        {n:"144", t:"Fiat 500e", s:"Green Speed"}, {n:"145", t:"Lucid Air", s:"Green Speed"},
-        {n:"149", t:"Toyota Supra", s:"J-Imports"}, {n:"159", t:"Tesla Roadster", s:"Green Speed"},
-        {n:"178", t:"Celero GT", s:"Exotics"}, {n:"179", t:"Bugatti Bolide", s:"Exotics"},
-        {n:"180", t:"McLaren Senna", s:"Exotics"}, {n:"188", t:"Koenigsegg Gemera", s:"Exotics"},
-        {n:"215", t:"2018 Honda Civic Type R", s:"J-Imports"}, {n:"216", t:"'62 Chevy Corvette", s:"Then and Now"},
-        {n:"217", t:"Tesla Roadster", s:"Then and Now"}, {n:"224", t:"Lamborghini Reventón", s:"Exotics"},
-        {n:"225", t:"Aston Martin Valhalla", s:"Exotics"}, {n:"238", t:"McLaren F1", s:"The 90s"},
-        {n:"239", t:"Bugatti EB110", s:"The 90s"}, {n:"250", t:"McLaren Solus GT", s:"Exotics"}
-    ],
-    "2024": [
-        {n:"1", t:"Mazda Autozam AZ-1", s:"Dream Garage", i:"https://static.wikia.nocookie.net/hotwheels/images/4/43/Mazda_Autozam_AZ-1_%28%2724_Mainline%29.jpg"},
-        {n:"2", t:"Batman Arkham Asylum Batmobile", s:"Batman"}, {n:"3", t:"Monster High Ghoul Mobile", s:"Screen Time"},
-        {n:"4", t:"Custom Otto", s:"Dream Garage"}, {n:"5", t:"'15 Dodge Charger SRT", s:"First Response"},
-        {n:"6", t:"Tesla Model Y", s:"Green Speed"}, {n:"7", t:"Proton Saga", s:"Compact Kings"},
-        {n:"8", t:"Honda Civic Si", s:"Factory Fresh"}, {n:"9", t:"'18 Camaro SS", s:"Then and Now"},
-        {n:"10", t:"Volkswagen Beetle", s:"Compact Kings"}, {n:"11", t:"Nissan Skyline GT-R (R33)", s:"J-Imports"},
-        {n:"12", t:"Rimac Nevera", s:"Green Speed"}, {n:"13", t:"Corvette C8.R", s:"Race Day"},
-        {n:"14", t:"Bugatti Bolide", s:"Exotics"}, {n:"15", t:"Ford Mustang Mach-E 1400", s:"Green Speed"},
-        {n:"18", t:"'89 Mercedes-Benz 560 SEC AMG", s:"Modified"}, {n:"21", t:"Czinger 21C", s:"Green Speed"},
-        {n:"22", t:"Fiat 500e", s:"Compact Kings"}, {n:"27", t:"Mazda RX-7", s:"Art Cars"},
-        {n:"30", t:"'64 Chevy Nova Wagon", s:"Wagons"}, {n:"31", t:"Volvo 240 Drift Wagon", s:"Wagons"},
-        {n:"37", t:"Ford F-150 Lightning", s:"Green Speed"}, {n:"38", t:"GMC Hummer EV", s:"Green Speed"},
-        {n:"39", t:"Lucid Air", s:"Green Speed"}, {n:"40", t:"Audi RS e-tron GT", s:"Green Speed"},
-        {n:"51", t:"Bone Shaker", s:"Rod Squad"}, {n:"69", t:"Mazda MX-5 Miata", s:"J-Imports"},
-        {n:"70", t:"McLaren Solus GT", s:"Modified"}, {n:"71", t:"'89 Mazda Savanna RX-7", s:"J-Imports"},
-        {n:"74", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh"}, {n:"77", t:"Nissan Skyline 2000GT-R", s:"J-Imports"},
-        {n:"78", t:"'82 Toyota Supra", s:"J-Imports"}, {n:"79", t:"Subaru WRX STI", s:"J-Imports"},
-        {n:"81", t:"Liberty Walk Super Silhouette Nissan Silvia", s:"Modified"}, {n:"82", t:"'95 Mazda RX-7", s:"Modified"},
-        {n:"83", t:"Pandem Subaru BRZ", s:"Modified"}, {n:"84", t:"Porsche 935", s:"Modified"},
-        {n:"106", t:"Nissan Maxima Drift Car", s:"Drift"}, {n:"107", t:"Toyota GR Supra", s:"Drift"},
-        {n:"114", t:"BMW 3.0 CSL Race Car", s:"Retro Racers"}, {n:"115", t:"Porsche 911 GT3", s:"Retro Racers"},
-        {n:"116", t:"Ford GT40", s:"Retro Racers"}, {n:"118", t:"Mazda 787B", s:"Retro Racers"},
-        {n:"125", t:"Pagani Zonda R", s:"Race Day"}, {n:"131", t:"Batmobile", s:"Batman"},
-        {n:"178", t:"Bugatti Chiron", s:"Exotics"}, {n:"179", t:"Koenigsegg Jesko", s:"Exotics"},
-        {n:"180", t:"Pagani Huayra", s:"Exotics"}, {n:"181", t:"McLaren P1", s:"Exotics"},
-        {n:"182", t:"Lamborghini Sian FKP 37", s:"Exotics"}, {n:"183", t:"Lamborghini Huracan LP 610-4", s:"Exotics"},
-        {n:"191", t:"Ford Sierra Cosworth", s:"The 80s"}, {n:"194", t:"Nissan 300ZX Twin Turbo", s:"The 90s"},
-        {n:"195", t:"'98 Subaru Impreza 22B STi", s:"The 90s"}, {n:"196", t:"Mercedes-Benz 500 E", s:"The 90s"},
-        {n:"197", t:"McLaren F1", s:"The 90s"}, {n:"199", t:"'16 Bugatti Chiron", s:"Factory Fresh"},
-        {n:"200", t:"Lucid Air", s:"Factory Fresh"}, {n:"201", t:"Tesla Model 3", s:"Factory Fresh"},
-        {n:"202", t:"Porsche Taycan Turbo S", s:"Factory Fresh"}, {n:"250", t:"Ain't Fare", s:"Experimotors"}
-    ],
-    "2025": [
-        {n:"1", t:"Kei Swap", s:"HW Art Cars"}, {n:"2", t:"Super Twin Mill", s:"HW Let's Race"},
-        {n:"3", t:"Morgan Super 3", s:"Factory Fresh"}, {n:"4", t:"Mazda MX-5 Miata", s:"HW Dream Garage"},
-        {n:"5", t:"Ford Mustang GTD", s:"Mustang 60th"}, {n:"9", t:"McLaren W1", s:"HW Race Day"},
-        {n:"10", t:"Optimus Prime", s:"HW Screen Time"}, {n:"12", t:"Nissan Skyline GT-R", s:"J-Imports"},
-        {n:"13", t:"GMC Hummer EV", s:"HW Green Speed"}, {n:"17", t:"Ford Performance Supervan 4", s:"HW Green Speed"},
-        {n:"19", t:"Batmobile", s:"Batman"}, {n:"25", t:"Deora II", s:"HW Legends"},
-        {n:"26", t:"Nissan Skyline 2000GT-R LBWK", s:"J-Imports"}, {n:"29", t:"Porsche 911 GT3 RS", s:"Then and Now"},
-        {n:"36", t:"Audi RS e-tron GT", s:"HW Green Speed"}, {n:"44", t:"Nissan Skyline RS (KDR30)", s:"J-Imports"},
-        {n:"46", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh"}, {n:"48", t:"Subaru BRZ", s:"J-Imports"},
-        {n:"54", t:"Batman Arkham Asylum Batmobile", s:"Batman"}, {n:"60", t:"Delorean Time Machine", s:"Screen Time"},
-        {n:"62", t:"Datsun 240Z", s:"J-Imports"}, {n:"69", t:"'15 Mazda MX-5 Miata", s:"J-Imports"},
-        {n:"70", t:"McLaren Solus GT", s:"HW Modified"}, {n:"79", t:"Mazda 787B", s:"Race Day"},
-        {n:"86", t:"Chevy Silverado EV RST", s:"HW EV"}, {n:"96", t:"'21 Toyota GR Supra", s:"Then and Now"},
-        {n:"98", t:"Mitsubishi 3000GT VR-4", s:"J-Imports"}, {n:"99", t:"Nissan Skyline GT-R (BNR32)", s:"J-Imports"},
-        {n:"100", t:"Lamborghini Countach LPI 800-4", s:"HW Exotics"}, {n:"105", t:"'24 Honda Civic Type-R", s:"J-Imports"},
-        {n:"120", t:"Custom Kia EV6", s:"HW EV"}, {n:"122", t:"'16 Bugatti Chiron", s:"HW Exotics"},
-        {n:"127", t:"Maserati MC20", s:"HW Exotics"}, {n:"130", t:"'17 Ford GT", s:"Exotics"},
-        {n:"132", t:"'95 Lamborghini Diablo SV", s:"Exotics"}, {n:"136", t:"Ford GT LM", s:"Race Day"},
-        {n:"139", t:"Lamborghini Temerario", s:"HW Exotics"}, {n:"141", t:"'85 Honda City Turbo II", s:"J-Imports"},
-        {n:"144", t:"Nissan Skyline GT-R (BCNR33)", s:"J-Imports"}, {n:"146", t:"Lamborghini Gallardo LP 570-4", s:"HW Exotics"},
-        {n:"147", t:"Toyota GR Yaris", s:"HW Rally"}, {n:"149", t:"Quick Bite", s:"Fast Foodie"},
-        {n:"174", t:"Peugeot 9X8 Hypercar", s:"Exotics"}, {n:"198", t:"Ferrari F40 Competizione", s:"Exotics"},
-        {n:"209", t:"McLaren Speedtail", s:"Exotics"}, {n:"248", t:"Polestar TRX", s:"EV"},
-        {n:"250", t:"Volvo 240 Drift", s:"Drift"}
-    ],
-    "2026": [
-        {n:"1", t:"Gordon Murray T.33", s:"Exoticars"}, {n:"2", t:"Batmobile (The Batman)", s:"Batman"},
-        {n:"7", t:"Solar Reflex", s:"HW EV"}, {n:"8", t:"Ford Mustang Mach-E 1400", s:"HW EV"},
-        {n:"11", t:"2018 Honda Civic Type R", s:"Night Speed"}, {n:"15", t:"Porsche 911 Carrera T", s:"Factory Fresh"},
-        {n:"20", t:"McLaren Formula 1 Team", s:"Formula 1"}, {n:"29", t:"'92 Dodge Viper RT/10", s:"Drop Tops"},
-        {n:"34", t:"Porsche Taycan Turbo S", s:"HW EV"}, {n:"36", t:"'70 Dodge Hemi Challenger", s:"Night Speed"},
-        {n:"41", t:"Lamborghini Huracán Sterrato", s:"Safari Mode"}, {n:"43", t:"Ford Mustang GTD", s:"Factory Refresh"},
-        {n:"142", t:"McLaren W1", s:"Race Day"}, {n:"162", t:"2018 Bentley Continental GT3", s:"Race Day"}
-    ]
-};
+/* Front-end app that loads db_with_images.json and shows the cars.
+   Requires hosting via HTTP (python -m http.server) to allow fetch of JSON. */
 
-// --- EKSİK NUMARALARI DOLDURMA (1-250) ---
-function fillGaps(year) {
-    if (!db[year]) db[year] = [];
-    const list = db[year];
-    const existingNums = list.map(c => parseInt(c.n));
+let db = {}; // loaded from db_with_images.json
+let currentYear = null;
+let userCollection = [];
+let currentFilter = 'all';
 
-    for (let i = 1; i <= 250; i++) {
-        if (!existingNums.includes(i)) {
-            list.push({ 
-                n: i.toString(), 
-                t: `${year} Gizli Model / Veri Yok`, 
-                s: "TBA", 
-                i: "" 
-            });
-        }
-    }
-    // Numaraya göre sırala
-    list.sort((a, b) => parseInt(a.n) - parseInt(b.n));
-}
+function storageKey(year){ return `odhunWheels_collection_${year}`; }
 
-// Tüm yıllar için boşlukları doldur
-["2023", "2024", "2025", "2026"].forEach(y => fillGaps(y));
-
-// --- UYGULAMA MANTIĞI ---
-let currentYear = "2024";
-let currentFilter = "all";
-let userCollection = {};
-
-// Sayfa Yüklendiğinde
-window.onload = () => {
-    // LocalStorage'dan veriyi çek
-    const saved = localStorage.getItem('odhunWheels_full_collection');
-    if (saved) {
-        userCollection = JSON.parse(saved);
-    }
+async function loadDB(){
+  try {
+    const res = await fetch('db_with_images.json', {cache: "no-cache"});
+    if(!res.ok) throw new Error('db_with_images.json bulunamadı. Lütfen önce fetch_images.js ile oluşturun ve aynı klasöre koyun.');
+    db = await res.json();
+    // choose a default year (latest present)
+    const years = Object.keys(db).sort().reverse();
+    currentYear = years[0] || '2025';
+    renderYearTabs(years);
+    loadUserCollection();
     renderCars();
     updateProgress();
-};
+  } catch(err){
+    document.getElementById('grid').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:20px;color:#f66">Hata: ${escapeHtml(err.message)}</div>`;
+    console.error(err);
+  }
+}
 
-function setYear(y) {
-    currentYear = y;
-    // Tab stilini güncelle
-    document.querySelectorAll('.year-tab').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    
+function renderYearTabs(years){
+  const container = document.getElementById('yearTabs');
+  container.innerHTML = '';
+  years.forEach(y=>{
+    const el = document.createElement('div');
+    el.className = 'year-tab' + (y===currentYear ? ' active' : '');
+    el.textContent = y;
+    el.tabIndex = 0;
+    el.addEventListener('click', ()=>setYear(y, el));
+    el.addEventListener('keydown', (e)=> { if(e.key==='Enter') setYear(y, el); });
+    container.appendChild(el);
+  });
+}
+
+function setYear(y, el){
+  currentYear = y;
+  document.querySelectorAll('.year-tab').forEach(b=>b.classList.toggle('active', b.textContent===y));
+  loadUserCollection();
+  renderCars();
+  updateProgress();
+}
+
+function loadUserCollection(){
+  userCollection = JSON.parse(localStorage.getItem(storageKey(currentYear)) || "[]");
+}
+
+function saveUserCollection(){
+  localStorage.setItem(storageKey(currentYear), JSON.stringify(userCollection));
+}
+
+function toggleCar(id){
+  if(userCollection.includes(id)){
+    userCollection = userCollection.filter(x=>x!==id);
+  } else {
+    userCollection.push(id);
+  }
+  saveUserCollection();
+  renderCars();
+  updateProgress();
+}
+
+function renderCars(){
+  const grid = document.getElementById('grid');
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  grid.innerHTML = '';
+  const cars = db[currentYear] || [];
+  const frag = document.createDocumentFragment();
+
+  cars.forEach(car=>{
+    const carId = `${currentYear}-${car.n}`;
+    const isOwned = userCollection.includes(carId);
+
+    if(q && !car.t.toLowerCase().includes(q) && !car.n.includes(q)) return;
+    if(currentFilter==='owned' && !isOwned) return;
+    if(currentFilter==='missing' && isOwned) return;
+
+    const card = document.createElement('div');
+    card.className = 'car-card' + (isOwned ? ' owned' : '');
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.onclick = ()=>toggleCar(carId);
+    card.onkeydown = (e)=>{ if(e.key==='Enter' || e.key===' ') toggleCar(carId); };
+
+    const imgUrl = car.i && car.i.trim() ? car.i : `https://via.placeholder.com/400x225/222/fff?text=Görsel+Yok+#${car.n}`;
+    const googleSearchUrl = `https://www.google.com/search?tbm=isch&q=Hot+Wheels+${encodeURIComponent(currentYear+' '+car.t+' '+car.n)}`;
+
+    card.innerHTML = `
+      <div class="car-img-box">
+        <img src="${imgUrl}" alt="${escapeHtml(car.t)}" class="car-img" loading="lazy" onerror="this.src='https://via.placeholder.com/400x225/444/fff?text=Görsel+Yok'">
+        <a href="${googleSearchUrl}" target="_blank" class="google-search-hint" onclick="event.stopPropagation();">Görsel Ara <i class="fas fa-search"></i></a>
+      </div>
+      <div class="car-details">
+        <div class="car-num"><span>#${car.n}/250</span><span class="status-badge">${isOwned ? 'VAR' : 'YOK'}</span></div>
+        <div class="car-title" title="${escapeHtml(car.t)}">${escapeHtml(car.t)}</div>
+        <div class="car-series">${escapeHtml(car.s)}</div>
+      </div>
+    `;
+    frag.appendChild(card);
+  });
+
+  grid.appendChild(frag);
+  if(!grid.children.length){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#777">Araç bulunamadı.</div>';
+  }
+}
+
+function updateProgress(){
+  const total = 250;
+  const ownedCount = userCollection.filter(id => id.startsWith(currentYear)).length;
+  const percent = Math.round((ownedCount/total)*100);
+  const fill = document.getElementById('progressFill');
+  const text = document.getElementById('progressText');
+  if(fill) fill.style.width = percent + '%';
+  if(text) text.innerText = `${ownedCount} / ${total} (%${percent}) Tamamlandı`;
+}
+
+/* UI events */
+document.addEventListener('input', (e)=>{
+  if(e.target && e.target.id==='searchInput') renderCars();
+});
+document.addEventListener('click', (e)=>{
+  if(e.target && e.target.matches('.filter-btn')){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentFilter = e.target.getAttribute('data-filter') || 'all';
     renderCars();
-    updateProgress();
-}
+  }
+});
 
-function setFilter(f, btn) {
-    currentFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderCars();
-}
+/* escape */
+function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
 
-function renderCars() {
-    const grid = document.getElementById('list');
-    const searchTerm = document.getElementById('search').value.toLowerCase();
-    grid.innerHTML = "";
-    
-    const cars = db[currentYear];
-    
-    cars.forEach(car => {
-        // Benzersiz ID: YIL-NO
-        const carId = `${currentYear}-${car.n}`;
-        const isOwned = userCollection[carId] === true;
-
-        // Filtreleme
-        if (searchTerm && !car.t.toLowerCase().includes(searchTerm) && !car.n.includes(searchTerm)) return;
-        if (currentFilter === 'owned' && !isOwned) return;
-        if (currentFilter === 'missing' && isOwned) return;
-
-        // Kart Oluşturma
-        const card = document.createElement('div');
-        card.className = `car-card ${isOwned ? 'owned' : ''}`;
-        card.onclick = () => toggleCar(carId);
-
-        // Resim (Google Arama linki eklenmiş)
-        const imgUrl = car.i ? car.i : `https://via.placeholder.com/300x200/222/555?text=HW+${car.n}`;
-        const googleUrl = `https://www.google.com/search?tbm=isch&q=Hot+Wheels+${currentYear}+${car.t.replace(/ /g,'+')}+${car.n}`;
-
-        card.innerHTML = `
-            <div class="car-img-box">
-                <img src="${imgUrl}" alt="${car.t}" class="car-img" loading="lazy">
-                <a href="${googleUrl}" target="_blank" class="google-search-hint" onclick="event.stopPropagation()">
-                    <i class="fas fa-search"></i> Görsel Ara
-                </a>
-            </div>
-            <div class="car-details">
-                <div class="car-num">
-                    <span>#${car.n}/250</span>
-                    <span class="status-badge">${isOwned ? 'VAR' : 'YOK'}</span>
-                </div>
-                <div class="car-title" title="${car.t}">${car.t}</div>
-                <div class="car-series">${car.s}</div>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-
-    if(grid.innerHTML === "") {
-        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">Araç bulunamadı.</div>`;
-    }
-}
-
-function toggleCar(id) {
-    if (userCollection[id]) {
-        delete userCollection[id];
-    } else {
-        userCollection[id] = true;
-    }
-    // Kaydet
-    localStorage.setItem('odhunWheels_full_collection', JSON.stringify(userCollection));
-    
-    // Sadece ilgili kartı güncellemek yerine tümünü render ediyoruz (basitlik için)
-    renderCars();
-    updateProgress();
-}
-
-function updateProgress() {
-    const total = 250;
-    // Mevcut yıl için sahip olunanları say
-    const ownedCount = Object.keys(userCollection).filter(key => key.startsWith(currentYear + "-")).length;
-    const percent = Math.round((ownedCount / total) * 100);
-    
-    document.getElementById('pBar').style.width = percent + "%";
-    document.getElementById('pText').innerText = `${ownedCount} / ${total} (%${percent})`;
-}
+loadDB();
 </script>
 </body>
 </html>
