@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Odhun Wheels | Koleksiyon Takip</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%230057b8%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2250%22 fill=%22%23ffc107%22>H</text></svg>">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --hw-blue: #0057b8;
+        --hw-orange: #ff6200;
+        --hw-yellow: #ffc107;
+        --bg: #1a1a1a;
+        --card-bg: #252525;
+        --text: #fff;
+        --text-dim: #aaa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; padding: 0; background-color: var(--bg); color: var(--text);
+        font-family: 'Roboto', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+        background: linear-gradient(135deg, #004290, var(--hw-blue));
+        padding: 20px; text-align: center; border-bottom: 5px solid var(--hw-orange);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 100;
+    }
+
+    .brand {
+        font-family: 'Russo One', sans-serif; font-size: 2.5rem; color: #fff;
+        text-shadow: 3px 3px 0px var(--hw-orange); font-style: italic; letter-spacing: 1px;
+    }
+    .brand span { color: var(--hw-yellow); }
+
+    /* KONTROLLER */
+    .controls {
+        padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%;
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+    }
+
+    .search-box {
+        flex: 1; min-width: 250px; position: relative;
+    }
+    .search-box input {
+        width: 100%; padding: 12px 40px 12px 15px; border-radius: 30px; border: none;
+        background: #333; color: #fff; font-size: 1rem; outline: none;
+        border: 2px solid transparent; transition: 0.3s;
+    }
+    .search-box input:focus { border-color: var(--hw-orange); background: #000; }
+    .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; }
+
+    .filter-group { display: flex; gap: 10px; }
+    .filter-btn {
+        padding: 8px 15px; border-radius: 20px; border: 1px solid #444;
+        background: #222; color: #aaa; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+        transition: 0.2s;
+    }
+    .filter-btn.active { background: var(--hw-orange); color: #fff; border-color: var(--hw-orange); }
+
+    .year-select {
+        padding: 10px; background: var(--hw-blue); color: white; border: none;
+        border-radius: 8px; font-weight: bold; cursor: pointer;
+    }
+
+    /* İSTATİSTİK BAR */
+    .progress-bar-container {
+        max-width: 1200px; margin: 0 auto 20px; width: 95%;
+        background: #333; height: 25px; border-radius: 15px; overflow: hidden; position: relative;
+    }
+    .progress-fill {
+        height: 100%; background: linear-gradient(90deg, var(--hw-orange), var(--hw-yellow));
+        width: 0%; transition: width 0.5s ease;
+    }
+    .progress-text {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        font-size: 0.8rem; font-weight: bold; color: #fff; text-shadow: 0 0 3px #000;
+    }
+
+    /* GRID */
+    .collection-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px; padding: 0 20px 100px; max-width: 1200px; margin: 0 auto; width: 100%;
+    }
+
+    /* KART TASARIMI */
+    .car-card {
+        background: var(--card-bg); border-radius: 12px; overflow: hidden;
+        position: relative; cursor: pointer; transition: all 0.2s;
+        border: 2px solid transparent; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .car-card:hover { transform: translateY(-5px); z-index: 10; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+
+    /* Sahip Olunan Kart Stili */
+    .car-card.owned {
+        border-color: var(--hw-blue); background: #0a1a2a;
+    }
+    .car-card.owned .car-img { filter: none; } /* Renkli */
+    .car-card.owned::after {
+        content: '\f00c'; font-family: 'Font Awesome 5 Free'; font-weight: 900;
+        position: absolute; top: 10px; right: 10px; background: var(--hw-blue);
+        color: #fff; width: 30px; height: 30px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 10px var(--hw-blue); animation: popIn 0.3s;
+    }
+
+    /* Eksik Kart Stili */
+    .car-card:not(.owned) .car-img { filter: grayscale(100%) opacity(0.6); transition: 0.3s; }
+    .car-card:not(.owned):hover .car-img { filter: grayscale(0%) opacity(1); }
+
+    .car-img-wrapper {
+        width: 100%; aspect-ratio: 4/3; background: #fff; 
+        display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .car-img { width: 100%; height: 100%; object-fit: contain; }
+
+    .car-info { padding: 12px; }
+    .car-number { 
+        font-size: 0.75rem; color: var(--hw-orange); font-weight: 900; letter-spacing: 1px; 
+        display: flex; justify-content: space-between;
+    }
+    .car-name { 
+        font-size: 0.95rem; font-weight: 700; margin: 5px 0; line-height: 1.3;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .car-series { font-size: 0.75rem; color: var(--text-dim); }
+
+    /* Footer */
+    footer {
+        text-align: center; padding: 20px; font-size: 0.8rem; color: #444;
+        border-top: 1px solid #333; margin-top: auto; background: #111;
+    }
+
+    @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+    /* Mobil */
+    @media (max-width: 768px) {
+        .brand { font-size: 1.8rem; }
+        .controls { gap: 10px; flex-direction: column; align-items: stretch; }
+        .filter-group { justify-content: center; }
+        .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px 80px; }
+        .car-name { font-size: 0.85rem; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    }
+</style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">ODHUN <span>WHEELS</span></div>
+        <div style="font-size:0.8rem; color:#ccc; margin-top:5px;">Koleksiyon Takip Sistemi</div>
+    </header>
+
+    <div class="controls">
+        <div style="display:flex; gap:10px; width:100%; max-width:400px;">
+            <select class="year-select" id="yearSelect" onchange="changeYear()">
+                <option value="2025">2025 Serisi</option>
+                <option value="2024" selected>2024 Serisi</option>
+            </select>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Model ara..." onkeyup="filterCars()">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+        
+        <div class="filter-group">
+            <button class="filter-btn active" onclick="filterType('all', this)">Tümü</button>
+            <button class="filter-btn" onclick="filterType('owned', this)">Var</button>
+            <button class="filter-btn" onclick="filterType('missing', this)">Yok</button>
+        </div>
+    </div>
+
+    <div class="progress-bar-container">
+        <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-text" id="progressText">0 / 250 (%0)</div>
+    </div>
+
+    <div class="collection-grid" id="grid">
+        </div>
+
+    <footer>
+        <strong>Odhun.com</strong> © 2025 Tüm Hakları Saklıdır. <br>
+        Bu proje Hot Wheels hayranları için kişisel kullanım amacıyla yapılmıştır.
+    </footer>
+
+    <script>
+        // --- VERİ TABANI (ÖRNEK 2024 LİSTESİ - BURAYI GENİŞLETEBİLİRSİN) ---
+        // Not: Resimler temsilidir. Gerçek proje için imgur veya kendi hostundaki resimleri kullan.
+        const carsDatabase = {
+            "2024": [
+                { id: "2024-001", num: "1/250", name: "Mazda 787B", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/2/2e/Mazda_787B_%28%2724_Mainline%29.jpg" },
+                { id: "2024-002", num: "2/250", name: "'15 Mazda MX-5 Miata", series: "HW Modified", img: "https://static.wikia.nocookie.net/hotwheels/images/9/9d/2024_15_Mazda_MX-5_Miata.jpg" },
+                { id: "2024-003", num: "3/250", name: "Batmobile", series: "Batman", img: "https://static.wikia.nocookie.net/hotwheels/images/8/88/Batman_Arkham_Asylum_Batmobile_%28%2724_Mainline%29.jpg" },
+                { id: "2024-004", num: "4/250", name: "Custom '68 Camaro", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/5/55/Custom_%2768_Camaro_%28%2724_Mainline%29.jpg" },
+                { id: "2024-005", num: "5/250", name: "Mod Rod", series: "HW Dream Garage", img: "https://static.wikia.nocookie.net/hotwheels/images/a/a2/Mod_Rod_%28%2724_Mainline%29.jpg" },
+                { id: "2024-006", num: "6/250", name: "DMC DeLorean", series: "HW 80s", img: "https://static.wikia.nocookie.net/hotwheels/images/6/60/DMC_DeLorean_%28%2724_Mainline%29.jpg" },
+                { id: "2024-007", num: "7/250", name: "Proton Saga", series: "Compact Kings", img: "https://static.wikia.nocookie.net/hotwheels/images/7/72/Proton_Saga_%28%2724_Mainline%29.jpg" },
+                { id: "2024-008", num: "8/250", name: "Honda Civic Si", series: "Factory Fresh", img: "https://static.wikia.nocookie.net/hotwheels/images/0/0b/Honda_Civic_Si_%28%2724_Mainline%29.jpg" },
+                { id: "2024-009", num: "9/250", name: "'18 Camaro SS", series: "Then and Now", img: "https://static.wikia.nocookie.net/hotwheels/images/e/e9/2018_Camaro_SS_%28%2724_Mainline%29.jpg" },
+                { id: "2024-010", num: "10/250", name: "Volkswagen Beetle", series: "Compact Kings", img: "https://static.wikia.nocookie.net/hotwheels/images/f/fb/Volkswagen_Beetle_%28%2724_Mainline%29.jpg" },
+                { id: "2024-011", num: "11/250", name: "Nissan Skyline GT-R (R33)", series: "J-Imports", img: "https://static.wikia.nocookie.net/hotwheels/images/5/5d/Nissan_Skyline_GT-R_%28R33%29_%28%2724_Mainline%29.jpg" },
+                { id: "2024-012", num: "12/250", name: "Rimac Nevera", series: "HW Green Speed", img: "https://static.wikia.nocookie.net/hotwheels/images/5/51/Rimac_Nevera_%28%2724_Mainline%29.jpg" },
+                { id: "2024-013", num: "13/250", name: "Corvette C8.R", series: "HW Race Day", img: "https://static.wikia.nocookie.net/hotwheels/images/3/35/Corvette_C8.R_%28%2724_Mainline%29.jpg" },
+                { id: "2024-014", num: "14/250", name: "Bugatti Bolide", series: "HW Exotics", img: "https://static.wikia.nocookie.net/hotwheels/images/2/24/Bugatti_Bolide_%28%2724_Mainline%29.jpg" },
+                { id: "2024-015", num: "15/250", name: "Ford Mustang Mach-E", series: "HW Green Speed", img: "https://static.wikia.nocookie.net/hotwheels/images/0/09/Ford_Mustang_Mach-E_1400_%28%2724_Mainline%29.jpg" }
+                // ... Buraya 250'ye kadar devam edebilirsin ...
+            ],
+            "2025": [
+                { id: "2025-001", num: "1/250", name: "'92 Honda Civic EG", series: "J-Imports", img: "https://static.wikia.nocookie.net/hotwheels/images/b/b8/%2792_Honda_Civic_EG_%28%2725_Mainline%29.jpg" },
+                { id: "2025-002", num: "2/250", name: "Lamborghini Huracán Sterrato", series: "HW Dirt", img: "https://static.wikia.nocookie.net/hotwheels/images/d/d7/Lamborghini_Huracan_Sterrato_%28%2725_Mainline%29.jpg" }
+            ]
+        };
+
+        // --- KULLANICI VERİSİ ---
+        let userCollection = JSON.parse(localStorage.getItem('odhunWheels_collection')) || [];
+        let currentYear = "2024";
+        let currentFilter = "all";
+
+        window.onload = () => {
+            renderCars();
+            updateProgress();
+        };
+
+        function changeYear() {
+            currentYear = document.getElementById('yearSelect').value;
+            renderCars();
+            updateProgress();
+        }
+
+        function filterType(type, btn) {
+            currentFilter = type;
+            // Buton stilini güncelle
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderCars();
+        }
+
+        function filterCars() {
+            renderCars();
+        }
+
+        // --- RENDER ---
+        function renderCars() {
+            const grid = document.getElementById('grid');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            grid.innerHTML = "";
+
+            // O yıla ait verileri al
+            const cars = carsDatabase[currentYear] || [];
+
+            cars.forEach(car => {
+                const isOwned = userCollection.includes(car.id);
+                
+                // Arama Filtresi
+                if (searchTerm && !car.name.toLowerCase().includes(searchTerm) && !car.num.includes(searchTerm)) return;
+
+                // Tip Filtresi
+                if (currentFilter === 'owned' && !isOwned) return;
+                if (currentFilter === 'missing' && isOwned) return;
+
+                const card = document.createElement('div');
+                card.className = `car-card ${isOwned ? 'owned' : ''}`;
+                card.onclick = () => toggleCar(car.id);
+                
+                card.innerHTML = `
+                    <div class="car-img-wrapper">
+                        <img src="${car.img}" alt="${car.name}" class="car-img" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
+                    </div>
+                    <div class="car-info">
+                        <div class="car-number">
+                            <span>#${car.num}</span>
+                            ${isOwned ? '<span style="color:var(--hw-blue)">VAR</span>' : '<span style="color:#555">YOK</span>'}
+                        </div>
+                        <div class="car-name">${car.name}</div>
+                        <div class="car-series">${car.series}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            if(grid.innerHTML === "") {
+                grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">Aradığınız kriterde araç bulunamadı.</div>`;
+            }
+        }
+
+        // --- İŞLEM ---
+        function toggleCar(id) {
+            if (userCollection.includes(id)) {
+                // Varsa çıkar
+                userCollection = userCollection.filter(item => item !== id);
+            } else {
+                // Yoksa ekle
+                userCollection.push(id);
+            }
+            // Kaydet
+            localStorage.setItem('odhunWheels_collection', JSON.stringify(userCollection));
+            
+            // Yenile
+            renderCars();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = carsDatabase[currentYear] ? carsDatabase[currentYear].length : 0;
+            if(total === 0) return;
+
+            // O yıla ait sahip olunanları say
+            const ownedCount = carsDatabase[currentYear].filter(c => userCollection.includes(c.id)).length;
+            const percent = Math.round((ownedCount / total) * 100);
+
+            document.getElementById('progressFill').style.width = percent + "%";
+            document.getElementById('progressText').innerText = `${ownedCount} / ${total} (%${percent}) Tamamlandı`;
+        }
+
+    </script>
+
+</body>
+</html>
