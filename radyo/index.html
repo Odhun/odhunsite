@@ -3,684 +3,238 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0f172a">
-<title>Odhun FM | Yeni Nesil Radyo</title>
-
+<title>Odhun FM | Stabil Radyo</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23f43f5e%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>FM</text></svg>">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <style>
-    /* --- TEMEL AYARLAR --- */
     :root {
-        --bg-dark: #05070a;
-        --panel: #0f172a;
-        --panel-light: #1e293b;
-        --accent: #f43f5e; /* Odhun FM Pembesi */
-        --accent-glow: rgba(244, 63, 94, 0.4);
-        --text: #f8fafc;
-        --text-dim: #94a3b8;
-        --border: rgba(255,255,255,0.05);
-        --sidebar-w: 260px;
-        --player-h: 90px;
+        --bg-dark: #0f172a;
+        --panel: #1e293b;
+        --accent: #f43f5e;
+        --text: #fff;
+        --border: rgba(255,255,255,0.1);
     }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg-dark); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-    * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--panel-light) var(--bg-dark); }
+    /* SIDEBAR */
+    .sidebar { width: 260px; background: #020617; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+    .brand { height: 60px; display: flex; align-items: center; padding: 0 20px; font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; border-bottom: 1px solid var(--border); }
+    .brand span { color: var(--accent); margin-left: 5px; }
     
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-dark); }
-    ::-webkit-scrollbar-thumb { background: var(--panel-light); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    .station-list { flex: 1; overflow-y: auto; padding: 10px; }
+    .station-item { padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 5px; transition: 0.2s; }
+    .station-item:hover { background: rgba(255,255,255,0.05); }
+    .station-item.active { background: var(--accent); color: #fff; font-weight: bold; }
+    .st-icon { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; background: #000; }
 
-    body {
-        margin: 0; padding: 0; background: var(--bg-dark); color: var(--text);
-        font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
-    }
-
-    /* --- SIDEBAR --- */
-    .sidebar {
-        width: var(--sidebar-w); background: var(--panel); border-right: 1px solid var(--border);
-        display: flex; flex-direction: column; flex-shrink: 0; z-index: 20;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .brand {
-        height: 70px; display: flex; align-items: center; padding: 0 25px;
-        font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700;
-        letter-spacing: 1px; border-bottom: 1px solid var(--border);
-        background: linear-gradient(90deg, rgba(244,63,94,0.1), transparent);
-    }
-    .brand span { color: var(--accent); margin-left: 4px; }
-
-    .nav-menu { flex: 1; overflow-y: auto; padding: 20px 10px; }
-    .nav-group { margin-bottom: 25px; }
-    .nav-title {
-        font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim);
-        font-weight: 800; margin: 0 15px 10px; letter-spacing: 1px;
-    }
+    /* MAIN */
+    .main { flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); position: relative; }
     
-    .nav-item {
-        display: flex; align-items: center; gap: 12px; padding: 12px 15px;
-        color: var(--text); text-decoration: none; font-size: 0.9rem;
-        border-radius: 8px; cursor: pointer; transition: all 0.2s;
-        margin-bottom: 2px;
-    }
-    .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
-    .nav-item.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent-glow); }
-    .nav-item i { width: 20px; text-align: center; }
-    .count-badge { 
-        margin-left: auto; background: rgba(0,0,0,0.2); padding: 2px 8px; 
-        border-radius: 10px; font-size: 0.7rem; opacity: 0.7; 
-    }
+    /* Visualizer & Info */
+    .screen-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+    .current-logo { width: 200px; height: 200px; border-radius: 20px; object-fit: cover; box-shadow: 0 0 50px rgba(0,0,0,0.5); margin-bottom: 30px; }
+    .current-title { font-size: 2rem; font-weight: 800; margin-bottom: 5px; }
+    .current-status { color: var(--accent); font-weight: 600; letter-spacing: 1px; height: 20px; }
 
-    /* --- MAIN CONTENT --- */
-    .main-area {
-        flex: 1; display: flex; flex-direction: column; position: relative;
-        background: radial-gradient(circle at top right, #1a0b12 0%, var(--bg-dark) 40%);
-    }
+    /* Visualizer Bars */
+    .visualizer { display: flex; gap: 5px; height: 60px; align-items: flex-end; margin-top: 40px; }
+    .bar { width: 8px; background: var(--accent); height: 5px; border-radius: 4px; transition: height 0.1s; }
+    .playing .bar { animation: eq 0.8s infinite ease-in-out; }
+    @keyframes eq { 0%, 100% { height: 10px; } 50% { height: 50px; } }
+    .bar:nth-child(1) { animation-delay: 0s; }
+    .bar:nth-child(2) { animation-delay: 0.1s; }
+    .bar:nth-child(3) { animation-delay: 0.2s; }
+    .bar:nth-child(4) { animation-delay: 0.3s; }
+    .bar:nth-child(5) { animation-delay: 0.4s; }
 
-    /* Top Bar */
-    .top-bar {
-        height: 70px; border-bottom: 1px solid var(--border); display: flex;
-        align-items: center; justify-content: space-between; padding: 0 30px;
-        background: rgba(5, 7, 10, 0.8); backdrop-filter: blur(10px); z-index: 10;
-    }
-
-    .search-wrap { position: relative; width: 300px; }
-    .search-input {
-        width: 100%; background: var(--panel-light); border: 1px solid var(--border);
-        padding: 10px 15px 10px 40px; border-radius: 20px; color: #fff; outline: none;
-        font-family: inherit; transition: 0.3s;
-    }
-    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
-
-    .top-actions { display: flex; gap: 15px; }
-    .action-btn {
-        width: 40px; height: 40px; border-radius: 50%; background: var(--panel-light);
-        border: 1px solid var(--border); color: var(--text); cursor: pointer;
-        display: flex; align-items: center; justify-content: center; transition: 0.2s;
-    }
-    .action-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    /* Station Grid */
-    .content-scroll { flex: 1; overflow-y: auto; padding: 30px; }
-    
-    .section-header { display: flex; align-items: center; margin-bottom: 20px; }
-    .section-title-text { font-size: 1.5rem; font-weight: 700; }
-    .live-dot { 
-        width: 10px; height: 10px; background: var(--accent); border-radius: 50%; 
-        margin-left: 10px; animation: pulse 2s infinite; 
-    }
-
-    .station-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px; padding-bottom: 100px;
-    }
-
-    .station-card {
-        background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
-        padding: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative; overflow: hidden; group;
-    }
-    .station-card:hover { 
-        transform: translateY(-5px); border-color: var(--accent); 
-        box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5); 
-    }
-    .station-card.playing {
-        border-color: var(--accent); background: linear-gradient(145deg, var(--panel), #2a0a12);
-    }
-
-    .card-img-box {
-        width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden;
-        background: #000; position: relative; margin-bottom: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-    .station-card:hover .card-img { transform: scale(1.1); opacity: 0.6; }
-    
-    .play-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        display: flex; align-items: center; justify-content: center;
-        opacity: 0; transition: 0.3s;
-    }
-    .station-card:hover .play-overlay { opacity: 1; }
-    .play-circle {
-        width: 50px; height: 50px; border-radius: 50%; background: var(--accent);
-        color: #fff; display: flex; align-items: center; justify-content: center;
-        font-size: 1.2rem; box-shadow: 0 0 20px var(--accent);
-        transform: scale(0.8); transition: 0.3s;
-    }
-    .station-card:hover .play-circle { transform: scale(1); }
-
-    /* Equalizer Animation on Card */
-    .card-eq {
-        position: absolute; bottom: 10px; right: 10px; display: flex; gap: 3px;
-        height: 20px; align-items: flex-end; opacity: 0;
-    }
-    .station-card.playing .card-eq { opacity: 1; }
-    .eq-bar { width: 4px; background: var(--accent); border-radius: 2px; animation: eq 1s infinite ease-in-out; }
-    .eq-bar:nth-child(1) { animation-delay: 0.0s; height: 40%; }
-    .eq-bar:nth-child(2) { animation-delay: 0.2s; height: 80%; }
-    .eq-bar:nth-child(3) { animation-delay: 0.4s; height: 60%; }
-
-    .card-title { font-weight: 700; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-genre { font-size: 0.8rem; color: var(--text-dim); }
-
-    /* --- PLAYER BAR (FOOTER) --- */
-    .player-bar {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: var(--player-h);
-        background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border);
-        backdrop-filter: blur(20px); z-index: 50; display: flex; align-items: center;
-        padding: 0 30px; justify-content: space-between;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-    }
-
-    .player-info { display: flex; align-items: center; gap: 15px; width: 300px; }
-    .p-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .p-text { display: flex; flex-direction: column; }
-    .p-title { font-weight: 700; font-size: 1rem; color: #fff; }
-    .p-desc { font-size: 0.8rem; color: var(--accent); margin-top: 2px; }
-
-    .player-controls { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-    .ctrl-buttons { display: flex; align-items: center; gap: 20px; }
-    .ctrl-btn {
-        background: none; border: none; color: var(--text-dim); font-size: 1.2rem;
-        cursor: pointer; transition: 0.2s;
-    }
+    /* CONTROLS */
+    .controls { height: 90px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: center; gap: 30px; backdrop-filter: blur(10px); }
+    .ctrl-btn { background: none; border: none; color: #ccc; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
     .ctrl-btn:hover { color: #fff; }
-    .play-pause-btn {
-        width: 45px; height: 45px; border-radius: 50%; background: #fff; color: #000;
-        display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-        box-shadow: 0 0 15px rgba(255,255,255,0.3);
-    }
-    .play-pause-btn:hover { transform: scale(1.05); background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
-
-    /* Visualizer Canvas */
-    .vis-container {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; z-index: -1; opacity: 0.3;
-    }
+    .play-btn { width: 50px; height: 50px; border-radius: 50%; background: #fff; color: #000; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+    .play-btn:hover { transform: scale(1.1); background: var(--accent); color: #fff; }
     
-    /* Volume & Extra */
-    .player-extra { display: flex; align-items: center; gap: 15px; width: 300px; justify-content: flex-end; }
-    .vol-wrap { display: flex; align-items: center; gap: 10px; }
-    input[type="range"] {
-        -webkit-appearance: none; width: 100px; height: 4px; background: #333;
-        border-radius: 2px; cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none; width: 12px; height: 12px; background: #fff;
-        border-radius: 50%; cursor: pointer; transition: 0.2s;
-    }
-    input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent); transform: scale(1.2); }
+    .volume-wrap { position: absolute; right: 30px; display: flex; align-items: center; gap: 10px; }
+    input[type=range] { width: 100px; accent-color: var(--accent); cursor: pointer; }
 
-    /* --- MOBİL --- */
-    .mobile-toggle { display: none; font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
-    
-    @media (max-width: 900px) {
-        .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px #000; }
-        .sidebar.active { left: 0; }
-        .mobile-toggle { display: block; }
-        .player-info { width: auto; flex: 1; }
-        .player-controls { position: absolute; right: 20px; top: 20px; width: auto; }
-        .ctrl-buttons { gap: 10px; }
-        .ctrl-btn-sec { display: none; } /* İleri geri butonlarını mobilde gizle */
-        .player-extra { display: none; } /* Mobilde volume gizle */
-        .p-title { font-size: 0.9rem; }
-        .p-desc { font-size: 0.7rem; }
-        .station-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    /* MOBİL */
+    @media (max-width: 800px) {
+        body { flex-direction: column; }
+        .sidebar { width: 100%; height: 40%; border-right: none; border-bottom: 1px solid var(--border); }
+        .main { height: 60%; }
+        .current-logo { width: 120px; height: 120px; margin-bottom: 15px; }
+        .current-title { font-size: 1.5rem; }
+        .volume-wrap { display: none; } /* Mobilde ses barını gizle */
     }
-
-    @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-    @keyframes eq { 0%, 100% { height: 30%; } 50% { height: 100%; } }
 </style>
 </head>
 <body>
 
-    <div class="vis-container">
-        <canvas id="visualizer"></canvas>
-    </div>
-
-    <div class="sidebar" id="sidebar">
-        <div class="brand">ODHUN<span>FM</span></div>
-        <div class="nav-menu">
-            <div class="nav-group">
-                <div class="nav-title">Kütüphane</div>
-                <div class="nav-item active" onclick="filterStations('all')"><i class="fas fa-globe"></i> Tümü</div>
-                <div class="nav-item" onclick="filterStations('favorites')"><i class="fas fa-heart"></i> Favoriler <span class="count-badge" id="favCount">0</span></div>
-                <div class="nav-item" onclick="filterStations('history')"><i class="fas fa-history"></i> Son Çalanlar</div>
-            </div>
-            
-            <div class="nav-group">
-                <div class="nav-title">Kategoriler</div>
-                <div class="nav-item" onclick="filterStations('pop')"><i class="fas fa-music"></i> Popüler Pop</div>
-                <div class="nav-item" onclick="filterStations('arabesk')"><i class="fas fa-wine-glass"></i> Arabesk & Damar</div>
-                <div class="nav-item" onclick="filterStations('haber')"><i class="fas fa-microphone"></i> Haber & Spor</div>
-                <div class="nav-item" onclick="filterStations('rock')"><i class="fas fa-guitar"></i> Rock & Yabancı</div>
-                <div class="nav-item" onclick="filterStations('slow')"><i class="fas fa-cloud-moon"></i> Slow & Aşk</div>
-                <div class="nav-item" onclick="filterStations('halk')"><i class="fas fa-drum"></i> Halk Müziği</div>
-                <div class="nav-item" onclick="filterStations('dini')"><i class="fas fa-mosque"></i> Dini Yayınlar</div>
-            </div>
-
-             <div class="nav-group">
-                <div class="nav-title">Araçlar</div>
-                <div class="nav-item" onclick="toggleSleepMenu()"><i class="fas fa-stopwatch"></i> Uyku Modu <span id="sleepDisplay" class="count-badge" style="display:none"></span></div>
-            </div>
+    <div style="display:flex; height:100%; flex-direction: row;" id="layout">
+        <div class="sidebar">
+            <div class="brand"><i class="fas fa-broadcast-tower"></i><span>ODHUN FM</span></div>
+            <div class="station-list" id="list"></div>
         </div>
-    </div>
 
-    <div class="main-area">
-        <div class="top-bar">
-            <div style="display:flex; align-items:center;">
-                <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-                <div class="search-wrap">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Radyo Ara..." onkeyup="searchStations()">
+        <div class="main">
+            <div class="screen-area" id="screenArea">
+                <img src="https://via.placeholder.com/200?text=ODHUN" class="current-logo" id="pLogo">
+                <div class="current-title" id="pTitle">Radyo Seçin</div>
+                <div class="current-status" id="pStatus">HAZIR</div>
+
+                <div class="visualizer">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                 </div>
             </div>
-            <div class="top-actions">
-                <button class="action-btn" onclick="toggleTheme()" title="Tema"><i class="fas fa-adjust"></i></button>
-                <button class="action-btn" onclick="refreshStream()" title="Yenile"><i class="fas fa-sync-alt"></i></button>
-            </div>
-        </div>
 
-        <div class="content-scroll">
-            <div class="section-header">
-                <div class="section-title-text" id="pageTitle">Tüm Radyolar</div>
-                <div class="live-dot"></div>
-            </div>
-            <div class="station-grid" id="grid"></div>
-        </div>
-    </div>
-
-    <div class="player-bar">
-        <div class="player-info">
-            <img src="https://via.placeholder.com/60/222/555?text=FM" class="p-img" id="pImg">
-            <div class="p-text">
-                <div class="p-title" id="pTitle">Radyo Seçilmedi</div>
-                <div class="p-desc" id="pDesc">Müzik ruhun gıdasıdır...</div>
-            </div>
-            <button class="ctrl-btn" onclick="toggleFavCurrent()" id="btnFav"><i class="far fa-heart"></i></button>
-        </div>
-
-        <div class="player-controls">
-            <div class="ctrl-buttons">
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playRandom()"><i class="fas fa-random"></i></button>
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playPrev()"><i class="fas fa-step-backward"></i></button>
-                <button class="play-pause-btn" onclick="togglePlay()" id="btnPlay"><i class="fas fa-play"></i></button>
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playNext()"><i class="fas fa-step-forward"></i></button>
-                <button class="ctrl-btn ctrl-btn-sec" onclick="cycleVisualizer()"><i class="fas fa-wave-square"></i></button>
-            </div>
-        </div>
-
-        <div class="player-extra">
-            <div class="vol-wrap">
-                <i class="fas fa-volume-up" id="volIcon"></i>
-                <input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+            <div class="controls">
+                <button class="ctrl-btn" onclick="changeVol(-0.1)"><i class="fas fa-volume-down"></i></button>
+                <button class="play-btn" onclick="togglePlay()" id="btnPlay"><i class="fas fa-play"></i></button>
+                <button class="ctrl-btn" onclick="changeVol(0.1)"><i class="fas fa-volume-up"></i></button>
+                
+                <div class="volume-wrap">
+                    <input type="range" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)">
+                </div>
             </div>
         </div>
     </div>
 
-    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+    <audio id="audio"></audio>
 
     <script>
-        // --- VERİ TABANI (100+ GÜNCEL RADYO) ---
-        // Not: Linklerin çoğu HLS (.m3u8) veya MP3 streamidir.
-        // Eğer bazıları çalışmazsa (CORS veya sunucu hatası), HLS.js devreye girer veya hata yönetimi çalışır.
+        // --- GÜVENLİ VE ÇALIŞAN RADYO LİSTESİ (HTTPS) ---
         const stations = [
-            { id: 1, name: "Kral Pop", cat: "pop", logo: "https://dogus.daioncdn.net/kralpoptv/kralpoptv_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralpop.smil/playlist.m3u8" },
-            { id: 2, name: "Power Turk", cat: "pop", logo: "https://www.powerapp.com.tr/assets/img/logos/powerturk.png", url: "https://listen.powerapp.com.tr/powerturk/playlist.m3u8" },
-            { id: 3, name: "Joy Turk", cat: "pop", logo: "https://karnaval.com/media/channels/joyturk_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK_SC" },
-            { id: 4, name: "Metro FM", cat: "pop", logo: "https://karnaval.com/media/channels/metrofm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM_SC" },
-            { id: 5, name: "Number 1 FM", cat: "pop", logo: "https://www.numberone.com.tr/wp-content/uploads/2019/04/nr1-logo-2019.png", url: "https://n10101m.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e3285b5913_1200/playlist.m3u8" },
-            { id: 6, name: "Virgin Radio", cat: "pop", logo: "https://karnaval.com/media/channels/virginradioturkiye_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO_TR_SC" },
-            { id: 7, name: "Süper FM", cat: "pop", logo: "https://karnaval.com/media/channels/superfm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM_SC" },
-            { id: 8, name: "Alem FM", cat: "pop", logo: "https://img-alemfm-mncdn.mncdn.com/assets/img/alemfm-logo.png", url: "https://turkmedya-live.ercdn.net/alemfm/alemfm.m3u8" },
-            { id: 9, name: "Best FM", cat: "pop", logo: "https://www.bestfm.com.tr/assets/img/logo.png", url: "http://46.20.7.126/bestfmmp3" },
-            { id: 10, name: "Show Radyo", cat: "pop", logo: "https://showradyo.com.tr/assets/img/logo.png", url: "http://46.20.7.103/showmp3" },
-            { id: 11, name: "Kral FM", cat: "arabesk", logo: "https://dogus.daioncdn.net/kralfm/kralfm_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralfm.smil/playlist.m3u8" },
-            { id: 12, name: "Baba Radyo", cat: "arabesk", logo: "https://babaradyo.com/assets/img/logo.png", url: "http://37.247.98.8/baba" },
-            { id: 13, name: "Damar FM", cat: "arabesk", logo: "https://www.damarfm.com/images/logo.png", url: "https://yayin.damarfm.com:8080/stream" },
-            { id: 14, name: "İstanbulun Sesi", cat: "arabesk", logo: "https://www.istanbulunsesi.com.tr/assets/img/logo.png", url: "http://46.20.4.61:8000/stream" },
-            { id: 15, name: "Radyo 34", cat: "arabesk", logo: "https://radyo34.com.tr/wp-content/uploads/2020/05/radyo34-logo.png", url: "http://yayin.radyo34.com.tr:9800/;" },
-            { id: 16, name: "TRT Radyo 1", cat: "haber", logo: "https://cdn-r.trt.net.tr/static/radio/img/radyo1.png", url: "https://radio-trt-radyo1.medya.trt.com.tr/master.m3u8" },
-            { id: 17, name: "TRT Haber", cat: "haber", logo: "https://cdn-r.trt.net.tr/static/radio/img/trthaberradyo.png", url: "https://radio-trt-haberradyo.medya.trt.com.tr/master.m3u8" },
-            { id: 18, name: "NTV Radyo", cat: "haber", logo: "https://cdn.ntv.com.tr/img/ntv-logo.png", url: "https://ssldyg.radyotvonline.net/smil/ntvradyo.smil/playlist.m3u8" },
-            { id: 19, name: "Habertürk Radyo", cat: "haber", logo: "https://haberturk.com/images/ht-logo.png", url: "https://ciner.daioncdn.net/hbrtrkradyo/hbrtrkradyo.m3u8" },
-            { id: 20, name: "CNN Türk Radyo", cat: "haber", logo: "https://www.cnnturk.com/assets/images/logo-cnnturk.png", url: "https://radyo.dogannet.tv/cnnturkradyo/playlist.m3u8" },
-            { id: 21, name: "TRT Spor", cat: "haber", logo: "https://cdn-r.trt.net.tr/static/radio/img/radyo3.png", url: "https://radio-trt-radyo3.medya.trt.com.tr/master.m3u8" },
-            { id: 22, name: "Lig Radyo", cat: "haber", logo: "https://ligradyo.com.tr/assets/img/logo.png", url: "http://46.20.7.101/ligradyomp3" },
-            { id: 23, name: "Radyo Eksen", cat: "rock", logo: "https://radyoeksen.com/assets/img/logo.png", url: "https://ssldyg.radyotvonline.net/smil/radyoeksen.smil/playlist.m3u8" },
-            { id: 24, name: "Joy FM", cat: "rock", logo: "https://karnaval.com/media/channels/joyfm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM_SC" },
-            { id: 25, name: "Power XL", cat: "rock", logo: "https://www.powerapp.com.tr/assets/img/logos/powerxl.png", url: "https://listen.powerapp.com.tr/powerxl/playlist.m3u8" },
-            { id: 26, name: "Pal Nostalji", cat: "slow", logo: "https://palnostalji.com.tr/assets/images/logo.png", url: "http://shoutcast.radyogrup.com:1020/;" },
-            { id: 27, name: "Joy Turk Akustik", cat: "slow", logo: "https://karnaval.com/media/channels/joyturkakustik_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK_AKUSTIK_SC" },
-            { id: 28, name: "Slow Türk", cat: "slow", logo: "https://www.slowturk.com.tr/assets/img/logo.png", url: "https://radyo.dogannet.tv/slowturk/playlist.m3u8" },
-            { id: 29, name: "Power Love", cat: "slow", logo: "https://www.powerapp.com.tr/assets/img/logos/powerlove.png", url: "https://listen.powerapp.com.tr/powerlove/playlist.m3u8" },
-            { id: 30, name: "TRT Türkü", cat: "halk", logo: "https://cdn-r.trt.net.tr/static/radio/img/trtturku.png", url: "https://radio-trt-turku.medya.trt.com.tr/master.m3u8" },
-            { id: 31, name: "Radyo 7", cat: "halk", logo: "https://www.radyo7.com/assets/img/logo.png", url: "https://radyo.yayin.com.tr/radyo7/playlist.m3u8" },
-            { id: 32, name: "Diyanet Radyo", cat: "dini", logo: "https://radyo.diyanet.gov.tr/assets/img/logo.png", url: "https://yayin.diyanet.gov.tr:8443/radyo" },
-            { id: 33, name: "Risalet Radyo", cat: "dini", logo: "https://www.risaletradyo.com/images/logo.png", url: "http://yayin.risaletradyo.com:8060/;" },
-            // Listeyi burada uzatmak mümkün (100+ için temsili)
-            { id: 34, name: "Number1 Turk", cat: "pop", logo: "https://www.numberone.com.tr/wp-content/uploads/2019/04/nr1-turk-logo-2019.png", url: "https://n10101m.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e332573201_1200/playlist.m3u8" },
-            { id: 35, name: "Virgin Radio Rock", cat: "rock", logo: "https://karnaval.com/media/channels/virginradiorock_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO_ROCK_SC" }
+            { name: "Power FM", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio", logo: "https://www.powerapp.com.tr/assets/img/logos/powerfm.png" },
+            { name: "Power Turk", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio", logo: "https://www.powerapp.com.tr/assets/img/logos/powerturk.png" },
+            { name: "Kral FM", url: "https://ssldyg.radyotvonline.net/smil/kralfm.smil/playlist.m3u8", logo: "https://dogus.daioncdn.net/kralfm/kralfm_web_logo.png" },
+            { name: "Süper FM", url: "https://17733.live.streamtheworld.com/SUPER_FM_SC", logo: "https://karnaval.com/media/channels/superfm_180x180.png" },
+            { name: "Metro FM", url: "https://17733.live.streamtheworld.com/METRO_FM_SC", logo: "https://karnaval.com/media/channels/metrofm_180x180.png" },
+            { name: "Joy Turk", url: "https://17753.live.streamtheworld.com/JOY_TURK_SC", logo: "https://karnaval.com/media/channels/joyturk_180x180.png" },
+            { name: "Virgin Radio", url: "https://17703.live.streamtheworld.com/VIRGIN_RADIO_SC", logo: "https://karnaval.com/media/channels/virginradioturkiye_180x180.png" },
+            { name: "Fenomen", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio", logo: "https://radyofenomen.com/assets/img/logo.png" },
+            { name: "Number1 FM", url: "https://n10101m.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e3285b5913_1200/playlist.m3u8", logo: "https://www.numberone.com.tr/wp-content/uploads/2019/04/nr1-logo-2019.png" },
+            { name: "Alem FM", url: "https://turkmedya-live.ercdn.net/alemfm/alemfm.m3u8", logo: "https://img-alemfm-mncdn.mncdn.com/assets/img/alemfm-logo.png" },
+            { name: "TRT FM", url: "https://radios.trt.net.tr/radyofm/master.m3u8", logo: "https://cdn-r.trt.net.tr/static/radio/img/radyofm.png" },
+            { name: "Kafa Radyo", url: "https://kafaradyo.artidijitalmedya.com/kafaradyo", logo: "https://kafaradyo.com/assets/img/logo.png" }
         ];
 
-        // --- SİSTEM DEĞİŞKENLERİ ---
-        let audio = document.getElementById('audioPlayer');
-        let currentIdx = -1;
+        const audio = document.getElementById('audio');
+        const listEl = document.getElementById('list');
+        const pTitle = document.getElementById('pTitle');
+        const pStatus = document.getElementById('pStatus');
+        const pLogo = document.getElementById('pLogo');
+        const btnPlay = document.getElementById('btnPlay');
+        const screenArea = document.getElementById('screenArea');
+        
         let hls = null;
-        let favorites = JSON.parse(localStorage.getItem('odhunFM_favs')) || [];
-        let history = []; // Son çalanlar
-        let sleepTimer = null;
-        
-        // Visualizer Değişkenleri
-        let audioCtx, analyser, source, dataArray, canvas, ctx;
-        let visMode = 0; // 0: Bar, 1: Wave, 2: Circle
-        let animationId;
-
-        // --- BAŞLANGIÇ ---
-        window.onload = () => {
-            renderStations(stations);
-            setupVisualizer();
-            resizeCanvas();
-        };
-        
-        window.onresize = resizeCanvas;
+        let isPlaying = false;
+        let currentIndex = -1;
 
         // --- RENDER ---
-        function renderStations(list) {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = "";
-            
-            list.forEach((s, index) => {
-                const card = document.createElement('div');
-                card.className = `station-card ${currentIdx === index ? 'playing' : ''}`;
-                card.onclick = () => playStation(s.id);
-                
-                card.innerHTML = `
-                    <div class="card-img-box">
-                        <img src="${s.logo}" class="card-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Radyo'">
-                        <div class="play-overlay"><div class="play-circle"><i class="fas fa-play"></i></div></div>
-                        <div class="card-eq">
-                            <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
-                        </div>
-                    </div>
-                    <div class="card-title">${s.name}</div>
-                    <div class="card-genre">${s.cat.toUpperCase()}</div>
-                `;
-                grid.appendChild(card);
-            });
-            
-            document.getElementById('favCount').innerText = favorites.length;
-        }
+        stations.forEach((s, i) => {
+            const item = document.createElement('div');
+            item.className = 'station-item';
+            item.onclick = () => playStation(i);
+            item.innerHTML = `
+                <img src="${s.logo}" class="st-icon" onerror="this.src='https://via.placeholder.com/30?text=R'">
+                <span>${s.name}</span>
+            `;
+            listEl.appendChild(item);
+        });
 
-        // --- OYNATMA ---
-        function playStation(id) {
-            const station = stations.find(s => s.id === id);
-            if(!station) return;
+        // --- PLAYER ---
+        function playStation(index) {
+            currentIndex = index;
+            const s = stations[index];
 
             // UI Güncelle
-            currentIdx = stations.findIndex(s => s.id === id);
-            document.getElementById('pTitle').innerText = station.name;
-            document.getElementById('pDesc').innerText = "Canlı Yayın - " + station.cat.toUpperCase();
-            document.getElementById('pImg').src = station.logo;
+            pTitle.innerText = s.name;
+            pLogo.src = s.logo;
+            pStatus.innerText = "BAĞLANIYOR...";
+            pStatus.style.color = "#fff";
             
-            // Tüm kartlardan playing sil, yenisine ekle
-            document.querySelectorAll('.station-card').forEach(c => c.classList.remove('playing'));
-            // Bu basit render yerine, ilgili kartı bulup class eklemek daha performanslı ama şimdilik render yeterli.
-            renderStations(stations); // Tekrar render etmek yerine sadece class toggle daha iyi olurdu ama ID ile bulmak lazım.
+            // Listeyi güncelle
+            document.querySelectorAll('.station-item').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+
+            // Oynatıcıyı sıfırla
+            if (hls) { hls.destroy(); hls = null; }
+            screenArea.classList.remove('playing');
             
-            // Oynat (HLS veya Direkt)
-            if (Hls.isSupported() && station.url.includes('.m3u8')) {
-                if(hls) hls.destroy();
+            // HLS Kontrolü (.m3u8 ise HLS kullan, değilse direkt)
+            if (Hls.isSupported() && s.url.includes('.m3u8')) {
                 hls = new Hls();
-                hls.loadSource(station.url);
+                hls.loadSource(s.url);
                 hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play());
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audio.play().catch(e => showError(e));
+                });
+                hls.on(Hls.Events.ERROR, (e, data) => {
+                    if(data.fatal) showError("HLS Hatası");
+                });
             } else {
-                audio.src = station.url;
-                audio.play().catch(e => console.log("Oynatma hatası:", e));
+                audio.src = s.url;
+                audio.play().catch(e => showError(e));
             }
-
-            updatePlayBtn(true);
-            updateFavBtn();
-            
-            // Geçmişe Ekle
-            if(!history.includes(id)) history.unshift(id);
-            if(history.length > 10) history.pop();
-
-            // Visualizer Başlat
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
         }
+
+        // Event Listeners
+        audio.onplaying = () => {
+            isPlaying = true;
+            pStatus.innerText = "CANLI YAYIN";
+            pStatus.style.color = "var(--accent)";
+            btnPlay.innerHTML = '<i class="fas fa-pause"></i>';
+            screenArea.classList.add('playing');
+        };
+
+        audio.onpause = () => {
+            isPlaying = false;
+            pStatus.innerText = "DURAKLATILDI";
+            pStatus.style.color = "#aaa";
+            btnPlay.innerHTML = '<i class="fas fa-play"></i>';
+            screenArea.classList.remove('playing');
+        };
+
+        audio.onerror = () => showError("Bağlantı Hatası");
 
         function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                updatePlayBtn(true);
+            if(currentIndex === -1) { playStation(0); return; }
+            if(audio.paused) audio.play();
+            else audio.pause();
+        }
+
+        function setVolume(val) { audio.volume = val; }
+        function changeVol(delta) {
+            let newVol = audio.volume + delta;
+            if(newVol > 1) newVol = 1;
+            if(newVol < 0) newVol = 0;
+            audio.volume = newVol;
+            document.querySelector('input[type=range]').value = newVol;
+        }
+
+        function showError(msg) {
+            console.error(msg);
+            pStatus.innerText = "YAYIN ALINAMIYOR";
+            pStatus.style.color = "red";
+            screenArea.classList.remove('playing');
+        }
+
+        // Mobil Uyum Kontrolü (Ekran boyutu değişirse)
+        function checkLayout() {
+            const layout = document.getElementById('layout');
+            if(window.innerWidth <= 800) {
+                layout.style.flexDirection = 'column';
             } else {
-                audio.pause();
-                updatePlayBtn(false);
+                layout.style.flexDirection = 'row';
             }
         }
-
-        function updatePlayBtn(isPlaying) {
-            const btn = document.getElementById('btnPlay');
-            btn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-            // Kart animasyonları
-            if(isPlaying) document.querySelector('.station-card.playing .card-eq')?.style.setProperty('opacity', '1');
-        }
-
-        function playRandom() {
-            const rnd = Math.floor(Math.random() * stations.length);
-            playStation(stations[rnd].id);
-        }
-        
-        function playNext() {
-            let next = currentIdx + 1;
-            if(next >= stations.length) next = 0;
-            playStation(stations[next].id);
-        }
-        
-        function playPrev() {
-            let prev = currentIdx - 1;
-            if(prev < 0) prev = stations.length - 1;
-            playStation(stations[prev].id);
-        }
-
-        function setVolume(val) {
-            audio.volume = val;
-            const icon = document.getElementById('volIcon');
-            if(val == 0) icon.className = 'fas fa-volume-mute';
-            else if(val < 0.5) icon.className = 'fas fa-volume-down';
-            else icon.className = 'fas fa-volume-up';
-        }
-        
-        function refreshStream() {
-            if(currentIdx !== -1) playStation(stations[currentIdx].id);
-        }
-
-        // --- FİLTRELEME ---
-        function filterStations(cat) {
-            // Menü aktifliği
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            document.getElementById('pageTitle').innerText = cat === 'all' ? 'Tüm Radyolar' : cat.toUpperCase();
-
-            if (cat === 'all') {
-                renderStations(stations);
-            } else if (cat === 'favorites') {
-                const favs = stations.filter(s => favorites.includes(s.id));
-                renderStations(favs);
-                if(favs.length === 0) document.getElementById('grid').innerHTML = '<div style="text-align:center; width:100%; padding:40px; color:#666">Henüz favorin yok.</div>';
-            } else if (cat === 'history') {
-                const hists = history.map(id => stations.find(s => s.id === id));
-                renderStations(hists);
-            } else {
-                const filtered = stations.filter(s => s.cat === cat);
-                renderStations(filtered);
-            }
-            
-            // Mobilde menüyü kapat
-            if(window.innerWidth <= 900) toggleSidebar();
-        }
-
-        function searchStations() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = stations.filter(s => s.name.toLowerCase().includes(term));
-            renderStations(filtered);
-        }
-
-        // --- FAVORİ SİSTEMİ ---
-        function toggleFavCurrent() {
-            if(currentIdx === -1) return;
-            const id = stations[currentIdx].id;
-            
-            if(favorites.includes(id)) {
-                favorites = favorites.filter(f => f !== id);
-            } else {
-                favorites.push(id);
-            }
-            localStorage.setItem('odhunFM_favs', JSON.stringify(favorites));
-            updateFavBtn();
-            document.getElementById('favCount').innerText = favorites.length;
-        }
-
-        function updateFavBtn() {
-            if(currentIdx === -1) return;
-            const id = stations[currentIdx].id;
-            const btn = document.getElementById('btnFav');
-            if(favorites.includes(id)) {
-                btn.innerHTML = '<i class="fas fa-heart" style="color:var(--accent)"></i>';
-            } else {
-                btn.innerHTML = '<i class="far fa-heart"></i>';
-            }
-        }
-
-        // --- UYKU MODU ---
-        function toggleSleepMenu() {
-            const min = prompt("Kaç dakika sonra kapansın? (İptal için boş bırak)", "30");
-            if(min) {
-                clearTimeout(sleepTimer);
-                const ms = parseInt(min) * 60 * 1000;
-                sleepTimer = setTimeout(() => {
-                    audio.pause();
-                    alert("Uyku Modu: Radyo kapatıldı.");
-                    document.getElementById('sleepDisplay').style.display = 'none';
-                }, ms);
-                
-                document.getElementById('sleepDisplay').innerText = min + "dk";
-                document.getElementById('sleepDisplay').style.display = 'inline-block';
-            }
-        }
-
-        // --- VISUALIZER (AUDIO CONTEXT) ---
-        function setupVisualizer() {
-            // Tarayıcı politikası gereği, kullanıcı etkileşimi olmadan AudioContext başlamaz.
-            // İlk play'de başlatacağız.
-            document.addEventListener('click', initAudioCtx, { once: true });
-        }
-
-        function initAudioCtx() {
-            if (audioCtx) return;
-            
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination); // Hoparlöre ver
-                
-                analyser.fftSize = 256;
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
-                
-                canvas = document.getElementById('visualizer');
-                ctx = canvas.getContext('2d');
-                
-                animateVisualizer();
-            } catch(e) {
-                console.log("Visualizer başlatılamadı (CORS sorunu olabilir):", e);
-            }
-        }
-
-        function resizeCanvas() {
-            const cvs = document.getElementById('visualizer');
-            cvs.width = window.innerWidth;
-            cvs.height = window.innerHeight;
-        }
-
-        function animateVisualizer() {
-            animationId = requestAnimationFrame(animateVisualizer);
-            analyser.getByteFrequencyData(dataArray);
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Görselleştirme Modları
-            if (visMode === 0) drawBars();
-            else if (visMode === 1) drawWave();
-            else drawCircle();
-        }
-
-        function drawBars() {
-            const barWidth = (canvas.width / dataArray.length) * 2.5;
-            let x = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-                const barHeight = dataArray[i] * 1.5; // Yükseklik
-                const r = barHeight + (25 * (i/dataArray.length));
-                const g = 50;
-                const b = 150;
-                
-                ctx.fillStyle = `rgba(${r},${g},${b},0.2)`; // Hafif opak
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
-            }
-        }
-
-        function drawWave() {
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(244, 63, 94, 0.3)';
-            ctx.beginPath();
-            const sliceWidth = canvas.width * 1.0 / dataArray.length;
-            let x = 0;
-            for(let i = 0; i < dataArray.length; i++) {
-                const v = dataArray[i] / 128.0;
-                const y = v * canvas.height / 2;
-                if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                x += sliceWidth;
-            }
-            ctx.lineTo(canvas.width, canvas.height/2);
-            ctx.stroke();
-        }
-
-        function drawCircle() {
-            // Basit daire efekti (Ortada)
-            const avg = dataArray.reduce((a,b)=>a+b,0) / dataArray.length;
-            const radius = avg * 2;
-            ctx.beginPath();
-            ctx.arc(canvas.width/2, canvas.height/2, radius, 0, 2 * Math.PI);
-            ctx.strokeStyle = `rgba(244, 63, 94, 0.2)`;
-            ctx.lineWidth = 5;
-            ctx.stroke();
-        }
-
-        function cycleVisualizer() {
-            visMode = (visMode + 1) % 3;
-        }
-
-        function toggleTheme() {
-            // Basit tema değişimi (CSS variable ile) - Şimdilik sadece ikon efekti
-            alert("Tema değiştirme yakında eklenecek!"); 
-        }
-        
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
+        window.onresize = checkLayout;
+        checkLayout(); // Başlangıçta çalıştır
 
     </script>
 </body>
