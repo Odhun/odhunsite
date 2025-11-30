@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Anamur Son Dakika </title>
+<title>Odhun Son Dakika | Halkın Habercisi</title>
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23dc2626%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%22240%22 fill=%22%23ffffff%22>SD</text></svg>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,7 +25,7 @@
 
     body {
         margin: 0; padding: 0; background-color: var(--bg); color: var(--text);
-        font-family: 'Inter', sans-serif; padding-bottom: 100px;
+        font-family: 'Inter', sans-serif; padding-bottom: 50px;
     }
 
     /* HEADER */
@@ -47,12 +47,13 @@
     .new-post-btn { background: var(--primary); color: #fff; }
     .contact-btn { background: #334155; color: #fff; }
 
-    /* BİLGİLENDİRME */
+    /* 3. BİLGİLENDİRME METNİ (YENİ) */
     .info-box {
         max-width: 600px; margin: 20px auto 0; padding: 15px;
         background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 4px solid var(--primary);
         font-size: 0.9rem; color: #cbd5e1; line-height: 1.5;
     }
+    .info-title { color: #fff; font-weight: 700; margin-bottom: 5px; display: block; }
 
     /* MODALLAR */
     .modal-overlay {
@@ -85,7 +86,7 @@
     .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* FEED */
-    .feed-container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+    .feed-container { max-width: 600px; margin: 20px auto; padding: 0 15px; min-height: 400px; }
     
     .news-card {
         background: var(--card-bg); border-radius: 12px; overflow: hidden; margin-bottom: 20px;
@@ -105,7 +106,17 @@
 
     .card-body { padding: 15px; }
     .news-text { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; white-space: pre-wrap; }
-    .news-img { width: 100%; border-radius: 8px; margin-top: 10px; display: block; max-height: none; object-fit: contain; background: #000; }
+    
+    /* 2. GÖRSEL DÜZELTMESİ (TAM GÖRÜNÜM) */
+    .news-img { 
+        width: 100%; 
+        border-radius: 8px; 
+        margin-top: 10px; 
+        display: block; 
+        max-height: none; /* Sınırı kaldırdık */
+        object-fit: contain; /* Resmi bozmadan sığdır */
+        background: #000;
+    }
 
     .card-footer {
         padding: 10px 15px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center;
@@ -116,8 +127,10 @@
         display: flex; align-items: center; gap: 5px; transition: 0.2s;
     }
     .vote-btn:hover { transform: scale(1.1); }
-    .vote-up.active { color: var(--green); }
-    .vote-down.active { color: var(--red); }
+    
+    /* Oylanmışsa renkli kalır */
+    .vote-btn.voted-up { color: var(--green); }
+    .vote-btn.voted-down { color: var(--red); }
     
     .remove-btn {
         color: #64748b; font-size: 0.8rem; background: none; border: 1px solid rgba(255,255,255,0.1);
@@ -125,14 +138,16 @@
     }
     .remove-btn:hover { color: var(--orange); border-color: var(--orange); }
 
+    /* 4. YASAL UYARI BANNERI */
     .legal-banner {
-        background: #020617; color: #64748b; padding: 20px; text-align: center; font-size: 0.75rem;
-        border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px;
+        background: #020617; color: #64748b; padding: 30px 20px; text-align: center; font-size: 0.8rem;
+        border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; line-height: 1.6;
     }
+    .legal-banner strong { color: #fff; }
+
     .loader { text-align: center; padding: 20px; color: var(--text-dim); font-style: italic; }
     #previewImg { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; display: none; margin-bottom: 10px; }
     
-    /* Kopyalama Alanı */
     .copy-box {
         background: #0f172a; padding: 10px; border-radius: 8px; border: 1px dashed #334155;
         text-align: center; cursor: pointer; font-family: monospace; margin-bottom: 15px;
@@ -151,9 +166,10 @@
     </header>
 
     <div class="info-box">
-        <strong>Nasıl Çalışır?</strong><br>
-        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla kurulmuştur. Çevrenizde gördüğünüz olayları anlık olarak paylaşabilirsiniz. Paylaşımlar anonimdir (Rumuz Yazabilirsiniz). <br>
-        <strong>Dikkat:</strong> Her paylaşımdan sonra bekleme süresi artar. Kötüye kullanım durumunda haber topluluk tarafından kaldırılabilir. Test Sürümüdür.
+        <span class="info-title"><i class="fas fa-info-circle"></i> Odhun Son Dakika Nedir?</span>
+        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla <strong>Odhun.com</strong> tarafından geliştirilmiştir. 
+        Çevrenizde gördüğünüz olayları, kazaları veya önemli gelişmeleri anlık olarak paylaşabilirsiniz. 
+        Paylaşımlar tamamen anonimdir. Doğruluğu şüpheli veya uygunsuz haberleri topluluk olarak oylayarak yayından kaldırabilirsiniz.
     </div>
 
     <div class="feed-container" id="feed">
@@ -161,16 +177,18 @@
     </div>
 
     <div class="legal-banner">
-        Odhun.com © 2025 Tüm Hakları Saklıdır.<br><br>
-        Bu sayfada yer alan içerikler, kullanıcılar tarafından oluşturulmakta olup <strong>Odhun.com</strong>'un resmi görüşünü yansıtmamaktadır. 
-        Paylaşılan içeriklerin doğruluğundan veya hukuki sorumluluğundan tamamen paylaşımı yapan kullanıcı sorumludur. Yapılan paylaşım konusunda ilgili kişi ve kurumlar irtibata geçtiğinde gerekli işlemler en kısa süred yapılacaktır.
+        <p><strong>Odhun.com © 2025</strong> - Odhun tarafından tasarlanmıştır.</p>
+        <p>Bu sitede yer alan tüm içerikler kullanıcılar tarafından oluşturulmaktadır ve <strong>Odhun.com</strong>'un resmi görüşlerini yansıtmaz. 
+        Platform yer sağlayıcı konumundadır. Paylaşılan içeriklerin hukuki ve cezai sorumluluğu tamamen paylaşımı yapan kullanıcıya aittir. 
+        Telif hakkı ihlali, kişilik haklarına saldırı veya yasa dışı içerik barındıran paylaşımlar, <strong>odhunticaret@gmail.com</strong> adresine 
+        yapılan bildirimler üzerine veya topluluk oylaması ile derhal yayından kaldırılacaktır.</p>
     </div>
 
     <div id="postModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header"><span>Haber Paylaş</span><button class="close-btn" onclick="closePostModal()">&times;</button></div>
             <div id="timerMsg" style="color:var(--orange); font-size:0.9rem; margin-bottom:10px; display:none;"></div>
-            <input type="text" id="nickInput" placeholder="Rumuzunuz" maxlength="20">
+            <input type="text" id="nickInput" placeholder="Rumuzunuz (Örn: Vatandaş)" maxlength="20">
             <textarea id="textInput" placeholder="Ne oldu? Gördüklerini anlat..."></textarea>
             <img id="previewImg">
             <label class="file-label" for="fileInput"><i class="fas fa-camera"></i> Fotoğraf Ekle</label>
@@ -206,8 +224,8 @@
         let db;
         try { const app = initializeApp(firebaseConfig); db = getFirestore(app); loadPosts(); } catch (e) {}
 
-        // --- BLACKLIST (Kötü Kelimeler) ---
-        const blackList = ["küfür1", "küfür2", "hakaret", "aptal", "gerizekalı", "salak", "mal", "şerefsiz", "porno", "seks", "kumar", "bahis", "+18", "xxx"]; // Burayı genişletebilirsin
+        // KÖTÜ KELİME FİLTRESİ
+        const blackList = ["küfür", "hakaret", "aptal", "gerizekalı", "salak", "mal", "şerefsiz", "porno", "seks", "kumar", "bahis", "+18", "xxx", "amk", "aq", "piç", "yarrak", "orospu", "siktir", "göt", "meme", "kaşar", "yavşak", "sik", "ananı", "bacını", "sokayım", "sokarım"];
 
         function checkContent(text) {
             const lower = text.toLowerCase();
@@ -217,12 +235,10 @@
             return true;
         }
 
-        // --- GÖNDERİ OLUŞTURMA (SPAM KORUMALI) ---
         window.sendPost = async () => {
-            // Spam Kontrolü
             const lastPostTime = parseInt(localStorage.getItem('lastPostTime') || 0);
             const spamCount = parseInt(localStorage.getItem('spamCount') || 0);
-            const waitTime = 5 * (spamCount + 1) * 60 * 1000; // 5, 10, 15 dk...
+            const waitTime = 5 * (spamCount + 1) * 60 * 1000;
             const now = Date.now();
 
             if (now - lastPostTime < waitTime) {
@@ -240,7 +256,7 @@
             if (!nick || !text) { alert("Lütfen alanları doldurun."); return; }
             
             if (!checkContent(text) || !checkContent(nick)) {
-                alert("İçeriğinizde uygunsuz ifadeler tespit edildi. Lütfen düzeltin.");
+                alert("İçeriğinizde uygunsuz ifadeler tespit edildi.");
                 return;
             }
 
@@ -253,7 +269,6 @@
                     likes: 0, dislikes: 0, removeVotes: 0, timestamp: serverTimestamp()
                 });
                 
-                // Başarılı olunca sayacı güncelle
                 localStorage.setItem('lastPostTime', now);
                 localStorage.setItem('spamCount', spamCount + 1);
 
@@ -271,17 +286,20 @@
             onSnapshot(q, (snapshot) => {
                 const feed = document.getElementById('feed');
                 feed.innerHTML = ""; 
-                if(snapshot.empty) { feed.innerHTML = "<div class='loader'>Haber yok.</div>"; return; }
+                if(snapshot.empty) { feed.innerHTML = "<div class='loader'>Henüz haber yok. İlk sen paylaş!</div>"; return; }
 
                 snapshot.forEach((docData) => {
                     const post = docData.data();
                     const id = docData.id;
                     const time = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "Şimdi";
-                    const voteState = localStorage.getItem(`vote_${id}`);
+                    
+                    const voteState = localStorage.getItem(`vote_${id}`); // 'up' veya 'down'
                     const removeState = localStorage.getItem(`remove_${id}`);
+                    
                     const interactionTotal = (post.likes || 0) + (post.dislikes || 0);
                     const removalThreshold = Math.max(1, interactionTotal); 
                     const currentRemoves = post.removeVotes || 0;
+                    
                     let imgHtml = post.image && post.image.length > 100 ? `<img src="${post.image}" class="news-img">` : "";
 
                     const html = `
@@ -291,10 +309,10 @@
                         <div class="card-body"><div class="news-text">${formatText(post.text)}</div>${imgHtml}</div>
                         <div class="card-footer">
                             <div class="vote-area">
-                                <button class="vote-btn vote-up ${voteState==='up'?'active':''}" onclick="vote('${id}','up')"><i class="fas fa-arrow-up"></i> <span>${post.likes||0}</span></button>
-                                <button class="vote-btn vote-down ${voteState==='down'?'active':''}" onclick="vote('${id}','down')"><i class="fas fa-arrow-down"></i> <span>${post.dislikes||0}</span></button>
+                                <button class="vote-btn ${voteState==='up' ? 'voted-up' : ''}" onclick="vote('${id}','up')"><i class="fas fa-arrow-up"></i> <span>${post.likes||0}</span></button>
+                                <button class="vote-btn ${voteState==='down' ? 'voted-down' : ''}" onclick="vote('${id}','down')"><i class="fas fa-arrow-down"></i> <span>${post.dislikes||0}</span></button>
                             </div>
-                            <button class="remove-btn ${removeState?'voted':''}" onclick="voteRemove('${id}', ${removalThreshold})"><i class="fas fa-trash"></i> Kaldır (${currentRemoves}/${removalThreshold})</button>
+                            <button class="remove-btn ${removeState?'voted':''}" onclick="voteRemove('${id}')"><i class="fas fa-trash"></i> Kaldır (${currentRemoves}/${removalThreshold})</button>
                         </div>
                     </div>`;
                     feed.innerHTML += html;
@@ -302,26 +320,36 @@
             });
         }
 
+        // 1. TEK SEFERLİK OYLAMA
         window.vote = async (id, type) => {
-            if (localStorage.getItem(`vote_${id}`)) { alert("Zaten oyladınız!"); return; }
+            // Daha önce oy verip vermediğini kontrol et
+            if (localStorage.getItem(`vote_${id}`)) { 
+                alert("Bu haberi zaten oyladınız!"); 
+                return; 
+            }
+
             const postRef = doc(db, "posts", id);
             await updateDoc(postRef, type === 'up' ? { likes: increment(1) } : { dislikes: increment(1) });
+            
+            // Oyu kaydet ki tekrar basamasın
             localStorage.setItem(`vote_${id}`, type);
         };
 
-        window.voteRemove = async (id, threshold) => {
+        window.voteRemove = async (id) => {
             if (localStorage.getItem(`remove_${id}`)) { alert("Zaten oy kullandınız."); return; }
             if(!confirm("Bu haberi kaldırmak istediğinize emin misiniz?")) return;
+            
             const postRef = doc(db, "posts", id);
             await updateDoc(postRef, { removeVotes: increment(1) });
             localStorage.setItem(`remove_${id}`, 'true');
+            
             const snap = await getDoc(postRef);
             if (snap.exists()) {
                 const data = snap.data();
                 if ((data.removeVotes || 0) >= Math.max(1, (data.likes||0)+(data.dislikes||0))) {
                     await deleteDoc(postRef);
                     alert("Haber kaldırıldı.");
-                } else { alert(`Oy verildi. (${data.removeVotes}/${Math.max(1, (data.likes||0)+(data.dislikes||0))})`); }
+                }
             }
         };
 
