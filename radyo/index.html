@@ -1,645 +1,154 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0f172a">
-<title>Odhun FM | Yeni Nesil Radyo</title>
-
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23f43f5e%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>FM</text></svg>">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-<style>
-    /* --- TEMEL AYARLAR --- */
-    :root {
-        --bg-dark: #05070a;
-        --panel: #0f172a;
-        --panel-light: #1e293b;
-        --accent: #f43f5e; /* Odhun FM Pembesi */
-        --accent-glow: rgba(244, 63, 94, 0.4);
-        --text: #f8fafc;
-        --text-dim: #94a3b8;
-        --border: rgba(255,255,255,0.05);
-        --sidebar-w: 260px;
-        --player-h: 90px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Odhun Radio Player</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #0f0f0f; }
+    .glass {
+      backdrop-filter: blur(14px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
-    * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--panel-light) var(--bg-dark); }
-    
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-dark); }
-    ::-webkit-scrollbar-thumb { background: var(--panel-light); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-    body {
-        margin: 0; padding: 0; background: var(--bg-dark); color: var(--text);
-        font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
-    }
-
-    /* --- SIDEBAR --- */
-    .sidebar {
-        width: var(--sidebar-w); background: var(--panel); border-right: 1px solid var(--border);
-        display: flex; flex-direction: column; flex-shrink: 0; z-index: 20;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .brand {
-        height: 70px; display: flex; align-items: center; padding: 0 25px;
-        font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700;
-        letter-spacing: 1px; border-bottom: 1px solid var(--border);
-        background: linear-gradient(90deg, rgba(244,63,94,0.1), transparent);
-    }
-    .brand span { color: var(--accent); margin-left: 4px; }
-
-    .nav-menu { flex: 1; overflow-y: auto; padding: 20px 10px; }
-    .nav-group { margin-bottom: 25px; }
-    .nav-title {
-        font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim);
-        font-weight: 800; margin: 0 15px 10px; letter-spacing: 1px;
-    }
-    
-    .nav-item {
-        display: flex; align-items: center; gap: 12px; padding: 12px 15px;
-        color: var(--text); text-decoration: none; font-size: 0.9rem;
-        border-radius: 8px; cursor: pointer; transition: all 0.2s;
-        margin-bottom: 2px;
-    }
-    .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
-    .nav-item.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent-glow); }
-    .nav-item i { width: 20px; text-align: center; }
-    .count-badge { 
-        margin-left: auto; background: rgba(0,0,0,0.2); padding: 2px 8px; 
-        border-radius: 10px; font-size: 0.7rem; opacity: 0.7; 
-    }
-
-    /* --- MAIN CONTENT --- */
-    .main-area {
-        flex: 1; display: flex; flex-direction: column; position: relative;
-        background: radial-gradient(circle at top right, #1a0b12 0%, var(--bg-dark) 40%);
-    }
-
-    /* Top Bar */
-    .top-bar {
-        height: 70px; border-bottom: 1px solid var(--border); display: flex;
-        align-items: center; justify-content: space-between; padding: 0 30px;
-        background: rgba(5, 7, 10, 0.8); backdrop-filter: blur(10px); z-index: 10;
-    }
-
-    .search-wrap { position: relative; width: 300px; }
-    .search-input {
-        width: 100%; background: var(--panel-light); border: 1px solid var(--border);
-        padding: 10px 15px 10px 40px; border-radius: 20px; color: #fff; outline: none;
-        font-family: inherit; transition: 0.3s;
-    }
-    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
-
-    .top-actions { display: flex; gap: 15px; }
-    .action-btn {
-        width: 40px; height: 40px; border-radius: 50%; background: var(--panel-light);
-        border: 1px solid var(--border); color: var(--text); cursor: pointer;
-        display: flex; align-items: center; justify-content: center; transition: 0.2s;
-    }
-    .action-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    /* Station Grid */
-    .content-scroll { flex: 1; overflow-y: auto; padding: 30px; }
-    
-    .section-header { display: flex; align-items: center; margin-bottom: 20px; }
-    .section-title-text { font-size: 1.5rem; font-weight: 700; }
-    .live-dot { 
-        width: 10px; height: 10px; background: var(--accent); border-radius: 50%; 
-        margin-left: 10px; animation: pulse 2s infinite; 
-    }
-
-    .station-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px; padding-bottom: 100px;
-    }
-
-    .station-card {
-        background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
-        padding: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative; overflow: hidden; group;
-    }
-    .station-card:hover { 
-        transform: translateY(-5px); border-color: var(--accent); 
-        box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5); 
-    }
-    .station-card.playing {
-        border-color: var(--accent); background: linear-gradient(145deg, var(--panel), #2a0a12);
-    }
-
-    .card-img-box {
-        width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden;
-        background: #000; position: relative; margin-bottom: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-    .station-card:hover .card-img { transform: scale(1.1); opacity: 0.6; }
-    
-    .play-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        display: flex; align-items: center; justify-content: center;
-        opacity: 0; transition: 0.3s;
-    }
-    .station-card:hover .play-overlay { opacity: 1; }
-    .play-circle {
-        width: 50px; height: 50px; border-radius: 50%; background: var(--accent);
-        color: #fff; display: flex; align-items: center; justify-content: center;
-        font-size: 1.2rem; box-shadow: 0 0 20px var(--accent);
-        transform: scale(0.8); transition: 0.3s;
-    }
-    .station-card:hover .play-circle { transform: scale(1); }
-
-    /* Equalizer Animation on Card */
-    .card-eq {
-        position: absolute; bottom: 10px; right: 10px; display: flex; gap: 3px;
-        height: 20px; align-items: flex-end; opacity: 0;
-    }
-    .station-card.playing .card-eq { opacity: 1; }
-    .eq-bar { width: 4px; background: var(--accent); border-radius: 2px; animation: eq 1s infinite ease-in-out; }
-    .eq-bar:nth-child(1) { animation-delay: 0.0s; height: 40%; }
-    .eq-bar:nth-child(2) { animation-delay: 0.2s; height: 80%; }
-    .eq-bar:nth-child(3) { animation-delay: 0.4s; height: 60%; }
-
-    .card-title { font-weight: 700; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-genre { font-size: 0.8rem; color: var(--text-dim); }
-
-    /* --- PLAYER BAR (FOOTER) --- */
-    .player-bar {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: var(--player-h);
-        background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border);
-        backdrop-filter: blur(20px); z-index: 50; display: flex; align-items: center;
-        padding: 0 30px; justify-content: space-between;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-    }
-
-    .player-info { display: flex; align-items: center; gap: 15px; width: 300px; }
-    .p-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .p-text { display: flex; flex-direction: column; }
-    .p-title { font-weight: 700; font-size: 1rem; color: #fff; }
-    .p-desc { font-size: 0.8rem; color: var(--accent); margin-top: 2px; }
-
-    .player-controls { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-    .ctrl-buttons { display: flex; align-items: center; gap: 20px; }
-    .ctrl-btn {
-        background: none; border: none; color: var(--text-dim); font-size: 1.2rem;
-        cursor: pointer; transition: 0.2s;
-    }
-    .ctrl-btn:hover { color: #fff; }
-    .play-pause-btn {
-        width: 45px; height: 45px; border-radius: 50%; background: #fff; color: #000;
-        display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-        box-shadow: 0 0 15px rgba(255,255,255,0.3);
-    }
-    .play-pause-btn:hover { transform: scale(1.05); background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
-
-    /* Visualizer Canvas */
-    .vis-container {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; z-index: -1; opacity: 0.3;
-    }
-    
-    /* Volume & Extra */
-    .player-extra { display: flex; align-items: center; gap: 15px; width: 300px; justify-content: flex-end; }
-    .vol-wrap { display: flex; align-items: center; gap: 10px; }
-    input[type="range"] {
-        -webkit-appearance: none; width: 100px; height: 4px; background: #333;
-        border-radius: 2px; cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none; width: 12px; height: 12px; background: #fff;
-        border-radius: 50%; cursor: pointer; transition: 0.2s;
-    }
-    input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent); transform: scale(1.2); }
-
-    /* --- MOBİL --- */
-    .mobile-toggle { display: none; font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
-    
-    @media (max-width: 900px) {
-        .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px #000; }
-        .sidebar.active { left: 0; }
-        .mobile-toggle { display: block; }
-        .player-info { width: auto; flex: 1; }
-        .player-controls { position: absolute; right: 20px; top: 20px; width: auto; }
-        .ctrl-buttons { gap: 10px; }
-        .ctrl-btn-sec { display: none; } /* İleri geri butonlarını mobilde gizle */
-        .player-extra { display: none; } /* Mobilde volume gizle */
-        .p-title { font-size: 0.9rem; }
-        .p-desc { font-size: 0.7rem; }
-        .station-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    }
-
-    @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-    @keyframes eq { 0%, 100% { height: 30%; } 50% { height: 100%; } }
-</style>
+  </style>
 </head>
-<body>
+<body class="text-white p-4 select-none">
 
-    <div class="vis-container">
-        <canvas id="visualizer"></canvas>
+  <div class="max-w-xl mx-auto mt-6 glass p-6 shadow-2xl">
+    <h1 class="text-3xl font-bold mb-4 text-center">Odhun Modern Radyo</h1>
+
+    <!-- SEARCH -->
+    <input id="search" type="text" placeholder="Radyo ara..." class="w-full p-3 rounded-xl bg-white/10 text-white focus:outline-none mb-4" />
+
+    <!-- CATEGORY FILTER -->
+    <select id="category" class="w-full p-3 rounded-xl bg-white/10 text-white focus:outline-none mb-4">
+      <option value="all">Tümü</option>
+      <option value="pop">Pop</option>
+      <option value="slow">Slow</option>
+      <option value="haber">Haber</option>
+      <option value="yabanci">Yabancı</option>
+    </select>
+
+    <!-- RADIO LIST -->
+    <div id="radioList" class="space-y-3 max-h-80 overflow-y-auto pr-2"></div>
+
+    <!-- PLAYER AREA -->
+    <div class="mt-6 glass p-5 text-center">
+      <h2 id="nowPlaying" class="text-xl font-semibold mb-3">Seçim yap</h2>
+
+      <button id="playBtn" class="px-6 py-3 bg-white/20 rounded-xl mb-4 w-full">▶ Oynat</button>
+
+      <!-- VOLUME SLIDER -->
+      <input id="volume" type="range" min="0" max="1" step="0.01" value="1" class="w-full" />
+
+      <!-- VISUALIZER -->
+      <canvas id="visualizer" class="w-full h-24 mt-4"></canvas>
     </div>
+  </div>
 
-    <div id="startOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;justify-content:center;align-items:center;flex-direction:column;">
-        <button onclick="initAudio()" style="padding:20px 40px;font-size:20px;background:#f43f5e;color:white;border:none;border-radius:50px;cursor:pointer;font-weight:bold;">RADYOYU BAŞLAT</button>
-        <p style="color:#aaa;margin-top:20px;">Müzik deneyimi için tıklayın</p>
-    </div>
+<script>
+const stations = [
+  { name: "PowerTürk", url: "https://powerturk.com.tr/stream", cat: "pop" },
+  { name: "SlowTürk", url: "https://slowturk.com.tr/stream", cat: "slow" },
+  { name: "Kral Pop", url: "https://kralpop.com.tr/stream", cat: "pop" },
+  { name: "CNN Türk Radyo", url: "https://cnnturk.com.tr/stream", cat: "haber" }
+];
 
-    <div class="sidebar" id="sidebar">
-        <div class="brand">ODHUN<span>FM</span></div>
-        <div class="nav-menu">
-            <div class="nav-group">
-                <div class="nav-title">Kütüphane</div>
-                <div class="nav-item active" onclick="filterStations('all')"><i class="fas fa-globe"></i> Tümü</div>
-                <div class="nav-item" onclick="filterStations('favorites')"><i class="fas fa-heart"></i> Favoriler <span class="count-badge" id="favCount">0</span></div>
-                <div class="nav-item" onclick="filterStations('history')"><i class="fas fa-history"></i> Son Çalanlar</div>
-            </div>
-            <div class="nav-group">
-                <div class="nav-title">Kategoriler</div>
-                <div class="nav-item" onclick="filterStations('pop')"><i class="fas fa-music"></i> Popüler Pop</div>
-                <div class="nav-item" onclick="filterStations('arabesk')"><i class="fas fa-wine-glass"></i> Arabesk & Damar</div>
-                <div class="nav-item" onclick="filterStations('haber')"><i class="fas fa-microphone"></i> Haber & Spor</div>
-                <div class="nav-item" onclick="filterStations('rock')"><i class="fas fa-guitar"></i> Rock & Yabancı</div>
-                <div class="nav-item" onclick="filterStations('slow')"><i class="fas fa-cloud-moon"></i> Slow & Aşk</div>
-                <div class="nav-item" onclick="filterStations('halk')"><i class="fas fa-drum"></i> Halk Müziği</div>
-                <div class="nav-item" onclick="filterStations('dini')"><i class="fas fa-mosque"></i> Dini Yayınlar</div>
-            </div>
-             <div class="nav-group">
-                <div class="nav-title">Araçlar</div>
-                <div class="nav-item" onclick="toggleSleepMenu()"><i class="fas fa-stopwatch"></i> Uyku Modu <span id="sleepDisplay" class="count-badge" style="display:none"></span></div>
-            </div>
-        </div>
-    </div>
+const list = document.getElementById("radioList");
+stations.forEach(st => {
+  const el = document.createElement("div");
+  el.className = "glass p-3 cursor-pointer hover:bg-white/20";
+  el.innerText = st.name;
+  el.onclick = () => selectStation(st);
+  list.appendChild(el);
+});
 
-    <div class="main-area">
-        <div class="top-bar">
-            <div style="display:flex; align-items:center;">
-                <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-                <div class="search-wrap">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Radyo Ara..." onkeyup="searchStations()">
-                </div>
-            </div>
-            <div class="top-actions">
-                <button class="action-btn" onclick="toggleTheme()" title="Tema"><i class="fas fa-adjust"></i></button>
-                <button class="action-btn" onclick="refreshStream()" title="Yenile"><i class="fas fa-sync-alt"></i></button>
-            </div>
-        </div>
+let audio = new Audio();
+let current = null;
 
-        <div class="content-scroll">
-            <div class="section-header">
-                <div class="section-title-text" id="pageTitle">Tüm Radyolar</div>
-                <div class="live-dot"></div>
-            </div>
-            <div class="station-grid" id="grid"></div>
-        </div>
-    </div>
+function selectStation(st) {
+  current = st;
+  document.getElementById("nowPlaying").innerText = st.name;
+  play();
+}
 
-    <div class="player-bar">
-        <div class="player-info">
-            <img src="https://via.placeholder.com/60/222/555?text=FM" class="p-img" id="pImg">
-            <div class="p-text">
-                <div class="p-title" id="pTitle">Radyo Seçilmedi</div>
-                <div class="p-desc" id="pDesc">Müzik ruhun gıdasıdır...</div>
-            </div>
-            <button class="ctrl-btn" onclick="toggleFavCurrent()" id="btnFav"><i class="far fa-heart"></i></button>
-        </div>
+function play() {
+  if (!current) return;
+  audio.src = current.url;
+  audio.play();
+  document.getElementById("playBtn").innerText = "⏸ Duraklat";
+}
 
-        <div class="player-controls">
-            <div class="ctrl-buttons">
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playRandom()"><i class="fas fa-random"></i></button>
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playPrev()"><i class="fas fa-step-backward"></i></button>
-                <button class="play-pause-btn" onclick="togglePlay()" id="btnPlay"><i class="fas fa-play"></i></button>
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playNext()"><i class="fas fa-step-forward"></i></button>
-                <button class="ctrl-btn ctrl-btn-sec" onclick="cycleVisualizer()"><i class="fas fa-wave-square"></i></button>
-            </div>
-        </div>
+document.getElementById("playBtn").onclick = () => {
+  if (!current) return;
+  if (audio.paused) play(); else { audio.pause(); document.getElementById("playBtn").innerText = "▶ Oynat"; }
+};
 
-        <div class="player-extra">
-            <div class="vol-wrap">
-                <i class="fas fa-volume-up" id="volIcon"></i>
-                <input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-            </div>
-        </div>
-    </div>
+document.getElementById("volume").oninput = e => {
+  audio.volume = e.target.value;
+};
 
-    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+// SEARCH FILTER
+const search = document.getElementById("search");
+search.oninput = () => {
+  const val = search.value.toLowerCase();
+  [...list.children].forEach((item, i) => {
+    item.style.display = stations[i].name.toLowerCase().includes(val) ? "block" : "none";
+  });
+};
 
-    <script>
-        // --- GÜNCELLENMİŞ VE ÇALIŞAN HTTPS RADYO LİSTESİ ---
-        const stations = [
-            { id: 1, name: "Power FM", cat: "pop", logo: "https://www.powerapp.com.tr/assets/img/logos/powerfm.png", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio" },
-            { id: 2, name: "Power Turk", cat: "pop", logo: "https://www.powerapp.com.tr/assets/img/logos/powerturk.png", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio" },
-            { id: 3, name: "Kral FM", cat: "arabesk", logo: "https://dogus.daioncdn.net/kralfm/kralfm_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralfm.smil/playlist.m3u8" },
-            { id: 4, name: "Kral Pop", cat: "pop", logo: "https://dogus.daioncdn.net/kralpoptv/kralpoptv_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralpop.smil/playlist.m3u8" },
-            { id: 5, name: "Joy Turk", cat: "pop", logo: "https://karnaval.com/media/channels/joyturk_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK_SC" },
-            { id: 6, name: "Metro FM", cat: "pop", logo: "https://karnaval.com/media/channels/metrofm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM_SC" },
-            { id: 7, name: "Süper FM", cat: "pop", logo: "https://karnaval.com/media/channels/superfm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM_SC" },
-            { id: 8, name: "Fenomen", cat: "pop", logo: "https://radyofenomen.com/assets/img/logo.png", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio" },
-            { id: 9, name: "Virgin Radio", cat: "pop", logo: "https://karnaval.com/media/channels/virginradioturkiye_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO_TR_SC" },
-            { id: 10, name: "Alem FM", cat: "pop", logo: "https://img-alemfm-mncdn.mncdn.com/assets/img/alemfm-logo.png", url: "https://turkmedya-live.ercdn.net/alemfm/alemfm.m3u8" },
-            { id: 11, name: "Number1 FM", cat: "pop", logo: "https://www.numberone.com.tr/wp-content/uploads/2019/04/nr1-logo-2019.png", url: "https://n10101m.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e3285b5913_1200/playlist.m3u8" },
-            { id: 12, name: "TRT FM", cat: "pop", logo: "https://cdn-r.trt.net.tr/static/radio/img/radyofm.png", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
-            { id: 13, name: "NTV Radyo", cat: "haber", logo: "https://cdn.ntv.com.tr/img/ntv-logo.png", url: "https://ssldyg.radyotvonline.net/smil/ntvradyo.smil/playlist.m3u8" },
-            { id: 14, name: "Radyo Eksen", cat: "rock", logo: "https://radyoeksen.com/assets/img/logo.png", url: "https://ssldyg.radyotvonline.net/smil/radyoeksen.smil/playlist.m3u8" },
-            { id: 15, name: "Power XL", cat: "rock", logo: "https://www.powerapp.com.tr/assets/img/logos/powerxl.png", url: "https://listen.powerapp.com.tr/powerxl/playlist.m3u8" },
-            { id: 16, name: "Power Love", cat: "slow", logo: "https://www.powerapp.com.tr/assets/img/logos/powerlove.png", url: "https://listen.powerapp.com.tr/powerlove/playlist.m3u8" },
-            { id: 17, name: "Pal Nostalji", cat: "slow", logo: "https://palnostalji.com.tr/assets/images/logo.png", url: "https://shoutcast.radyogrup.com/radio/8020/radio.mp3" },
-            { id: 18, name: "Slow Türk", cat: "slow", logo: "https://www.slowturk.com.tr/assets/img/logo.png", url: "https://radyo.dogannet.tv/slowturk/playlist.m3u8" },
-            { id: 19, name: "Radyo 7", cat: "halk", logo: "https://www.radyo7.com/assets/img/logo.png", url: "https://radyo.yayin.com.tr/radyo7/playlist.m3u8" },
-            { id: 20, name: "TRT Türkü", cat: "halk", logo: "https://cdn-r.trt.net.tr/static/radio/img/trtturku.png", url: "https://radio-trt-turku.medya.trt.com.tr/master.m3u8" },
-            { id: 21, name: "Diyanet Radyo", cat: "dini", logo: "https://radyo.diyanet.gov.tr/assets/img/logo.png", url: "https://yayin.diyanet.gov.tr:8443/radyo" },
-            { id: 22, name: "Lig Radyo", cat: "haber", logo: "https://ligradyo.com.tr/assets/img/logo.png", url: "https://turkmedya-live.ercdn.net/ligradyo/ligradyo.m3u8" },
-            { id: 23, name: "CNN Türk Radyo", cat: "haber", logo: "https://www.cnnturk.com/assets/images/logo-cnnturk.png", url: "https://radyo.dogannet.tv/cnnturkradyo/playlist.m3u8" },
-            { id: 24, name: "Habertürk Radyo", cat: "haber", logo: "https://haberturk.com/images/ht-logo.png", url: "https://ciner.daioncdn.net/hbrtrkradyo/hbrtrkradyo.m3u8" }
-        ];
+// CATEGORY FILTER
+const category = document.getElementById("category");
+category.onchange = () => {
+  const val = category.value;
+  [...list.children].forEach((item, i) => {
+    item.style.display = val === "all" || stations[i].cat === val ? "block" : "none";
+  });
+};
 
-        // --- SİSTEM DEĞİŞKENLERİ ---
-        let audio = document.getElementById('audioPlayer');
-        let currentIdx = -1;
-        let hls = null;
-        let favorites = JSON.parse(localStorage.getItem('odhunFM_favs')) || [];
-        let history = [];
-        let sleepTimer = null;
-        
-        let audioCtx, analyser, source, dataArray, canvas, ctx;
-        let visMode = 0; 
-        let animationId;
+// VISUALIZER
+const canvas = document.getElementById("visualizer");
+const ctx = canvas.getContext("2d");
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
+let audioCtx, analyser, src;
 
-        // --- BAŞLATMA (OVERLAY İLE) ---
-        function initAudio() {
-            // Overlay'i kaldır
-            const overlay = document.getElementById('startOverlay');
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.remove(), 500);
-            
-            renderStations(stations);
-            setupVisualizer(); // AudioContext burada başlatılacak
-            resizeCanvas();
-            // İlk kanalı sessizce seç (çalma)
-            // playStation(0) yerine sadece seçim yapabiliriz ama kullanıcı tıkladığı için playStation(0) mantıklı.
-            playStation(0);
-        }
-        
-        window.onresize = resizeCanvas;
+function setupVisualizer() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  src = audioCtx.createMediaElementSource(audio);
+  src.connect(analyser);
+  analyser.connect(audioCtx.destination);
 
-        // --- LİSTELEME ---
-        function renderStations(list) {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = "";
-            
-            list.forEach((s, index) => {
-                const card = document.createElement('div');
-                // ID ATAMASI (Yanıp sönmeyi engellemek için kritik)
-                card.id = `card-${s.id}`;
-                card.className = `station-card ${currentIdx !== -1 && stations[currentIdx].id === s.id ? 'playing' : ''}`;
-                card.onclick = () => playStation(s.id);
-                
-                card.innerHTML = `
-                    <div class="card-img-box">
-                        <img src="${s.logo}" class="card-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Radyo'">
-                        <div class="play-overlay"><div class="play-circle"><i class="fas fa-play"></i></div></div>
-                        <div class="card-eq">
-                            <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
-                        </div>
-                    </div>
-                    <div class="card-title">${s.name}</div>
-                    <div class="card-genre">${s.cat.toUpperCase()}</div>
-                `;
-                grid.appendChild(card);
-            });
-            
-            document.getElementById('favCount').innerText = favorites.length;
-        }
+  visualize();
+}
 
-        // --- OYNATMA (Flicker Fix & HLS Fix) ---
-        function playStation(id) {
-            const station = stations.find(s => s.id === id);
-            if(!station) return;
+audio.onplay = () => setupVisualizer();
 
-            // Görsel Güncelleme (DOM'u silmeden sadece class değiştir)
-            if(currentIdx !== -1) {
-                const prevCard = document.getElementById(`card-${stations[currentIdx].id}`);
-                if(prevCard) prevCard.classList.remove('playing');
-            }
-            
-            currentIdx = stations.findIndex(s => s.id === id);
-            
-            const newCard = document.getElementById(`card-${station.id}`);
-            if(newCard) newCard.classList.add('playing');
+function visualize() {
+  requestAnimationFrame(visualize);
 
-            // UI Güncelle
-            document.getElementById('pTitle').innerText = station.name;
-            document.getElementById('pDesc').innerText = "Canlı Yayın - " + station.cat.toUpperCase();
-            document.getElementById('pImg').src = station.logo;
-            
-            // Oynatıcıyı sıfırla (Hata önleme)
-            if (hls) { hls.destroy(); hls = null; }
-            
-            // HLS (.m3u8) veya MP3 Kontrolü
-            if (Hls.isSupported() && station.url.includes('.m3u8')) {
-                hls = new Hls();
-                hls.loadSource(station.url);
-                hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play().catch(e => console.error("Oynatma hatası:", e)));
-            } else {
-                audio.src = station.url;
-                audio.play().catch(e => console.error("Oynatma hatası:", e));
-            }
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
 
-            updatePlayBtn(true);
-            updateFavBtn();
-            
-            // Geçmişe Ekle
-            if(!history.includes(id)) history.unshift(id);
-            if(history.length > 10) history.pop();
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Visualizer Başlat (Eğer durmuşsa)
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        }
+  const barWidth = canvas.width / 64;
+  let x = 0;
 
-        function togglePlay() {
-            if (audio.paused) audio.play();
-            else audio.pause();
-            updatePlayBtn(!audio.paused);
-        }
+  for (let i = 0; i < 64; i++) {
+    const h = data[i] / 2;
+    ctx.fillStyle = "white";
+    ctx.fillRect(x, canvas.height - h, barWidth - 2, h);
+    x += barWidth;
+  }
+}
+</script>
 
-        function updatePlayBtn(isPlaying) {
-            const btn = document.getElementById('btnPlay');
-            btn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-            
-            // Animasyon kontrolü
-            if(currentIdx !== -1) {
-                const card = document.getElementById(`card-${stations[currentIdx].id}`);
-                if(isPlaying) card?.querySelector('.card-eq')?.style.setProperty('opacity', '1');
-                else card?.querySelector('.card-eq')?.style.setProperty('opacity', '0');
-            }
-        }
-
-        function playRandom() {
-            const rnd = Math.floor(Math.random() * stations.length);
-            playStation(stations[rnd].id);
-        }
-        
-        function playNext() {
-            let next = currentIdx + 1;
-            if(next >= stations.length) next = 0;
-            playStation(stations[next].id);
-        }
-        
-        function playPrev() {
-            let prev = currentIdx - 1;
-            if(prev < 0) prev = stations.length - 1;
-            playStation(stations[prev].id);
-        }
-
-        function setVolume(val) {
-            audio.volume = val;
-            const icon = document.getElementById('volIcon');
-            if(val == 0) icon.className = 'fas fa-volume-mute';
-            else if(val < 0.5) icon.className = 'fas fa-volume-down';
-            else icon.className = 'fas fa-volume-up';
-        }
-        
-        function refreshStream() {
-            if(currentIdx !== -1) playStation(stations[currentIdx].id);
-        }
-
-        // --- FİLTRELEME ---
-        function filterStations(cat) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            if (cat === 'all') {
-                renderStations(stations);
-            } else if (cat === 'favorites') {
-                const favs = stations.filter(s => favorites.includes(s.id));
-                renderStations(favs);
-                if(favs.length === 0) document.getElementById('grid').innerHTML = '<div style="text-align:center; width:100%; padding:40px; color:#666">Henüz favorin yok.</div>';
-            } else if (cat === 'history') {
-                const hists = history.map(id => stations.find(s => s.id === id));
-                renderStations(hists);
-            } else {
-                const filtered = stations.filter(s => s.cat === cat);
-                renderStations(filtered);
-            }
-            if(window.innerWidth <= 900) toggleSidebar();
-        }
-
-        function searchStations() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = stations.filter(s => s.name.toLowerCase().includes(term));
-            renderStations(filtered);
-        }
-
-        // --- DİĞERLERİ ---
-        function toggleFavCurrent() {
-            if(currentIdx === -1) return;
-            const id = stations[currentIdx].id;
-            if(favorites.includes(id)) favorites = favorites.filter(f => f !== id);
-            else favorites.push(id);
-            localStorage.setItem('odhunFM_favs', JSON.stringify(favorites));
-            updateFavBtn();
-            document.getElementById('favCount').innerText = favorites.length;
-        }
-
-        function updateFavBtn() {
-            if(currentIdx === -1) return;
-            const id = stations[currentIdx].id;
-            const btn = document.getElementById('btnFav');
-            if(favorites.includes(id)) btn.innerHTML = '<i class="fas fa-heart" style="color:var(--accent)"></i>';
-            else btn.innerHTML = '<i class="far fa-heart"></i>';
-        }
-
-        function toggleSleepMenu() {
-            const min = prompt("Kaç dakika sonra kapansın?", "30");
-            if(min) {
-                clearTimeout(sleepTimer);
-                const ms = parseInt(min) * 60 * 1000;
-                sleepTimer = setTimeout(() => { audio.pause(); alert("Radyo kapatıldı."); document.getElementById('sleepDisplay').style.display = 'none'; }, ms);
-                document.getElementById('sleepDisplay').innerText = min + "dk";
-                document.getElementById('sleepDisplay').style.display = 'inline-block';
-            }
-        }
-
-        // --- VISUALIZER ---
-        function setupVisualizer() {
-            // Kullanıcı etkileşimiyle başlat (Tarayıcı kuralı)
-            // Zaten initAudio fonksiyonu butona bağlı olduğu için orada başlatıyoruz.
-        }
-
-        function initAudioCtx() {
-            if (audioCtx) return;
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                analyser.fftSize = 256;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                canvas = document.getElementById('visualizer');
-                ctx = canvas.getContext('2d');
-                animateVisualizer();
-            } catch(e) {}
-        }
-
-        function resizeCanvas() {
-            const cvs = document.getElementById('visualizer');
-            cvs.width = window.innerWidth;
-            cvs.height = window.innerHeight;
-        }
-
-        function animateVisualizer() {
-            animationId = requestAnimationFrame(animateVisualizer);
-            if(analyser) analyser.getByteFrequencyData(dataArray);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (visMode === 0) drawBars();
-            else if (visMode === 1) drawWave();
-            else drawCircle();
-        }
-
-        function drawBars() {
-            const barWidth = (canvas.width / dataArray.length) * 2.5;
-            let x = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-                const barHeight = dataArray[i] * 1.5;
-                ctx.fillStyle = `rgba(${barHeight + (25 * (i/dataArray.length))},50,150,0.2)`;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
-            }
-        }
-
-        function drawWave() {
-            ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(244, 63, 94, 0.3)'; ctx.beginPath();
-            const sliceWidth = canvas.width * 1.0 / dataArray.length;
-            let x = 0;
-            for(let i = 0; i < dataArray.length; i++) {
-                const v = dataArray[i] / 128.0;
-                const y = v * canvas.height / 2;
-                if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                x += sliceWidth;
-            }
-            ctx.lineTo(canvas.width, canvas.height/2);
-            ctx.stroke();
-        }
-
-        function drawCircle() {
-            const avg = dataArray.reduce((a,b)=>a+b,0) / dataArray.length;
-            const radius = avg * 2;
-            ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, radius, 0, 2 * Math.PI);
-            ctx.strokeStyle = `rgba(244, 63, 94, 0.2)`; ctx.lineWidth = 5; ctx.stroke();
-        }
-
-        function cycleVisualizer() { visMode = (visMode + 1) % 3; }
-        function toggleTheme() { alert("Tema değiştirme yakında!"); }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-
-    </script>
 </body>
 </html>
