@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun | Anamur Rehberi </title>
+<title>Odhun Anamur | Şehir Rehberi</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230984e3%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>A</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,8 +15,8 @@
         --secondary: #d63031; 
         --text: #2d3436;
         --text-light: #636e72;
-        --card-bg: rgba(255, 255, 255, 0.92);
-        --nav-height: 70px;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --nav-height: 65px;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -26,33 +26,36 @@
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column;
         overflow: hidden;
         
-        /* ARKA PLAN (Optimize Edildi) */
-        background: url('https://wsrv.nl/?url=https://www.shutterstock.com/image-photo/aerial-view-mamure-castle-anamur-600nw-2406336265.jpg&q=80&output=webp') no-repeat center center fixed;
+        /* 4K ARKA PLAN GÖRSELİ (Mamure Kalesi) */
+        background: url('https://www.kulturportali.gov.tr/contents/images/Mamure%20Kalesi%20(10).jpg') no-repeat center center fixed;
         background-size: cover;
     }
 
     body::before {
         content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.35);
+        background: rgba(0, 0, 0, 0.4); /* Yazıların okunması için karartma */
         z-index: -1; pointer-events: none;
     }
 
     /* --- HEADER --- */
     header {
-        background: rgba(255, 255, 255, 0.95); padding: 10px 20px; 
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        background: rgba(255, 255, 255, 0.95); padding: 10px 15px; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         display: flex; justify-content: space-between; align-items: center; z-index: 50;
-        backdrop-filter: blur(10px); flex-wrap: wrap; gap: 10px;
+        backdrop-filter: blur(10px);
     }
-    .brand { font-size: 1.4rem; font-weight: 900; color: var(--text); letter-spacing: -1px; flex-shrink: 0; }
+    .brand { font-size: 1.3rem; font-weight: 900; color: var(--text); letter-spacing: -1px; }
     .brand span { color: var(--primary); }
     
-    .weather-container { flex: 1; max-width: 500px; min-width: 200px; overflow: hidden; border-radius: 5px; }
+    .weather-widget {
+        display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600;
+        background: #f1f2f6; padding: 5px 10px; border-radius: 20px; color: #555;
+    }
 
     /* --- MAIN CONTENT --- */
     .main-content {
-        flex: 1; overflow-y: auto; padding: 20px; scroll-behavior: smooth;
-        padding-bottom: 100px;
+        flex: 1; overflow-y: auto; padding: 15px; scroll-behavior: smooth;
+        padding-bottom: 90px; /* Alt menü payı */
     }
 
     .section { display: none; animation: fadeIn 0.5s ease; }
@@ -60,78 +63,85 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .section-title {
-        font-family: 'Merriweather', serif; font-size: 2rem; color: #fff;
-        margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); text-align: center;
+        font-family: 'Merriweather', serif; font-size: 1.8rem; color: #fff;
+        margin-bottom: 20px; position: relative; text-align: center;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.8);
     }
     
     /* CARDS */
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+    .card-grid {
+        display: grid; 
+        /* Mobilde tek, büyük ekranda çoklu sütun */
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+        gap: 20px;
+    }
     
-    .place-card, .business-card {
-        background: var(--card-bg); border-radius: 20px; overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s;
+    .place-card {
+        background: var(--card-bg); border-radius: 16px; overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25); transition: 0.3s;
         display: flex; flex-direction: column; backdrop-filter: blur(5px);
     }
-    .place-card:hover, .business-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+    .place-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
     
-    .card-img { width: 100%; height: 220px; object-fit: cover; background: #ddd; cursor: pointer; transition: filter 0.2s; }
+    .card-img { 
+        width: 100%; height: 200px; object-fit: cover; background: #ddd; cursor: pointer;
+        transition: filter 0.2s;
+    }
     .card-img:hover { filter: brightness(0.9); }
 
-    .card-body { padding: 25px; flex: 1; display: flex; flex-direction: column; }
-    .card-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 5px; color: #2d3436; }
-    .card-subtitle { font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-bottom: 10px; }
-    .card-desc { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; margin-bottom: 20px; flex: 1; }
+    .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; color: #2d3436; }
+    .card-desc { font-size: 0.9rem; color: var(--text-light); line-height: 1.5; margin-bottom: 15px; flex: 1; }
     
     .card-action {
         display: flex; align-items: center; gap: 8px; color: var(--primary); 
-        font-weight: 700; font-size: 0.9rem; text-decoration: none; margin-top: auto;
-        background: rgba(9, 132, 227, 0.1); padding: 12px 15px; border-radius: 10px;
+        font-weight: 700; font-size: 0.85rem; text-decoration: none; margin-top: auto;
+        background: rgba(9, 132, 227, 0.1); padding: 10px 15px; border-radius: 8px;
         justify-content: center; transition: 0.2s; cursor: pointer;
     }
     .card-action:hover { background: var(--primary); color: #fff; }
 
-    /* REHBER ARAMA */
-    .search-box {
-        width: 100%; padding: 15px 20px; border-radius: 50px; border: none;
-        font-size: 1rem; margin-bottom: 25px; outline: none;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2); background: rgba(255,255,255,0.95);
-    }
-
-    /* ECZANE IFRAME */
-    .pharmacy-iframe {
-        margin:auto; text-align:center; width:100%; max-width:500px; 
-        background:rgba(255,255,255,0.95); padding:10px; border-radius:12px; 
-        box-shadow:0 5px 15px rgba(0,0,0,0.1);
-    }
-
     /* --- BOTTOM NAVIGATION --- */
     .bottom-nav {
-        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-        width: 90%; max-width: 500px; height: 70px;
+        position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+        width: 92%; max-width: 500px; height: var(--nav-height);
         background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
         display: flex; justify-content: space-around; align-items: center;
-        border-radius: 50px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 100;
-        padding: 0 10px;
+        border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 100;
+        padding: 0 5px;
     }
     .nav-item {
-        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-        color: #b2bec3; cursor: pointer; transition: 0.3s; width: 60px; height: 60px; border-radius: 50%;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+        color: #b2bec3; cursor: pointer; transition: 0.3s; width: 55px; height: 55px; border-radius: 50%;
         -webkit-tap-highlight-color: transparent;
     }
     .nav-item.active { 
         color: #fff; background: var(--primary); 
-        transform: translateY(-15px); 
+        transform: translateY(-10px); 
         box-shadow: 0 5px 15px rgba(9, 132, 227, 0.4);
     }
-    .nav-item i { font-size: 1.4rem; }
-
-    /* MEDYA SORGU */
+    .nav-item i { font-size: 1.3rem; }
+    
+    /* MEDYA SORGU (Masaüstü ve Tablet) */
     @media (min-width: 800px) {
-        .main-content { max-width: 1100px; margin: 0 auto; padding-top: 120px; }
-        .bottom-nav { top: 90px; bottom: auto; height: 80px; width: auto; padding: 0 40px; border-radius: 20px; }
+        .main-content { max-width: 1100px; margin: 0 auto; padding-top: 100px; }
+        
+        /* Masaüstünde Header gizli (İsteğe bağlı, ama genellikle mobilde header şart) */
+        header { display: none; } 
+        
+        /* Masaüstü Navigasyon: Üstte Sabit */
+        .bottom-nav { 
+            top: 20px; bottom: auto; height: 70px; width: auto; padding: 0 30px; 
+            border-radius: 15px; background: rgba(255,255,255,0.98);
+        }
         .nav-item { width: auto; height: auto; border-radius: 0; flex-direction: row; gap: 10px; padding: 10px 20px; }
         .nav-item.active { transform: none; background: transparent; color: var(--primary); box-shadow: none; border-bottom: 3px solid var(--primary); }
-        header { display: flex !important; position: fixed; top: 0; width: 100%; }
+        .nav-item span { display: inline-block !important; font-size: 1rem; font-weight: 600; }
+    }
+    
+    /* Küçük Mobil Ekranlar için Navigasyon Yazısı Gizleme */
+    @media (max-width: 799px) {
+        .nav-item span { display: none; }
     }
 </style>
 </head>
@@ -139,9 +149,7 @@
 
     <header>
         <div class="brand">ODHUN<span>ANAMUR</span></div>
-        <div class="weather-container">
-            <div id="ww_9365017618195" v='1.3' loc='id' a='{"t":"ticker","lang":"tr","sl_lpl":1,"ids":["wl5888"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>Daha fazla hava durumu tahmini: <a href="https://oneweather.org/tr/ankara/15_days/" id="ww_9365017618195_u" target="_blank">Hava durumu 15 günlük</a></div><script async src="https://app3.weatherwidget.org/js/?id=ww_9365017618195"></script>
-        </div>
+        <div class="weather-widget"><i class="fas fa-sun" style="color:#f1c40f"></i> 24°C</div>
     </header>
 
     <div class="main-content">
@@ -149,59 +157,66 @@
         <div id="sec-kesfet" class="section active">
             <div class="section-title">Anamur'u Keşfet</div>
             <div class="card-grid">
+                
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://www.kulturportali.gov.tr/contents/images/Mamure%20Kalesi%20(10).jpg&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Mamure_Kalesi', '_blank')" loading="lazy">
+                    <img src="https://www.kulturportali.gov.tr/contents/images/Mamure%20Kalesi%20(10).jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Mamure_Kalesi', '_blank')" alt="Mamure Kalesi">
                     <div class="card-body">
                         <div class="card-title">Mamure Kalesi</div>
-                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi.</div>
+                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi. Görsele tıkla, Wikipedia'da oku.</div>
                         <div class="card-action" onclick="openMap('Mamure Kalesi Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
+                
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://www.kulturportali.gov.tr/contents/images/Anamorium%20%c3%96renyeri%20%20%20(10).jpg&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anemurium', '_blank')" loading="lazy">
+                    <img src="https://www.kulturportali.gov.tr/contents/images/Anamorium%20%c3%96renyeri%20%20%20(10).jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anemurium', '_blank')" alt="Anamurium">
                     <div class="card-body">
                         <div class="card-title">Anamurium Antik Kenti</div>
-                        <div class="card-desc">Roma döneminden kalma hamamlar, tiyatro ve nekropol alanı.</div>
+                        <div class="card-desc">Roma döneminden kalma hamamlar, tiyatro ve nekropol alanı. Görsele tıkla, Wikipedia'da oku.</div>
                         <div class="card-action" onclick="openMap('Anamurium Antik Kenti')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
+
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://okuldisiogrenme.eba.gov.tr/uploads/places/68c0123188412.webp&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Pullu_Tabiat_Park%C4%B1', '_blank')" loading="lazy">
+                    <img src="https://okuldisiogrenme.eba.gov.tr/uploads/places/68c0123188412.webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Pullu_Tabiat_Park%C4%B1', '_blank')" alt="Pullu">
                     <div class="card-body">
                         <div class="card-title">Pullu Tabiat Parkı</div>
-                        <div class="card-desc">Kamp ve piknik alanı, deniz kenarında.</div>
+                        <div class="card-desc">Kamp ve piknik alanı, deniz kenarında. Görsele tıkla, Wikipedia'da oku.</div>
                         <div class="card-action" onclick="openMap('Pullu Tabiat Parkı Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
+
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://anamur.bel.tr/wp-content/uploads/2024/05/4295989300_cbb6d420c5_o.jpg&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/K%C3%B6%C5%9Fekb%C3%BCk%C3%BC_Ma%C4%9Faras%C4%B1', '_blank')" loading="lazy">
+                    <img src="https://anamur.bel.tr/wp-content/uploads/2024/05/4295989300_cbb6d420c5_o.jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/K%C3%B6%C5%9Fekb%C3%BCk%C3%BC_Ma%C4%9Faras%C4%B1', '_blank')" alt="Köşekbükü">
                     <div class="card-body">
                         <div class="card-title">Köşekbükü Mağarası</div>
-                        <div class="card-desc">Astım hastalarına şifa kaynağı.</div>
+                        <div class="card-desc">Astım hastalarına şifa kaynağı olduğu bilinen mağara. Görsele tıkla, Wikipedia'da oku.</div>
                         <div class="card-action" onclick="openMap('Köşekbükü Mağarası Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
+
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://anamur.bel.tr/wp-content/uploads/2024/05/12935767794_d2f56cb450_o-1024x576.jpg&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Dragon_%C3%87ay%C4%B1', '_blank')" loading="lazy">
+                    <img src="https://anamur.bel.tr/wp-content/uploads/2024/05/12935767794_d2f56cb450_o-1024x576.jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Dragon_%C3%87ay%C4%B1', '_blank')" alt="Dragon Çayı">
                     <div class="card-body">
                         <div class="card-title">Dragon Çayı</div>
-                        <div class="card-desc">Doğa yürüyüşü ve piknik için ideal.</div>
+                        <div class="card-desc">Serinlemek ve doğa yürüyüşü için harika bir kaçış noktası. Görsele tıkla, Wikipedia'da oku.</div>
                         <div class="card-action" onclick="openMap('Dragon Çayı Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
+
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://kvmgm.ktb.gov.tr/Resim/354620,mersin-anamur-anamurmuze01jpg.png?0&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anamur_M%C3%BCzesi', '_blank')" loading="lazy">
+                    <img src="https://kvmgm.ktb.gov.tr/Resim/354620,mersin-anamur-anamurmuze01jpg.png?0" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anamur_M%C3%BCzesi', '_blank')" alt="Müze">
                     <div class="card-body">
                         <div class="card-title">Anamur Müzesi</div>
-                        <div class="card-desc">Bölgeden çıkarılan arkeolojik eserler.</div>
+                        <div class="card-desc">Bölgeden çıkarılan arkeolojik eserlerin sergilendiği yer. Görsele tıkla, Wikipedia'da oku.</div>
                         <div class="card-action" onclick="openMap('Anamur Müzesi')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
+
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://www.kulturportali.gov.tr/repoKulturPortali/large/25022013/036d5674-d2ec-4357-ae0d-9b3b0a2228d4.JPG&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Titiopolis', '_blank')" loading="lazy">
+                    <img src="https://www.kulturportali.gov.tr/repoKulturPortali/large/25022013/036d5674-d2ec-4357-ae0d-9b3b0a2228d4.JPG?format=jpg&quality=50" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Titiopolis', '_blank')" alt="Titiopolis">
                     <div class="card-body">
                         <div class="card-title">Titiopolis Antik Kenti</div>
-                        <div class="card-desc">Gizemli antik kent kalıntıları.</div>
+                        <div class="card-desc">Dağ yamacına kurulu gizemli antik kent kalıntıları. Görsele tıkla, Wikipedia'da oku.</div>
                         <div class="card-action" onclick="openMap('Titiopolis Antik Kenti')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
@@ -212,23 +227,25 @@
             <div class="section-title">Yöresel Lezzetler</div>
             <div class="card-grid">
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://i.nefisyemektarifleri.com/2010/11/batirik1.jpg&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')" loading="lazy">
+                    <img src="https://i.nefisyemektarifleri.com/2010/11/batirik1.jpg" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')">
                     <div class="card-body">
                         <div class="card-title">Batırık</div>
                         <div class="card-desc">Yer fıstığı ve bulgurla yapılan efsane lezzet.</div>
                         <div class="card-action" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div>
                     </div>
                 </div>
+
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')" loading="lazy">
+                    <img src="https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg" class="card-img" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')">
                     <div class="card-body">
                         <div class="card-title">Samsıra</div>
                         <div class="card-desc">Susam ve pekmezin muhteşem uyumu.</div>
                         <div class="card-action" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div>
                     </div>
                 </div>
+
                 <div class="place-card">
-                    <img src="https://wsrv.nl/?url=https://i.nefisyemektarifleri.com/2017/01/02/golevez-sulusu.jpg&w=600&q=75&output=webp" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/golevez-sulusu-2784955/', '_blank')" loading="lazy">
+                    <img src="https://i.nefisyemektarifleri.com/2017/01/02/golevez-sulusu.jpg" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/golevez-sulusu-2784955/', '_blank')">
                     <div class="card-body">
                         <div class="card-title">Gölevez</div>
                         <div class="card-desc">Anamur'a özgü tropikal kök sebze.</div>
@@ -238,34 +255,25 @@
             </div>
         </div>
 
-        <div id="sec-rehber" class="section">
-            <div class="section-title">Telefon Rehberi</div>
-            <input type="text" class="search-box" id="rehberAra" placeholder="Rehberde Ara..." onkeyup="filterRehber()">
-            <div class="card-grid" id="rehberGrid">
-                
-                <div class="business-card" data-name="tevhid kitabevi">
-                    <img src="https://i.hizliresim.com/tnkvrll.jpeg" class="card-img" style="height:200px; object-fit:contain; background:#fff;" alt="Tevhid Kitabevi" loading="lazy">
-                    <div class="card-body">
-                        <div class="card-title">Tevhid Kitabevi</div>
-                        <div class="card-subtitle">Saray Mahallesi, Bankalar Caddesi</div>
-                        <div class="card-action" onclick="window.location.href='tel:05336513340'"><i class="fas fa-phone"></i> 0533 651 33 40</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
         <div id="sec-eczane" class="section">
             <div class="section-title">Acil Durum & Eczane</div>
-            <div class="pharmacy-iframe">
-                <a href="https://www.eczaneler.gen.tr/nobetci-mersin-anamur" target="_blank">
-                    <img src="https://wsrv.nl/?url=https://www.eczaneler.gen.tr/resimler/nobetci-eczane.jpg&w=500&q=75&output=webp" alt="Anamur nöbetçi eczaneleri" style="width:100%; border-radius:8px; margin-bottom:10px;" loading="lazy">
-                </a>
-                <iframe src="https://www.eczaneler.gen.tr/iframe.php?lokasyon=1135" name="Anamur nöbetçi eczaneleri" style="width:100%; height:350px; border:none;"></iframe>
+            
+            <div class="place-card" onclick="findPharmacy()" style="text-align:center; cursor:pointer;">
+                <div style="padding:30px; background: linear-gradient(135deg, #ff7675, #d63031); color:white;">
+                    <i class="fas fa-clinic-medical" style="font-size:3rem; margin-bottom:10px;"></i>
+                    <div style="font-size:1.4rem; font-weight:800;">NÖBETÇİ ECZANE BUL</div>
+                    <div style="font-size:0.9rem; opacity:0.9;">En yakın açık eczaneyi haritada gör.</div>
+                </div>
             </div>
-            <div style="margin-top:30px; text-align:center;">
-                <a href="tel:112" style="background:#fff; padding:20px 40px; border-radius:12px; text-decoration:none; color:#d63031; box-shadow:0 5px 10px rgba(0,0,0,0.1); display:inline-block; font-weight:bold; font-size:1.5rem;">
-                    <i class="fas fa-ambulance"></i> 112 ACİL
+            
+            <div style="margin-top:30px; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                <a href="tel:112" style="background:rgba(255,255,255,0.95); padding:20px; border-radius:16px; text-align:center; text-decoration:none; color:#d63031; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-ambulance" style="font-size:2rem; margin-bottom:10px;"></i>
+                    <div style="font-weight:bold;">112 ACİL</div>
+                </a>
+                <a href="tel:155" style="background:rgba(255,255,255,0.95); padding:20px; border-radius:16px; text-align:center; text-decoration:none; color:#0984e3; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-user-shield" style="font-size:2rem; margin-bottom:10px;"></i>
+                    <div style="font-weight:bold;">155 POLİS</div>
                 </a>
             </div>
         </div>
@@ -275,15 +283,15 @@
     <div class="bottom-nav">
         <div class="nav-item active" onclick="navTo('kesfet', this)">
             <i class="fas fa-compass"></i>
+            <span>Keşfet</span>
         </div>
         <div class="nav-item" onclick="navTo('yemek', this)">
             <i class="fas fa-utensils"></i>
-        </div>
-        <div class="nav-item" onclick="navTo('rehber', this)">
-            <i class="fas fa-phone-alt"></i>
+            <span>Yemek</span>
         </div>
         <div class="nav-item" onclick="navTo('eczane', this)">
             <i class="fas fa-first-aid"></i>
+            <span>Eczane</span>
         </div>
     </div>
 
@@ -305,19 +313,8 @@
             }
         }
 
-        function filterRehber() {
-            const input = document.getElementById('rehberAra');
-            const filter = input.value.toLowerCase();
-            const grid = document.getElementById('rehberGrid');
-            const cards = grid.getElementsByClassName('business-card');
-            for (let i = 0; i < cards.length; i++) {
-                const name = cards[i].getAttribute('data-name');
-                if (name.toLowerCase().indexOf(filter) > -1) {
-                    cards[i].style.display = "";
-                } else {
-                    cards[i].style.display = "none";
-                }
-            }
+        function findPharmacy() {
+            openMap("Anamur Nöbetçi Eczane");
         }
     </script>
 
