@@ -254,4 +254,104 @@
         <div class="nav-menu">
             <div class="nav-group">
                 <div class="nav-title">Kütüphane</div>
-                <div class="nav-item active
+                <div class="nav-item active" onclick="filterStations('all')"><i class="fas fa-globe"></i> Tümü</div>
+                <div class="nav-item" onclick="filterStations('favorites')"><i class="fas fa-heart"></i> Favoriler <span class="count-badge" id="favCount">0</span></div>
+                <div class="nav-item" onclick="filterStations('history')"><i class="fas fa-history"></i> Son Çalanlar</div>
+            </div>
+            <div class="nav-group">
+                <div class="nav-title">Kategoriler</div>
+                <div class="nav-item" onclick="filterStations('pop')"><i class="fas fa-music"></i> Popüler Pop</div>
+                <div class="nav-item" onclick="filterStations('arabesk')"><i class="fas fa-wine-glass"></i> Arabesk & Damar</div>
+                <div class="nav-item" onclick="filterStations('haber')"><i class="fas fa-microphone"></i> Haber & Spor</div>
+                <div class="nav-item" onclick="filterStations('rock')"><i class="fas fa-guitar"></i> Rock & Yabancı</div>
+                <div class="nav-item" onclick="filterStations('slow')"><i class="fas fa-cloud-moon"></i> Slow & Aşk</div>
+                <div class="nav-item" onclick="filterStations('halk')"><i class="fas fa-drum"></i> Halk Müziği</div>
+                <div class="nav-item" onclick="filterStations('dini')"><i class="fas fa-mosque"></i> Dini Yayınlar</div>
+            </div>
+             <div class="nav-group">
+                <div class="nav-title">Araçlar</div>
+                <div class="nav-item" onclick="toggleSleepMenu()"><i class="fas fa-stopwatch"></i> Uyku Modu <span id="sleepDisplay" class="count-badge" style="display:none"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-area">
+        <div class="top-bar">
+            <div style="display:flex; align-items:center;">
+                <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+                <div class="search-wrap">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Radyo Ara..." onkeyup="searchStations()">
+                </div>
+            </div>
+            <div class="top-actions">
+                <button class="action-btn" onclick="toggleTheme()" title="Tema"><i class="fas fa-adjust"></i></button>
+                <button class="action-btn" onclick="refreshStream()" title="Yenile"><i class="fas fa-sync-alt"></i></button>
+            </div>
+        </div>
+
+        <div class="content-scroll">
+            <div class="section-header">
+                <div class="section-title-text" id="pageTitle">Tüm Radyolar</div>
+                <div class="live-dot"></div>
+            </div>
+            <div class="station-grid" id="grid"></div>
+        </div>
+    </div>
+
+    <div class="player-bar">
+        <div class="player-info">
+            <img src="https://via.placeholder.com/60/222/555?text=FM" class="p-img" id="pImg">
+            <div class="p-text">
+                <div class="p-title" id="pTitle">Radyo Seçilmedi</div>
+                <div class="p-desc" id="pDesc">Müzik ruhun gıdasıdır...</div>
+            </div>
+            <button class="ctrl-btn" onclick="toggleFavCurrent()" id="btnFav"><i class="far fa-heart"></i></button>
+        </div>
+
+        <div class="player-controls">
+            <div class="ctrl-buttons">
+                <button class="ctrl-btn ctrl-btn-sec" onclick="playRandom()"><i class="fas fa-random"></i></button>
+                <button class="ctrl-btn ctrl-btn-sec" onclick="playPrev()"><i class="fas fa-step-backward"></i></button>
+                <button class="play-pause-btn" onclick="togglePlay()" id="btnPlay"><i class="fas fa-play"></i></button>
+                <button class="ctrl-btn ctrl-btn-sec" onclick="playNext()"><i class="fas fa-step-forward"></i></button>
+                <button class="ctrl-btn ctrl-btn-sec" onclick="cycleVisualizer()"><i class="fas fa-wave-square"></i></button>
+            </div>
+        </div>
+
+        <div class="player-extra">
+            <div class="vol-wrap">
+                <i class="fas fa-volume-up" id="volIcon"></i>
+                <input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+
+    <script>
+        // --- GÜNCELLENMİŞ VE ÇALIŞAN HTTPS RADYO LİSTESİ ---
+        const stations = [
+            { id: 1, name: "Power FM", cat: "pop", logo: "https://www.powerapp.com.tr/assets/img/logos/powerfm.png", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio" },
+            { id: 2, name: "Power Turk", cat: "pop", logo: "https://www.powerapp.com.tr/assets/img/logos/powerturk.png", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio" },
+            { id: 3, name: "Kral FM", cat: "arabesk", logo: "https://dogus.daioncdn.net/kralfm/kralfm_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralfm.smil/playlist.m3u8" },
+            { id: 4, name: "Kral Pop", cat: "pop", logo: "https://dogus.daioncdn.net/kralpoptv/kralpoptv_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralpop.smil/playlist.m3u8" },
+            { id: 5, name: "Joy Turk", cat: "pop", logo: "https://karnaval.com/media/channels/joyturk_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK_SC" },
+            { id: 6, name: "Metro FM", cat: "pop", logo: "https://karnaval.com/media/channels/metrofm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM_SC" },
+            { id: 7, name: "Süper FM", cat: "pop", logo: "https://karnaval.com/media/channels/superfm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM_SC" },
+            { id: 8, name: "Fenomen", cat: "pop", logo: "https://radyofenomen.com/assets/img/logo.png", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio" },
+            { id: 9, name: "Virgin Radio", cat: "pop", logo: "https://karnaval.com/media/channels/virginradioturkiye_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO_TR_SC" },
+            { id: 10, name: "Alem FM", cat: "pop", logo: "https://img-alemfm-mncdn.mncdn.com/assets/img/alemfm-logo.png", url: "https://turkmedya-live.ercdn.net/alemfm/alemfm.m3u8" },
+            { id: 11, name: "Number1 FM", cat: "pop", logo: "https://www.numberone.com.tr/wp-content/uploads/2019/04/nr1-logo-2019.png", url: "https://n10101m.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e3285b5913_1200/playlist.m3u8" },
+            { id: 12, name: "TRT FM", cat: "pop", logo: "https://cdn-r.trt.net.tr/static/radio/img/radyofm.png", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
+            { id: 13, name: "NTV Radyo", cat: "haber", logo: "https://cdn.ntv.com.tr/img/ntv-logo.png", url: "https://ssldyg.radyotvonline.net/smil/ntvradyo.smil/playlist.m3u8" },
+            { id: 14, name: "Radyo Eksen", cat: "rock", logo: "https://radyoeksen.com/assets/img/logo.png", url: "https://ssldyg.radyotvonline.net/smil/radyoeksen.smil/playlist.m3u8" },
+            { id: 15, name: "Power XL", cat: "rock", logo: "https://www.powerapp.com.tr/assets/img/logos/powerxl.png", url: "https://listen.powerapp.com.tr/powerxl/playlist.m3u8" },
+            { id: 16, name: "Power Love", cat: "slow", logo: "https://www.powerapp.com.tr/assets/img/logos/powerlove.png", url: "https://listen.powerapp.com.tr/powerlove/playlist.m3u8" },
+            { id: 17, name: "Pal Nostalji", cat: "slow", logo: "https://palnostalji.com.tr/assets/images/logo.png", url: "https://shoutcast.radyogrup.com/radio/8020/radio.mp3" },
+            { id: 18, name: "Slow Türk", cat: "slow", logo: "https://www.slowturk.com.tr/assets/img/logo.png", url: "https://radyo.dogannet.tv/slowturk/playlist.m3u8" },
+            { id: 19, name: "Radyo 7", cat: "halk", logo: "https://www.radyo7.com/assets/img/logo.png", url: "https://radyo.yayin.com.tr/radyo7/playlist.m3u8" },
+            { id: 20, name: "TRT Türkü", cat: "halk", logo: "https://cdn-r.trt.net.tr/static/radio/img/trtturku.png", url: "https://radio-trt-turku.medya.trt.com.tr/master.m3u8" },
+            { id: 21, name: "Diyanet Radyo", cat: "dini", logo: "https://radyo.diyanet.gov.tr/assets/img/logo.png", url: "https://yayin.diyanet.gov.tr:8443/radyo" },
+            { id: 22, name: "Lig Radyo", cat: "haber", logo: "https://ligradyo.com.tr/assets/img/logo.png", url: "https://turkmedya-live.ercdn.net/ligradyo/ligradyo.m3u8" },
+            { id: 23, name: "CNN Türk Radyo", cat:
