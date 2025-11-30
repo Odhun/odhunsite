@@ -4,36 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Odhun Anamur | Şehir Rehberi</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2300b894%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>A</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230984e3%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>A</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 
 <style>
     :root {
-        --bg-color: #f0fdf4; 
-        --primary: #00b894;   
-        --secondary: #0984e3; 
+        /* Yeni Tema: Akdeniz & Kale */
+        --primary: #0984e3;   /* Deniz Mavisi */
+        --secondary: #d63031; /* Kırmızı (Vurgu) */
         --text: #2d3436;
-        --card-bg: #ffffff;
+        --text-light: #636e72;
+        --card-bg: rgba(255, 255, 255, 0.92); /* Hafif Şeffaf Beyaz */
         --nav-height: 70px;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-        margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text);
+        margin: 0; padding: 0; color: var(--text);
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column;
         overflow: hidden;
+        
+        /* ARKA PLAN GÖRSELİ */
+        background: url('https://www.shutterstock.com/image-photo/aerial-view-mamure-castle-anamur-600nw-2406336265.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+
+    /* Arka planı biraz karartmak için overlay (Yazı okunurluğu için) */
+    body::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.2); /* %20 Siyah Perde */
+        z-index: -1; pointer-events: none;
     }
 
     /* --- HEADER --- */
     header {
-        background: #fff; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        background: rgba(255, 255, 255, 0.95); padding: 15px 20px; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         display: flex; justify-content: space-between; align-items: center; z-index: 50;
+        backdrop-filter: blur(10px);
     }
-    .brand { font-size: 1.4rem; font-weight: 900; color: var(--primary); letter-spacing: -1px; }
-    .brand span { color: var(--secondary); }
+    .brand { font-size: 1.4rem; font-weight: 900; color: var(--text); letter-spacing: -1px; }
+    .brand span { color: var(--primary); }
     
     .weather-widget {
         display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600;
@@ -43,70 +57,80 @@
     /* --- MAIN CONTENT --- */
     .main-content {
         flex: 1; overflow-y: auto; padding: 20px; scroll-behavior: smooth;
-        padding-bottom: 100px;
+        padding-bottom: 100px; /* Alt menü payı */
     }
 
-    .section { display: none; animation: fadeIn 0.4s ease; }
+    .section { display: none; animation: fadeIn 0.5s ease; }
     .section.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .section-title {
-        font-family: 'Merriweather', serif; font-size: 1.8rem; color: #2d3436;
-        margin-bottom: 20px; position: relative; padding-left: 15px;
+        font-family: 'Merriweather', serif; font-size: 2rem; color: #fff; /* Başlık Beyaz */
+        margin-bottom: 25px; position: relative; padding-left: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Gölge */
+        text-align: center;
     }
-    .section-title::before {
-        content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 5px;
-        background: var(--primary); border-radius: 5px;
-    }
-
-    /* CARDS */
+    
+    /* CARDS (Geliştirilmiş Tasarım) */
     .card-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px;
     }
     
     .place-card {
-        background: var(--card-bg); border-radius: 16px; overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer;
+        background: var(--card-bg); border-radius: 20px; overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s; cursor: pointer;
         display: flex; flex-direction: column;
+        backdrop-filter: blur(5px); /* Buzlu cam etkisi */
     }
-    .place-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    .place-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
     
-    .card-img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
-    .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-    .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: #2d3436; }
-    .card-desc { font-size: 0.9rem; color: #636e72; line-height: 1.5; margin-bottom: 15px; flex: 1; }
+    .card-img { width: 100%; height: 220px; object-fit: cover; background: #ddd; }
+    .card-body { padding: 25px; flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; color: #2d3436; }
+    .card-desc { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; margin-bottom: 20px; flex: 1; }
     
     .card-action {
-        display: flex; align-items: center; gap: 5px; color: var(--secondary); 
-        font-weight: 600; font-size: 0.9rem; text-decoration: none; margin-top: auto;
+        display: flex; align-items: center; gap: 8px; color: var(--primary); 
+        font-weight: 700; font-size: 0.9rem; text-decoration: none; margin-top: auto;
+        background: rgba(9, 132, 227, 0.1); padding: 10px 15px; border-radius: 10px;
+        justify-content: center; transition: 0.2s;
     }
+    .card-action:hover { background: var(--primary); color: #fff; }
 
     /* --- BOTTOM NAVIGATION --- */
     .bottom-nav {
-        position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
-        background: #fff; display: flex; justify-content: space-around; align-items: center;
-        border-top: 1px solid #eee; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        width: 90%; max-width: 500px; height: 70px;
+        background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
+        display: flex; justify-content: space-around; align-items: center;
+        border-radius: 50px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 100;
+        padding: 0 10px;
     }
     .nav-item {
-        display: flex; flex-direction: column; align-items: center; gap: 5px;
-        color: #b2bec3; cursor: pointer; transition: 0.2s; width: 33%;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+        color: #b2bec3; cursor: pointer; transition: 0.3s; width: 60px; height: 60px; border-radius: 50%;
         -webkit-tap-highlight-color: transparent;
     }
-    .nav-item.active { color: var(--primary); transform: translateY(-5px); }
+    .nav-item.active { 
+        color: #fff; background: var(--primary); 
+        transform: translateY(-15px); 
+        box-shadow: 0 5px 15px rgba(9, 132, 227, 0.4);
+    }
     .nav-item i { font-size: 1.4rem; }
-    .nav-item span { font-size: 0.75rem; font-weight: 600; }
+    .nav-item span { font-size: 0.7rem; font-weight: 600; display: none; }
+    .nav-item.active span { display: none; } /* Aktifken de yazı gizli kalsın, sadece ikon */
 
     /* MEDYA SORGU */
     @media (min-width: 800px) {
-        .main-content { max-width: 1000px; margin: 0 auto; }
+        .main-content { max-width: 1100px; margin: 0 auto; }
         .bottom-nav { 
-            top: 0; bottom: auto; height: 80px; justify-content: center; gap: 50px;
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            top: 20px; bottom: auto; height: 80px; width: auto; padding: 0 40px;
+            border-radius: 20px;
         }
-        .nav-item { width: auto; flex-direction: row; gap: 10px; }
-        .nav-item span { font-size: 1rem; }
-        .nav-item.active { transform: none; border-bottom: 3px solid var(--primary); }
-        .main-content { padding-top: 100px; }
+        .nav-item { width: auto; height: auto; border-radius: 0; flex-direction: row; gap: 10px; padding: 10px 20px; }
+        .nav-item span { display: block; font-size: 1rem; }
+        .nav-item.active { transform: none; background: transparent; color: var(--primary); box-shadow: none; border-bottom: 3px solid var(--primary); }
+        .main-content { padding-top: 120px; }
         header { display: none; }
     }
 </style>
@@ -129,7 +153,7 @@
                     <div class="card-body">
                         <div class="card-title">Mamure Kalesi</div>
                         <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi. Tarihi dokusu ve deniz manzarasıyla büyüleyici.</div>
-                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
                 
@@ -138,7 +162,7 @@
                     <div class="card-body">
                         <div class="card-title">Anamurium Antik Kenti</div>
                         <div class="card-desc">Roma döneminden kalma hamamlar, tiyatro ve nekropol alanı ile tarihe yolculuk.</div>
-                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
 
@@ -147,7 +171,7 @@
                     <div class="card-body">
                         <div class="card-title">Pullu Tabiat Parkı</div>
                         <div class="card-desc">Kamp, piknik ve denizin buluştuğu doğa harikası. Karavan ve çadır için ideal.</div>
-                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
 
@@ -156,16 +180,16 @@
                     <div class="card-body">
                         <div class="card-title">Köşekbükü Mağarası</div>
                         <div class="card-desc">Astım hastalarına şifa kaynağı olduğu bilinen, sarkıt ve dikitleriyle ünlü mağara.</div>
-                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
 
                 <div class="place-card" onclick="openMap('Dragon Çayı Anamur')">
-                    <img src="https://mersin.ktb.gov.tr/Resim/53278,dragon-cayi-anamurjpg.png?0" class="card-img" alt="Dragon Çayı">
+                    <img src="https://anamur.bel.tr/wp-content/uploads/2024/05/12935767794_d2f56cb450_o-1024x576.jpg" class="card-img" alt="Dragon Çayı">
                     <div class="card-body">
                         <div class="card-title">Dragon Çayı</div>
                         <div class="card-desc">Serinlemek, piknik yapmak ve doğa yürüyüşü için harika bir kaçış noktası.</div>
-                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
 
@@ -174,7 +198,7 @@
                     <div class="card-body">
                         <div class="card-title">Anamur Müzesi</div>
                         <div class="card-desc">Bölgeden çıkarılan arkeolojik ve etnografik eserlerin sergilendiği kültür hazinesi.</div>
-                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
 
@@ -183,7 +207,7 @@
                     <div class="card-body">
                         <div class="card-title">Titiopolis Antik Kenti</div>
                         <div class="card-desc">Keşfedilmeyi bekleyen, dağ yamacına kurulu gizemli antik kent kalıntıları.</div>
-                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
             </div>
@@ -197,15 +221,17 @@
                     <div class="card-img" style="background:url('https://i.nefisyemektarifleri.com/2010/11/batirik1.jpg') center/cover;"></div>
                     <div class="card-body">
                         <div class="card-title">Batırık</div>
-                        <div class="card-desc">Yer fıstığı, bulgur ve özel baharatlarla yapılan, soğuk çorba veya köfte şeklinde yenen efsane lezzet. <strong>Tarif için tıkla!</strong></div>
+                        <div class="card-desc">Yer fıstığı, bulgur ve özel baharatlarla yapılan, soğuk çorba veya köfte şeklinde yenen efsane lezzet.</div>
+                        <div class="card-action"><i class="fas fa-book-open"></i> Tarifi Gör</div>
                     </div>
                 </div>
 
-                <div class="place-card" onclick="window.open('https://www.nefisyemektarifleri.com/samsira-tarifi/', '_blank')">
+                <div class="place-card" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')">
                     <div class="card-img" style="background:url('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg') center/cover;"></div>
                     <div class="card-body">
                         <div class="card-title">Samsıra</div>
-                        <div class="card-desc">Susam ve pekmezin muhteşem uyumu. Enerji deposu geleneksel bir tatlı. <strong>Tarif için tıkla!</strong></div>
+                        <div class="card-desc">Susam ve pekmezin muhteşem uyumu. Enerji deposu geleneksel bir tatlı.</div>
+                        <div class="card-action"><i class="fas fa-book-open"></i> Tarifi Gör</div>
                     </div>
                 </div>
 
@@ -213,7 +239,8 @@
                     <div class="card-img" style="background:url('https://i.nefisyemektarifleri.com/2017/01/02/golevez-sulusu.jpg') center/cover;"></div>
                     <div class="card-body">
                         <div class="card-title">Gölevez</div>
-                        <div class="card-desc">Anamur'a özgü, patatese benzeyen ama çok daha lezzetli tropikal bir kök sebze yemeği. <strong>Tarif için tıkla!</strong></div>
+                        <div class="card-desc">Anamur'a özgü, patatese benzeyen ama çok daha lezzetli tropikal bir kök sebze yemeği.</div>
+                        <div class="card-action"><i class="fas fa-book-open"></i> Tarifi Gör</div>
                     </div>
                 </div>
 
@@ -223,7 +250,7 @@
         <div id="sec-eczane" class="section">
             <div class="section-title">Acil Durum & Eczane</div>
             
-            <div style="margin:auto;text-align:center;width:100%;max-width:500px; background:#fff; padding:10px; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+            <div style="margin:auto;text-align:center;width:100%;max-width:500px; background:rgba(255,255,255,0.9); padding:10px; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
                 <a href="https://www.eczaneler.gen.tr/nobetci-mersin-anamur" target="_blank">
                     <img src="https://www.eczaneler.gen.tr/resimler/nobetci-eczane.jpg" alt="Anamur nöbetçi eczaneleri" style="width:100%; border-radius:8px; margin-bottom:10px;">
                 </a>
@@ -231,11 +258,11 @@
             </div>
             
             <div style="margin-top:30px; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                <a href="tel:112" style="background:#fff; padding:20px; border-radius:12px; text-align:center; text-decoration:none; color:#d63031; box-shadow:0 5px 10px rgba(0,0,0,0.05);">
+                <a href="tel:112" style="background:rgba(255,255,255,0.9); padding:20px; border-radius:12px; text-align:center; text-decoration:none; color:#d63031; box-shadow:0 5px 10px rgba(0,0,0,0.1);">
                     <i class="fas fa-ambulance" style="font-size:2rem; margin-bottom:10px;"></i>
                     <div style="font-weight:bold;">112 ACİL</div>
                 </a>
-                <a href="tel:155" style="background:#fff; padding:20px; border-radius:12px; text-align:center; text-decoration:none; color:#0984e3; box-shadow:0 5px 10px rgba(0,0,0,0.05);">
+                <a href="tel:155" style="background:rgba(255,255,255,0.9); padding:20px; border-radius:12px; text-align:center; text-decoration:none; color:#0984e3; box-shadow:0 5px 10px rgba(0,0,0,0.1);">
                     <i class="fas fa-user-shield" style="font-size:2rem; margin-bottom:10px;"></i>
                     <div style="font-weight:bold;">155 POLİS</div>
                 </a>
