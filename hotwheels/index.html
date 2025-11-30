@@ -1,540 +1,739 @@
-<!DOCTYPE html>
-<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0f172a">
-<title>Odhun FM | Yeni Nesil Radyo</title>
-
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23f43f5e%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>FM</text></svg>">
-
+<title>Odhun Wheels | Koleksiyon Takip</title>
+<title>Odhun Hot Wheels | Koleksiyon Takip</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%230057b8%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2250%22 fill=%22%23ffc107%22>H</text></svg>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+@@ -78,41 +78,50 @@
 
-<style>
-    /* --- TEMEL AYARLAR --- */
-    :root {
-        --bg-dark: #05070a;
-        --panel: #0f172a;
-        --panel-light: #1e293b;
-        --accent: #f43f5e; /* Odhun FM Pembesi */
-        --accent-glow: rgba(244, 63, 94, 0.4);
-        --text: #f8fafc;
-        --text-dim: #94a3b8;
-        --border: rgba(255,255,255,0.05);
-        --sidebar-w: 260px;
-        --player-h: 90px;
-    }
+/* LISTE */
+.car-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px; padding: 0 20px 80px; max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Kartlar biraz daha genişledi */
+    gap: 20px; padding: 0 20px 80px; max-width: 1200px; margin: 0 auto; width: 100%;
+}
+.car-card {
+    background: var(--card-bg); border-radius: 10px; overflow: hidden;
+    background: var(--card-bg); border-radius: 12px; overflow: hidden;
+position: relative; cursor: pointer; transition: 0.2s; border: 2px solid transparent;
+    display: flex; flex-direction: column;
+}
+.car-card:hover { transform: translateY(-3px); z-index: 5; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.car-card:hover { transform: translateY(-5px); z-index: 5; box-shadow: 0 8px 20px rgba(0,0,0,0.5); border-color: #444;}
+.car-card.owned { border-color: var(--hw-blue); background: #0d1b2a; }
+.car-card.owned .car-img { opacity: 1; filter: none; }
+.car-card:not(.owned) .car-img { opacity: 0.6; filter: grayscale(100%); }
+.car-card:not(.owned) .car-img { opacity: 0.8; filter: grayscale(80%); }
+.car-card:not(.owned):hover .car-img { opacity: 1; filter: grayscale(0%); }
 
-    * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--panel-light) var(--bg-dark); }
-    
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-dark); }
-    ::-webkit-scrollbar-thumb { background: var(--panel-light); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.car-img-box {
+    width: 100%; aspect-ratio: 16/9; background: #fff; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    width: 100%; aspect-ratio: 16/9; background: #fff; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+}
+.car-img { 
+    width: 100%; height: 100%; object-fit: contain; transition: 0.3s; 
+    background-color: #ddd; /* Resim yüklenirken gri arka plan */
+}
 
-    body {
-        margin: 0; padding: 0; background: var(--bg-dark); color: var(--text);
-        font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
-    }
+.placeholder-text {
+    position: absolute; color: #555; font-size: 0.7rem; font-weight: bold; text-align: center;
+    pointer-events: none; z-index: 0;
+}
+.car-img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s; }
 
-    /* --- BAŞLANGIÇ EKRANI (SES İZNİ) --- */
-    #startOverlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(5, 7, 10, 0.95); z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        backdrop-filter: blur(15px); transition: opacity 0.5s;
-    }
-    .start-btn {
-        padding: 20px 50px; font-size: 1.5rem; background: var(--accent); color: #fff;
-        border: none; border-radius: 50px; cursor: pointer; font-weight: 800; letter-spacing: 1px;
-        box-shadow: 0 0 40px var(--accent-glow); transition: transform 0.2s;
-    }
-    .start-btn:hover { transform: scale(1.05); }
+.google-search-hint {
+    position: absolute; bottom: 5px; right: 5px;
+    background: rgba(0,0,0,0.8); color: #fff; text-decoration: none;
+    font-size: 0.65rem; padding: 4px 8px; border-radius: 4px;
+    display: none; z-index: 10; border: 1px solid #444;
+.search-hint {
+    position: absolute; bottom: 5px; right: 5px; z-index: 10;
+    background: rgba(0,0,0,0.7); color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.6rem;
+    text-decoration: none; display: none;
+}
+.car-card:hover .google-search-hint { display: block; }
+.google-search-hint:hover { background: var(--hw-blue); border-color: var(--hw-blue); }
+.car-card:hover .search-hint { display: block; }
 
-    /* --- DÜZEN (LAYOUT) --- */
-    .layout-container { display: flex; width: 100%; height: 100%; }
+.car-details { padding: 10px; }
+.car-num { font-size: 0.75rem; font-weight: 900; color: var(--hw-orange); display: flex; justify-content: space-between; }
+.car-title { font-size: 0.9rem; font-weight: 700; margin: 5px 0; line-height: 1.2; height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.car-series { font-size: 0.7rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.car-details { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.car-num { font-size: 0.8rem; font-weight: 900; color: var(--hw-orange); display: flex; justify-content: space-between; margin-bottom: 5px;}
+.car-title { font-size: 1rem; font-weight: 700; margin: 0 0 5px 0; line-height: 1.2; }
+.car-series { font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* --- SIDEBAR --- */
-    .sidebar {
-        width: var(--sidebar-w); background: var(--panel); border-right: 1px solid var(--border);
-        display: flex; flex-direction: column; flex-shrink: 0; z-index: 20;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+.status-badge {
+    font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: #333; color: #aaa;
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background: #333; color: #aaa; font-weight: normal;
+}
+.car-card.owned .status-badge { background: var(--hw-blue); color: #fff; }
+.car-card.owned .status-badge { background: var(--hw-blue); color: #fff; font-weight: bold;}
 
-    .brand {
-        height: 70px; display: flex; align-items: center; padding: 0 25px;
-        font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700;
-        letter-spacing: 1px; border-bottom: 1px solid var(--border);
-        background: linear-gradient(90deg, rgba(244,63,94,0.1), transparent);
-    }
-    .brand span { color: var(--accent); margin-left: 4px; }
-
-    .nav-menu { flex: 1; overflow-y: auto; padding: 20px 10px; }
-    .nav-group { margin-bottom: 25px; }
-    .nav-title {
-        font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim);
-        font-weight: 800; margin: 0 15px 10px; letter-spacing: 1px;
-    }
-    
-    .nav-item {
-        display: flex; align-items: center; gap: 12px; padding: 12px 15px;
-        color: var(--text); text-decoration: none; font-size: 0.9rem;
-        border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 2px;
-    }
-    .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
-    .nav-item.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent-glow); }
-    .nav-item i { width: 20px; text-align: center; }
-    
-    /* --- MAIN CONTENT --- */
-    .main-area {
-        flex: 1; display: flex; flex-direction: column; position: relative;
-        background: radial-gradient(circle at top right, #1a0b12 0%, var(--bg-dark) 40%);
-    }
-
-    /* Top Bar */
-    .top-bar {
-        height: 70px; border-bottom: 1px solid var(--border); display: flex;
-        align-items: center; justify-content: space-between; padding: 0 30px;
-        background: rgba(5, 7, 10, 0.8); backdrop-filter: blur(10px); z-index: 10;
-    }
-
-    .search-wrap { position: relative; width: 300px; }
-    .search-input {
-        width: 100%; background: var(--panel-light); border: 1px solid var(--border);
-        padding: 10px 15px 10px 40px; border-radius: 20px; color: #fff; outline: none;
-        font-family: inherit; transition: 0.3s;
-    }
-    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
-
-    /* Station Grid */
-    .content-scroll { flex: 1; overflow-y: auto; padding: 30px; position: relative; z-index: 2; }
-    
-    .section-header { display: flex; align-items: center; margin-bottom: 20px; }
-    .section-title-text { font-size: 1.5rem; font-weight: 700; }
-    .live-dot { 
-        width: 10px; height: 10px; background: var(--accent); border-radius: 50%; 
-        margin-left: 10px; animation: pulse 2s infinite; 
-    }
-
-    .station-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px; padding-bottom: 120px; /* Player payı */
-    }
-
-    .station-card {
-        background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
-        padding: 15px; cursor: pointer; transition: all 0.2s ease;
-        position: relative; overflow: hidden;
-    }
-    .station-card:hover { 
-        transform: translateY(-5px); border-color: var(--accent); 
-        box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5); 
-    }
-    /* Aktif kart stili - Liste yeniden oluşturulmaz, sadece bu sınıf eklenir */
-    .station-card.playing {
-        border-color: var(--accent); background: linear-gradient(145deg, var(--panel), #2a0a12);
-        box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    .card-img-box {
-        width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden;
-        background: #000; position: relative; margin-bottom: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-    
-    .play-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        display: flex; align-items: center; justify-content: center;
-        opacity: 0; transition: 0.3s; background: rgba(0,0,0,0.4);
-    }
-    .station-card:hover .play-overlay { opacity: 1; }
-    .play-circle {
-        width: 50px; height: 50px; border-radius: 50%; background: var(--accent);
-        color: #fff; display: flex; align-items: center; justify-content: center;
-        font-size: 1.2rem; box-shadow: 0 0 20px var(--accent);
-        transform: scale(0.8); transition: 0.3s;
-    }
-    .station-card:hover .play-circle { transform: scale(1); }
-
-    /* Equalizer Animation */
-    .card-eq {
-        position: absolute; bottom: 10px; right: 10px; display: flex; gap: 3px;
-        height: 20px; align-items: flex-end; opacity: 0; transition: opacity 0.3s;
-    }
-    .station-card.playing .card-eq { opacity: 1; }
-    .eq-bar { width: 4px; background: var(--accent); border-radius: 2px; animation: eq 1s infinite ease-in-out; }
-    .eq-bar:nth-child(1) { animation-delay: 0.0s; height: 40%; }
-    .eq-bar:nth-child(2) { animation-delay: 0.2s; height: 80%; }
-    .eq-bar:nth-child(3) { animation-delay: 0.4s; height: 60%; }
-
-    .card-title { font-weight: 700; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-genre { font-size: 0.8rem; color: var(--text-dim); }
-
-    /* --- PLAYER BAR (FOOTER) --- */
-    .player-bar {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: var(--player-h);
-        background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border);
-        backdrop-filter: blur(20px); z-index: 50; display: flex; align-items: center;
-        padding: 0 30px; justify-content: space-between;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-    }
-
-    .player-info { display: flex; align-items: center; gap: 15px; width: 300px; }
-    .p-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .p-text { display: flex; flex-direction: column; }
-    .p-title { font-weight: 700; font-size: 1rem; color: #fff; }
-    .p-desc { font-size: 0.8rem; color: var(--accent); margin-top: 2px; }
-
-    .player-controls { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-    .ctrl-buttons { display: flex; align-items: center; gap: 20px; }
-    .ctrl-btn {
-        background: none; border: none; color: var(--text-dim); font-size: 1.2rem;
-        cursor: pointer; transition: 0.2s;
-    }
-    .ctrl-btn:hover { color: #fff; }
-    .play-pause-btn {
-        width: 45px; height: 45px; border-radius: 50%; background: #fff; color: #000;
-        display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-        box-shadow: 0 0 15px rgba(255,255,255,0.3);
-    }
-    .play-pause-btn:hover { transform: scale(1.05); background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
-
-    /* Visualizer Canvas */
-    .vis-container {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; z-index: 0; opacity: 0.2;
-    }
-    
-    /* Volume */
-    .player-extra { display: flex; align-items: center; gap: 15px; width: 300px; justify-content: flex-end; }
-    .vol-wrap { display: flex; align-items: center; gap: 10px; }
-    input[type="range"] {
-        -webkit-appearance: none; width: 100px; height: 4px; background: #333;
-        border-radius: 2px; cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none; width: 12px; height: 12px; background: #fff;
-        border-radius: 50%; cursor: pointer; transition: 0.2s;
-    }
-    input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent); transform: scale(1.2); }
-
-    /* --- MOBİL --- */
-    .mobile-toggle { display: none; font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
-    
-    @media (max-width: 900px) {
-        .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px #000; }
-        .sidebar.active { left: 0; }
-        .mobile-toggle { display: block; }
-        .player-info { width: auto; flex: 1; }
-        .player-controls { position: absolute; right: 20px; top: 20px; width: auto; }
-        .ctrl-buttons { gap: 10px; }
-        .ctrl-btn-sec { display: none; } 
-        .player-extra { display: none; } 
-        .p-title { font-size: 0.9rem; }
-        .p-desc { font-size: 0.7rem; }
-        .station-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .search-wrap { width: 100%; }
-    }
-
-    @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-    @keyframes eq { 0%, 100% { height: 30%; } 50% { height: 100%; } }
+footer {
+text-align: center; padding: 20px; font-size: 0.75rem; color: #444;
+@@ -123,7 +132,7 @@
+.car-list { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px 80px; }
+.brand { font-size: 1.6rem; }
+.sub-brand { font-size: 0.8rem; }
+    .google-search-hint { display: block; opacity: 0.8; padding: 2px 5px; font-size: 0.6rem; }
+    .car-title { font-size: 0.85rem; }
+}
 </style>
 </head>
-<body>
+@@ -144,7 +153,7 @@
 
-    <div class="vis-container">
-        <canvas id="visualizer"></canvas>
-    </div>
+<div class="control-row">
+<div class="search-box">
+        <input type="text" id="search" placeholder="Model veya Numara Ara..." onkeyup="renderCars()">
+        <input type="text" id="search" placeholder="Araç ara..." onkeyup="renderCars()">
+<i class="fas fa-search"></i>
+</div>
+<div style="display:flex; gap:5px; flex:1;">
+@@ -163,16 +172,18 @@
+<div class="car-list" id="list"></div>
 
-    <div id="startOverlay">
-        <div class="brand" style="border:none; margin-bottom:20px; font-size:3rem; background:none;">ODHUN<span>FM</span></div>
-        <button class="start-btn" onclick="initAudioSystem()"><i class="fas fa-play"></i> RADYOYU BAŞLAT</button>
-        <p style="margin-top:20px; color:#aaa; font-size:0.9rem;">Müzik deneyimi için tıklayın</p>
-    </div>
+<footer>
+Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi v1.1
+Odhun.com © 2025 | Kişisel Koleksiyon Takip Sistemi v1.2
+</footer>
 
-    <div class="layout-container">
-        <div class="sidebar" id="sidebar">
-            <div class="brand">ODHUN<span>FM</span></div>
-            <div class="nav-menu">
-                <div class="nav-group">
-                    <div class="nav-title">Kütüphane</div>
-                    <div class="nav-item active" onclick="filterStations('all')"><i class="fas fa-globe"></i> Tümü</div>
-                </div>
-                
-                <div class="nav-group">
-                    <div class="nav-title">Kategoriler</div>
-                    <div class="nav-item" onclick="filterStations('pop')"><i class="fas fa-music"></i> Popüler Pop</div>
-                    <div class="nav-item" onclick="filterStations('arabesk')"><i class="fas fa-wine-glass"></i> Arabesk & Damar</div>
-                    <div class="nav-item" onclick="filterStations('haber')"><i class="fas fa-microphone"></i> Haber & Spor</div>
-                    <div class="nav-item" onclick="filterStations('rock')"><i class="fas fa-guitar"></i> Rock & Yabancı</div>
-                    <div class="nav-item" onclick="filterStations('slow')"><i class="fas fa-cloud-moon"></i> Slow & Aşk</div>
-                    <div class="nav-item" onclick="filterStations('halk')"><i class="fas fa-drum"></i> Halk Müziği</div>
-                    <div class="nav-item" onclick="filterStations('dini')"><i class="fas fa-mosque"></i> Dini Yayınlar</div>
-                </div>
-            </div>
-        </div>
+<script>
+// --- MERKEZİ VERİ TABANI (v1.1) ---
+// --- VERİ TABANI ---
+// Not: 'i' alanına resim linki yapıştırıldığında otomatik görünür.
+// Örnek olarak bazılarına gerçek linkler ekledim.
+const db = {
+"2023": [
+{n:"1", t:"Volvo P1800 Gasser", s:"Dream Garage", i:"https://static.wikia.nocookie.net/hotwheels/images/0/08/Volvo_P1800_Gasser_%28%2723_Mainline%29.jpg"},
+    {n:"2", t:"'87 Ford Sierra Cosworth", s:"The 80s", i:""},
+    {n:"3", t:"Classic TV Series Batmobile", s:"Batman", i:""},
+    {n:"2", t:"'87 Ford Sierra Cosworth", s:"The 80s", i:"https://static.wikia.nocookie.net/hotwheels/images/a/ab/%2787_Ford_Sierra_Cosworth_%28%2723_Mainline%29.jpg"},
+    {n:"3", t:"Classic TV Series Batmobile", s:"Batman", i:"https://static.wikia.nocookie.net/hotwheels/images/2/29/Classic_TV_Series_Batmobile_%28%2723_Mainline%29.jpg"},
+{n:"4", t:"Ford Escort RS2000", s:"Retro Racers", i:""},
+{n:"5", t:"Dimachinni Veloce", s:"Retro Racers", i:""},
+{n:"6", t:"HW K.I.T.T. Concept", s:"Screen Time", i:""},
+@@ -423,7 +434,7 @@
+],
+"2024": [
+{n:"1", t:"Mazda Autozam AZ-1", s:"Dream Garage", i:"https://static.wikia.nocookie.net/hotwheels/images/4/43/Mazda_Autozam_AZ-1_%28%2724_Mainline%29.jpg"},
+    {n:"2", t:"Batman Arkham Asylum Batmobile", s:"Batman", i:""},
+    {n:"2", t:"Batman Arkham Asylum Batmobile", s:"Batman", i:"https://static.wikia.nocookie.net/hotwheels/images/8/88/Batman_Arkham_Asylum_Batmobile_%28%2724_Mainline%29.jpg"},
+{n:"3", t:"Monster High Ghoul Mobile", s:"Screen Time", i:""},
+{n:"4", t:"Custom Otto", s:"Dream Garage", i:""},
+{n:"5", t:"'15 Dodge Charger SRT", s:"First Response", i:""},
+@@ -674,256 +685,256 @@
+{n:"250", t:"Ain't Fare", s:"Experimotors", i:""}
+],
+"2025": [
+    {n:"1", t:"Kei Swap", s:"HW Art Cars"},
+    {n:"2", t:"Super Twin Mill", s:"HW Let's Race"},
+    {n:"3", t:"Morgan Super 3", s:"Factory Fresh"},
+    {n:"4", t:"Mazda MX-5 Miata", s:"HW Dream Garage"},
+    {n:"5", t:"Ford Mustang GTD", s:"Mustang 60th"},
+    {n:"6", t:"'66 Buick Riviera", s:"HW Modified"},
+    {n:"7", t:"Maserati Shamal", s:"HW Metro"},
+    {n:"8", t:"Tesla Cyberquad", s:"HW Dirt"},
+    {n:"9", t:"McLaren W1", s:"HW Race Day"},
+    {n:"10", t:"Optimus Prime", s:"HW Screen Time"},
+    {n:"11", t:"Honda Civic Si", s:"Factory Fresh"},
+    {n:"12", t:"Nissan Skyline GT-R", s:"J-Imports"},
+    {n:"13", t:"GMC Hummer EV", s:"HW Green Speed"},
+    {n:"14", t:"'87 Dodge D100", s:"HW Reverse Rake"},
+    {n:"15", t:"Porsche 911 Rallye", s:"HW Dirt"},
+    {n:"16", t:"Hiway Hauler 2", s:"HW Haulers"},
+    {n:"17", t:"Ford Performance Supervan 4", s:"HW Green Speed (TH)"},
+    {n:"18", t:"Bone Shaker", s:"HW Dream Garage"},
+    {n:"19", t:"Batmobile", s:"Batman"},
+    {n:"20", t:"Track Manga", s:"HW Art Cars"},
+    {n:"21", t:"Brickin' Delivery", s:"Brick Rides"},
+    {n:"22", t:"HW450F", s:"HW Moto"},
+    {n:"23", t:"Custom '68 Camaro", s:"HW Art Cars"},
+    {n:"24", t:"Punk Rod", s:"Rod Squad"},
+    {n:"25", t:"Deora II", s:"HW Legends"},
+    {n:"26", t:"Nissan Skyline 2000GT-R LBWK", s:"J-Imports"},
+    {n:"27", t:"Rally Speciale", s:"HW Dirt"},
+    {n:"28", t:"'90 Honda Civic EF", s:"70s vs 90s"},
+    {n:"29", t:"Porsche 911 GT3 RS", s:"Then and Now"},
+    {n:"30", t:"Road Bandit", s:"HW Metro"},
+    {n:"31", t:"X-34 Landspeeder", s:"Screen Time"},
+    {n:"32", t:"Tooligan", s:"Experimotors"},
+    {n:"33", t:"Dessert Drifter", s:"Sweet Rides"},
+    {n:"34", t:"Ford Mustang GTD", s:"Mustang 60th"},
+    {n:"35", t:"Drift'n Break", s:"HW Modified"},
+    {n:"36", t:"Audi RS e-tron GT", s:"HW Green Speed"},
+    {n:"37", t:"Crescendo", s:"X-Raycers"},
+    {n:"38", t:"Proton Saga", s:"Factory Fresh"},
+    {n:"39", t:"Ain't Fare", s:"HW Metro"},
+    {n:"40", t:"Corvette C6", s:"HW Roadsters"},
+    {n:"41", t:"Roadster Bite", s:"HW Roadsters"},
+    {n:"42", t:"Volkswagen T2 Pickup", s:"HW Hot Trucks"},
+    {n:"43", t:"'19 Ford Ranger Raptor", s:"HW Hot Trucks"},
+    {n:"44", t:"Nissan Skyline RS (KDR30)", s:"J-Imports"},
+    {n:"45", t:"Honda Civic Si", s:"J-Imports"},
+    {n:"46", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh"},
+    {n:"47", t:"'72 Stingray Convertible", s:"Factory Fresh"},
+    {n:"48", t:"Subaru BRZ", s:"J-Imports"},
+    {n:"49", t:"Honda CB750 Café", s:"HW Moto"},
+    {n:"50", t:"'66 Buick Riviera", s:"Modified"},
+    {n:"51", t:"El Segundo Coupe", s:"HW Turbo"},
+    {n:"52", t:"Knight Draggin'", s:"HW Celebration"},
+    {n:"53", t:"1978 Dodge Li'l Red Express Truck", s:"HW Celebration"},
+    {n:"54", t:"Batman Arkham Asylum Batmobile", s:"Batman"},
+    {n:"55", t:"Batmobile (Animated)", s:"Batman"},
+    {n:"56", t:"Terenator", s:"HW Rescue"},
+    {n:"57", t:"'07 Chevy Tahoe", s:"HW Rescue"},
+    {n:"58", t:"Maserati Shamal", s:"Metro"},
+    {n:"59", t:"Oracle Red Bull Racing", s:"Track Aces"},
+    {n:"60", t:"Delorean Time Machine", s:"Screen Time"},
+    {n:"61", t:"Mod Rod", s:"HW Art Cars"},
+    {n:"62", t:"Datsun 240Z", s:"J-Imports"},
+    {n:"63", t:"Monteracer", s:"X-Raycers"},
+    {n:"64", t:"Arrow Dynamic", s:"X-Raycers"},
+    {n:"65", t:"Surfin' School Bus", s:"HW Sports"},
+    {n:"66", t:"Hotweiler", s:"HW Mega Bite"},
+    {n:"67", t:"BMW 507", s:"HW Roadsters"},
+    {n:"68", t:"'57 Jeep FC", s:"HW Hot Trucks"},
+    {n:"69", t:"'15 Mazda MX-5 Miata", s:"J-Imports"},
+    {n:"70", t:"McLaren Solus GT", s:"HW Modified"},
+    {n:"71", t:"Corvette Grand Sport", s:"HW Roadsters"},
+    {n:"72", t:"Custom '72 Chevy LUV", s:"HW Hot Trucks"},
+    {n:"73", t:"Mighty K", s:"Compact Kings"},
+    {n:"74", t:"Porsche 911 GT3", s:"Race Day"},
+    {n:"75", t:"Jaguar MK1", s:"Race Day"},
+    {n:"76", t:"Chevy Silverado", s:"HW Art Cars"},
+    {n:"77", t:"Audi 90 quattro", s:"Factory Fresh"},
+    {n:"78", t:"Toon'd '83 Chevy Silverado", s:"Tooned"},
+    {n:"79", t:"Mazda 787B", s:"Race Day"},
+    {n:"80", t:"Volvo P1800 Gasser", s:"HW Gassers"},
+    {n:"81", t:"'91 Mazda MX-5 Miata", s:"J-Imports"},
+    {n:"82", t:"Tesla Cyberquad", s:"HW Dirt"},
+    {n:"83", t:"K.I.T.T.", s:"Screen Time"},
+    {n:"84", t:"Gotta Go", s:"HW Designed"},
+    {n:"85", t:"Street Weiner", s:"Fast Foodie"},
+    {n:"86", t:"Chevy Silverado EV RST", s:"HW EV"},
+    {n:"87", t:"'70 Plymouth Superbird", s:"Art Cars"},
+    {n:"88", t:"Fish'd & Chip'd", s:"Fast Foodie (TH)"},
+    {n:"89", t:"Fast-Bed Hauler", s:"HW Haulers"},
+    {n:"90", t:"HW450F", s:"HW Moto"},
+    {n:"91", t:"LB Super Silhouette Nissan Silvia", s:"HW Modified"},
+    {n:"92", t:"Dune It Up", s:"Track Aces"},
+    {n:"93", t:"Porsche 718 Cayman GT4", s:"Factory Fresh"},
+    {n:"94", t:"'99 Ford F-150 SVT Lightning", s:"Hot Trucks"},
+    {n:"95", t:"Pedal Driver", s:"Experimotors (TH)"},
+    {n:"96", t:"'21 Toyota GR Supra", s:"Then and Now"},
+    {n:"97", t:"Fiat 500D Modificado", s:"Compact Kings"},
+    {n:"98", t:"Mitsubishi 3000GT VR-4", s:"J-Imports"},
+    {n:"99", t:"Nissan Skyline GT-R (BNR32)", s:"J-Imports"},
+    {n:"100", t:"Lamborghini Countach LPI 800-4", s:"HW Exotics"},
+    {n:"103", t:"TV Series Batmobile", s:"Batman"},
+    {n:"104", t:"'86 Ford Thunderbird Pro Stock", s:"Drag Strip"},
+    {n:"105", t:"'24 Honda Civic Type-R", s:"J-Imports"},
+    {n:"106", t:"Mazda 323 GTR", s:"HW Rally"},
+    {n:"107", t:"Acura Integra GSR", s:"J-Imports"},
+    {n:"108", t:"Meyers Manx", s:"HW Dirt"},
+    {n:"109", t:"Power Rocket", s:"X-Raycers"},
+    {n:"110", t:"Rig Storm", s:"HW Graphics (TH)"},
+    {n:"111", t:"Pontiac Aztek Custom", s:"HW Modified"},
+    {n:"112", t:"Later Crater", s:"Reverse Rake"},
+    {n:"113", t:"Mercedes-Benz E 36 AMG", s:"Factory Fresh"},
+    {n:"114", t:"'67 Volkswagen Samba Bus", s:"HW Vans"},
+    {n:"115", t:"BMW M3", s:"The 80s"},
+    {n:"116", t:"Porsche 935", s:"Race Day"},
+    {n:"117", t:"Flippin Fast", s:"Experimotors"},
+    {n:"118", t:"Skull Shaker", s:"Experimotors"},
+    {n:"119", t:"Toyota Land Cruiser FJ43", s:"HW Hot Trucks"},
+    {n:"120", t:"Custom Kia EV6", s:"HW EV"},
+    {n:"121", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh"},
+    {n:"122", t:"'16 Bugatti Chiron", s:"HW Exotics"},
+    {n:"123", t:"'18 Honda Civic Type R", s:"Then and Now"},
+    {n:"124", t:"Futurismo", s:"Race Day"},
+    {n:"125", t:"Meyers Manx", s:"HW Dirt"},
+    {n:"126", t:"'08 Mercedes-Benz CLK 63 AMG", s:"Factory Fresh"},
+    {n:"127", t:"Maserati MC20", s:"HW Exotics"},
+    {n:"128", t:"'24 Toyota Tacoma TRD Pro", s:"HW Hot Trucks"},
+    {n:"129", t:"'98 Toyota Altezza", s:"J-Imports"},
+    {n:"130", t:"'17 Ford GT", s:"Exotics"},
+    {n:"131", t:"'80 Mercedes-Benz 500 SLC", s:"HW Rally"},
+    {n:"132", t:"'95 Lamborghini Diablo SV", s:"Exotics"},
+    {n:"133", t:"Mitsubishi Pajero Evolution", s:"Dirt"},
+    {n:"134", t:"'77 Pontiac Firebird T/A", s:"Muscle Mania"},
+    {n:"135", t:"'94 Nissan Primera", s:"J-Imports"},
+    {n:"136", t:"Ford GT LM", s:"Race Day"},
+    {n:"137", t:"Nissan Laurel 2000 SGX", s:"J-Imports"},
+    {n:"138", t:"'75 Ford Bronco", s:"HW Hot Trucks"},
+    {n:"139", t:"Lamborghini Temerario", s:"HW Exotics"},
+    {n:"140", t:"Ford RS200", s:"HW Rally"},
+    {n:"141", t:"'85 Honda City Turbo II", s:"J-Imports (TH)"},
+    {n:"142", t:"BMW M3 GTR", s:"Race Day"},
+    {n:"143", t:"Birthday Burner", s:"Celebration Racers (TH)"},
+    {n:"144", t:"Nissan Skyline GT-R (BCNR33)", s:"J-Imports"},
+    {n:"145", t:"'78 Dodge Li'l Red Express", s:"HW Hot Trucks"},
+    {n:"146", t:"Lamborghini Gallardo LP 570-4", s:"HW Exotics"},
+    {n:"147", t:"Toyota GR Yaris", s:"HW Rally"},
+    {n:"148", t:"Cone Shaker", s:"HW Metro"},
+    {n:"149", t:"Quick Bite", s:"Fast Foodie"},
+    {n:"150", t:"'89 Mercedes-Benz 560 SEC AMG", s:"HW Modified"},
+    {n:"151", t:"Rodger Dodger 2.0", s:"HW EV"},
+    {n:"154", t:"Porsche 911 Rallye", s:"Dirt"},
+    {n:"158", t:"Hoto Roto", s:"Rod Squad"},
+    {n:"159", t:"Ford GT", s:"Modified"},
+    {n:"163", t:"'95 Mazda RX-7 Drift", s:"70s vs 90s"},
+    {n:"166", t:"Disney Steamboat", s:"Screen Time"},
+    {n:"167", t:"Mattel Dream Mobile", s:"Celebration"},
+    {n:"169", t:"'67 Austin Mini Van", s:"Art Cars"},
+    {n:"174", t:"Peugeot 9X8 Hypercar", s:"Exotics"},
+    {n:"186", t:"'89 Mercedes-Benz 560 SEC AMG", s:"Turbo"},
+    {n:"187", t:"Porsche 911 Carrera Clip", s:"Experimotors"},
+    {n:"194", t:"Formula E Gen3", s:"Track Aces"},
+    {n:"195", t:"Alfa Romeo Giulia TI Super", s:"Compact Kings"},
+    {n:"196", t:"Mazda RX-3", s:"J-Imports"},
+    {n:"198", t:"Ferrari F40 Competizione", s:"Exotics"},
+    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit"},
+    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit"},
+    {n:"201", t:"Honda Civic Custom", s:"Reverse Rake"},
+    {n:"203", t:"Lil 'Roar'", s:"Safari Mode"},
+    {n:"204", t:"Terra-Tracktly", s:"Track Champs"},
+    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody"},
+    {n:"206", t:"Speed Drive", s:"Experimotors"},
+    {n:"207", t:"Ravenger S/T", s:"Muscle Mania"},
+    {n:"208", t:"'69 Dodge Coronet Super Bee", s:"Muscle Mania"},
+    {n:"209", t:"McLaren Speedtail", s:"Exotics"},
+    {n:"210", t:"Land Rover Defender 90", s:"Then and Now"},
+    {n:"211", t:"Custom '18 Ford Mustang GT", s:"Mustang 60th"},
+    {n:"212", t:"Honda S800 Racing", s:"Compact Kings"},
+    {n:"213", t:"Lotus Cortina", s:"Compact Kings"},
+    {n:"215", t:"Blitzspeeder", s:"Track Champs"},
+    {n:"216", t:"Quick Chat", s:"Experimotors"},
+    {n:"217", t:"King Kuda", s:"Muscle Mania"},
+    {n:"218", t:"Mod Mill", s:"Muscle Mania"},
+    {n:"224", t:"Honda VFR750R RC30", s:"Moto"},
+    {n:"227", t:"Volvo 240 Drift Wagon", s:"HW Wagons"},
+    {n:"233", t:"Custom '56 Ford Truck", s:"Celebration"},
+    {n:"234", t:"Feline Lucky", s:"Celebration"},
+    {n:"235", t:"'66 Triumph Tiger 100", s:"HW Moto (TH)"},
+    {n:"236", t:"Limited Grip", s:"Peak Pursuit"},
+    {n:"238", t:"Jaguar XJC V12 Coupe", s:"Wild WideBody"},
+    {n:"239", t:"Porsche 911 Turbo Cabriolet", s:"Then and Now"},
+    {n:"240", t:"Dodge Charger SRT Hellcat", s:"Muscle Mania"},
+    {n:"244", t:"Gone Mad", s:"HW Wagons"},
+    {n:"245", t:"BMW M3 Wagon", s:"Wagons"},
+    {n:"247", t:"Ford RS200", s:"Rally"},
+    {n:"248", t:"Polestar TRX", s:"EV"},
+    {n:"250", t:"Volvo 240 Drift", s:"Drift"}
+    {n:"1", t:"Kei Swap", s:"HW Art Cars", i:""},
+    {n:"2", t:"Super Twin Mill", s:"HW Let's Race", i:""},
+    {n:"3", t:"Morgan Super 3", s:"Factory Fresh", i:""},
+    {n:"4", t:"Mazda MX-5 Miata", s:"HW Dream Garage", i:""},
+    {n:"5", t:"Ford Mustang GTD", s:"Mustang 60th", i:"https://static.wikia.nocookie.net/hotwheels/images/0/00/Ford_Mustang_GTD_%28%2725_Mainline%29.jpg"},
+    {n:"6", t:"'66 Buick Riviera", s:"HW Modified", i:""},
+    {n:"7", t:"Maserati Shamal", s:"HW Metro", i:""},
+    {n:"8", t:"Tesla Cyberquad", s:"HW Dirt", i:""},
+    {n:"9", t:"McLaren W1", s:"HW Race Day", i:""},
+    {n:"10", t:"Optimus Prime", s:"HW Screen Time", i:""},
+    {n:"11", t:"Honda Civic Si", s:"Factory Fresh", i:""},
+    {n:"12", t:"Nissan Skyline GT-R", s:"J-Imports", i:""},
+    {n:"13", t:"GMC Hummer EV", s:"HW Green Speed", i:""},
+    {n:"14", t:"'87 Dodge D100", s:"HW Reverse Rake", i:""},
+    {n:"15", t:"Porsche 911 Rallye", s:"HW Dirt", i:""},
+    {n:"16", t:"Hiway Hauler 2", s:"HW Haulers", i:""},
+    {n:"17", t:"Ford Performance Supervan 4", s:"HW Green Speed (TH)", i:""},
+    {n:"18", t:"Bone Shaker", s:"HW Dream Garage", i:""},
+    {n:"19", t:"Batmobile", s:"Batman", i:""},
+    {n:"20", t:"Track Manga", s:"HW Art Cars", i:""},
+    {n:"21", t:"Brickin' Delivery", s:"Brick Rides", i:""},
+    {n:"22", t:"HW450F", s:"HW Moto", i:""},
+    {n:"23", t:"Custom '68 Camaro", s:"HW Art Cars", i:""},
+    {n:"24", t:"Punk Rod", s:"Rod Squad", i:""},
+    {n:"25", t:"Deora II", s:"HW Legends", i:""},
+    {n:"26", t:"Nissan Skyline 2000GT-R LBWK", s:"J-Imports", i:""},
+    {n:"27", t:"Rally Speciale", s:"HW Dirt", i:""},
+    {n:"28", t:"'90 Honda Civic EF", s:"70s vs 90s", i:""},
+    {n:"29", t:"Porsche 911 GT3 RS", s:"Then and Now", i:""},
+    {n:"30", t:"Road Bandit", s:"HW Metro", i:""},
+    {n:"31", t:"X-34 Landspeeder", s:"Screen Time", i:""},
+    {n:"32", t:"Tooligan", s:"Experimotors", i:""},
+    {n:"33", t:"Dessert Drifter", s:"Sweet Rides", i:""},
+    {n:"34", t:"Ford Mustang GTD", s:"Mustang 60th", i:""},
+    {n:"35", t:"Drift'n Break", s:"HW Modified", i:""},
+    {n:"36", t:"Audi RS e-tron GT", s:"HW Green Speed", i:""},
+    {n:"37", t:"Crescendo", s:"X-Raycers", i:""},
+    {n:"38", t:"Proton Saga", s:"Factory Fresh", i:""},
+    {n:"39", t:"Ain't Fare", s:"HW Metro", i:""},
+    {n:"40", t:"Corvette C6", s:"HW Roadsters", i:""},
+    {n:"41", t:"Roadster Bite", s:"HW Roadsters", i:""},
+    {n:"42", t:"Volkswagen T2 Pickup", s:"HW Hot Trucks", i:""},
+    {n:"43", t:"'19 Ford Ranger Raptor", s:"HW Hot Trucks", i:""},
+    {n:"44", t:"Nissan Skyline RS (KDR30)", s:"J-Imports", i:""},
+    {n:"45", t:"Honda Civic Si", s:"J-Imports", i:""},
+    {n:"46", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh", i:""},
+    {n:"47", t:"'72 Stingray Convertible", s:"Factory Fresh", i:""},
+    {n:"48", t:"Subaru BRZ", s:"J-Imports", i:""},
+    {n:"49", t:"Honda CB750 Café", s:"HW Moto", i:""},
+    {n:"50", t:"'66 Buick Riviera", s:"Modified", i:""},
+    {n:"51", t:"El Segundo Coupe", s:"HW Turbo", i:""},
+    {n:"52", t:"Knight Draggin'", s:"HW Celebration", i:""},
+    {n:"53", t:"1978 Dodge Li'l Red Express Truck", s:"HW Celebration", i:""},
+    {n:"54", t:"Batman Arkham Asylum Batmobile", s:"Batman", i:""},
+    {n:"55", t:"Batmobile (Animated)", s:"Batman", i:""},
+    {n:"56", t:"Terenator", s:"HW Rescue", i:""},
+    {n:"57", t:"'07 Chevy Tahoe", s:"HW Rescue", i:""},
+    {n:"58", t:"Maserati Shamal", s:"Metro", i:""},
+    {n:"59", t:"Oracle Red Bull Racing", s:"Track Aces", i:""},
+    {n:"60", t:"Delorean Time Machine", s:"Screen Time", i:""},
+    {n:"61", t:"Mod Rod", s:"HW Art Cars", i:""},
+    {n:"62", t:"Datsun 240Z", s:"J-Imports", i:""},
+    {n:"63", t:"Monteracer", s:"X-Raycers", i:""},
+    {n:"64", t:"Arrow Dynamic", s:"X-Raycers", i:""},
+    {n:"65", t:"Surfin' School Bus", s:"HW Sports", i:""},
+    {n:"66", t:"Hotweiler", s:"HW Mega Bite", i:""},
+    {n:"67", t:"BMW 507", s:"HW Roadsters", i:""},
+    {n:"68", t:"'57 Jeep FC", s:"HW Hot Trucks", i:""},
+    {n:"69", t:"'15 Mazda MX-5 Miata", s:"J-Imports", i:""},
+    {n:"70", t:"McLaren Solus GT", s:"HW Modified", i:""},
+    {n:"71", t:"Corvette Grand Sport", s:"HW Roadsters", i:""},
+    {n:"72", t:"Custom '72 Chevy LUV", s:"HW Hot Trucks", i:""},
+    {n:"73", t:"Mighty K", s:"Compact Kings", i:""},
+    {n:"74", t:"Porsche 911 GT3", s:"Race Day", i:""},
+    {n:"75", t:"Jaguar MK1", s:"Race Day", i:""},
+    {n:"76", t:"Chevy Silverado", s:"HW Art Cars", i:""},
+    {n:"77", t:"Audi 90 quattro", s:"Factory Fresh", i:""},
+    {n:"78", t:"Toon'd '83 Chevy Silverado", s:"Tooned", i:""},
+    {n:"79", t:"Mazda 787B", s:"Race Day", i:""},
+    {n:"80", t:"Volvo P1800 Gasser", s:"HW Gassers", i:""},
+    {n:"81", t:"'91 Mazda MX-5 Miata", s:"J-Imports", i:""},
+    {n:"82", t:"Tesla Cyberquad", s:"HW Dirt", i:""},
+    {n:"83", t:"K.I.T.T.", s:"Screen Time", i:""},
+    {n:"84", t:"Gotta Go", s:"HW Designed", i:""},
+    {n:"85", t:"Street Weiner", s:"Fast Foodie", i:""},
+    {n:"86", t:"Chevy Silverado EV RST", s:"HW EV", i:""},
+    {n:"87", t:"'70 Plymouth Superbird", s:"Art Cars", i:""},
+    {n:"88", t:"Fish'd & Chip'd", s:"Fast Foodie (TH)", i:""},
+    {n:"89", t:"Fast-Bed Hauler", s:"HW Haulers", i:""},
+    {n:"90", t:"HW450F", s:"HW Moto", i:""},
+    {n:"91", t:"LB Super Silhouette Nissan Silvia", s:"HW Modified", i:""},
+    {n:"92", t:"Dune It Up", s:"Track Aces", i:""},
+    {n:"93", t:"Porsche 718 Cayman GT4", s:"Factory Fresh", i:""},
+    {n:"94", t:"'99 Ford F-150 SVT Lightning", s:"Hot Trucks", i:""},
+    {n:"95", t:"Pedal Driver", s:"Experimotors (TH)", i:""},
+    {n:"96", t:"'21 Toyota GR Supra", s:"Then and Now", i:""},
+    {n:"97", t:"Fiat 500D Modificado", s:"Compact Kings", i:""},
+    {n:"98", t:"Mitsubishi 3000GT VR-4", s:"J-Imports", i:""},
+    {n:"99", t:"Nissan Skyline GT-R (BNR32)", s:"J-Imports", i:""},
+    {n:"100", t:"Lamborghini Countach LPI 800-4", s:"HW Exotics", i:""},
+    {n:"103", t:"TV Series Batmobile", s:"Batman", i:""},
+    {n:"104", t:"'86 Ford Thunderbird Pro Stock", s:"Drag Strip", i:""},
+    {n:"105", t:"'24 Honda Civic Type-R", s:"J-Imports", i:""},
+    {n:"106", t:"Mazda 323 GTR", s:"HW Rally", i:""},
+    {n:"107", t:"Acura Integra GSR", s:"J-Imports", i:""},
+    {n:"108", t:"Meyers Manx", s:"HW Dirt", i:""},
+    {n:"109", t:"Power Rocket", s:"X-Raycers", i:""},
+    {n:"110", t:"Rig Storm", s:"HW Graphics (TH)", i:""},
+    {n:"111", t:"Pontiac Aztek Custom", s:"HW Modified", i:""},
+    {n:"112", t:"Later Crater", s:"Reverse Rake", i:""},
+    {n:"113", t:"Mercedes-Benz E 36 AMG", s:"Factory Fresh", i:""},
+    {n:"114", t:"'67 Volkswagen Samba Bus", s:"HW Vans", i:""},
+    {n:"115", t:"BMW M3", s:"The 80s", i:""},
+    {n:"116", t:"Porsche 935", s:"Race Day", i:""},
+    {n:"117", t:"Flippin Fast", s:"Experimotors", i:""},
+    {n:"118", t:"Skull Shaker", s:"Experimotors", i:""},
+    {n:"119", t:"Toyota Land Cruiser FJ43", s:"HW Hot Trucks", i:""},
+    {n:"120", t:"Custom Kia EV6", s:"HW EV", i:""},
+    {n:"121", t:"Porsche 911 Carrera RS 2.7", s:"Factory Fresh", i:""},
+    {n:"122", t:"'16 Bugatti Chiron", s:"HW Exotics", i:""},
+    {n:"123", t:"'18 Honda Civic Type R", s:"Then and Now", i:""},
+    {n:"124", t:"Futurismo", s:"Race Day", i:""},
+    {n:"125", t:"Meyers Manx", s:"HW Dirt", i:""},
+    {n:"126", t:"'08 Mercedes-Benz CLK 63 AMG", s:"Factory Fresh", i:""},
+    {n:"127", t:"Maserati MC20", s:"HW Exotics", i:""},
+    {n:"128", t:"'24 Toyota Tacoma TRD Pro", s:"HW Hot Trucks", i:""},
+    {n:"129", t:"'98 Toyota Altezza", s:"J-Imports", i:""},
+    {n:"130", t:"'17 Ford GT", s:"Exotics", i:""},
+    {n:"131", t:"'80 Mercedes-Benz 500 SLC", s:"HW Rally", i:""},
+    {n:"132", t:"'95 Lamborghini Diablo SV", s:"Exotics", i:""},
+    {n:"133", t:"Mitsubishi Pajero Evolution", s:"Dirt", i:""},
+    {n:"134", t:"'77 Pontiac Firebird T/A", s:"Muscle Mania", i:""},
+    {n:"135", t:"'94 Nissan Primera", s:"J-Imports", i:""},
+    {n:"136", t:"Ford GT LM", s:"Race Day", i:""},
+    {n:"137", t:"Nissan Laurel 2000 SGX", s:"J-Imports", i:""},
+    {n:"138", t:"'75 Ford Bronco", s:"HW Hot Trucks", i:""},
+    {n:"139", t:"Lamborghini Temerario", s:"HW Exotics", i:""},
+    {n:"140", t:"Ford RS200", s:"HW Rally", i:""},
+    {n:"141", t:"'85 Honda City Turbo II", s:"J-Imports (TH)", i:""},
+    {n:"142", t:"BMW M3 GTR", s:"Race Day", i:""},
+    {n:"143", t:"Birthday Burner", s:"Celebration Racers (TH)", i:""},
+    {n:"144", t:"Nissan Skyline GT-R (BCNR33)", s:"J-Imports", i:""},
+    {n:"145", t:"'78 Dodge Li'l Red Express", s:"HW Hot Trucks", i:""},
+    {n:"146", t:"Lamborghini Gallardo LP 570-4", s:"HW Exotics", i:""},
+    {n:"147", t:"Toyota GR Yaris", s:"HW Rally", i:""},
+    {n:"148", t:"Cone Shaker", s:"HW Metro", i:""},
+    {n:"149", t:"Quick Bite", s:"Fast Foodie", i:""},
+    {n:"150", t:"'89 Mercedes-Benz 560 SEC AMG", s:"HW Modified", i:""},
+    {n:"151", t:"Rodger Dodger 2.0", s:"HW EV", i:""},
+    {n:"154", t:"Porsche 911 Rallye", s:"Dirt", i:""},
+    {n:"158", t:"Hoto Roto", s:"Rod Squad", i:""},
+    {n:"159", t:"Ford GT", s:"Modified", i:""},
+    {n:"163", t:"'95 Mazda RX-7 Drift", s:"70s vs 90s", i:""},
+    {n:"166", t:"Disney Steamboat", s:"Screen Time", i:""},
+    {n:"167", t:"Mattel Dream Mobile", s:"Celebration", i:""},
+    {n:"169", t:"'67 Austin Mini Van", s:"Art Cars", i:""},
+    {n:"174", t:"Peugeot 9X8 Hypercar", s:"Exotics", i:""},
+    {n:"186", t:"'89 Mercedes-Benz 560 SEC AMG", s:"Turbo", i:""},
+    {n:"187", t:"Porsche 911 Carrera Clip", s:"Experimotors", i:""},
+    {n:"194", t:"Formula E Gen3", s:"Track Aces", i:""},
+    {n:"195", t:"Alfa Romeo Giulia TI Super", s:"Compact Kings", i:""},
+    {n:"196", t:"Mazda RX-3", s:"J-Imports", i:""},
+    {n:"198", t:"Ferrari F40 Competizione", s:"Exotics", i:""},
+    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit", i:""},
+    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit", i:""},
+    {n:"201", t:"Honda Civic Custom", s:"Reverse Rake", i:""},
+    {n:"203", t:"Lil 'Roar'", s:"Safari Mode", i:""},
+    {n:"204", t:"Terra-Tracktly", s:"Track Champs", i:""},
+    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody", i:""},
+    {n:"206", t:"Speed Drive", s:"Experimotors", i:""},
+    {n:"207", t:"Ravenger S/T", s:"Muscle Mania", i:""},
+    {n:"208", t:"'69 Dodge Coronet Super Bee", s:"Muscle Mania", i:""},
+    {n:"209", t:"McLaren Speedtail", s:"Exotics", i:""},
+    {n:"210", t:"Land Rover Defender 90", s:"Then and Now", i:""},
+    {n:"211", t:"Custom '18 Ford Mustang GT", s:"Mustang 60th", i:""},
+    {n:"212", t:"Honda S800 Racing", s:"Compact Kings", i:""},
+    {n:"213", t:"Lotus Cortina", s:"Compact Kings", i:""},
+    {n:"215", t:"Blitzspeeder", s:"Track Champs", i:""},
+    {n:"216", t:"Quick Chat", s:"Experimotors", i:""},
+    {n:"217", t:"King Kuda", s:"Muscle Mania", i:""},
+    {n:"218", t:"Mod Mill", s:"Muscle Mania", i:""},
+    {n:"224", t:"Honda VFR750R RC30", s:"Moto", i:""},
+    {n:"227", t:"Volvo 240 Drift Wagon", s:"HW Wagons", i:""},
+    {n:"233", t:"Custom '56 Ford Truck", s:"Celebration", i:""},
+    {n:"234", t:"Feline Lucky", s:"Celebration", i:""},
+    {n:"235", t:"'66 Triumph Tiger 100", s:"HW Moto (TH)", i:""},
+    {n:"236", t:"Limited Grip", s:"Peak Pursuit", i:""},
+    {n:"238", t:"Jaguar XJC V12 Coupe", s:"Wild WideBody", i:""},
+    {n:"239", t:"Porsche 911 Turbo Cabriolet", s:"Then and Now", i:""},
+    {n:"240", t:"Dodge Charger SRT Hellcat", s:"Muscle Mania", i:""},
+    {n:"244", t:"Gone Mad", s:"HW Wagons", i:""},
+    {n:"245", t:"BMW M3 Wagon", s:"Wagons", i:""},
+    {n:"247", t:"Ford RS200", s:"Rally", i:""},
+    {n:"248", t:"Polestar TRX", s:"EV", i:""},
+    {n:"250", t:"Volvo 240 Drift", s:"Drift", i:""}
+],
+"2026": [
+    {n:"3", t:"Gordon Murray Automotive T.33", s:"Exoticars"},
+    {n:"4", t:"Batmobile (The Batman)", s:"Batman"},
+    {n:"5", t:"Pass 'N Gasser", s:"Drop Tops"},
+    {n:"6", t:"RD-06", s:"X-Raycers"},
+    {n:"7", t:"Solar Reflex", s:"HW EV"},
+    {n:"8", t:"Ford Mustang Mach-E 1400", s:"HW EV"},
+    {n:"9", t:"'87 Buick Regal GNX", s:"Night Speed (TH)"},
+    {n:"10", t:"2020 Ford Mustang Shelby GT500", s:"Night Speed"},
+    {n:"11", t:"2018 Honda Civic Type R", s:"Night Speed"},
+    {n:"12", t:"Carbonator", s:"Experimotors"},
+    {n:"13", t:"Drift-Ender", s:"Truckin' Along"},
+    {n:"14", t:"'20 Jeep Gladiator", s:"Truckin' Along"},
+    {n:"15", t:"Porsche 911 Carrera T", s:"Factory Fresh"},
+    {n:"16", t:"Maserati Shamal", s:"Factory Fresh"},
+    {n:"17", t:"Bounce'N Bass", s:"Layin' Low"},
+    {n:"18", t:"Deora II", s:"HW Fan Driven"},
+    {n:"19", t:"Rodger Dodger", s:"HW Fan Driven"},
+    {n:"20", t:"McLaren Formula 1 Team", s:"Formula 1"},
+    {n:"21", t:"Barbie Dream Camper", s:"Mattel"},
+    {n:"22", t:"Instant Boost", s:"HW Starting Grid"},
+    {n:"23", t:"'69 Dodge Charger Daytona", s:"HW Starting Grid"},
+    {n:"24", t:"Track Ripper", s:"HW Starting Grid"},
+    {n:"29", t:"'92 Dodge Viper RT/10", s:"Drop Tops (TH)"},
+    {n:"30", t:"X-Steam", s:"X-Raycers"},
+    {n:"32", t:"5 Alarm", s:"HW Heavyweights"},
+    {n:"33", t:"Haulerback", s:"HW Heavyweights"},
+    {n:"34", t:"Porsche Taycan Turbo S", s:"HW EV"},
+    {n:"35", t:"Watzup", s:"HW EV"},
+    {n:"36", t:"'70 Dodge Hemi Challenger", s:"Night Speed"},
+    {n:"37", t:"Cupra E-Racer", s:"Night Speed"},
+    {n:"38", t:"24/Seven", s:"Night Speed"},
+    {n:"39", t:"Roller Toaster", s:"Experimotors"},
+    {n:"40", t:"Braille Racer - Twin Mill", s:"HW All Drivers Welcome"},
+    {n:"41", t:"Lamborghini Huracán Sterrato", s:"Safari Mode"},
+    {n:"42", t:"'83 Chevy Silverado", s:"Truckin' Along"},
+    {n:"43", t:"Ford Mustang GTD", s:"Factory Refresh"},
+    {n:"44", t:"'59 Chevy Impala", s:"Layin' Low"},
+    {n:"45", t:"'47 Chevy Fleetline", s:"Layin' Low"},
+    {n:"46", t:"Purple Passion", s:"HW Fan Driven"},
+    {n:"47", t:"High-Tail Chaser", s:"HW Mods"},
+    {n:"66", t:"Street Shrieker", s:"HW Let's Race"},
+    {n:"128", t:"RRRoadster", s:"Compact Kings"},
+    {n:"142", t:"McLaren W1", s:"Race Day"},
+    {n:"150", t:"Honda CB750 Cafe", s:"HW Moto"},
+    {n:"157", t:"'83 Chevy Silverado", s:"Hot Trucks"},
+    {n:"162", t:"2018 Bentley Continental GT3", s:"Race Day"},
+    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit"},
+    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit"},
+    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody"},
+    {n:"207", t:"Ravenger S/T", s:"Muscle Mania"},
+    {n:"210", t:"Land Rover Defender 90", s:"Then and Now"},
+    {n:"216", t:"Quick Chat", s:"Experimotors"},
+    {n:"218", t:"Mod Mill", s:"Muscle Mania"}
+    {n:"3", t:"Gordon Murray Automotive T.33", s:"Exoticars", i:""},
+    {n:"4", t:"Batmobile (The Batman)", s:"Batman", i:""},
+    {n:"5", t:"Pass 'N Gasser", s:"Drop Tops", i:""},
+    {n:"6", t:"RD-06", s:"X-Raycers", i:""},
+    {n:"7", t:"Solar Reflex", s:"HW EV", i:""},
+    {n:"8", t:"Ford Mustang Mach-E 1400", s:"HW EV", i:""},
+    {n:"9", t:"'87 Buick Regal GNX", s:"Night Speed (TH)", i:""},
+    {n:"10", t:"2020 Ford Mustang Shelby GT500", s:"Night Speed", i:""},
+    {n:"11", t:"2018 Honda Civic Type R", s:"Night Speed", i:""},
+    {n:"12", t:"Carbonator", s:"Experimotors", i:""},
+    {n:"13", t:"Drift-Ender", s:"Truckin' Along", i:""},
+    {n:"14", t:"'20 Jeep Gladiator", s:"Truckin' Along", i:""},
+    {n:"15", t:"Porsche 911 Carrera T", s:"Factory Fresh", i:""},
+    {n:"16", t:"Maserati Shamal", s:"Factory Fresh", i:""},
+    {n:"17", t:"Bounce'N Bass", s:"Layin' Low", i:""},
+    {n:"18", t:"Deora II", s:"HW Fan Driven", i:""},
+    {n:"19", t:"Rodger Dodger", s:"HW Fan Driven", i:""},
+    {n:"20", t:"McLaren Formula 1 Team", s:"Formula 1", i:""},
+    {n:"21", t:"Barbie Dream Camper", s:"Mattel", i:""},
+    {n:"22", t:"Instant Boost", s:"HW Starting Grid", i:""},
+    {n:"23", t:"'69 Dodge Charger Daytona", s:"HW Starting Grid", i:""},
+    {n:"24", t:"Track Ripper", s:"HW Starting Grid", i:""},
+    {n:"29", t:"'92 Dodge Viper RT/10", s:"Drop Tops (TH)", i:""},
+    {n:"30", t:"X-Steam", s:"X-Raycers", i:""},
+    {n:"32", t:"5 Alarm", s:"HW Heavyweights", i:""},
+    {n:"33", t:"Haulerback", s:"HW Heavyweights", i:""},
+    {n:"34", t:"Porsche Taycan Turbo S", s:"HW EV", i:""},
+    {n:"35", t:"Watzup", s:"HW EV", i:""},
+    {n:"36", t:"'70 Dodge Hemi Challenger", s:"Night Speed", i:""},
+    {n:"37", t:"Cupra E-Racer", s:"Night Speed", i:""},
+    {n:"38", t:"24/Seven", s:"Night Speed", i:""},
+    {n:"39", t:"Roller Toaster", s:"Experimotors", i:""},
+    {n:"40", t:"Braille Racer - Twin Mill", s:"HW All Drivers Welcome", i:""},
+    {n:"41", t:"Lamborghini Huracán Sterrato", s:"Safari Mode", i:""},
+    {n:"42", t:"'83 Chevy Silverado", s:"Truckin' Along", i:""},
+    {n:"43", t:"Ford Mustang GTD", s:"Factory Refresh", i:""},
+    {n:"44", t:"'59 Chevy Impala", s:"Layin' Low", i:""},
+    {n:"45", t:"'47 Chevy Fleetline", s:"Layin' Low", i:""},
+    {n:"46", t:"Purple Passion", s:"HW Fan Driven", i:""},
+    {n:"47", t:"High-Tail Chaser", s:"HW Mods", i:""},
+    {n:"66", t:"Street Shrieker", s:"HW Let's Race", i:""},
+    {n:"128", t:"RRRoadster", s:"Compact Kings", i:""},
+    {n:"142", t:"McLaren W1", s:"Race Day", i:""},
+    {n:"150", t:"Honda CB750 Cafe", s:"HW Moto", i:""},
+    {n:"157", t:"'83 Chevy Silverado", s:"Hot Trucks", i:""},
+    {n:"162", t:"2018 Bentley Continental GT3", s:"Race Day", i:""},
+    {n:"199", t:"Audi 90 Quattro", s:"Peak Pursuit", i:""},
+    {n:"200", t:"VW T3 Custom", s:"Peak Pursuit", i:""},
+    {n:"205", t:"Pontiac Aztek Custom", s:"Wild WideBody", i:""},
+    {n:"207", t:"Ravenger S/T", s:"Muscle Mania", i:""},
+    {n:"210", t:"Land Rover Defender 90", s:"Then and Now", i:""},
+    {n:"216", t:"Quick Chat", s:"Experimotors", i:""},
+    {n:"218", t:"Mod Mill", s:"Muscle Mania", i:""}
+]
+};
 
-        <div class="main-area">
-            <div class="top-bar">
-                <div style="display:flex; align-items:center; flex:1;">
-                    <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-                    <div class="search-wrap">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" id="searchInput" placeholder="Radyo Ara..." onkeyup="searchStations()">
-                    </div>
-                </div>
-            </div>
+@@ -937,7 +948,7 @@
+if (!existingNums.includes(i)) {
+list.push({ 
+n: i.toString(), 
+            t: `${year} Gizli Model / Veri Yok`, 
+            t: `${year} Gizli Model`, 
+s: "TBA", 
+i: "" 
+});
+@@ -947,17 +958,14 @@
+list.sort((a, b) => parseInt(a.n) - parseInt(b.n));
+}
 
-            <div class="content-scroll">
-                <div class="section-header">
-                    <div class="section-title-text" id="pageTitle">Tüm Radyolar</div>
-                    <div class="live-dot"></div>
-                </div>
-                <div class="station-grid" id="grid"></div>
-            </div>
-        </div>
-    </div>
+// Tüm yıllar için boşlukları doldur
+["2023", "2024", "2025", "2026"].forEach(y => fillGaps(y));
 
-    <div class="player-bar">
-        <div class="player-info">
-            <img src="https://via.placeholder.com/60/222/555?text=FM" class="p-img" id="pImg">
-            <div class="p-text">
-                <div class="p-title" id="pTitle">Radyo Seçilmedi</div>
-                <div class="p-desc" id="pDesc">Müzik ruhun gıdasıdır...</div>
-            </div>
-        </div>
+// --- UYGULAMA MANTIĞI ---
+let currentYear = "2024";
+let currentFilter = "all";
+let userCollection = {};
 
-        <div class="player-controls">
-            <div class="ctrl-buttons">
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playPrev()"><i class="fas fa-step-backward"></i></button>
-                <button class="play-pause-btn" onclick="togglePlay()" id="btnPlay"><i class="fas fa-play"></i></button>
-                <button class="ctrl-btn ctrl-btn-sec" onclick="playNext()"><i class="fas fa-step-forward"></i></button>
-            </div>
-        </div>
+// Sayfa Yüklendiğinde
+window.onload = () => {
+// LocalStorage'dan veriyi çek
+const saved = localStorage.getItem('odhunWheels_full_collection');
+if (saved) {
+userCollection = JSON.parse(saved);
+@@ -968,10 +976,8 @@
 
-        <div class="player-extra">
-            <div class="vol-wrap">
-                <i class="fas fa-volume-up" id="volIcon"></i>
-                <input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-            </div>
-        </div>
-    </div>
+function setYear(y) {
+currentYear = y;
+// Tab stilini güncelle
+document.querySelectorAll('.year-tab').forEach(b => b.classList.remove('active'));
+event.target.classList.add('active');
 
-    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+renderCars();
+updateProgress();
+}
+@@ -991,29 +997,40 @@
+const cars = db[currentYear];
 
-    <script>
-        // --- ÇALIŞAN RADYO LİSTESİ (HTTPS) ---
-        const stations = [
-            { id: 1, name: "Power FM", cat: "pop", logo: "https://www.powerapp.com.tr/assets/img/logos/powerfm.png", url: "https://listen.powerapp.com.tr/powerfm/icecast.audio" },
-            { id: 2, name: "Power Turk", cat: "pop", logo: "https://www.powerapp.com.tr/assets/img/logos/powerturk.png", url: "https://listen.powerapp.com.tr/powerturk/icecast.audio" },
-            { id: 3, name: "Kral FM", cat: "arabesk", logo: "https://dogus.daioncdn.net/kralfm/kralfm_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralfm.smil/playlist.m3u8" },
-            { id: 4, name: "Kral Pop", cat: "pop", logo: "https://dogus.daioncdn.net/kralpoptv/kralpoptv_web_logo.png", url: "https://ssldyg.radyotvonline.net/smil/kralpop.smil/playlist.m3u8" },
-            { id: 5, name: "Joy Turk", cat: "pop", logo: "https://karnaval.com/media/channels/joyturk_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK_SC" },
-            { id: 6, name: "Metro FM", cat: "pop", logo: "https://karnaval.com/media/channels/metrofm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM_SC" },
-            { id: 7, name: "Süper FM", cat: "pop", logo: "https://karnaval.com/media/channels/superfm_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM_SC" },
-            { id: 8, name: "Fenomen", cat: "pop", logo: "https://radyofenomen.com/assets/img/logo.png", url: "https://listen.radyofenomen.com/fenomen/128/icecast.audio" },
-            { id: 9, name: "Virgin Radio", cat: "pop", logo: "https://karnaval.com/media/channels/virginradioturkiye_180x180.png", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO_TR_SC" },
-            { id: 10, name: "Alem FM", cat: "pop", logo: "https://img-alemfm-mncdn.mncdn.com/assets/img/alemfm-logo.png", url: "https://turkmedya-live.ercdn.net/alemfm/alemfm.m3u8" },
-            { id: 11, name: "Number1 FM", cat: "pop", logo: "https://www.numberone.com.tr/wp-content/uploads/2019/04/nr1-logo-2019.png", url: "https://n10101m.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e3285b5913_1200/playlist.m3u8" },
-            { id: 12, name: "TRT FM", cat: "pop", logo: "https://cdn-r.trt.net.tr/static/radio/img/radyofm.png", url: "https://radios.trt.net.tr/radyofm/master.m3u8" },
-            { id: 13, name: "NTV Radyo", cat: "haber", logo: "https://cdn.ntv.com.tr/img/ntv-logo.png", url: "https://ssldyg.radyotvonline.net/smil/ntvradyo.smil/playlist.m3u8" },
-            { id: 14, name: "Radyo Eksen", cat: "rock", logo: "https://radyoeksen.com/assets/img/logo.png", url: "https://ssldyg.radyotvonline.net/smil/radyoeksen.smil/playlist.m3u8" },
-            { id: 15, name: "Power XL", cat: "rock", logo: "https://www.powerapp.com.tr/assets/img/logos/powerxl.png", url: "https://listen.powerapp.com.tr/powerxl/playlist.m3u8" },
-            { id: 16, name: "Power Love", cat: "slow", logo: "https://www.powerapp.com.tr/assets/img/logos/powerlove.png", url: "https://listen.powerapp.com.tr/powerlove/playlist.m3u8" },
-            { id: 17, name: "Pal Nostalji", cat: "slow", logo: "https://palnostalji.com.tr/assets/images/logo.png", url: "https://shoutcast.radyogrup.com/radio/8020/radio.mp3" },
-            { id: 18, name: "Slow Türk", cat: "slow", logo: "https://www.slowturk.com.tr/assets/img/logo.png", url: "https://radyo.dogannet.tv/slowturk/playlist.m3u8" },
-            { id: 19, name: "Radyo 7", cat: "halk", logo: "https://www.radyo7.com/assets/img/logo.png", url: "https://radyo.yayin.com.tr/radyo7/playlist.m3u8" },
-            { id: 20, name: "TRT Türkü", cat: "halk", logo: "https://cdn-r.trt.net.tr/static/radio/img/trtturku.png", url: "https://radio-trt-turku.medya.trt.com.tr/master.m3u8" },
-            { id: 21, name: "Diyanet Radyo", cat: "dini", logo: "https://radyo.diyanet.gov.tr/assets/img/logo.png", url: "https://yayin.diyanet.gov.tr:8443/radyo" },
-            { id: 22, name: "Lig Radyo", cat: "haber", logo: "https://ligradyo.com.tr/assets/img/logo.png", url: "https://turkmedya-live.ercdn.net/ligradyo/ligradyo.m3u8" },
-            { id: 23, name: "CNN Türk Radyo", cat: "haber", logo: "https://www.cnnturk.com/assets/images/logo-cnnturk.png", url: "https://radyo.dogannet.tv/cnnturkradyo/playlist.m3u8" },
-            { id: 24, name: "Habertürk Radyo", cat: "haber", logo: "https://haberturk.com/images/ht-logo.png", url: "https://ciner.daioncdn.net/hbrtrkradyo/hbrtrkradyo.m3u8" }
-        ];
+cars.forEach(car => {
+    // Benzersiz ID: YIL-NO
+const carId = `${currentYear}-${car.n}`;
+const isOwned = userCollection[carId] === true;
 
-        let audio = document.getElementById('audioPlayer');
-        let currentIdx = -1;
-        let hls = null;
-        let audioCtx, analyser, source, dataArray, canvas, ctx;
+    // Filtreleme
+if (searchTerm && !car.t.toLowerCase().includes(searchTerm) && !car.n.includes(searchTerm)) return;
+if (currentFilter === 'owned' && !isOwned) return;
+if (currentFilter === 'missing' && isOwned) return;
 
-        // --- BAŞLATMA ---
-        function initAudioSystem() {
-            // Overlay kaldır
-            document.getElementById('startOverlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('startOverlay').remove(), 500);
-            
-            // Visualizer ve Liste Hazırla
-            renderStations(stations);
-            
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                setupVisualizer();
-            } catch(e) { console.log(e); }
-            
-            resizeCanvas();
-            playStation(0); // İlkini aç
-        }
+    // Kart Oluşturma
+const card = document.createElement('div');
+card.className = `car-card ${isOwned ? 'owned' : ''}`;
+card.onclick = () => toggleCar(carId);
 
-        window.onresize = resizeCanvas;
+    // Resim (Google Arama linki eklenmiş)
+    const imgUrl = car.i ? car.i : `https://via.placeholder.com/300x200/222/555?text=HW+${car.n}`;
+    // Resim Mantığı (Varsa göster, yoksa placeholder + Google linki)
+    let imgHTML = '';
+const googleUrl = `https://www.google.com/search?tbm=isch&q=Hot+Wheels+${currentYear}+${car.t.replace(/ /g,'+')}+${car.n}`;
+    
+    // Varsayılan Logo (Base64) - Hızlı Yüklenmesi İçin
+    const placeholderImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%23333'%3E%3Cpath d='M50 20 L80 80 L20 80 Z' /%3E%3Ctext x='50%25' y='50%25' fill='%23555' font-size='10' text-anchor='middle'%3EHW%3C/text%3E%3C/svg%3E";
 
-        // --- RENDER (SADECE BİR KEZ ÇALIŞIR) ---
-        function renderStations(list) {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = "";
-            list.forEach((s, index) => {
-                const div = document.createElement('div');
-                div.className = 'station-card';
-                div.id = `card-${s.id}`; // Kimlik atıyoruz
-                div.onclick = () => playStation(s.id);
-                div.innerHTML = `
-                    <div class="card-img-box">
-                        <img src="${s.logo}" class="card-img" loading="lazy">
-                        <div class="play-overlay"><div class="play-circle"><i class="fas fa-play"></i></div></div>
-                        <div class="card-eq"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
-                    </div>
-                    <div class="card-title">${s.name}</div>
-                    <div class="card-genre">${s.cat.toUpperCase()}</div>
-                `;
-                grid.appendChild(div);
-            });
-        }
+    if (car.i && car.i.length > 5) {
+        // Resim Linki Var
+        imgHTML = `<img src="${car.i}" alt="${car.t}" class="car-img" loading="lazy" onerror="this.onerror=null;this.src='${placeholderImg}';">`;
+    } else {
+        // Resim Linki Yok -> Placeholder Göster
+        imgHTML = `
+            <img src="${placeholderImg}" class="car-img" style="object-fit:cover; opacity:0.1;">
+            <div class="placeholder-text">GÖRSEL YOK</div>
+        `;
+    }
 
-        // --- OYNATMA (Flicker Olmadan) ---
-        function playStation(id) {
-            const station = stations.find(s => s.id === id);
-            if(!station) return;
+card.innerHTML = `
+       <div class="car-img-box">
+            <img src="${imgUrl}" alt="${car.t}" class="car-img" loading="lazy">
+            <a href="${googleUrl}" target="_blank" class="google-search-hint" onclick="event.stopPropagation()">
+                <i class="fas fa-search"></i> Görsel Ara
+            ${imgHTML}
+            <a href="${googleUrl}" target="_blank" class="search-hint" onclick="event.stopPropagation()">
+                <i class="fas fa-search"></i> Google'da Ara
+           </a>
+       </div>
+       <div class="car-details">
+@@ -1039,17 +1056,13 @@
+} else {
+userCollection[id] = true;
+}
+// Kaydet
+localStorage.setItem('odhunWheels_full_collection', JSON.stringify(userCollection));
 
-            // Eski kartın stilini kaldır
-            if(currentIdx !== -1) {
-                const oldCard = document.getElementById(`card-${stations[currentIdx].id}`);
-                if(oldCard) oldCard.classList.remove('playing');
-            }
+// Sadece ilgili kartı güncellemek yerine tümünü render ediyoruz (basitlik için)
+renderCars();
+renderCars(); // Görsel durumu güncellemek için yeniden render
+updateProgress();
+}
 
-            currentIdx = stations.findIndex(s => s.id === id);
-
-            // Yeni karta stil ekle
-            const newCard = document.getElementById(`card-${station.id}`);
-            if(newCard) newCard.classList.add('playing');
-
-            // Bilgileri Güncelle
-            document.getElementById('pTitle').innerText = station.name;
-            document.getElementById('pDesc').innerText = "Canlı Yayın - " + station.cat.toUpperCase();
-            document.getElementById('pImg').src = station.logo;
-
-            // Ses Motoru
-            if(hls) { hls.destroy(); hls = null; }
-            audio.pause();
-
-            if(Hls.isSupported() && station.url.includes('.m3u8')) {
-                hls = new Hls();
-                hls.loadSource(station.url);
-                hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play().catch(e=>console.log(e)));
-            } else {
-                audio.src = station.url;
-                audio.play().catch(e=>console.log(e));
-            }
-
-            updatePlayBtn(true);
-            if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        }
-
-        function togglePlay() {
-            if(audio.paused) audio.play(); else audio.pause();
-            updatePlayBtn(!audio.paused);
-        }
-
-        function updatePlayBtn(playing) {
-            const btn = document.getElementById('btnPlay');
-            btn.innerHTML = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-            
-            // Animasyon kontrolü
-            const card = document.getElementById(`card-${stations[currentIdx].id}`);
-            if(card) {
-                if(playing) card.classList.add('playing');
-                else card.classList.remove('playing');
-            }
-        }
-
-        function playNext() { playStation(stations[(currentIdx + 1) % stations.length].id); }
-        function playPrev() { playStation(stations[(currentIdx - 1 + stations.length) % stations.length].id); }
-
-        function setVolume(val) {
-            audio.volume = val;
-            const i = document.getElementById('volIcon');
-            if(val == 0) i.className = 'fas fa-volume-mute';
-            else if(val < 0.5) i.className = 'fas fa-volume-down';
-            else i.className = 'fas fa-volume-up';
-        }
-
-        // --- FİLTRELEME ---
-        function filterStations(cat) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.getElementById('pageTitle').innerText = cat === 'all' ? 'Tüm Radyolar' : cat.toUpperCase();
-
-            stations.forEach(s => {
-                const card = document.getElementById(`card-${s.id}`);
-                if(cat === 'all' || s.cat === cat) card.style.display = 'block';
-                else card.style.display = 'none';
-            });
-            
-            if(window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('active');
-        }
-
-        function searchStations() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            stations.forEach(s => {
-                const card = document.getElementById(`card-${s.id}`);
-                if(s.name.toLowerCase().includes(term)) card.style.display = 'block';
-                else card.style.display = 'none';
-            });
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        // --- VISUALIZER ---
-        function setupVisualizer() {
-            if(!analyser) return;
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-            canvas = document.getElementById('visualizer');
-            ctx = canvas.getContext('2d');
-            animate();
-        }
-
-        function resizeCanvas() {
-            const c = document.getElementById('visualizer');
-            c.width = window.innerWidth;
-            c.height = window.innerHeight;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            if(analyser) analyser.getByteFrequencyData(dataArray);
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const barWidth = (canvas.width / dataArray.length) * 2.5;
-            let x = 0;
-            for(let i = 0; i < dataArray.length; i++) {
-                const barHeight = dataArray[i] * 1.5;
-                ctx.fillStyle = `rgba(244, 63, 94, 0.1)`;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
-            }
-        }
-    </script>
-
-</body>
-</html>
+function updateProgress() {
+const total = 250;
+// Mevcut yıl için sahip olunanları say
+const ownedCount = Object.keys(userCollection).filter(key => key.startsWith(currentYear + "-")).length;
+const percent = Math.round((ownedCount / total) * 100);
