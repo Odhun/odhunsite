@@ -81,18 +81,6 @@
         font-weight: 600; font-size: 0.9rem; text-decoration: none; margin-top: auto;
     }
 
-    /* ECZANE */
-    .pharmacy-box {
-        background: linear-gradient(135deg, #ff7675, #d63031); color: #fff;
-        padding: 30px; border-radius: 20px; text-align: center;
-        box-shadow: 0 10px 30px rgba(214, 48, 49, 0.3);
-        cursor: pointer; transition: 0.3s;
-    }
-    .pharmacy-box:hover { transform: scale(1.02); }
-    .pharmacy-icon { font-size: 3rem; margin-bottom: 10px; }
-    .pharmacy-text { font-size: 1.5rem; font-weight: 800; }
-    .pharmacy-sub { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
-
     /* --- BOTTOM NAVIGATION --- */
     .bottom-nav {
         position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
@@ -101,7 +89,7 @@
     }
     .nav-item {
         display: flex; flex-direction: column; align-items: center; gap: 5px;
-        color: #b2bec3; cursor: pointer; transition: 0.2s; width: 33%; /* 3 öğe olduğu için genişletildi */
+        color: #b2bec3; cursor: pointer; transition: 0.2s; width: 33%;
         -webkit-tap-highlight-color: transparent;
     }
     .nav-item.active { color: var(--primary); transform: translateY(-5px); }
@@ -136,10 +124,10 @@
             <div class="section-title">Anamur'u Keşfet</div>
             <div class="card-grid">
                 <div class="place-card" onclick="openMap('Mamure Kalesi Anamur')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Mamure_Castle_02.jpg/800px-Mamure_Castle_02.jpg" class="card-img">
+                    <img src="https://www.kulturportali.gov.tr/contents/images/Mamure%20Kalesi%20(10).jpg" class="card-img">
                     <div class="card-body">
                         <div class="card-title">Mamure Kalesi</div>
-                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi. Tarihi dokusu ve deniz manzarasıyla büyüleyici.</div>
+                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi. UNESCO geçici miras listesinde.</div>
                         <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
                     </div>
                 </div>
@@ -203,11 +191,11 @@
         <div id="sec-yemek" class="section">
             <div class="section-title">Yöresel Lezzetler</div>
             <div class="card-grid">
-                <div class="place-card">
-                    <div class="card-img" style="background:url('https://i.lezzet.com.tr/images-xxlarge-recipe/batirik-d59b6788-e044-415a-836e-608667a32f1f.jpg') center/cover;"></div>
+                <div class="place-card" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')">
+                    <div class="card-img" style="background:url('https://i.nefisyemektarifleri.com/2010/11/batirik1.jpg') center/cover;"></div>
                     <div class="card-body">
                         <div class="card-title">Batırık</div>
-                        <div class="card-desc">Yer fıstığı, bulgur ve özel baharatlarla yapılan, soğuk çorba veya köfte şeklinde yenen efsane lezzet.</div>
+                        <div class="card-desc">Yer fıstığı, bulgur ve özel baharatlarla yapılan, soğuk çorba veya köfte şeklinde yenen efsane lezzet. <strong>Tarif için tıkla!</strong></div>
                     </div>
                 </div>
                 <div class="place-card">
@@ -228,12 +216,13 @@
         </div>
 
         <div id="sec-eczane" class="section">
-            <div class="section-title">Acil Durum</div>
+            <div class="section-title">Acil Durum & Eczane</div>
             
-            <div class="pharmacy-box" onclick="findPharmacy()">
-                <div class="pharmacy-icon"><i class="fas fa-clinic-medical"></i></div>
-                <div class="pharmacy-text">NÖBETÇİ ECZANE BUL</div>
-                <div class="pharmacy-sub">Google Haritalar üzerinden en yakın açık eczaneyi gösterir.</div>
+            <div style="margin:auto;text-align:center;width:100%;max-width:500px; background:#fff; padding:10px; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+                <a href="https://www.eczaneler.gen.tr/nobetci-mersin-anamur" target="_blank">
+                    <img src="https://www.eczaneler.gen.tr/resimler/nobetci-eczane.jpg" alt="Anamur nöbetçi eczaneleri" style="width:100%; border-radius:8px; margin-bottom:10px;">
+                </a>
+                <iframe src="https://www.eczaneler.gen.tr/iframe.php?lokasyon=1135" name="Anamur nöbetçi eczaneleri" style="width:100%; height:350px; border:none;"></iframe>
             </div>
             
             <div style="margin-top:30px; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
@@ -268,15 +257,12 @@
     <script>
         // Navigasyon
         function navTo(secId, el) {
-            // Menü aktiflik
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             el.classList.add('active');
             
-            // Bölüm değiştirme
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('sec-' + secId).classList.add('active');
             
-            // Sayfa başına dön
             document.querySelector('.main-content').scrollTop = 0;
         }
 
@@ -288,11 +274,6 @@
             } else {
                 window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
             }
-        }
-
-        // Eczane Bulucu
-        function findPharmacy() {
-            openMap("Anamur Nöbetçi Eczane");
         }
     </script>
 
