@@ -11,10 +11,9 @@
 
 <style>
     :root {
-        --bg-color: #f0fdf4; /* Açık Yeşil Tonu */
-        --primary: #00b894;   /* Anamur Yeşili */
-        --secondary: #0984e3; /* Akdeniz Mavisi */
-        --accent: #fdcb6e;    /* Muz Sarısı */
+        --bg-color: #f0fdf4; 
+        --primary: #00b894;   
+        --secondary: #0984e3; 
         --text: #2d3436;
         --card-bg: #ffffff;
         --nav-height: 70px;
@@ -44,10 +43,9 @@
     /* --- MAIN CONTENT --- */
     .main-content {
         flex: 1; overflow-y: auto; padding: 20px; scroll-behavior: smooth;
-        padding-bottom: 100px; /* Alt menü payı */
+        padding-bottom: 100px;
     }
 
-    /* Section Styles */
     .section { display: none; animation: fadeIn 0.4s ease; }
     .section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -61,7 +59,7 @@
         background: var(--primary); border-radius: 5px;
     }
 
-    /* CARDS (Gezilecek & Yemek) */
+    /* CARDS */
     .card-grid {
         display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
     }
@@ -69,29 +67,21 @@
     .place-card {
         background: var(--card-bg); border-radius: 16px; overflow: hidden;
         box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer;
+        display: flex; flex-direction: column;
     }
     .place-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
     
-    .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
-    .card-body { padding: 20px; }
-    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; color: #2d3436; }
-    .card-desc { font-size: 0.9rem; color: #636e72; line-height: 1.5; margin-bottom: 15px; }
+    .card-img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
+    .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: #2d3436; }
+    .card-desc { font-size: 0.9rem; color: #636e72; line-height: 1.5; margin-bottom: 15px; flex: 1; }
     
     .card-action {
         display: flex; align-items: center; gap: 5px; color: var(--secondary); 
-        font-weight: 600; font-size: 0.9rem; text-decoration: none;
+        font-weight: 600; font-size: 0.9rem; text-decoration: none; margin-top: auto;
     }
 
-    /* OTOBÜS SAATLERİ */
-    .bus-table {
-        width: 100%; border-collapse: collapse; background: #fff; 
-        border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
-    .bus-table th { background: var(--primary); color: #fff; padding: 15px; text-align: left; }
-    .bus-table td { padding: 15px; border-bottom: 1px solid #eee; color: #555; }
-    .bus-table tr:last-child td { border-bottom: none; }
-
-    /* ECZANE BUTONU */
+    /* ECZANE */
     .pharmacy-box {
         background: linear-gradient(135deg, #ff7675, #d63031); color: #fff;
         padding: 30px; border-radius: 20px; text-align: center;
@@ -103,30 +93,7 @@
     .pharmacy-text { font-size: 1.5rem; font-weight: 800; }
     .pharmacy-sub { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
 
-    /* MUZMATİK */
-    .calc-box {
-        background: #fff; padding: 25px; border-radius: 16px; 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 2px solid var(--accent);
-    }
-    .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-weight: 600; margin-bottom: 5px; color: #555; }
-    .input-group input {
-        width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
-        font-size: 1rem; outline: none; transition: 0.3s;
-    }
-    .input-group input:focus { border-color: var(--primary); }
-    
-    .calc-btn {
-        width: 100%; padding: 12px; background: var(--primary); color: #fff;
-        border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer;
-    }
-    .calc-result {
-        margin-top: 20px; padding: 15px; background: #f1f2f6; 
-        border-radius: 8px; text-align: center; display: none;
-    }
-    .result-val { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
-
-    /* --- BOTTOM NAVIGATION (MOBİL MENÜ) --- */
+    /* --- BOTTOM NAVIGATION --- */
     .bottom-nav {
         position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
         background: #fff; display: flex; justify-content: space-around; align-items: center;
@@ -134,25 +101,25 @@
     }
     .nav-item {
         display: flex; flex-direction: column; align-items: center; gap: 5px;
-        color: #b2bec3; cursor: pointer; transition: 0.2s; width: 20%;
+        color: #b2bec3; cursor: pointer; transition: 0.2s; width: 33%; /* 3 öğe olduğu için genişletildi */
         -webkit-tap-highlight-color: transparent;
     }
     .nav-item.active { color: var(--primary); transform: translateY(-5px); }
     .nav-item i { font-size: 1.4rem; }
-    .nav-item span { font-size: 0.7rem; font-weight: 600; }
+    .nav-item span { font-size: 0.75rem; font-weight: 600; }
 
     /* MEDYA SORGU */
     @media (min-width: 800px) {
         .main-content { max-width: 1000px; margin: 0 auto; }
         .bottom-nav { 
-            top: 0; bottom: auto; height: 80px; justify-content: center; gap: 40px;
+            top: 0; bottom: auto; height: 80px; justify-content: center; gap: 50px;
             background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
         }
         .nav-item { width: auto; flex-direction: row; gap: 10px; }
         .nav-item span { font-size: 1rem; }
         .nav-item.active { transform: none; border-bottom: 3px solid var(--primary); }
         .main-content { padding-top: 100px; }
-        header { display: none; } /* Masaüstünde üst menü yeterli */
+        header { display: none; }
     }
 </style>
 </head>
@@ -172,24 +139,62 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Mamure_Castle_02.jpg/800px-Mamure_Castle_02.jpg" class="card-img">
                     <div class="card-body">
                         <div class="card-title">Mamure Kalesi</div>
-                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalelerinden biri. UNESCO geçici miras listesinde.</div>
-                        <div class="card-action"><i class="fas fa-map-marker-alt"></i> Haritada Gör</div>
+                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi. Tarihi dokusu ve deniz manzarasıyla büyüleyici.</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
                     </div>
                 </div>
+                
                 <div class="place-card" onclick="openMap('Anamurium Antik Kenti')">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Anamurium_general_view.jpg" class="card-img">
                     <div class="card-body">
                         <div class="card-title">Anamurium Antik Kenti</div>
-                        <div class="card-desc">Roma döneminden kalma hamamlar, tiyatro ve nekropol alanı ile büyüleyici bir tarih.</div>
-                        <div class="card-action"><i class="fas fa-map-marker-alt"></i> Haritada Gör</div>
+                        <div class="card-desc">Roma döneminden kalma hamamlar, tiyatro ve nekropol alanı ile tarihe yolculuk.</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
                     </div>
                 </div>
+
+                <div class="place-card" onclick="openMap('Pullu Tabiat Parkı Anamur')">
+                    <img src="https://www.anamur.gov.tr/kurumlar/anamur.gov.tr/ilcemiz/galeri/pullu/DSC_0045.JPG" class="card-img">
+                    <div class="card-body">
+                        <div class="card-title">Pullu Tabiat Parkı</div>
+                        <div class="card-desc">Kamp, piknik ve denizin buluştuğu doğa harikası. Karavan ve çadır için ideal.</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                    </div>
+                </div>
+
                 <div class="place-card" onclick="openMap('Köşekbükü Mağarası Anamur')">
                     <img src="https://kulturportali.gov.tr/repoKulturPortali/large/SehirRehberi//GezilecekYer/20190326152407463_KosekbukuMagarasi.jpg?format=jpg&quality=50" class="card-img">
                     <div class="card-body">
                         <div class="card-title">Köşekbükü Mağarası</div>
                         <div class="card-desc">Astım hastalarına şifa kaynağı olduğu bilinen, sarkıt ve dikitleriyle ünlü mağara.</div>
-                        <div class="card-action"><i class="fas fa-map-marker-alt"></i> Haritada Gör</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                    </div>
+                </div>
+
+                <div class="place-card" onclick="openMap('Dragon Çayı Anamur')">
+                    <img src="https://mersin.ktb.gov.tr/Resim/53278,dragon-cayi-anamurjpg.png?0" class="card-img">
+                    <div class="card-body">
+                        <div class="card-title">Dragon Çayı</div>
+                        <div class="card-desc">Serinlemek, piknik yapmak ve doğa yürüyüşü için harika bir kaçış noktası.</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                    </div>
+                </div>
+
+                <div class="place-card" onclick="openMap('Anamur Müzesi')">
+                    <img src="https://muze.gov.tr/s3/MysFileLibrary/MersinAnamurMuzesi/WEB/anamur_muzesi_01.jpg" class="card-img">
+                    <div class="card-body">
+                        <div class="card-title">Anamur Müzesi</div>
+                        <div class="card-desc">Bölgeden çıkarılan arkeolojik ve etnografik eserlerin sergilendiği kültür hazinesi.</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
+                    </div>
+                </div>
+
+                <div class="place-card" onclick="openMap('Titiopolis Antik Kenti')">
+                    <img src="https://mersin.ktb.gov.tr/Resim/53387,titiopolis-antik-kenti-anamurjpg.png?0" class="card-img">
+                    <div class="card-body">
+                        <div class="card-title">Titiopolis Antik Kenti</div>
+                        <div class="card-desc">Keşfedilmeyi bekleyen, dağ yamacına kurulu gizemli antik kent kalıntıları.</div>
+                        <div class="card-action"><i class="fas fa-location-arrow"></i> Yol Tarifi Al</div>
                     </div>
                 </div>
             </div>
@@ -212,33 +217,14 @@
                         <div class="card-desc">Susam ve pekmezin muhteşem uyumu. Enerji deposu geleneksel bir tatlı.</div>
                     </div>
                 </div>
+                <div class="place-card">
+                    <div class="card-img" style="background:url('https://i.nefisyemektarifleri.com/2019/03/13/golevez-yemegi.jpg') center/cover;"></div>
+                    <div class="card-body">
+                        <div class="card-title">Gölevez</div>
+                        <div class="card-desc">Anamur'a özgü, patatese benzeyen ama çok daha lezzetli tropikal bir kök sebze yemeği.</div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div id="sec-ulasim" class="section">
-            <div class="section-title">Otobüs Saatleri</div>
-            <div style="margin-bottom:20px; background:#fff; padding:15px; border-radius:10px; border-left:4px solid var(--secondary);">
-                <i class="fas fa-info-circle"></i> Saatler mevsimsel olarak değişebilir. Lütfen teyit ediniz.
-            </div>
-            
-            <h3 style="margin-bottom:10px; color:#555;">Anamur -> Mersin</h3>
-            <table class="bus-table">
-                <tr><th>Kalkış</th><th>Firma</th></tr>
-                <tr><td>06:00</td><td>Anamur Zafer</td></tr>
-                <tr><td>08:30</td><td>Mersin Seyahat</td></tr>
-                <tr><td>10:00</td><td>Köksallar</td></tr>
-                <tr><td>14:00</td><td>Anamur Zafer</td></tr>
-                <tr><td>17:00</td><td>Mersin Seyahat</td></tr>
-            </table>
-
-            <h3 style="margin:30px 0 10px; color:#555;">Anamur -> Antalya</h3>
-            <table class="bus-table">
-                <tr><th>Kalkış</th><th>Firma</th></tr>
-                <tr><td>07:30</td><td>Güney Akdeniz</td></tr>
-                <tr><td>09:00</td><td>Antalya Toros</td></tr>
-                <tr><td>13:30</td><td>Güney Akdeniz</td></tr>
-                <tr><td>16:00</td><td>Pamukkale</td></tr>
-            </table>
         </div>
 
         <div id="sec-eczane" class="section">
@@ -262,28 +248,6 @@
             </div>
         </div>
 
-        <div id="sec-muz" class="section">
-            <div class="section-title">Muzmatik <span style="font-size:0.8rem; color:#aaa; font-weight:400;">(Beta)</span></div>
-            
-            <div class="calc-box">
-                <div class="input-group">
-                    <label>Sera Büyüklüğü (Dönüm)</label>
-                    <input type="number" id="muzDonum" placeholder="Örn: 5">
-                </div>
-                <div class="input-group">
-                    <label>Güncel Muz Fiyatı (TL/kg)</label>
-                    <input type="number" id="muzFiyat" placeholder="Örn: 25">
-                </div>
-                <button class="calc-btn" onclick="hesaplaMuz()">HESAPLA</button>
-                
-                <div class="calc-result" id="muzSonuc">
-                    <div>Tahmini Sezonluk Ciro:</div>
-                    <div class="result-val" id="muzCiro">0 TL</div>
-                    <div style="font-size:0.8rem; color:#888; margin-top:5px;">(Ortalama verim: 6 Ton/Dönüm baz alınmıştır)</div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <div class="bottom-nav">
@@ -295,17 +259,9 @@
             <i class="fas fa-utensils"></i>
             <span>Yemek</span>
         </div>
-        <div class="nav-item" onclick="navTo('ulasim', this)">
-            <i class="fas fa-bus"></i>
-            <span>Ulaşım</span>
-        </div>
         <div class="nav-item" onclick="navTo('eczane', this)">
             <i class="fas fa-first-aid"></i>
             <span>Eczane</span>
-        </div>
-        <div class="nav-item" onclick="navTo('muz', this)">
-            <i class="fas fa-calculator"></i>
-            <span>Muz</span>
         </div>
     </div>
 
@@ -327,7 +283,6 @@
         // Harita Açma
         function openMap(placeName) {
             const query = encodeURIComponent(placeName);
-            // Mobilse native app, masaüstüyse web
             if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
                 window.open(`geo:0,0?q=${query}`);
             } else {
@@ -338,24 +293,6 @@
         // Eczane Bulucu
         function findPharmacy() {
             openMap("Anamur Nöbetçi Eczane");
-        }
-
-        // Muz Hesaplama
-        function hesaplaMuz() {
-            const donum = parseFloat(document.getElementById('muzDonum').value);
-            const fiyat = parseFloat(document.getElementById('muzFiyat').value);
-            
-            if(isNaN(donum) || isNaN(fiyat)) {
-                alert("Lütfen geçerli değerler giriniz.");
-                return;
-            }
-
-            // Ortalama verim: 6000 kg / Dönüm (Örtü altı için ortalama)
-            const verim = 6000; 
-            const ciro = donum * verim * fiyat;
-
-            document.getElementById('muzCiro').innerText = ciro.toLocaleString('tr-TR') + " TL";
-            document.getElementById('muzSonuc').style.display = 'block';
         }
     </script>
 
