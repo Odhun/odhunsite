@@ -18,6 +18,7 @@
         --text-dim: #94a3b8;
         --green: #22c55e;
         --red: #ef4444;
+        --orange: #f97316;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -36,20 +37,25 @@
     }
     .brand { font-size: 1.5rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
     .brand span { color: var(--primary); }
-    .new-post-btn {
-        background: var(--primary); color: #fff; border: none; padding: 8px 15px;
-        border-radius: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;
+    
+    .header-actions { display: flex; gap: 10px; }
+    
+    .btn-header {
+        border: none; padding: 8px 15px; border-radius: 20px; font-weight: 700; 
+        cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.9rem;
     }
+    .new-post-btn { background: var(--primary); color: #fff; }
+    .contact-btn { background: #334155; color: #fff; }
 
-    /* BİLGİLENDİRME METNİ (YENİ) */
+    /* BİLGİLENDİRME METNİ */
     .info-box {
         max-width: 600px; margin: 20px auto 0; padding: 15px;
         background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 4px solid var(--primary);
         font-size: 0.9rem; color: #cbd5e1; line-height: 1.5;
     }
 
-    /* FORM ALANI (MODAL) */
-    #postModal {
+    /* MODALLAR */
+    .modal-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.8); z-index: 200; display: none;
         align-items: center; justify-content: center; padding: 20px;
@@ -61,7 +67,7 @@
     .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 700; font-size: 1.2rem; }
     .close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
     
-    input, textarea {
+    input, textarea, select {
         width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff;
         padding: 12px; border-radius: 8px; margin-bottom: 10px; font-family: inherit; outline: none;
     }
@@ -101,12 +107,9 @@
     .card-body { padding: 15px; }
     .news-text { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; white-space: pre-wrap; }
     
-    /* GÖRSEL DÜZELTMESİ (TAM GÖRÜNÜM) */
     .news-img {
         width: 100%; border-radius: 8px; margin-top: 10px; display: block; 
-        max-height: none; /* Yükseklik sınırı kalktı */
-        object-fit: contain; /* Orantılı sığdır */
-        background: #000;
+        max-height: none; object-fit: contain; background: #000;
     }
 
     .card-footer {
@@ -114,14 +117,22 @@
     }
     .vote-area { display: flex; align-items: center; gap: 15px; }
     .vote-btn {
-        background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1.1rem;
+        background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1rem;
         display: flex; align-items: center; gap: 5px; transition: 0.2s;
     }
     .vote-btn:hover { transform: scale(1.1); }
     .vote-up.active { color: var(--green); }
     .vote-down.active { color: var(--red); }
     
-    /* YASAL UYARI BANNERI (YENİ) */
+    /* KALDIRMA BUTONU */
+    .remove-btn {
+        color: #64748b; font-size: 0.8rem; background: none; border: 1px solid rgba(255,255,255,0.1);
+        padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: 0.2s;
+    }
+    .remove-btn:hover { color: var(--orange); border-color: var(--orange); }
+    .remove-btn.voted { color: var(--orange); opacity: 0.6; cursor: not-allowed; }
+
+    /* YASAL UYARI */
     .legal-banner {
         background: #020617; color: #64748b; padding: 20px; text-align: center; font-size: 0.75rem;
         border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px;
@@ -137,12 +148,16 @@
 
     <header>
         <div class="brand">ODHUN<span>SONDAKİKA</span></div>
-        <button class="new-post-btn" onclick="openModal()"><i class="fas fa-plus"></i> Haber Gir</button>
+        <div class="header-actions">
+            <button class="btn-header contact-btn" onclick="openContactModal()"><i class="fas fa-envelope"></i> İletişim</button>
+            <button class="btn-header new-post-btn" onclick="openPostModal()"><i class="fas fa-plus"></i> Haber Gir</button>
+        </div>
     </header>
 
     <div class="info-box">
         <strong>Nasıl Çalışır?</strong><br>
-        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla kurulmuştur. Çevrenizde gördüğünüz olayları, kazaları veya önemli gelişmeleri anlık olarak fotoğraflayıp paylaşabilirsiniz. Paylaşımlar anonimdir ve topluluk tarafından oylanarak güvenilirliği belirlenir.
+        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla kurulmuştur. Çevrenizde gördüğünüz olayları anlık olarak paylaşabilirsiniz. Paylaşımlar anonimdir. <br>
+        <strong>Dikkat:</strong> Bir haberi kaldırmak için, o haberin "Kaldır" butonuna, haberin toplam (Beğeni + Beğenmeme) sayısı kadar kişi basmalıdır.
     </div>
 
     <div class="feed-container" id="feed">
@@ -156,11 +171,11 @@
         Yasal mercilerden gelebilecek talepler doğrultusunda veya şikayet üzerine uygunsuz içerikler derhal yayından kaldırılacaktır.
     </div>
 
-    <div id="postModal">
+    <div id="postModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
                 <span>Haber Paylaş</span>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <button class="close-btn" onclick="closePostModal()">&times;</button>
             </div>
             <input type="text" id="nickInput" placeholder="Rumuzunuz (Örn: Anamurlu007)" maxlength="20">
             <textarea id="textInput" placeholder="Ne oldu? Gördüklerini anlat..."></textarea>
@@ -175,11 +190,24 @@
         </div>
     </div>
 
-    <script type="module">
-        // Firebase Yapılandırması
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    <div id="contactModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>İletişime Geç</span>
+                <button class="close-btn" onclick="closeContactModal()">&times;</button>
+            </div>
+            <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:15px;">Site yönetimine öneri, şikayet veya telif hakkı bildirimi için mail atabilirsiniz.</p>
+            <input type="text" id="contactSubject" placeholder="Konu (Örn: Telif Hakkı, Şikayet)">
+            <textarea id="contactMessage" placeholder="Mesajınız..."></textarea>
+            <button class="submit-btn" onclick="sendMail()">GÖNDER</button>
+        </div>
+    </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, increment, serverTimestamp, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // SENİN FIREBASE BİLGİLERİN
         const firebaseConfig = {
             apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
             authDomain: "anit-805a2.firebaseapp.com",
@@ -194,12 +222,13 @@
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
+            console.log("Firebase Bağlandı");
             loadPosts();
         } catch (e) {
-            document.getElementById('loader').innerHTML = "Bağlantı Hatası. Lütfen internetinizi kontrol edin.";
+            document.getElementById('loader').innerHTML = "Bağlantı Hatası.<br>Lütfen internetinizi kontrol edin.";
         }
 
-        // GÖNDERİ OLUŞTURMA
+        // --- GÖNDERİ OLUŞTURMA ---
         window.sendPost = async () => {
             const nick = document.getElementById('nickInput').value.trim();
             const text = document.getElementById('textInput').value.trim();
@@ -221,21 +250,22 @@
                     image: img !== "" && img !== window.location.href ? img : null, 
                     likes: 0,
                     dislikes: 0,
+                    removeVotes: 0, // Kaldırma oyları
                     timestamp: serverTimestamp()
                 });
                 
-                closeModal();
+                closePostModal();
                 document.getElementById('textInput').value = "";
                 document.getElementById('previewImg').style.display = 'none';
                 document.getElementById('previewImg').src = "";
             } catch (e) {
-                alert("Paylaşım yapılamadı. Yetki hatası olabilir.");
+                alert("Hata: " + e.message);
             }
             btn.disabled = false;
             btn.innerText = "PAYLAŞ";
         };
 
-        // AKIŞI YÜKLE
+        // --- AKIŞI YÜKLE ---
         function loadPosts() {
             const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
             
@@ -254,6 +284,13 @@
                     const time = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "Şimdi";
                     
                     const voteState = localStorage.getItem(`vote_${id}`);
+                    const removeState = localStorage.getItem(`remove_${id}`);
+
+                    // Kaldırma Eşiği Hesabı (Toplam Etkileşim)
+                    // Eğer etkileşim 0 ise, en az 1 kişi gerekir.
+                    const interactionTotal = (post.likes || 0) + (post.dislikes || 0);
+                    const removalThreshold = Math.max(1, interactionTotal); 
+                    const currentRemoves = post.removeVotes || 0;
 
                     let imgHtml = "";
                     if (post.image && post.image.length > 100) {
@@ -261,7 +298,7 @@
                     }
 
                     const html = `
-                    <div class="news-card">
+                    <div class="news-card" id="card_${id}">
                         <div class="card-header">
                             <div class="avatar">${post.nick.charAt(0).toUpperCase()}</div>
                             <div class="user-info">
@@ -276,13 +313,15 @@
                         <div class="card-footer">
                             <div class="vote-area">
                                 <button class="vote-btn vote-up ${voteState === 'up' ? 'active' : ''}" onclick="vote('${id}', 'up')">
-                                    <i class="fas fa-arrow-up"></i> <span id="up_${id}">${post.likes || 0}</span>
+                                    <i class="fas fa-arrow-up"></i> <span>${post.likes || 0}</span>
                                 </button>
                                 <button class="vote-btn vote-down ${voteState === 'down' ? 'active' : ''}" onclick="vote('${id}', 'down')">
-                                    <i class="fas fa-arrow-down"></i> <span id="down_${id}">${post.dislikes || 0}</span>
+                                    <i class="fas fa-arrow-down"></i> <span>${post.dislikes || 0}</span>
                                 </button>
                             </div>
-                            <div style="font-size:0.8rem; color:#64748b">Odhun.com</div>
+                            <button class="remove-btn ${removeState ? 'voted' : ''}" onclick="voteRemove('${id}', ${removalThreshold})">
+                                <i class="fas fa-trash"></i> Kaldır (${currentRemoves}/${removalThreshold})
+                            </button>
                         </div>
                     </div>`;
                     
@@ -291,27 +330,70 @@
             });
         }
 
-        // OYLAMA (TEK SEFERLİK)
+        // --- OYLAMA (Tek Seferlik) ---
         window.vote = async (id, type) => {
-            const currentVote = localStorage.getItem(`vote_${id}`); // Kullanıcının bu habere verdiği oy
-
+            const currentVote = localStorage.getItem(`vote_${id}`);
             if (currentVote) {
                 alert("Bu haberi zaten oyladınız!");
                 return; 
             }
 
             const postRef = doc(db, "posts", id);
-
             if (type === 'up') {
                 await updateDoc(postRef, { likes: increment(1) });
             } else {
                 await updateDoc(postRef, { dislikes: increment(1) });
             }
-            
-            // Oyu yerel hafızaya kaydet
             localStorage.setItem(`vote_${id}`, type);
         };
 
+        // --- KALDIRMA OYLAMASI ---
+        window.voteRemove = async (id, threshold) => {
+            const hasVoted = localStorage.getItem(`remove_${id}`);
+            if (hasVoted) {
+                alert("Bu haberin kaldırılması için zaten oy kullandınız.");
+                return;
+            }
+
+            if(!confirm("Bu haberi kaldırmak istediğinize emin misiniz? Yeterli sayıya ulaşılırsa silinecektir.")) return;
+
+            const postRef = doc(db, "posts", id);
+            
+            // Önce veriyi çekip kontrol edelim (Anlık senkronizasyon için)
+            // Not: Burada transaction kullanmak daha güvenlidir ama basitlik için direct update yapıyoruz.
+            // Önce artır
+            await updateDoc(postRef, { removeVotes: increment(1) });
+            localStorage.setItem(`remove_${id}`, 'true');
+
+            // Sonra kontrol et ve gerekirse sil
+            const snap = await getDoc(postRef);
+            if (snap.exists()) {
+                const data = snap.data();
+                const newRemoveCount = data.removeVotes || 0;
+                const totalInteractions = (data.likes || 0) + (data.dislikes || 0);
+                const currentThreshold = Math.max(1, totalInteractions);
+
+                if (newRemoveCount >= currentThreshold) {
+                    await deleteDoc(postRef);
+                    alert("Haber, topluluk kararıyla kaldırıldı.");
+                } else {
+                    alert(`Kaldırma oyu verildi. (${newRemoveCount}/${currentThreshold})`);
+                }
+            }
+        };
+
+        // --- İLETİŞİM MAİL GÖNDERME ---
+        window.sendMail = () => {
+            const subject = document.getElementById('contactSubject').value;
+            const body = document.getElementById('contactMessage').value;
+            if(!subject || !body) { alert("Lütfen konu ve mesaj giriniz."); return; }
+            
+            // Mail istemcisini aç
+            window.location.href = `mailto:odhunticaret@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            closeContactModal();
+        };
+
+        // YARDIMCILAR
         function formatText(text) {
             return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#3b82f6">$1</a>');
         }
@@ -329,8 +411,12 @@
             }
         }
         
-        window.openModal = () => document.getElementById('postModal').style.display = 'flex';
-        window.closeModal = () => document.getElementById('postModal').style.display = 'none';
+        // Modal Kontrolleri
+        window.openPostModal = () => document.getElementById('postModal').style.display = 'flex';
+        window.closePostModal = () => document.getElementById('postModal').style.display = 'none';
+        
+        window.openContactModal = () => document.getElementById('contactModal').style.display = 'flex';
+        window.closeContactModal = () => document.getElementById('contactModal').style.display = 'none';
 
     </script>
 
