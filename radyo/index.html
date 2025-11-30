@@ -354,4 +354,292 @@
             { id: 20, name: "TRT Türkü", cat: "halk", logo: "https://cdn-r.trt.net.tr/static/radio/img/trtturku.png", url: "https://radio-trt-turku.medya.trt.com.tr/master.m3u8" },
             { id: 21, name: "Diyanet Radyo", cat: "dini", logo: "https://radyo.diyanet.gov.tr/assets/img/logo.png", url: "https://yayin.diyanet.gov.tr:8443/radyo" },
             { id: 22, name: "Lig Radyo", cat: "haber", logo: "https://ligradyo.com.tr/assets/img/logo.png", url: "https://turkmedya-live.ercdn.net/ligradyo/ligradyo.m3u8" },
-            { id: 23, name: "CNN Türk Radyo", cat:
+            { id: 23, name: "CNN Türk Radyo", cat: "haber", logo: "https://www.cnnturk.com/assets/images/logo-cnnturk.png", url: "https://radyo.dogannet.tv/cnnturkradyo/playlist.m3u8" },
+            { id: 24, name: "Habertürk Radyo", cat: "haber", logo: "https://haberturk.com/images/ht-logo.png", url: "https://ciner.daioncdn.net/hbrtrkradyo/hbrtrkradyo.m3u8" }
+        ];
+
+        // --- SİSTEM DEĞİŞKENLERİ ---
+        let audio = document.getElementById('audioPlayer');
+        let currentIdx = -1;
+        let hls = null;
+        let favorites = JSON.parse(localStorage.getItem('odhunFM_favs')) || [];
+        let history = [];
+        let sleepTimer = null;
+        
+        let audioCtx, analyser, source, dataArray, canvas, ctx;
+        let visMode = 0; 
+        let animationId;
+
+        // --- BAŞLATMA (OVERLAY İLE) ---
+        function initAudio() {
+            // Overlay'i kaldır
+            const overlay = document.getElementById('startOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 500);
+            
+            renderStations(stations);
+            setupVisualizer(); // AudioContext burada başlatılacak
+            resizeCanvas();
+            // İlk kanalı sessizce seç (çalma)
+            // playStation(0) yerine sadece seçim yapabiliriz ama kullanıcı tıkladığı için playStation(0) mantıklı.
+            playStation(0);
+        }
+        
+        window.onresize = resizeCanvas;
+
+        // --- LİSTELEME ---
+        function renderStations(list) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = "";
+            
+            list.forEach((s, index) => {
+                const card = document.createElement('div');
+                // ID ATAMASI (Yanıp sönmeyi engellemek için kritik)
+                card.id = `card-${s.id}`;
+                card.className = `station-card ${currentIdx !== -1 && stations[currentIdx].id === s.id ? 'playing' : ''}`;
+                card.onclick = () => playStation(s.id);
+                
+                card.innerHTML = `
+                    <div class="card-img-box">
+                        <img src="${s.logo}" class="card-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Radyo'">
+                        <div class="play-overlay"><div class="play-circle"><i class="fas fa-play"></i></div></div>
+                        <div class="card-eq">
+                            <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                        </div>
+                    </div>
+                    <div class="card-title">${s.name}</div>
+                    <div class="card-genre">${s.cat.toUpperCase()}</div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            document.getElementById('favCount').innerText = favorites.length;
+        }
+
+        // --- OYNATMA (Flicker Fix & HLS Fix) ---
+        function playStation(id) {
+            const station = stations.find(s => s.id === id);
+            if(!station) return;
+
+            // Görsel Güncelleme (DOM'u silmeden sadece class değiştir)
+            if(currentIdx !== -1) {
+                const prevCard = document.getElementById(`card-${stations[currentIdx].id}`);
+                if(prevCard) prevCard.classList.remove('playing');
+            }
+            
+            currentIdx = stations.findIndex(s => s.id === id);
+            
+            const newCard = document.getElementById(`card-${station.id}`);
+            if(newCard) newCard.classList.add('playing');
+
+            // UI Güncelle
+            document.getElementById('pTitle').innerText = station.name;
+            document.getElementById('pDesc').innerText = "Canlı Yayın - " + station.cat.toUpperCase();
+            document.getElementById('pImg').src = station.logo;
+            
+            // Oynatıcıyı sıfırla (Hata önleme)
+            if (hls) { hls.destroy(); hls = null; }
+            
+            // HLS (.m3u8) veya MP3 Kontrolü
+            if (Hls.isSupported() && station.url.includes('.m3u8')) {
+                hls = new Hls();
+                hls.loadSource(station.url);
+                hls.attachMedia(audio);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play().catch(e => console.error("Oynatma hatası:", e)));
+            } else {
+                audio.src = station.url;
+                audio.play().catch(e => console.error("Oynatma hatası:", e));
+            }
+
+            updatePlayBtn(true);
+            updateFavBtn();
+            
+            // Geçmişe Ekle
+            if(!history.includes(id)) history.unshift(id);
+            if(history.length > 10) history.pop();
+
+            // Visualizer Başlat (Eğer durmuşsa)
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function togglePlay() {
+            if (audio.paused) audio.play();
+            else audio.pause();
+            updatePlayBtn(!audio.paused);
+        }
+
+        function updatePlayBtn(isPlaying) {
+            const btn = document.getElementById('btnPlay');
+            btn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+            
+            // Animasyon kontrolü
+            if(currentIdx !== -1) {
+                const card = document.getElementById(`card-${stations[currentIdx].id}`);
+                if(isPlaying) card?.querySelector('.card-eq')?.style.setProperty('opacity', '1');
+                else card?.querySelector('.card-eq')?.style.setProperty('opacity', '0');
+            }
+        }
+
+        function playRandom() {
+            const rnd = Math.floor(Math.random() * stations.length);
+            playStation(stations[rnd].id);
+        }
+        
+        function playNext() {
+            let next = currentIdx + 1;
+            if(next >= stations.length) next = 0;
+            playStation(stations[next].id);
+        }
+        
+        function playPrev() {
+            let prev = currentIdx - 1;
+            if(prev < 0) prev = stations.length - 1;
+            playStation(stations[prev].id);
+        }
+
+        function setVolume(val) {
+            audio.volume = val;
+            const icon = document.getElementById('volIcon');
+            if(val == 0) icon.className = 'fas fa-volume-mute';
+            else if(val < 0.5) icon.className = 'fas fa-volume-down';
+            else icon.className = 'fas fa-volume-up';
+        }
+        
+        function refreshStream() {
+            if(currentIdx !== -1) playStation(stations[currentIdx].id);
+        }
+
+        // --- FİLTRELEME ---
+        function filterStations(cat) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            if (cat === 'all') {
+                renderStations(stations);
+            } else if (cat === 'favorites') {
+                const favs = stations.filter(s => favorites.includes(s.id));
+                renderStations(favs);
+                if(favs.length === 0) document.getElementById('grid').innerHTML = '<div style="text-align:center; width:100%; padding:40px; color:#666">Henüz favorin yok.</div>';
+            } else if (cat === 'history') {
+                const hists = history.map(id => stations.find(s => s.id === id));
+                renderStations(hists);
+            } else {
+                const filtered = stations.filter(s => s.cat === cat);
+                renderStations(filtered);
+            }
+            if(window.innerWidth <= 900) toggleSidebar();
+        }
+
+        function searchStations() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = stations.filter(s => s.name.toLowerCase().includes(term));
+            renderStations(filtered);
+        }
+
+        // --- DİĞERLERİ ---
+        function toggleFavCurrent() {
+            if(currentIdx === -1) return;
+            const id = stations[currentIdx].id;
+            if(favorites.includes(id)) favorites = favorites.filter(f => f !== id);
+            else favorites.push(id);
+            localStorage.setItem('odhunFM_favs', JSON.stringify(favorites));
+            updateFavBtn();
+            document.getElementById('favCount').innerText = favorites.length;
+        }
+
+        function updateFavBtn() {
+            if(currentIdx === -1) return;
+            const id = stations[currentIdx].id;
+            const btn = document.getElementById('btnFav');
+            if(favorites.includes(id)) btn.innerHTML = '<i class="fas fa-heart" style="color:var(--accent)"></i>';
+            else btn.innerHTML = '<i class="far fa-heart"></i>';
+        }
+
+        function toggleSleepMenu() {
+            const min = prompt("Kaç dakika sonra kapansın?", "30");
+            if(min) {
+                clearTimeout(sleepTimer);
+                const ms = parseInt(min) * 60 * 1000;
+                sleepTimer = setTimeout(() => { audio.pause(); alert("Radyo kapatıldı."); document.getElementById('sleepDisplay').style.display = 'none'; }, ms);
+                document.getElementById('sleepDisplay').innerText = min + "dk";
+                document.getElementById('sleepDisplay').style.display = 'inline-block';
+            }
+        }
+
+        // --- VISUALIZER ---
+        function setupVisualizer() {
+            // Kullanıcı etkileşimiyle başlat (Tarayıcı kuralı)
+            // Zaten initAudio fonksiyonu butona bağlı olduğu için orada başlatıyoruz.
+        }
+
+        function initAudioCtx() {
+            if (audioCtx) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                canvas = document.getElementById('visualizer');
+                ctx = canvas.getContext('2d');
+                animateVisualizer();
+            } catch(e) {}
+        }
+
+        function resizeCanvas() {
+            const cvs = document.getElementById('visualizer');
+            cvs.width = window.innerWidth;
+            cvs.height = window.innerHeight;
+        }
+
+        function animateVisualizer() {
+            animationId = requestAnimationFrame(animateVisualizer);
+            if(analyser) analyser.getByteFrequencyData(dataArray);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (visMode === 0) drawBars();
+            else if (visMode === 1) drawWave();
+            else drawCircle();
+        }
+
+        function drawBars() {
+            const barWidth = (canvas.width / dataArray.length) * 2.5;
+            let x = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                const barHeight = dataArray[i] * 1.5;
+                ctx.fillStyle = `rgba(${barHeight + (25 * (i/dataArray.length))},50,150,0.2)`;
+                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1;
+            }
+        }
+
+        function drawWave() {
+            ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(244, 63, 94, 0.3)'; ctx.beginPath();
+            const sliceWidth = canvas.width * 1.0 / dataArray.length;
+            let x = 0;
+            for(let i = 0; i < dataArray.length; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = v * canvas.height / 2;
+                if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                x += sliceWidth;
+            }
+            ctx.lineTo(canvas.width, canvas.height/2);
+            ctx.stroke();
+        }
+
+        function drawCircle() {
+            const avg = dataArray.reduce((a,b)=>a+b,0) / dataArray.length;
+            const radius = avg * 2;
+            ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = `rgba(244, 63, 94, 0.2)`; ctx.lineWidth = 5; ctx.stroke();
+        }
+
+        function cycleVisualizer() { visMode = (visMode + 1) % 3; }
+        function toggleTheme() { alert("Tema değiştirme yakında!"); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+
+    </script>
+</body>
+</html>
