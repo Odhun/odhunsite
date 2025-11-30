@@ -15,7 +15,7 @@
         --secondary: #d63031; 
         --text: #2d3436;
         --text-light: #636e72;
-        --card-bg: rgba(255, 255, 255, 0.95);
+        --card-bg: rgba(255, 255, 255, 0.92);
         --nav-height: 70px;
     }
 
@@ -25,13 +25,16 @@
         margin: 0; padding: 0; color: var(--text);
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column;
         overflow: hidden;
-        background: url('https://www.kulturportali.gov.tr/contents/images/Mamure%20Kalesi%20(10).jpg') no-repeat center center fixed;
+        
+        /* GÜNCELLENEN ARKA PLAN */
+        background: url('https://www.shutterstock.com/image-photo/aerial-view-mamure-castle-anamur-600nw-2406336265.jpg') no-repeat center center fixed;
         background-size: cover;
     }
 
     body::before {
         content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.4); z-index: -1; pointer-events: none;
+        background: rgba(0, 0, 0, 0.35); /* Okunabilirlik için hafif karanlık perde */
+        z-index: -1; pointer-events: none;
     }
 
     /* --- HEADER --- */
@@ -87,15 +90,14 @@
     }
     .card-action:hover { background: var(--primary); color: #fff; }
 
-    /* REHBER ARAMA KUTUSU */
+    /* REHBER ARAMA */
     .search-box {
         width: 100%; padding: 15px 20px; border-radius: 50px; border: none;
         font-size: 1rem; margin-bottom: 25px; outline: none;
         box-shadow: 0 5px 15px rgba(0,0,0,0.2); background: rgba(255,255,255,0.95);
     }
-    .search-box:focus { box-shadow: 0 5px 20px rgba(9, 132, 227, 0.4); }
 
-    /* ECZANE */
+    /* ECZANE IFRAME */
     .pharmacy-iframe {
         margin:auto; text-align:center; width:100%; max-width:500px; 
         background:rgba(255,255,255,0.95); padding:10px; border-radius:12px; 
@@ -148,48 +150,107 @@
             <div class="section-title">Anamur'u Keşfet</div>
             <div class="card-grid">
                 <div class="place-card">
-                    <img src="https://www.kulturportali.gov.tr/contents/images/Mamure%20Kalesi%20(10).jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Mamure_Kalesi', '_blank')" alt="Mamure Kalesi">
+                    <img src="https://www.kulturportali.gov.tr/contents/images/Mamure%20Kalesi%20(10).jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Mamure_Kalesi', '_blank')">
                     <div class="card-body">
                         <div class="card-title">Mamure Kalesi</div>
-                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi. Görsele tıkla, Wikipedia'da oku.</div>
+                        <div class="card-desc">Akdeniz kıyısındaki en iyi korunmuş orta çağ kalesi. Görsele tıkla, Wiki'de oku.</div>
                         <div class="card-action" onclick="openMap('Mamure Kalesi Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
                     </div>
                 </div>
-                <div class="place-card"><img src="https://www.kulturportali.gov.tr/contents/images/Anamorium%20%c3%96renyeri%20%20%20(10).jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anemurium', '_blank')"><div class="card-body"><div class="card-title">Anamurium Antik Kenti</div><div class="card-desc">Roma döneminden kalma hamamlar, tiyatro ve nekropol alanı.</div><div class="card-action" onclick="openMap('Anamurium Antik Kenti')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div></div></div>
-                 <div class="place-card"><img src="https://okuldisiogrenme.eba.gov.tr/uploads/places/68c0123188412.webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Pullu_Tabiat_Park%C4%B1', '_blank')"><div class="card-body"><div class="card-title">Pullu Tabiat Parkı</div><div class="card-desc">Kamp ve piknik alanı.</div><div class="card-action" onclick="openMap('Pullu Tabiat Parkı Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div></div></div>
-                 <div class="place-card"><img src="https://anamur.bel.tr/wp-content/uploads/2024/05/4295989300_cbb6d420c5_o.jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/K%C3%B6%C5%9Fekb%C3%BCk%C3%BC_Ma%C4%9Faras%C4%B1', '_blank')"><div class="card-body"><div class="card-title">Köşekbükü Mağarası</div><div class="card-desc">Astım hastalarına şifa kaynağı mağara.</div><div class="card-action" onclick="openMap('Köşekbükü Mağarası Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div></div></div>
-                 <div class="place-card"><img src="https://anamur.bel.tr/wp-content/uploads/2024/05/12935767794_d2f56cb450_o-1024x576.jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Dragon_%C3%87ay%C4%B1', '_blank')"><div class="card-body"><div class="card-title">Dragon Çayı</div><div class="card-desc">Doğa yürüyüşü ve piknik.</div><div class="card-action" onclick="openMap('Dragon Çayı Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div></div></div>
-                 <div class="place-card"><img src="https://kvmgm.ktb.gov.tr/Resim/354620,mersin-anamur-anamurmuze01jpg.png?0" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anamur_M%C3%BCzesi', '_blank')"><div class="card-body"><div class="card-title">Anamur Müzesi</div><div class="card-desc">Arkeolojik eserler.</div><div class="card-action" onclick="openMap('Anamur Müzesi')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div></div></div>
-                 <div class="place-card"><img src="https://www.kulturportali.gov.tr/repoKulturPortali/large/25022013/036d5674-d2ec-4357-ae0d-9b3b0a2228d4.JPG?format=jpg&quality=50" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Titiopolis', '_blank')"><div class="card-body"><div class="card-title">Titiopolis Antik Kenti</div><div class="card-desc">Gizemli antik kent kalıntıları.</div><div class="card-action" onclick="openMap('Titiopolis Antik Kenti')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div></div></div>
+                <div class="place-card">
+                    <img src="https://www.kulturportali.gov.tr/contents/images/Anamorium%20%c3%96renyeri%20%20%20(10).jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anemurium', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Anamurium Antik Kenti</div>
+                        <div class="card-desc">Roma döneminden kalma hamamlar ve tiyatro.</div>
+                        <div class="card-action" onclick="openMap('Anamurium Antik Kenti')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <img src="https://okuldisiogrenme.eba.gov.tr/uploads/places/68c0123188412.webp" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Pullu_Tabiat_Park%C4%B1', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Pullu Tabiat Parkı</div>
+                        <div class="card-desc">Kamp ve piknik alanı, deniz kenarında.</div>
+                        <div class="card-action" onclick="openMap('Pullu Tabiat Parkı Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <img src="https://anamur.bel.tr/wp-content/uploads/2024/05/4295989300_cbb6d420c5_o.jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/K%C3%B6%C5%9Fekb%C3%BCk%C3%BC_Ma%C4%9Faras%C4%B1', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Köşekbükü Mağarası</div>
+                        <div class="card-desc">Astım hastalarına şifa kaynağı.</div>
+                        <div class="card-action" onclick="openMap('Köşekbükü Mağarası Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <img src="https://anamur.bel.tr/wp-content/uploads/2024/05/12935767794_d2f56cb450_o-1024x576.jpg" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Dragon_%C3%87ay%C4%B1', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Dragon Çayı</div>
+                        <div class="card-desc">Doğa yürüyüşü ve piknik için ideal.</div>
+                        <div class="card-action" onclick="openMap('Dragon Çayı Anamur')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <img src="https://kvmgm.ktb.gov.tr/Resim/354620,mersin-anamur-anamurmuze01jpg.png?0" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Anamur_M%C3%BCzesi', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Anamur Müzesi</div>
+                        <div class="card-desc">Bölgeden çıkarılan arkeolojik eserler.</div>
+                        <div class="card-action" onclick="openMap('Anamur Müzesi')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <img src="https://www.kulturportali.gov.tr/repoKulturPortali/large/25022013/036d5674-d2ec-4357-ae0d-9b3b0a2228d4.JPG?format=jpg&quality=50" class="card-img" onclick="window.open('https://tr.wikipedia.org/wiki/Titiopolis', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Titiopolis Antik Kenti</div>
+                        <div class="card-desc">Gizemli antik kent kalıntıları.</div>
+                        <div class="card-action" onclick="openMap('Titiopolis Antik Kenti')"><i class="fas fa-location-arrow"></i> Yol Tarifi</div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div id="sec-yemek" class="section">
             <div class="section-title">Yöresel Lezzetler</div>
             <div class="card-grid">
-                <div class="place-card"><img src="https://i.nefisyemektarifleri.com/2010/11/batirik1.jpg" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')"><div class="card-body"><div class="card-title">Batırık</div><div class="card-desc">Yöresel soğuk çorba/köfte.</div><div class="card-action" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div></div></div>
-                <div class="place-card"><img src="https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg" class="card-img" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')"><div class="card-body"><div class="card-title">Samsıra</div><div class="card-desc">Susamlı tatlı.</div><div class="card-action" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div></div></div>
-                <div class="place-card"><img src="https://i.nefisyemektarifleri.com/2017/01/02/golevez-sulusu.jpg" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/golevez-sulusu-2784955/', '_blank')"><div class="card-body"><div class="card-title">Gölevez</div><div class="card-desc">Tropikal kök sebze yemeği.</div><div class="card-action" onclick="window.open('https://www.nefisyemektarifleri.com/golevez-sulusu-2784955/', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div></div></div>
+                <div class="place-card">
+                    <img src="https://i.nefisyemektarifleri.com/2010/11/batirik1.jpg" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Batırık</div>
+                        <div class="card-desc">Yer fıstığı ve bulgurla yapılan efsane lezzet. Görsele tıkla tarif al.</div>
+                        <div class="card-action" onclick="window.open('https://www.nefisyemektarifleri.com/batirik-tarifi/', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <img src="https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg" class="card-img" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Samsıra</div>
+                        <div class="card-desc">Susam ve pekmezin muhteşem uyumu.</div>
+                        <div class="card-action" onclick="window.open('https://i.nefisyemektarifleri.com/2018/12/05/samsira-tarifi-2.jpg', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <img src="https://i.nefisyemektarifleri.com/2017/01/02/golevez-sulusu.jpg" class="card-img" onclick="window.open('https://www.nefisyemektarifleri.com/golevez-sulusu-2784955/', '_blank')">
+                    <div class="card-body">
+                        <div class="card-title">Gölevez</div>
+                        <div class="card-desc">Anamur'a özgü tropikal kök sebze.</div>
+                        <div class="card-action" onclick="window.open('https://www.nefisyemektarifleri.com/golevez-sulusu-2784955/', '_blank')"><i class="fas fa-book-open"></i> Tarifi Gör</div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div id="sec-rehber" class="section">
             <div class="section-title">Telefon Rehberi</div>
-            
             <input type="text" class="search-box" id="rehberAra" placeholder="Rehberde Ara..." onkeyup="filterRehber()">
-            
             <div class="card-grid" id="rehberGrid">
-                
                 <div class="business-card" data-name="tevhid kitabevi">
-                    <img src="https://i.hizliresim.com/5j3p61z.jpg" class="card-img" style="height:200px; object-fit:contain; background:#fff;" alt="Tevhid Kitabevi"> 
+                    <img src="https://i.hizliresim.com/5j3p61z.jpg" class="card-img" style="height:200px; object-fit:contain; background:#fff;" alt="Tevhid">
                     <div class="card-body">
                         <div class="card-title">Tevhid Kitabevi</div>
                         <div class="card-subtitle">Saray Mahallesi, Bankalar Caddesi</div>
                         <div class="card-action" onclick="window.location.href='tel:05336513340'"><i class="fas fa-phone"></i> 0533 651 33 40</div>
                     </div>
                 </div>
-
-                </div>
+            </div>
         </div>
 
         <div id="sec-eczane" class="section">
@@ -247,7 +308,6 @@
             const filter = input.value.toLowerCase();
             const grid = document.getElementById('rehberGrid');
             const cards = grid.getElementsByClassName('business-card');
-
             for (let i = 0; i < cards.length; i++) {
                 const name = cards[i].getAttribute('data-name');
                 if (name.toLowerCase().indexOf(filter) > -1) {
