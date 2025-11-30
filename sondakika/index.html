@@ -25,7 +25,8 @@
 
     body {
         margin: 0; padding: 0; background-color: var(--bg); color: var(--text);
-        font-family: 'Inter', sans-serif; padding-bottom: 50px;
+        font-family: 'Inter', sans-serif; padding-bottom: 100px;
+        overflow-x: hidden; /* Mobilde yatay kaymayı engeller */
     }
 
     /* HEADER */
@@ -47,18 +48,17 @@
     .new-post-btn { background: var(--primary); color: #fff; }
     .contact-btn { background: #334155; color: #fff; }
 
-    /* 3. BİLGİLENDİRME METNİ (YENİ) */
+    /* BİLGİLENDİRME */
     .info-box {
         max-width: 600px; margin: 20px auto 0; padding: 15px;
         background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 4px solid var(--primary);
-        font-size: 0.9rem; color: #cbd5e1; line-height: 1.5;
+        font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; width: 95%; /* Mobil uyum */
     }
-    .info-title { color: #fff; font-weight: 700; margin-bottom: 5px; display: block; }
 
     /* MODALLAR */
     .modal-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); z-index: 200; display: none;
+        background: rgba(0,0,0,0.9); z-index: 200; display: none;
         align-items: center; justify-content: center; padding: 20px;
     }
     .modal-content {
@@ -74,23 +74,35 @@
     }
     textarea { height: 100px; resize: none; }
     
-    .file-label {
-        display: block; background: #334155; padding: 10px; border-radius: 8px; text-align: center;
-        cursor: pointer; margin-bottom: 15px; color: #ccc; border: 2px dashed #475569;
+    /* MEDYA BUTONLARI (KAMERA/GALERİ) */
+    .media-options {
+        display: flex; gap: 10px; margin-bottom: 15px;
     }
+    .file-label {
+        flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+        background: #334155; padding: 12px; border-radius: 8px; text-align: center;
+        cursor: pointer; color: #ccc; border: 2px dashed #475569; transition: 0.2s;
+        font-size: 0.9rem; font-weight: 600;
+    }
+    .file-label:hover { border-color: var(--primary); color: #fff; background: #1e293b; }
+    .file-label i { font-size: 1.1rem; }
     
     .submit-btn {
-        width: 100%; background: var(--primary); color: #fff; padding: 12px; border: none;
+        width: 100%; background: var(--primary); color: #fff; padding: 15px; border: none;
         border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer;
     }
     .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* FEED */
-    .feed-container { max-width: 600px; margin: 20px auto; padding: 0 15px; min-height: 400px; }
+    /* FEED & MOBİL UYUM */
+    .feed-container { 
+        max-width: 600px; margin: 20px auto; padding: 0 10px; 
+        width: 100%; /* Mobilde tam genişlik */
+    }
     
     .news-card {
         background: var(--card-bg); border-radius: 12px; overflow: hidden; margin-bottom: 20px;
         border: 1px solid rgba(255,255,255,0.05); animation: slideUp 0.3s ease;
+        width: 100%; /* Kart genişliği */
     }
     @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 
@@ -99,60 +111,65 @@
     }
     .avatar {
         width: 40px; height: 40px; background: linear-gradient(45deg, #475569, #1e293b);
-        border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
     }
     .user-info h4 { margin: 0; font-size: 0.95rem; color: #fff; }
     .user-info span { font-size: 0.75rem; color: var(--text-dim); }
 
     .card-body { padding: 15px; }
-    .news-text { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; white-space: pre-wrap; }
+    .news-text { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; white-space: pre-wrap; word-wrap: break-word; }
     
-    /* 2. GÖRSEL DÜZELTMESİ (TAM GÖRÜNÜM) */
+    /* MOBİL İÇİN GÖRSEL DÜZELTMESİ */
     .news-img { 
         width: 100%; 
+        height: auto; /* Oranı koru */
         border-radius: 8px; 
         margin-top: 10px; 
         display: block; 
-        max-height: none; /* Sınırı kaldırdık */
-        object-fit: contain; /* Resmi bozmadan sığdır */
+        max-height: 500px; /* Çok uzun görselleri sınırla */
+        object-fit: contain; /* Görseli kesmeden sığdır */
         background: #000;
     }
 
     .card-footer {
-        padding: 10px 15px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center;
+        padding: 10px 15px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
     }
     .vote-area { display: flex; align-items: center; gap: 15px; }
     .vote-btn {
         background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1rem;
-        display: flex; align-items: center; gap: 5px; transition: 0.2s;
+        display: flex; align-items: center; gap: 5px; transition: 0.2s; padding: 5px;
     }
     .vote-btn:hover { transform: scale(1.1); }
-    
-    /* Oylanmışsa renkli kalır */
-    .vote-btn.voted-up { color: var(--green); }
-    .vote-btn.voted-down { color: var(--red); }
+    .vote-up.active { color: var(--green); }
+    .vote-down.active { color: var(--red); }
     
     .remove-btn {
         color: #64748b; font-size: 0.8rem; background: none; border: 1px solid rgba(255,255,255,0.1);
-        padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: 0.2s;
+        padding: 6px 12px; border-radius: 5px; cursor: pointer; transition: 0.2s; white-space: nowrap;
     }
     .remove-btn:hover { color: var(--orange); border-color: var(--orange); }
 
-    /* 4. YASAL UYARI BANNERI */
     .legal-banner {
-        background: #020617; color: #64748b; padding: 30px 20px; text-align: center; font-size: 0.8rem;
-        border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; line-height: 1.6;
+        background: #020617; color: #64748b; padding: 20px; text-align: center; font-size: 0.75rem;
+        border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; width: 100%;
     }
-    .legal-banner strong { color: #fff; }
 
     .loader { text-align: center; padding: 20px; color: var(--text-dim); font-style: italic; }
     #previewImg { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; display: none; margin-bottom: 10px; }
     
     .copy-box {
-        background: #0f172a; padding: 10px; border-radius: 8px; border: 1px dashed #334155;
-        text-align: center; cursor: pointer; font-family: monospace; margin-bottom: 15px;
+        background: #0f172a; padding: 12px; border-radius: 8px; border: 1px dashed #334155;
+        text-align: center; cursor: pointer; font-family: monospace; margin-bottom: 15px; user-select: all;
     }
     .copy-box:hover { border-color: var(--primary); color: #fff; }
+
+    /* MOBİL ÖZEL */
+    @media (max-width: 500px) {
+        .header-actions .btn-header span { display: none; } /* Buton yazılarını gizle sadece ikon kalsın */
+        .btn-header { padding: 10px; border-radius: 50%; }
+        .modal-content { width: 95%; }
+        .news-img { max-height: 400px; }
+    }
 </style>
 </head>
 <body>
@@ -160,16 +177,15 @@
     <header>
         <div class="brand">ODHUN <span>SONDAKİKA</span></div>
         <div class="header-actions">
-            <button class="btn-header contact-btn" onclick="openContactModal()"><i class="fas fa-envelope"></i> İletişim</button>
-            <button class="btn-header new-post-btn" onclick="openPostModal()"><i class="fas fa-plus"></i> Haber Gir</button>
+            <button class="btn-header contact-btn" onclick="openContactModal()" title="İletişim"><i class="fas fa-envelope"></i></button>
+            <button class="btn-header new-post-btn" onclick="openPostModal()" title="Haber Ekle"><i class="fas fa-plus"></i></button>
         </div>
     </header>
 
     <div class="info-box">
-        <span class="info-title"><i class="fas fa-info-circle"></i> Odhun Son Dakika Nedir?</span>
-        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla <strong>Odhun.com</strong> tarafından geliştirilmiştir. 
-        Çevrenizde gördüğünüz olayları, kazaları veya önemli gelişmeleri anlık olarak paylaşabilirsiniz. 
-        Paylaşımlar tamamen anonimdir. Doğruluğu şüpheli veya uygunsuz haberleri topluluk olarak oylayarak yayından kaldırabilirsiniz.
+        <strong>Nasıl Çalışır?</strong><br>
+        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla kurulmuştur. Çevrenizde gördüğünüz olayları anlık olarak paylaşabilirsiniz. Paylaşımlar anonimdir. <br>
+        <strong>Dikkat:</strong> Spam koruması aktiftir. Her paylaşımdan sonra bekleme süresi artar. Kötüye kullanım durumunda haber topluluk tarafından kaldırılabilir.
     </div>
 
     <div class="feed-container" id="feed">
@@ -177,22 +193,33 @@
     </div>
 
     <div class="legal-banner">
-        <p><strong>Odhun.com © 2025</strong> - Odhun tarafından tasarlanmıştır.</p>
-        <p>Bu sitede yer alan tüm içerikler kullanıcılar tarafından oluşturulmaktadır ve <strong>Odhun.com</strong>'un resmi görüşlerini yansıtmaz. 
-        Platform yer sağlayıcı konumundadır. Paylaşılan içeriklerin hukuki ve cezai sorumluluğu tamamen paylaşımı yapan kullanıcıya aittir. 
-        Telif hakkı ihlali, kişilik haklarına saldırı veya yasa dışı içerik barındıran paylaşımlar, <strong>odhunticaret@gmail.com</strong> adresine 
-        yapılan bildirimler üzerine veya topluluk oylaması ile derhal yayından kaldırılacaktır.</p>
+        Odhun.com © 2025 Tüm Hakları Saklıdır.<br><br>
+        Bu sayfada yer alan içerikler, kullanıcılar tarafından oluşturulmakta olup <strong>Odhun.com</strong>'un resmi görüşünü yansıtmamaktadır. 
+        Paylaşılan içeriklerin doğruluğundan veya hukuki sorumluluğundan tamamen paylaşımı yapan kullanıcı sorumludur. 
     </div>
 
     <div id="postModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header"><span>Haber Paylaş</span><button class="close-btn" onclick="closePostModal()">&times;</button></div>
             <div id="timerMsg" style="color:var(--orange); font-size:0.9rem; margin-bottom:10px; display:none;"></div>
-            <input type="text" id="nickInput" placeholder="Rumuzunuz (Örn: Vatandaş)" maxlength="20">
+            
+            <input type="text" id="nickInput" placeholder="Rumuzunuz" maxlength="20">
             <textarea id="textInput" placeholder="Ne oldu? Gördüklerini anlat..."></textarea>
+            
             <img id="previewImg">
-            <label class="file-label" for="fileInput"><i class="fas fa-camera"></i> Fotoğraf Ekle</label>
-            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFile(this)">
+            
+            <div class="media-options">
+                <label class="file-label" for="cameraInput">
+                    <i class="fas fa-camera"></i> Kamera
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleFile(this)">
+                </label>
+                
+                <label class="file-label" for="galleryInput">
+                    <i class="fas fa-image"></i> Galeri
+                    <input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="handleFile(this)">
+                </label>
+            </div>
+
             <button class="submit-btn" id="sendBtn" onclick="sendPost()">PAYLAŞ</button>
         </div>
     </div>
@@ -222,9 +249,10 @@
         };
 
         let db;
-        try { const app = initializeApp(firebaseConfig); db = getFirestore(app); loadPosts(); } catch (e) {}
+        try { const app = initializeApp(firebaseConfig); db = getFirestore(app); loadPosts(); } catch (e) {
+            document.getElementById('loader').innerHTML = "Bağlantı Hatası.<br>Lütfen internetinizi kontrol edin.";
+        }
 
-        // KÖTÜ KELİME FİLTRESİ
         const blackList = ["küfür", "hakaret", "aptal", "gerizekalı", "salak", "mal", "şerefsiz", "porno", "seks", "kumar", "bahis", "+18", "xxx", "amk", "aq", "piç", "yarrak", "orospu", "siktir", "göt", "meme", "kaşar", "yavşak", "sik", "ananı", "bacını", "sokayım", "sokarım"];
 
         function checkContent(text) {
@@ -292,10 +320,8 @@
                     const post = docData.data();
                     const id = docData.id;
                     const time = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "Şimdi";
-                    
-                    const voteState = localStorage.getItem(`vote_${id}`); // 'up' veya 'down'
+                    const voteState = localStorage.getItem(`vote_${id}`);
                     const removeState = localStorage.getItem(`remove_${id}`);
-                    
                     const interactionTotal = (post.likes || 0) + (post.dislikes || 0);
                     const removalThreshold = Math.max(1, interactionTotal); 
                     const currentRemoves = post.removeVotes || 0;
@@ -309,8 +335,8 @@
                         <div class="card-body"><div class="news-text">${formatText(post.text)}</div>${imgHtml}</div>
                         <div class="card-footer">
                             <div class="vote-area">
-                                <button class="vote-btn ${voteState==='up' ? 'voted-up' : ''}" onclick="vote('${id}','up')"><i class="fas fa-arrow-up"></i> <span>${post.likes||0}</span></button>
-                                <button class="vote-btn ${voteState==='down' ? 'voted-down' : ''}" onclick="vote('${id}','down')"><i class="fas fa-arrow-down"></i> <span>${post.dislikes||0}</span></button>
+                                <button class="vote-btn vote-up ${voteState==='up' ? 'active' : ''}" onclick="vote('${id}','up')"><i class="fas fa-arrow-up"></i> <span>${post.likes||0}</span></button>
+                                <button class="vote-btn vote-down ${voteState==='down' ? 'active' : ''}" onclick="vote('${id}','down')"><i class="fas fa-arrow-down"></i> <span>${post.dislikes||0}</span></button>
                             </div>
                             <button class="remove-btn ${removeState?'voted':''}" onclick="voteRemove('${id}')"><i class="fas fa-trash"></i> Kaldır (${currentRemoves}/${removalThreshold})</button>
                         </div>
@@ -320,29 +346,19 @@
             });
         }
 
-        // 1. TEK SEFERLİK OYLAMA
         window.vote = async (id, type) => {
-            // Daha önce oy verip vermediğini kontrol et
-            if (localStorage.getItem(`vote_${id}`)) { 
-                alert("Bu haberi zaten oyladınız!"); 
-                return; 
-            }
-
+            if (localStorage.getItem(`vote_${id}`)) { alert("Zaten oyladınız!"); return; }
             const postRef = doc(db, "posts", id);
             await updateDoc(postRef, type === 'up' ? { likes: increment(1) } : { dislikes: increment(1) });
-            
-            // Oyu kaydet ki tekrar basamasın
             localStorage.setItem(`vote_${id}`, type);
         };
 
         window.voteRemove = async (id) => {
             if (localStorage.getItem(`remove_${id}`)) { alert("Zaten oy kullandınız."); return; }
             if(!confirm("Bu haberi kaldırmak istediğinize emin misiniz?")) return;
-            
             const postRef = doc(db, "posts", id);
             await updateDoc(postRef, { removeVotes: increment(1) });
             localStorage.setItem(`remove_${id}`, 'true');
-            
             const snap = await getDoc(postRef);
             if (snap.exists()) {
                 const data = snap.data();
@@ -355,6 +371,7 @@
 
         function formatText(text) { return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#3b82f6">$1</a>'); }
         window.handleFile = (input) => { const file = input.files[0]; if (file) { const r = new FileReader(); r.onload = (e) => { const i = document.getElementById('previewImg'); i.src = e.target.result; i.style.display = 'block'; }; r.readAsDataURL(file); } }
+        
         window.openPostModal = () => document.getElementById('postModal').style.display = 'flex';
         window.closePostModal = () => document.getElementById('postModal').style.display = 'none';
         window.openContactModal = () => document.getElementById('contactModal').style.display = 'flex';
