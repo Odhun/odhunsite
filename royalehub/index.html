@@ -1,1 +1,392 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Odhun Clash | Deste & Taktik</title>
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%233b82f6%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>CR</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg: #0b1120; /* Koyu Mavi Zemin */
+        --card-bg: #1e293b;
+        --primary: #3b82f6; /* Clash Mavisi */
+        --gold: #f59e0b; /* Altın */
+        --text: #f8fafc;
+        --text-dim: #94a3b8;
+        --border: rgba(255,255,255,0.1);
+        --green: #22c55e;
+        --red: #ef4444;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+        margin: 0; padding: 0; background-color: var(--bg); color: var(--text);
+        font-family: 'Inter', sans-serif; padding-bottom: 50px;
+    }
+
+    /* HEADER */
+    header {
+        background: rgba(15, 23, 42, 0.95); padding: 15px 20px; 
+        position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand { font-size: 1.5rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
+    .brand span { color: var(--gold); text-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+    
+    .new-post-btn {
+        background: var(--primary); color: #fff; border: none; padding: 8px 20px;
+        border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); transition: 0.2s;
+    }
+    .new-post-btn:hover { transform: translateY(-2px); }
+
+    /* LAYOUT (GRID) */
+    .main-container {
+        max-width: 1100px; margin: 20px auto; padding: 0 15px;
+        display: grid; grid-template-columns: 1fr 300px; gap: 25px;
+    }
+
+    /* FEED */
+    .feed-col { min-height: 500px; }
+
+    .clash-card {
+        background: var(--card-bg); border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+        border: 1px solid var(--border); animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    .card-header {
+        padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+    }
+    .avatar {
+        width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800;
+        border: 2px solid #1e293b;
+    }
+    .user-info h4 { margin: 0; font-size: 0.95rem; color: #fff; }
+    .user-info span { font-size: 0.75rem; color: var(--text-dim); }
+
+    .card-body { padding: 15px; }
+    .post-text { font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; white-space: pre-wrap; }
+    .post-text a { color: var(--gold); text-decoration: none; font-weight: 600; }
+    .post-text a:hover { text-decoration: underline; }
+
+    .post-img {
+        width: 100%; border-radius: 8px; margin-top: 15px; display: block; 
+        max-height: 600px; object-fit: contain; background: #0f172a; border: 1px solid var(--border);
+    }
+
+    .card-footer {
+        padding: 10px 15px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center;
+    }
+    .vote-area { display: flex; align-items: center; gap: 10px; background: #0f172a; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border); }
+    .vote-btn {
+        background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1rem;
+        display: flex; align-items: center; gap: 5px; transition: 0.2s;
+    }
+    .vote-btn:hover { color: #fff; }
+    .vote-up.active { color: var(--green); }
+    .vote-down.active { color: var(--red); }
+
+    /* SIDEBAR (HASHTAGS) */
+    .sidebar-col { position: sticky; top: 90px; height: fit-content; }
+    
+    .tags-card {
+        background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border);
+    }
+    .tags-header { font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+    
+    .tag-list { display: flex; flex-direction: column; gap: 8px; }
+    .tag-item {
+        color: var(--text); text-decoration: none; padding: 8px 12px; background: rgba(255,255,255,0.05);
+        border-radius: 6px; font-size: 0.9rem; display: flex; justify-content: space-between;
+        transition: 0.2s; cursor: pointer;
+    }
+    .tag-item:hover { background: var(--primary); color: #fff; transform: translateX(5px); }
+    .tag-item span { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+    
+    .tag-item.active { background: var(--gold); color: #000; font-weight: bold; }
+    .clear-filter { 
+        display: none; margin-top: 15px; width: 100%; padding: 8px; background: #334155; border:none; color: #fff; border-radius: 6px; cursor: pointer; 
+    }
+
+    /* MODAL */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); z-index: 200; display: none;
+        align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-content {
+        background: var(--card-bg); width: 100%; max-width: 500px; border-radius: 15px;
+        padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid var(--border);
+    }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 700; font-size: 1.2rem; }
+    .close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+    
+    input, textarea {
+        width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff;
+        padding: 12px; border-radius: 8px; margin-bottom: 10px; font-family: inherit; outline: none;
+    }
+    textarea { height: 120px; resize: none; }
+    
+    .media-options { display: flex; gap: 10px; margin-bottom: 15px; }
+    .file-label {
+        flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+        background: #334155; padding: 12px; border-radius: 8px; text-align: center;
+        cursor: pointer; color: #ccc; border: 2px dashed #475569; font-size: 0.9rem;
+    }
+    .file-label:hover { border-color: var(--primary); color: #fff; }
+    
+    .submit-btn {
+        width: 100%; background: var(--primary); color: #fff; padding: 15px; border: none;
+        border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer;
+    }
+    
+    #previewImg { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; display: none; margin-bottom: 10px; }
+    .loader { text-align: center; padding: 40px; color: var(--text-dim); font-style: italic; grid-column: 1 / -1; }
+
+    /* RESPONSIVE */
+    @media (max-width: 850px) {
+        .main-container { grid-template-columns: 1fr; }
+        .sidebar-col { display: none; } /* Mobilde yan menüyü gizle (veya alta alabiliriz) */
+        /* Mobilde hashtagleri görmek için basit bir üst bar yapılabilir ama şimdilik gizli kalsın */
+    }
+</style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">ODHUN <span>CLASH</span></div>
+        <button class="new-post-btn" onclick="openPostModal()">
+            <i class="fas fa-plus"></i> <span style="font-size:0.9rem">Paylaş</span>
+        </button>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="feed-col" id="feed">
+            <div class="loader">Arenalar yükleniyor...</div>
+        </div>
+
+        <aside class="sidebar-col">
+            <div class="tags-card">
+                <div class="tags-header"><i class="fas fa-hashtag"></i> Trend Desteler</div>
+                <div class="tag-list" id="tagList">
+                    <div style="color:#aaa; font-size:0.9rem;">Henüz etiket yok.</div>
+                </div>
+                <button class="clear-filter" id="clearFilterBtn" onclick="clearFilter()">Filtreyi Temizle</button>
+            </div>
+            
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #555; text-align: center;">
+                Odhun.com © 2025<br>Clash Royale Fan Platformu
+            </div>
+        </aside>
+
+    </div>
+
+    <div id="postModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><span>Deste/An Paylaş</span><button class="close-btn" onclick="closePostModal()">&times;</button></div>
+            <input type="text" id="nickInput" placeholder="Oyuncu Adın" maxlength="20">
+            <textarea id="textInput" placeholder="Deste stratejini veya anını anlat... (Örn: #madenci #balon çok güçlü)"></textarea>
+            
+            <img id="previewImg">
+            
+            <div class="media-options">
+                <label class="file-label">
+                    <i class="fas fa-camera"></i> Çek
+                    <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleFile(this)">
+                </label>
+                <label class="file-label">
+                    <i class="fas fa-image"></i> Seç
+                    <input type="file" accept="image/*" style="display:none" onchange="handleFile(this)">
+                </label>
+            </div>
+
+            <button class="submit-btn" id="sendBtn" onclick="sendPost()">GÖNDER</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // AYNİ CONFIG KULLANILIYOR
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
+            authDomain: "anit-805a2.firebaseapp.com",
+            projectId: "anit-805a2",
+            storageBucket: "anit-805a2.firebasestorage.app",
+            messagingSenderId: "840387116828",
+            appId: "1:840387116828:web:02af9068f7bcdf2135c4d9",
+            measurementId: "G-QP5EPSFT8V"
+        };
+
+        let db;
+        let allPosts = []; // Tüm postları tutar (filtreleme için)
+        let activeTag = null;
+
+        try { 
+            const app = initializeApp(firebaseConfig); 
+            db = getFirestore(app); 
+            loadPosts(); 
+        } catch (e) {}
+
+        // --- GÖNDERİ ---
+        window.sendPost = async () => {
+            const nick = document.getElementById('nickInput').value.trim();
+            const text = document.getElementById('textInput').value.trim();
+            const img = document.getElementById('previewImg').src;
+            const btn = document.getElementById('sendBtn');
+
+            if (!nick || !text) { alert("Alanları doldurunuz."); return; }
+
+            // Hashtagleri ayıkla
+            const hashtags = (text.match(/#[a-z0-9ğüşıöç]+/gi) || []).map(t => t.toLowerCase());
+
+            btn.disabled = true; btn.innerText = "Yükleniyor...";
+
+            try {
+                // 'clash_posts' koleksiyonuna kaydet
+                await addDoc(collection(db, "clash_posts"), {
+                    nick: nick, text: text, image: img !== "" && img !== window.location.href ? img : null, 
+                    tags: hashtags,
+                    likes: 0, dislikes: 0, timestamp: serverTimestamp()
+                });
+                
+                closePostModal();
+                document.getElementById('textInput').value = "";
+                document.getElementById('previewImg').style.display = 'none';
+                document.getElementById('previewImg').src = "";
+            } catch (e) { alert("Hata oluştu."); }
+            btn.disabled = false; btn.innerText = "GÖNDER";
+        };
+
+        // --- YÜKLEME & RENDER ---
+        function loadPosts() {
+            const q = query(collection(db, "clash_posts"), orderBy("timestamp", "desc"));
+            onSnapshot(q, (snapshot) => {
+                allPosts = [];
+                snapshot.forEach(doc => {
+                    allPosts.push({ id: doc.id, ...doc.data() });
+                });
+                renderFeed();
+                renderTags();
+            });
+        }
+
+        function renderFeed() {
+            const feed = document.getElementById('feed');
+            feed.innerHTML = "";
+            
+            // Filtreleme
+            const postsToShow = activeTag 
+                ? allPosts.filter(p => p.tags && p.tags.includes(activeTag))
+                : allPosts;
+
+            if(postsToShow.length === 0) {
+                feed.innerHTML = "<div class='loader'>Henüz paylaşım yok.</div>";
+                return;
+            }
+
+            postsToShow.forEach(post => {
+                const time = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "Şimdi";
+                const voteState = localStorage.getItem(`cr_vote_${post.id}`);
+                
+                let imgHtml = post.image && post.image.length > 100 ? `<img src="${post.image}" class="post-img">` : "";
+                
+                // Metindeki hashtagleri link yap
+                let formattedText = post.text.replace(/(#[a-z0-9ğüşıöç]+)/gi, '<a href="javascript:void(0)" onclick="setFilter(\'$1\')">$1</a>');
+
+                const html = `
+                <div class="clash-card">
+                    <div class="card-header">
+                        <div class="avatar">${post.nick.charAt(0).toUpperCase()}</div>
+                        <div class="user-info"><h4>${post.nick}</h4><span>${time}</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="post-text">${formattedText}</div>
+                        ${imgHtml}
+                    </div>
+                    <div class="card-footer">
+                        <div class="vote-area">
+                            <button class="vote-btn vote-up ${voteState==='up'?'active':''}" onclick="vote('${post.id}','up')"><i class="fas fa-thumbs-up"></i> <span>${post.likes||0}</span></button>
+                            <button class="vote-btn vote-down ${voteState==='down'?'active':''}" onclick="vote('${post.id}','down')"><i class="fas fa-thumbs-down"></i> <span>${post.dislikes||0}</span></button>
+                        </div>
+                    </div>
+                </div>`;
+                feed.innerHTML += html;
+            });
+        }
+
+        // --- TAG SİSTEMİ ---
+        function renderTags() {
+            const tagCounts = {};
+            allPosts.forEach(p => {
+                if(p.tags) {
+                    p.tags.forEach(t => {
+                        tagCounts[t] = (tagCounts[t] || 0) + 1;
+                    });
+                }
+            });
+
+            // Sırala (En çok kullanılan en üstte)
+            const sortedTags = Object.keys(tagCounts).sort((a,b) => tagCounts[b] - tagCounts[a]);
+            
+            const list = document.getElementById('tagList');
+            list.innerHTML = "";
+            
+            if(sortedTags.length === 0) {
+                list.innerHTML = '<div style="color:#aaa; font-size:0.9rem;">Henüz etiket yok.</div>';
+                return;
+            }
+
+            sortedTags.slice(0, 10).forEach(tag => {
+                const count = tagCounts[tag];
+                const isActive = tag === activeTag ? 'active' : '';
+                list.innerHTML += `
+                    <div class="tag-item ${isActive}" onclick="setFilter('${tag}')">
+                        ${tag} <span>${count}</span>
+                    </div>`;
+            });
+        }
+
+        window.setFilter = (tag) => {
+            activeTag = tag.toLowerCase();
+            document.getElementById('clearFilterBtn').style.display = 'block';
+            renderFeed();
+            renderTags(); // Aktif sınıfını güncellemek için
+            window.scrollTo(0,0);
+        };
+
+        window.clearFilter = () => {
+            activeTag = null;
+            document.getElementById('clearFilterBtn').style.display = 'none';
+            renderFeed();
+            renderTags();
+        };
+
+        // --- OYLAMA ---
+        window.vote = async (id, type) => {
+            if (localStorage.getItem(`cr_vote_${id}`)) return;
+            const postRef = doc(db, "clash_posts", id);
+            await updateDoc(postRef, type === 'up' ? { likes: increment(1) } : { dislikes: increment(1) });
+            localStorage.setItem(`cr_vote_${id}`, type);
+        };
+
+        // --- YARDIMCILAR ---
+        window.handleFile = (input) => { const f = input.files[0]; if(f) { const r = new FileReader(); r.onload = e => { const i = document.getElementById('previewImg'); i.src = e.target.result; i.style.display = 'block'; }; r.readAsDataURL(f); } }
+        window.openPostModal = () => document.getElementById('postModal').style.display = 'flex';
+        window.closePostModal = () => document.getElementById('postModal').style.display = 'none';
+
+    </script>
+
+</body>
+</html>
