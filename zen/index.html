@@ -3,27 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Zen | Odaklanma</title>
+<title>Odhun Zen | Ultimate Focus</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23000000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>O<tspan fill=%22%2300e5ff%22>Z</tspan></text></svg>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
     :root {
         --bg: #050505;
-        --card-bg: #121212;
-        --accent: #00e5ff; /* Zen Mavisi */
-        --accent-dim: rgba(0, 229, 255, 0.1);
-        --text: #ffffff;
+        --card-bg: #111111;
+        --accent: #00e5ff;
+        --accent-dim: rgba(0, 229, 255, 0.15);
+        --text: #f0f0f0;
         --text-dim: #888;
         --border: #222;
+        --success: #00ff9d;
+        --warning: #ffaa00;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: #333 #000; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
     body {
         margin: 0; padding: 0; background: var(--bg); color: var(--text);
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
+        transition: background 1s ease;
     }
 
     /* BAŞLANGIÇ PERDESİ */
@@ -31,141 +38,181 @@
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.95); z-index: 9999;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        transition: opacity 0.5s;
+        backdrop-filter: blur(10px); transition: opacity 0.5s;
     }
     #startBtn {
-        padding: 20px 50px; font-size: 1.5rem; background: var(--accent);
+        padding: 20px 60px; font-size: 1.5rem; background: var(--accent);
         color: #000; border: none; border-radius: 50px; font-weight: 800;
-        cursor: pointer; box-shadow: 0 0 30px var(--accent-dim);
-        transition: transform 0.2s;
+        cursor: pointer; box-shadow: 0 0 40px var(--accent-dim);
+        transition: transform 0.2s, box-shadow 0.2s; text-transform: uppercase; letter-spacing: 2px;
     }
-    #startBtn:hover { transform: scale(1.05); }
+    #startBtn:hover { transform: scale(1.05); box-shadow: 0 0 60px var(--accent); }
 
-    /* SIDEBAR */
+    /* SIDEBAR (PRESETS) */
     .sidebar {
-        width: 250px; background: #0a0a0a; border-right: 1px solid var(--border);
+        width: 280px; background: #080808; border-right: 1px solid var(--border);
         display: flex; flex-direction: column; flex-shrink: 0; z-index: 100;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .logo-area {
-        height: 70px; display: flex; align-items: center; padding: 0 25px;
-        font-size: 1.5rem; font-weight: 800; letter-spacing: -1px;
-        border-bottom: 1px solid var(--border);
+    .brand {
+        height: 80px; display: flex; align-items: center; padding: 0 25px;
+        font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700;
+        letter-spacing: 1px; border-bottom: 1px solid var(--border);
+        background: linear-gradient(90deg, rgba(0,229,255,0.05), transparent);
     }
-    .logo-area span { color: var(--accent); margin-left: 2px; }
+    .brand span { color: var(--accent); margin-left: 4px; }
 
-    .menu-list { padding: 20px; }
-    .menu-item {
-        display: flex; align-items: center; gap: 10px; padding: 12px 15px;
-        color: var(--text-dim); text-decoration: none; font-weight: 500;
-        border-radius: 8px; margin-bottom: 5px; transition: 0.2s; cursor: pointer;
+    .preset-list { flex: 1; overflow-y: auto; padding: 20px; }
+    .preset-title { 
+        font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); 
+        font-weight: 800; margin-bottom: 15px; letter-spacing: 1px; 
     }
-    .menu-item:hover, .menu-item.active { background: var(--accent-dim); color: var(--accent); }
-    .menu-item.active { border-left: 3px solid var(--accent); }
+    
+    .preset-item {
+        background: var(--card-bg); border: 1px solid var(--border);
+        padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer;
+        display: flex; align-items: center; gap: 15px; transition: all 0.2s;
+    }
+    .preset-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.02); }
+    .preset-item.active { border-color: var(--accent); background: var(--accent-dim); }
+    
+    .preset-icon { 
+        width: 40px; height: 40px; border-radius: 8px; background: #222; 
+        display: flex; align-items: center; justify-content: center; color: var(--text);
+        font-size: 1.2rem; transition: 0.2s;
+    }
+    .preset-item.active .preset-icon { background: var(--accent); color: #000; }
+    
+    .preset-info h4 { margin: 0; font-size: 0.95rem; }
+    .preset-info p { margin: 3px 0 0; font-size: 0.75rem; color: var(--text-dim); }
+
+    .master-controls {
+        padding: 20px; border-top: 1px solid var(--border); background: #0a0a0a;
+    }
+    .stop-btn {
+        width: 100%; padding: 12px; background: #222; color: #ff4444; border: 1px solid #333;
+        border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; 
+        justify-content: center; gap: 8px; transition: 0.2s;
+    }
+    .stop-btn:hover { background: #331111; border-color: #ff4444; }
 
     /* MAIN CONTENT */
-    .main-content {
-        flex: 1; display: flex; flex-direction: column; height: 100%; 
-        overflow-y: auto; position: relative;
+    .main {
+        flex: 1; display: flex; flex-direction: column; position: relative;
     }
 
-    /* HEADER (TIMER AREA) */
-    .timer-header {
-        height: 280px; background: radial-gradient(circle at center, #101a1c 0%, #050505 100%);
+    /* TIMER SECTION */
+    .timer-section {
+        height: 320px; background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        border-bottom: 1px solid var(--border); flex-shrink: 0; position: relative;
+        border-bottom: 1px solid var(--border); position: relative; flex-shrink: 0;
     }
 
     .timer-display {
-        font-size: 6rem; font-weight: 200; letter-spacing: 5px; font-variant-numeric: tabular-nums;
-        text-shadow: 0 0 20px rgba(0, 229, 255, 0.2); margin: 10px 0;
+        font-family: 'Rajdhani', sans-serif; font-size: 8rem; font-weight: 500; 
+        line-height: 1; margin: 20px 0; font-variant-numeric: tabular-nums;
+        text-shadow: 0 0 30px rgba(255,255,255,0.1); letter-spacing: 5px;
     }
     
-    .timer-controls { display: flex; gap: 15px; }
+    .timer-tabs {
+        display: flex; gap: 5px; background: #1a1a1a; padding: 4px; border-radius: 30px;
+        border: 1px solid #333;
+    }
+    .timer-tab {
+        padding: 8px 20px; border-radius: 25px; cursor: pointer; font-size: 0.85rem; 
+        color: #aaa; font-weight: 600; transition: 0.2s;
+    }
+    .timer-tab:hover { color: #fff; }
+    .timer-tab.active { background: var(--accent); color: #000; }
+
+    .timer-actions { display: flex; gap: 15px; }
+    .t-btn {
+        width: 50px; height: 50px; border-radius: 50%; border: 2px solid #444;
+        background: transparent; color: #fff; font-size: 1.2rem; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; transition: 0.2s;
+    }
+    .t-btn:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+    .t-btn.play { width: 70px; height: 70px; border-color: var(--accent); color: var(--accent); font-size: 1.8rem; }
+    .t-btn.play:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent-dim); }
+
+    /* SOUND BOARD */
+    .board-nav {
+        display: flex; gap: 20px; padding: 20px 40px; border-bottom: 1px solid var(--border);
+        overflow-x: auto; white-space: nowrap;
+    }
+    .cat-link {
+        color: var(--text-dim); cursor: pointer; font-weight: 600; font-size: 0.9rem;
+        padding-bottom: 5px; border-bottom: 2px solid transparent; transition: 0.2s;
+    }
+    .cat-link:hover { color: #fff; }
+    .cat-link.active { color: var(--accent); border-color: var(--accent); }
+
+    .sound-container {
+        flex: 1; overflow-y: auto; padding: 30px 40px;
+    }
     
-    .btn-timer {
-        background: transparent; border: 1px solid var(--accent); color: var(--accent);
-        padding: 10px 30px; border-radius: 30px; font-weight: 600; cursor: pointer;
-        transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 1rem;
+    .category-group { margin-bottom: 40px; }
+    .cat-title { 
+        font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; 
+        display: flex; align-items: center; gap: 10px; color: #fff;
     }
-    .btn-timer:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent-dim); }
-    .btn-timer.secondary { border-color: var(--text-dim); color: var(--text-dim); }
-    .btn-timer.secondary:hover { border-color: #fff; color: #fff; background: transparent; }
+    .cat-title i { color: var(--accent); }
 
-    .timer-modes {
-        position: absolute; top: 20px; right: 20px; display: flex; gap: 10px;
-    }
-    .mode-btn {
-        background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #aaa;
-        padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s;
-    }
-    .mode-btn:hover { color: #fff; border-color: #555; }
-    .mode-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
-
-    /* SOUND GRID */
-    .sound-grid {
-        padding: 30px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px;
-        padding-bottom: 100px;
+    .grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px;
     }
 
-    .sound-card {
-        background: var(--card-bg); border: 1px solid var(--border);
-        border-radius: 16px; padding: 25px 20px; text-align: center;
-        transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden;
+    .sound-btn {
+        background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+        padding: 15px; text-align: center; cursor: pointer; transition: all 0.2s;
+        position: relative; overflow: hidden; height: 140px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-    .sound-card:hover { transform: translateY(-3px); border-color: #444; }
+    .sound-btn:hover { transform: translateY(-3px); border-color: #444; background: #1a1a1a; }
     
-    .sound-card.active { 
-        border-color: var(--accent); background: rgba(0, 229, 255, 0.03);
-        box-shadow: 0 0 20px rgba(0, 229, 255, 0.05);
+    .sound-btn.active {
+        border-color: var(--accent); background: rgba(0,229,255,0.05);
+        box-shadow: inset 0 0 20px rgba(0,229,255,0.05);
     }
-
-    .sound-icon {
-        font-size: 2.5rem; color: var(--text-dim); margin-bottom: 15px; transition: 0.3s;
-    }
-    .sound-card.active .sound-icon { color: var(--accent); transform: scale(1.1); text-shadow: 0 0 10px var(--accent); }
-
-    .sound-name { font-weight: 600; font-size: 1rem; margin-bottom: 10px; color: #ddd; }
-
-    /* Volume Slider */
-    .volume-wrap {
-        height: 0; overflow: hidden; transition: height 0.3s; opacity: 0;
-        display: flex; align-items: center; justify-content: center;
-    }
-    .sound-card.active .volume-wrap { height: 20px; opacity: 1; margin-top: 15px; }
     
-    input[type=range] {
-        width: 80%; accent-color: var(--accent); height: 4px; cursor: pointer;
+    .s-icon { font-size: 2rem; margin-bottom: 10px; color: #555; transition: 0.3s; }
+    .sound-btn.active .s-icon { color: var(--accent); transform: scale(1.1); text-shadow: 0 0 15px var(--accent); }
+    
+    .s-name { font-size: 0.85rem; font-weight: 600; color: #ccc; }
+
+    /* Volume Control inside card */
+    .vol-slider {
+        width: 80%; height: 4px; background: #333; border-radius: 2px; margin-top: 10px;
+        position: relative; opacity: 0; transform: translateY(10px); transition: 0.3s;
+    }
+    .sound-btn.active .vol-slider { opacity: 1; transform: translateY(0); }
+    
+    .vol-fill {
+        height: 100%; background: var(--accent); border-radius: 2px; width: 50%;
+        position: relative;
+    }
+    .vol-knob {
+        width: 10px; height: 10px; background: #fff; border-radius: 50%;
+        position: absolute; right: -5px; top: -3px; box-shadow: 0 0 5px rgba(0,0,0,0.5);
     }
 
-    /* MOBİL MENÜ BUTONU */
-    .mobile-toggle { 
-        display: none; position: absolute; top: 20px; left: 20px; 
-        background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer;
-        z-index: 500;
-    }
-    .mobile-close { display: none; cursor: pointer; font-size: 1.2rem; color: #fff; margin-left: auto; }
-
-    /* FOOTER */
-    footer {
-        position: absolute; bottom: 0; width: 100%; background: #0a0a0a;
-        padding: 15px; text-align: center; font-size: 0.8rem; color: #555;
-        border-top: 1px solid var(--border);
-    }
-
-    @media (max-width: 768px) {
-        .sidebar { position: fixed; left: -100%; height: 100%; width: 80%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+    /* Responsive */
+    .mobile-toggle { display: none; position: absolute; top: 20px; left: 20px; background:none; border:none; color:#fff; font-size:1.5rem; z-index:200; cursor:pointer;}
+    
+    @media (max-width: 900px) {
+        .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px #000; }
         .sidebar.active { left: 0; }
         .mobile-toggle { display: block; }
-        .mobile-close { display: block; }
+        .timer-display { font-size: 5rem; }
+        .grid { grid-template-columns: repeat(3, 1fr); }
+        .board-nav { padding: 15px 20px; }
+        .sound-container { padding: 20px; }
+    }
+    @media (max-width: 600px) {
+        .grid { grid-template-columns: repeat(2, 1fr); }
+        .timer-header { height: auto; padding: 60px 20px 30px; }
         .timer-display { font-size: 4rem; }
-        .sound-grid { grid-template-columns: repeat(2, 1fr); padding: 15px; gap: 15px; }
-        .timer-header { height: auto; padding: 80px 20px 40px 20px; }
-        .timer-modes { top: 20px; right: auto; width: 100%; justify-content: center; }
     }
 </style>
 </head>
@@ -173,206 +220,323 @@
 
     <div id="startOverlay">
         <div style="text-align:center;">
-            <div style="font-size:3rem; margin-bottom:20px;">🎧</div>
-            <h2 style="margin-bottom:10px;">Odhun Zen'e Hoş Geldiniz</h2>
-            <p style="color:#aaa; margin-bottom:30px;">Rahatlatıcı sesleri başlatmak için tıklayın.</p>
-            <button id="startBtn" onclick="unlockAudio()">BAŞLA</button>
+            <i class="fas fa-headphones-alt" style="font-size:4rem; color:var(--accent); margin-bottom:20px;"></i>
+            <h1 style="margin-bottom:10px; font-family:'Rajdhani'; font-size:3rem;">ODHUN ZEN</h1>
+            <p style="color:#aaa; margin-bottom:40px; font-size:1.1rem;">Odaklanma, rahatlama ve üretkenlik için ses evreni.</p>
+            <button id="startBtn" onclick="initApp()">DENEYİMİ BAŞLAT</button>
         </div>
     </div>
 
     <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
     <div class="sidebar" id="sidebar">
-        <div class="logo-area">
-            ODHUN<span>ZEN</span>
-            <div class="mobile-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
+        <div class="brand">ODHUN<span>ZEN</span></div>
+        
+        <div class="preset-list">
+            <div class="preset-title">Hazır Modlar</div>
+            
+            <div class="preset-item" onclick="loadPreset('focus')">
+                <div class="preset-icon"><i class="fas fa-brain"></i></div>
+                <div class="preset-info"><h4>Derin Odak</h4><p>Yağmur + Kahve + Piyano</p></div>
+            </div>
+            
+            <div class="preset-item" onclick="loadPreset('sleep')">
+                <div class="preset-icon"><i class="fas fa-moon"></i></div>
+                <div class="preset-info"><h4>Uyku Modu</h4><p>Gece + Rüzgar + Ateş</p></div>
+            </div>
+            
+            <div class="preset-item" onclick="loadPreset('nature')">
+                <div class="preset-icon"><i class="fas fa-leaf"></i></div>
+                <div class="preset-info"><h4>Doğa Yürüyüşü</h4><p>Kuşlar + Nehir + Rüzgar</p></div>
+            </div>
+
+            <div class="preset-item" onclick="loadPreset('meditation')">
+                <div class="preset-icon"><i class="fas fa-om"></i></div>
+                <div class="preset-info"><h4>Meditasyon</h4><p>Om + Dalgalar</p></div>
+            </div>
         </div>
-        <div class="menu-list">
-            <div class="menu-item active"><i class="fas fa-sliders-h"></i> Mikser</div>
-            <div class="menu-item" onclick="stopAllSounds()"><i class="fas fa-power-off"></i> Her Şeyi Durdur</div>
-        </div>
-        <div style="margin-top: auto; padding: 20px; color: #444; font-size: 0.75rem; line-height: 1.5;">
-            Odaklan. Rahatla. Üret.<br>Odhun.com © 2025
+
+        <div class="master-controls">
+            <button class="stop-btn" onclick="stopAll()"><i class="fas fa-stop"></i> TÜM SESLERİ DURDUR</button>
         </div>
     </div>
 
-    <div class="main-content">
+    <div class="main">
         
-        <div class="timer-header">
-            <div class="timer-modes">
-                <div class="mode-btn active" onclick="setMode(25, this)">Pomodoro</div>
-                <div class="mode-btn" onclick="setMode(5, this)">Kısa Mola</div>
-                <div class="mode-btn" onclick="setMode(15, this)">Uzun Mola</div>
+        <div class="timer-section">
+            <div class="timer-tabs">
+                <div class="timer-tab active" onclick="setTimerMode(25)">Pomodoro</div>
+                <div class="timer-tab" onclick="setTimerMode(5)">Kısa Mola</div>
+                <div class="timer-tab" onclick="setTimerMode(15)">Uzun Mola</div>
             </div>
             <div class="timer-display" id="timerDisplay">25:00</div>
-            <div class="timer-controls">
-                <button class="btn-timer" onclick="toggleTimer()" id="timerBtn"><i class="fas fa-play"></i> Başlat</button>
-                <button class="btn-timer secondary" onclick="resetTimer()"><i class="fas fa-redo"></i></button>
+            <div class="timer-actions">
+                <button class="t-btn" onclick="resetTimer()"><i class="fas fa-redo"></i></button>
+                <button class="t-btn play" id="playBtn" onclick="toggleTimer()"><i class="fas fa-play"></i></button>
+                <button class="t-btn" onclick="editTimer()"><i class="fas fa-pen"></i></button>
             </div>
         </div>
 
-        <div class="sound-grid" id="soundGrid">
+        <div class="board-nav">
+            <div class="cat-link active" onclick="scrollToCat('nature')">DOĞA</div>
+            <div class="cat-link" onclick="scrollToCat('city')">ŞEHİR</div>
+            <div class="cat-link" onclick="scrollToCat('weather')">HAVA</div>
+            <div class="cat-link" onclick="scrollToCat('noise')">BINAURAL</div>
+        </div>
+
+        <div class="sound-container">
+            
+            <div class="category-group" id="cat-nature">
+                <div class="cat-title"><i class="fas fa-tree"></i> Doğa Sesleri</div>
+                <div class="grid">
+                    </div>
             </div>
 
-        <footer>
-            Odhun.com © 2025 | Sesler global açık kaynak kütüphanelerden sağlanmaktadır.
-        </footer>
+            <div class="category-group" id="cat-weather">
+                <div class="cat-title"><i class="fas fa-cloud-showers-heavy"></i> Hava Olayları</div>
+                <div class="grid"></div>
+            </div>
 
+             <div class="category-group" id="cat-city">
+                <div class="cat-title"><i class="fas fa-city"></i> Şehir & Yaşam</div>
+                <div class="grid"></div>
+            </div>
+
+            <div class="category-group" id="cat-noise">
+                <div class="cat-title"><i class="fas fa-wave-square"></i> Gürültü & Frekans</div>
+                <div class="grid"></div>
+            </div>
+
+        </div>
     </div>
 
     <script>
-        // --- GÜNCEL VE ÇALIŞAN MP3 KAYNAKLARI (GITHUB CDN) ---
-        // Bu linkler mp3 formatındadır ve GitHub CDN üzerinden hızlıca yüklenir.
-        const sounds = [
-            { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/rain.mp3' },
-            { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/thunder.mp3' },
-            { id: 'fire', name: 'Kamp Ateşi', icon: 'fa-fire', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/fireplace.mp3' },
-            { id: 'wind', name: 'Rüzgar', icon: 'fa-wind', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/wind.mp3' },
-            { id: 'night', name: 'Gece', icon: 'fa-moon', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/night.mp3' },
-            { id: 'birds', name: 'Kuşlar', icon: 'fa-dove', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/forest.mp3' },
-            { id: 'water', name: 'Dalgalar', icon: 'fa-water', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/ocean.mp3' },
-            { id: 'coffee', name: 'Kafe Ortamı', icon: 'fa-coffee', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/coffee-shop.mp3' },
-            // Yedek kaynaklar (Moodist projesinden)
-            { id: 'train', name: 'Tren', icon: 'fa-subway', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/train.mp3' },
-            { id: 'white', name: 'Beyaz Gürültü', icon: 'fa-snowflake', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/brown-noise.mp3' }
+        // --- SES VERİTABANI (GITHUB RAW CDN - GÜVENLİ & HIZLI) ---
+        // Kaynak: Moodist & AmbientMixer Open Source Libraries
+        const soundDB = [
+            // DOĞA
+            { id: 'forest', name: 'Orman', cat: 'nature', icon: 'fa-tree', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/forest.mp3' },
+            { id: 'birds', name: 'Kuşlar', cat: 'nature', icon: 'fa-dove', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/birds.mp3' },
+            { id: 'river', name: 'Nehir', cat: 'nature', icon: 'fa-water', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/river.mp3' },
+            { id: 'waves', name: 'Dalgalar', cat: 'nature', icon: 'fa-water', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/ocean.mp3' },
+            { id: 'fire', name: 'Kamp Ateşi', cat: 'nature', icon: 'fa-fire', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/fireplace.mp3' },
+            { id: 'crickets', name: 'Gece', cat: 'nature', icon: 'fa-moon', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/crickets.mp3' },
+            
+            // HAVA
+            { id: 'rain', name: 'Yağmur', cat: 'weather', icon: 'fa-cloud-rain', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/rain.mp3' },
+            { id: 'thunder', name: 'Gök Gürültüsü', cat: 'weather', icon: 'fa-bolt', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/thunder.mp3' },
+            { id: 'wind', name: 'Rüzgar', cat: 'weather', icon: 'fa-wind', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/wind.mp3' },
+            { id: 'snow', name: 'Kar Fırtınası', cat: 'weather', icon: 'fa-snowflake', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/snow.mp3' },
+            
+            // ŞEHİR
+            { id: 'cafe', name: 'Kafe', cat: 'city', icon: 'fa-coffee', url: 'https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/coffee-shop.mp3' },
+            { id: 'train', name: 'Tren', cat: 'city', icon: 'fa-subway', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/train.mp3' },
+            { id: 'keyboard', name: 'Klavye', cat: 'city', icon: 'fa-keyboard', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/keyboard.mp3' },
+            { id: 'traffic', name: 'Trafik', cat: 'city', icon: 'fa-car', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/traffic.mp3' },
+            { id: 'fan', name: 'Vantilatör', cat: 'city', icon: 'fa-fan', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/fan.mp3' },
+
+            // FREKANS
+            { id: 'white', name: 'Beyaz Gürültü', cat: 'noise', icon: 'fa-broadcast-tower', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/white-noise.mp3' },
+            { id: 'pink', name: 'Pembe Gürültü', cat: 'noise', icon: 'fa-signal', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/pink-noise.mp3' },
+            { id: 'brown', name: 'Kahve Gürültü', cat: 'noise', icon: 'fa-water', url: 'https://cdn.jsdelivr.net/gh/remvze/moodist@main/public/sounds/brown-noise.mp3' }
         ];
 
-        const audioElements = {};
-        const grid = document.getElementById('soundGrid');
+        const audioMap = {}; // Audio objelerini tutar
 
-        function unlockAudio() {
-            const overlay = document.getElementById('startOverlay');
-            overlay.style.opacity = '0';
-            setTimeout(() => { overlay.style.display = 'none'; }, 500);
-            initSounds();
+        function initApp() {
+            document.getElementById('startOverlay').style.opacity = '0';
+            setTimeout(() => document.getElementById('startOverlay').style.display = 'none', 500);
+            
+            renderSounds();
         }
 
-        function initSounds() {
-            grid.innerHTML = "";
-            sounds.forEach(sound => {
+        function renderSounds() {
+            soundDB.forEach(s => {
+                // Audio Yükle
                 const audio = new Audio();
-                audio.src = sound.url;
+                audio.src = s.url;
                 audio.loop = true;
-                audio.crossOrigin = "anonymous"; // CORS sorununu önle
-                audio.preload = "none"; // Sayfa açılışını hızlandır
-                audioElements[sound.id] = audio;
+                audio.volume = 0.5;
+                audioMap[s.id] = audio;
 
+                // Kart Oluştur
                 const card = document.createElement('div');
-                card.className = 'sound-card';
-                card.id = `card-${sound.id}`;
-                
+                card.className = 'sound-btn';
+                card.id = `btn-${s.id}`;
                 card.innerHTML = `
-                    <i class="sound-icon fas ${sound.icon}"></i>
-                    <div class="sound-name">${sound.name}</div>
-                    <div class="volume-wrap" onclick="event.stopPropagation()">
-                        <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="setVolume('${sound.id}', this.value)">
+                    <i class="s-icon fas ${s.icon}"></i>
+                    <div class="s-name">${s.name}</div>
+                    <div class="vol-slider" onclick="event.stopPropagation()" onmousedown="startDrag('${s.id}', event)" ontouchstart="startDrag('${s.id}', event)">
+                        <div class="vol-fill" id="fill-${s.id}" style="width:50%"></div>
+                        <div class="vol-knob" id="knob-${s.id}" style="left:50%"></div>
                     </div>
                 `;
+                card.onclick = (e) => toggleSound(s.id);
 
-                card.onclick = (e) => {
-                    if (e.target.tagName === 'INPUT') return;
-                    toggleSound(sound.id);
-                };
-                grid.appendChild(card);
+                // İlgili Kategoriye Ekle
+                const catContainer = document.querySelector(`#cat-${s.cat} .grid`);
+                if(catContainer) catContainer.appendChild(card);
             });
         }
 
         function toggleSound(id) {
-            const audio = audioElements[id];
-            const card = document.getElementById(`card-${id}`);
-
-            if (!audio) return;
-
+            const audio = audioMap[id];
+            const btn = document.getElementById(`btn-${id}`);
+            
             if (audio.paused) {
-                audio.play().catch(e => {
-                    console.error("Ses hatası:", e);
-                    alert("Bağlantı sorunu. Lütfen sayfayı yenileyin.");
-                });
-                card.classList.add('active');
+                audio.play();
+                btn.classList.add('active');
             } else {
                 audio.pause();
-                card.classList.remove('active');
+                btn.classList.remove('active');
             }
         }
 
-        function setVolume(id, val) {
-            if (audioElements[id]) audioElements[id].volume = val;
-        }
-
-        function stopAllSounds() {
-            for (const id in audioElements) {
-                audioElements[id].pause();
-                audioElements[id].currentTime = 0;
-                const card = document.getElementById(`card-${id}`);
-                if(card) card.classList.remove('active');
+        function setVolume(id, percent) {
+            const audio = audioMap[id];
+            if(audio) audio.volume = percent;
+            
+            // UI Güncelle
+            const fill = document.getElementById(`fill-${id}`);
+            const knob = document.getElementById(`knob-${id}`);
+            if(fill && knob) {
+                fill.style.width = (percent * 100) + '%';
+                knob.style.left = (percent * 100) + '%';
             }
-            if (window.innerWidth < 768) toggleSidebar();
         }
 
-        // TIMER FONKSİYONLARI
-        let timerInterval;
+        function stopAll() {
+            for (let key in audioMap) {
+                audioMap[key].pause();
+                audioMap[key].currentTime = 0;
+                document.getElementById(`btn-${key}`).classList.remove('active');
+            }
+            if (window.innerWidth <= 900) toggleSidebar();
+        }
+
+        // --- PRESETS (HAZIR MODLAR) ---
+        function loadPreset(type) {
+            stopAll(); // Önce hepsini sustur
+            
+            const presets = {
+                'focus': [ {id:'rain', v:0.4}, {id:'coffee', v:0.3}, {id:'fire', v:0.2} ],
+                'sleep': [ {id:'night', v:0.6}, {id:'wind', v:0.3}, {id:'brown', v:0.2} ],
+                'nature': [ {id:'forest', v:0.5}, {id:'birds', v:0.3}, {id:'river', v:0.4} ],
+                'meditation': [ {id:'waves', v:0.6}, {id:'pink', v:0.2} ]
+            };
+
+            const selected = presets[type];
+            if(selected) {
+                selected.forEach(item => {
+                    setVolume(item.id, item.v);
+                    toggleSound(item.id);
+                });
+            }
+            if (window.innerWidth <= 900) toggleSidebar();
+        }
+
+        // --- TIMER ---
+        let timerInt;
         let timeLeft = 25 * 60;
-        let isTimerRunning = false;
-        const display = document.getElementById('timerDisplay');
-        const timerBtn = document.getElementById('timerBtn');
+        let isRunning = false;
 
-        function updateDisplay() {
-            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-            const s = (timeLeft % 60).toString().padStart(2, '0');
-            display.innerText = `${m}:${s}`;
-            document.title = `(${m}:${s}) Odhun Zen`;
+        function setTimerMode(min) {
+            document.querySelectorAll('.timer-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            timeLeft = min * 60;
+            updateTimerDisplay();
+            stopTimer();
         }
 
         function toggleTimer() {
-            if (isTimerRunning) {
-                clearInterval(timerInterval);
-                isTimerRunning = false;
-                timerBtn.innerHTML = '<i class="fas fa-play"></i> Başlat';
+            const btn = document.getElementById('playBtn');
+            if(isRunning) {
+                stopTimer();
             } else {
-                isTimerRunning = true;
-                timerBtn.innerHTML = '<i class="fas fa-pause"></i> Duraklat';
-                timerInterval = setInterval(() => {
-                    if (timeLeft > 0) {
+                isRunning = true;
+                btn.innerHTML = '<i class="fas fa-pause"></i>';
+                timerInt = setInterval(() => {
+                    if(timeLeft > 0) {
                         timeLeft--;
-                        updateDisplay();
+                        updateTimerDisplay();
                     } else {
-                        clearInterval(timerInterval);
-                        isTimerRunning = false;
-                        timerBtn.innerHTML = '<i class="fas fa-play"></i> Başlat';
-                        try { new Audio('https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/bell.mp3').play(); } catch(e){}
+                        stopTimer();
+                        new Audio('https://cdn.jsdelivr.net/gh/bradtraversy/ambient-sound-mixer@main/sounds/bell.mp3').play();
                         alert("Süre Doldu!");
                     }
                 }, 1000);
             }
         }
 
-        function resetTimer() {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            timerBtn.innerHTML = '<i class="fas fa-play"></i> Başlat';
-            const activeMode = document.querySelector('.mode-btn.active');
-            let min = 25;
-            if(activeMode) {
-                const txt = activeMode.innerText;
-                if(txt.includes('Kısa')) min = 5;
-                else if(txt.includes('Uzun')) min = 15;
-            }
-            timeLeft = min * 60;
-            updateDisplay();
+        function stopTimer() {
+            clearInterval(timerInt);
+            isRunning = false;
+            document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
         }
 
-        function setMode(minutes, btn) {
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            resetTimer();
-            timeLeft = minutes * 60;
-            updateDisplay();
+        function resetTimer() {
+            stopTimer();
+            const activeTab = document.querySelector('.timer-tab.active');
+            let min = 25;
+            if(activeTab.innerText.includes('Kısa')) min = 5;
+            if(activeTab.innerText.includes('Uzun')) min = 15;
+            timeLeft = min * 60;
+            updateTimerDisplay();
+        }
+
+        function editTimer() {
+            const val = prompt("Dakika girin:", "45");
+            if(val && !isNaN(val)) {
+                stopTimer();
+                timeLeft = parseInt(val) * 60;
+                updateTimerDisplay();
+                document.querySelectorAll('.timer-tab').forEach(t => t.classList.remove('active'));
+            }
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+            document.title = `(${m}:${s}) Odhun Zen`;
+        }
+
+        function scrollToCat(id) {
+            document.getElementById(`cat-${id}`).scrollIntoView({behavior: 'smooth'});
         }
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
-    </script>
 
+        // Slider Drag Logic
+        function startDrag(id, e) {
+            e.preventDefault();
+            const slider = e.currentTarget;
+            
+            const update = (evt) => {
+                const rect = slider.getBoundingClientRect();
+                let clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                let percent = (clientX - rect.left) / rect.width;
+                percent = Math.max(0, Math.min(1, percent));
+                setVolume(id, percent);
+            };
+
+            const stop = () => {
+                document.removeEventListener('mousemove', update);
+                document.removeEventListener('mouseup', stop);
+                document.removeEventListener('touchmove', update);
+                document.removeEventListener('touchend', stop);
+            };
+
+            document.addEventListener('mousemove', update);
+            document.addEventListener('mouseup', stop);
+            document.addEventListener('touchmove', update);
+            document.addEventListener('touchend', stop);
+            
+            update(e); // İlk tıklamada da ayarla
+        }
+
+    </script>
 </body>
 </html>
