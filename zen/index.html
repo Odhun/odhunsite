@@ -26,7 +26,7 @@
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
     }
 
-    /* BAŞLANGIÇ PERDESİ (TARAYICI İZNİ İÇİN) */
+    /* BAŞLANGIÇ PERDESİ */
     #startOverlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.95); z-index: 9999;
@@ -221,19 +221,18 @@
     </div>
 
     <script>
-        // --- GÜNCELLENMİŞ VE DÜZELTİLMİŞ SES LİSTESİ ---
-        // Çalışmayan linkler Google'ın çalışan diğer sunucuları ile değiştirildi.
+        // --- DÜZELTİLMİŞ & ÇALIŞAN SES LİSTESİ ---
         const sounds = [
-            { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' }, // Çalışıyor
-            { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://actions.google.com/sounds/v1/weather/thunderstorm.ogg' }, // Çalışıyor
-            { id: 'fire', name: 'Kamp Ateşi', icon: 'fa-fire', url: 'https://actions.google.com/sounds/v1/ambiences/fire.ogg' }, // Çalışıyor
-            { id: 'wind', name: 'Rüzgar', icon: 'fa-wind', url: 'https://actions.google.com/sounds/v1/weather/wind_medium.ogg' }, // Düzeltildi
-            { id: 'night', name: 'Gece', icon: 'fa-moon', url: 'https://actions.google.com/sounds/v1/nature/crickets_chirping.ogg' }, // Düzeltildi
-            { id: 'birds', name: 'Kuşlar', icon: 'fa-dove', url: 'https://actions.google.com/sounds/v1/animals/birds_singing.ogg' }, // Düzeltildi
-            { id: 'water', name: 'Dere Sesi', icon: 'fa-water', url: 'https://actions.google.com/sounds/v1/water/stream_water.ogg' }, // Düzeltildi
-            { id: 'coffee', name: 'Kafe Ortamı', icon: 'fa-coffee', url: 'https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg' }, // Çalışıyor
-            { id: 'train', name: 'Tren', icon: 'fa-subway', url: 'https://actions.google.com/sounds/v1/transportation/train_pass.ogg' }, // Düzeltildi
-            { id: 'white', name: 'Beyaz Gürültü', icon: 'fa-snowflake', url: 'https://actions.google.com/sounds/v1/ambiences/airplane_cabin.ogg' } // Düzeltildi (Uçak kabini white noise gibidir)
+            { id: 'rain', name: 'Yağmur', icon: 'fa-cloud-rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' },
+            { id: 'thunder', name: 'Fırtına', icon: 'fa-bolt', url: 'https://actions.google.com/sounds/v1/weather/thunderstorm.ogg' },
+            { id: 'fire', name: 'Kamp Ateşi', icon: 'fa-fire', url: 'https://actions.google.com/sounds/v1/ambiences/fire.ogg' },
+            { id: 'wind', name: 'Rüzgar', icon: 'fa-wind', url: 'https://actions.google.com/sounds/v1/weather/wind_medium.ogg' },
+            { id: 'night', name: 'Gece', icon: 'fa-moon', url: 'https://actions.google.com/sounds/v1/ambiences/july_night.ogg' },
+            { id: 'birds', name: 'Kuşlar', icon: 'fa-dove', url: 'https://actions.google.com/sounds/v1/animals/june_songbirds.ogg' },
+            { id: 'water', name: 'Dere Sesi', icon: 'fa-water', url: 'https://actions.google.com/sounds/v1/water/stream_water.ogg' },
+            { id: 'coffee', name: 'Kafe Ortamı', icon: 'fa-coffee', url: 'https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg' },
+            { id: 'train', name: 'Tren', icon: 'fa-subway', url: 'https://actions.google.com/sounds/v1/transportation/train_pass.ogg' },
+            { id: 'white', name: 'Beyaz Gürültü', icon: 'fa-snowflake', url: 'https://actions.google.com/sounds/v1/ambiences/airplane_cabin.ogg' }
         ];
 
         const audioElements = {};
@@ -245,7 +244,7 @@
             overlay.style.opacity = '0';
             setTimeout(() => { overlay.style.display = 'none'; }, 500);
             
-            // Seslerin yüklenmesini başlat
+            // Sesleri yükle
             initSounds();
         }
 
@@ -257,6 +256,7 @@
                 const audio = new Audio();
                 audio.src = sound.url;
                 audio.loop = true;
+                audio.preload = "none"; // Hız için
                 audioElements[sound.id] = audio;
 
                 // Kart Oluştur
@@ -290,7 +290,7 @@
             if (audio.paused) {
                 audio.play().catch(e => {
                     console.error("Ses çalma hatası:", e);
-                    alert("Hata: Sayfayı yenileyip 'BAŞLA' butonuna tıklayın.");
+                    // iOS için kullanıcı etkileşimi gerekir, bu yüzden hata alabilir.
                 });
                 card.classList.add('active');
             } else {
