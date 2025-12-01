@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ClashHub | Clash Royale İfşaları</title>
+<title>ClashHub | En İyi Desteler & Anlar</title>
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23ff9900%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23000000%22>CH</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23ff9000%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23000000%22>CH</text></svg>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
     :root {
         --bg: #000000;
-        --card-bg: #1b1b1b;
-        --primary: #ff9900; /* Hub Orange */
+        --card-bg: #161616;
+        --primary: #ff9000; /* Hub Orange */
         --text: #ffffff;
         --text-dim: #888;
-        --border: #333;
+        --border: #2f2f2f;
         --green: #22c55e;
         --red: #ef4444;
     }
@@ -32,28 +32,29 @@
     header {
         background: #000000; padding: 15px 20px; 
         position: sticky; top: 0; z-index: 100;
-        border-bottom: 1px solid var(--primary);
+        border-bottom: 1px solid var(--border);
         display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* LOGO TASARIMI (İstenilen Tarz) */
+    /* LOGO (ClashHub Stili) */
     .brand { 
-        font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -1px; 
-        display: flex; align-items: center;
+        font-size: 1.8rem; font-weight: 700; letter-spacing: -1px; 
+        display: flex; align-items: center; cursor: pointer;
     }
-    .brand span.white { color: #fff; margin-right: 2px; }
-    .brand span.hub { 
+    .brand-text { color: #fff; margin-right: 3px; }
+    .brand-hub { 
         background: var(--primary); color: #000; 
-        padding: 2px 8px; border-radius: 4px; 
-        font-weight: 700; display: inline-block;
+        padding: 3px 6px; border-radius: 4px; 
+        font-weight: 900; display: inline-block;
     }
     
     .new-post-btn {
-        background: var(--primary); color: #000; border: none; padding: 8px 20px;
-        border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
-        transition: 0.2s; text-transform: uppercase; font-size: 0.9rem;
+        background: transparent; color: var(--primary); border: 2px solid var(--primary); 
+        padding: 6px 15px; border-radius: 4px; font-weight: 700; cursor: pointer; 
+        display: flex; align-items: center; gap: 8px; transition: 0.2s; 
+        text-transform: uppercase; font-size: 0.85rem;
     }
-    .new-post-btn:hover { background: #e68a00; }
+    .new-post-btn:hover { background: var(--primary); color: #000; }
 
     /* LAYOUT */
     .main-container {
@@ -69,27 +70,29 @@
     @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 
     .card-header {
-        padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #333;
+        padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
     }
     .avatar {
-        width: 40px; height: 40px; background: #333; color: var(--primary);
+        width: 40px; height: 40px; background: #222; color: var(--primary);
         border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;
+        border: 1px solid #333;
     }
-    .user-info h4 { margin: 0; font-size: 1rem; color: #fff; }
+    .user-info h4 { margin: 0; font-size: 1rem; color: var(--primary); font-weight: 700; }
     .user-info span { font-size: 0.75rem; color: var(--text-dim); }
 
     .card-body { padding: 15px; }
     .post-text { font-size: 1rem; line-height: 1.5; color: #ddd; white-space: pre-wrap; }
     .post-text a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .post-text a:hover { text-decoration: underline; }
     
     .post-img {
         width: 100%; border-radius: 4px; margin-top: 15px; display: block; 
-        max-height: 600px; object-fit: contain; background: #000; border: 1px solid #333;
+        max-height: 600px; object-fit: contain; background: #000; border: 1px solid var(--border);
     }
 
     .card-footer {
         padding: 10px 15px; background: #111; display: flex; justify-content: space-between; align-items: center;
-        border-top: 1px solid #333;
+        border-top: 1px solid var(--border);
     }
     .vote-area { display: flex; align-items: center; gap: 15px; }
     
@@ -101,36 +104,41 @@
     .vote-up.active { color: var(--green); }
     .vote-down.active { color: var(--red); }
     
-    /* YENİ BUTON */
+    /* SUPER LIKE BUTONU */
     .super-like-btn {
-        background: transparent; border: 1px solid var(--primary); color: var(--primary);
-        padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; cursor: pointer;
+        background: transparent; border: 1px solid #ff4500; color: #ff4500;
+        padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; cursor: pointer;
         display: flex; align-items: center; gap: 5px; transition: 0.2s;
     }
     .super-like-btn:hover, .super-like-btn.active {
-        background: var(--primary); color: #000;
+        background: #ff4500; color: #fff; box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
     }
 
     /* SIDEBAR (HASHTAGS) */
     .sidebar-col { position: sticky; top: 90px; height: fit-content; }
     
     .tags-card {
-        background: var(--card-bg); border-radius: 5px; padding: 20px; border: 1px solid var(--border);
+        background: var(--card-bg); border-radius: 5px; padding: 0; border: 1px solid var(--border); overflow: hidden;
     }
-    .tags-header { font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; }
+    .tags-header { 
+        font-weight: 700; font-size: 1rem; padding: 15px; color: var(--text); 
+        background: #222; border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; gap: 8px;
+    }
+    .tags-header i { color: var(--primary); }
     
-    .tag-list { display: flex; flex-direction: column; gap: 8px; }
+    .tag-list { display: flex; flex-direction: column; }
     .tag-item {
-        color: #ccc; text-decoration: none; padding: 8px 12px; background: #111;
-        border-radius: 4px; font-size: 0.9rem; display: flex; justify-content: space-between;
-        transition: 0.2s; cursor: pointer; border-left: 3px solid transparent;
+        color: #ccc; text-decoration: none; padding: 10px 15px; 
+        border-bottom: 1px solid #222; font-size: 0.9rem; display: flex; justify-content: space-between;
+        transition: 0.2s; cursor: pointer;
     }
-    .tag-item:hover { border-left-color: var(--primary); color: #fff; background: #222; }
-    .tag-item span { color: var(--text-dim); font-size: 0.8rem; }
-    .tag-item.active { background: #333; color: var(--primary); border-left-color: var(--primary); }
+    .tag-item:hover { background: #222; color: var(--primary); }
+    .tag-item span { color: #555; font-size: 0.8rem; }
+    .tag-item.active { background: #222; color: var(--primary); border-left: 3px solid var(--primary); }
 
     .clear-filter { 
-        display: none; margin-top: 15px; width: 100%; padding: 8px; background: #333; border:none; color: #fff; border-radius: 4px; cursor: pointer; 
+        display: none; margin: 15px 0 0 0; width: 100%; padding: 10px; background: #333; border:none; color: #fff; border-radius: 4px; cursor: pointer; font-weight: bold;
     }
 
     /* MODAL */
@@ -141,7 +149,7 @@
     }
     .modal-content {
         background: var(--card-bg); width: 100%; max-width: 500px; border-radius: 5px;
-        padding: 20px; box-shadow: 0 10px 40px rgba(255, 153, 0, 0.1); border: 1px solid var(--primary);
+        padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid var(--primary);
     }
     .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 700; font-size: 1.2rem; color: var(--primary); }
     .close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
@@ -158,32 +166,33 @@
         flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
         background: #111; padding: 12px; border-radius: 4px; text-align: center;
         cursor: pointer; color: #ccc; border: 1px solid #333; font-size: 0.9rem;
+        transition: 0.2s;
     }
-    .file-label:hover { border-color: var(--primary); color: var(--primary); }
+    .file-label:hover { border-color: var(--primary); color: var(--primary); background: #000; }
     
     .submit-btn {
-        width: 100%; background: var(--primary); color: #000; padding: 15px; border: none;
+        width: 100%; background: var(--primary); color: #000; padding: 12px; border: none;
         border-radius: 4px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase;
     }
+    .submit-btn:hover { background: #e68a00; }
     
-    #previewImg { width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px; display: none; margin-bottom: 10px; }
+    #previewImg { width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px; display: none; margin-bottom: 10px; border: 1px solid var(--primary); }
     .loader { text-align: center; padding: 40px; color: var(--primary); font-weight: bold; grid-column: 1 / -1; }
 
     /* RESPONSIVE */
     @media (max-width: 850px) {
-        .main-container { grid-template-columns: 1fr; }
-        .sidebar-col { display: none; }
+        .main-container { grid-template-columns: 1fr; display: flex; flex-direction: column-reverse; }
+        .sidebar-col { position: static; margin-bottom: 20px; }
         .brand { font-size: 1.5rem; }
         .new-post-btn span { display: none; }
-        .new-post-btn i { margin: 0; }
     }
 </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">
-            <span class="white">Clash</span><span class="hub">hub</span>
+        <div class="brand" onclick="clearFilter()">
+            <span class="brand-text">Clash</span><span class="brand-hub">Hub</span>
         </div>
         <button class="new-post-btn" onclick="openPostModal()">
             <i class="fas fa-plus"></i> <span>Yükle</span>
@@ -198,14 +207,14 @@
 
         <aside class="sidebar-col">
             <div class="tags-card">
-                <div class="tags-header">Trendler</div>
+                <div class="tags-header"><i class="fas fa-fire"></i> Trendler</div>
                 <div class="tag-list" id="tagList">
                     </div>
-                <button class="clear-filter" id="clearFilterBtn" onclick="clearFilter()">Temizle</button>
+                <button class="clear-filter" id="clearFilterBtn" onclick="clearFilter()">Tümünü Göster</button>
             </div>
             
-            <div style="margin-top: 20px; font-size: 0.75rem; color: #444; text-align: center;">
-                Odhun.com © 2025<br>ClashHub Topluluğu
+            <div style="margin-top: 20px; font-size: 0.7rem; color: #444; text-align: center;">
+                Odhun.com © 2025<br>ClashHub - Topluluk Platformu
             </div>
         </aside>
 
@@ -215,7 +224,7 @@
         <div class="modal-content">
             <div class="modal-header"><span>İçerik Paylaş</span><button class="close-btn" onclick="closePostModal()">&times;</button></div>
             <input type="text" id="nickInput" placeholder="Kullanıcı Adı" maxlength="20">
-            <textarea id="textInput" placeholder="Deste, taktik veya anını anlat... (Örn: #megaşövalye #taktik)"></textarea>
+            <textarea id="textInput" placeholder="Deste, taktik veya anını anlat... Etiket kullanmayı unutma! (Örn: #megaşövalye #taktik)"></textarea>
             
             <img id="previewImg">
             
@@ -275,7 +284,7 @@
                 await addDoc(collection(db, "clash_hub_posts"), {
                     nick: nick, text: text, image: img !== "" && img !== window.location.href ? img : null, 
                     tags: hashtags,
-                    likes: 0, dislikes: 0, superLikes: 0, // Yeni Sayaç
+                    likes: 0, dislikes: 0, superLikes: 0, 
                     timestamp: serverTimestamp()
                 });
                 
@@ -315,8 +324,8 @@
 
             postsToShow.forEach(post => {
                 const time = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "Şimdi";
-                const voteState = localStorage.getItem(`ch_vote_${post.id}`); // like/dislike
-                const superState = localStorage.getItem(`ch_super_${post.id}`); // super like
+                const voteState = localStorage.getItem(`ch_vote_${post.id}`); 
+                const superState = localStorage.getItem(`ch_super_${post.id}`); 
                 
                 let imgHtml = post.image && post.image.length > 100 ? `<img src="${post.image}" class="post-img">` : "";
                 
@@ -354,7 +363,7 @@
             const list = document.getElementById('tagList');
             list.innerHTML = "";
             
-            if(sortedTags.length === 0) list.innerHTML = '<div style="color:#555; font-size:0.8rem;">Popüler etiketler burada görünecek.</div>';
+            if(sortedTags.length === 0) list.innerHTML = '<div style="color:#555; font-size:0.8rem; padding:10px;">Henüz etiket yok.</div>';
 
             sortedTags.slice(0, 15).forEach(tag => {
                 const count = tagCounts[tag];
@@ -383,9 +392,16 @@
             localStorage.setItem(`ch_vote_${id}`, type);
         };
 
-        // --- İYİ KOYMUŞSUN BUTONU ---
+        // --- İYİ KOYMUŞSUN (SESLİ) ---
         window.voteSuper = async (id) => {
             if (localStorage.getItem(`ch_super_${id}`)) return;
+            
+            // SES ÇAL
+            try {
+                const audio = new Audio('hub.mp3');
+                audio.play();
+            } catch(e) { console.log("Ses hatası:", e); }
+
             const postRef = doc(db, "clash_hub_posts", id);
             await updateDoc(postRef, { superLikes: increment(1) });
             localStorage.setItem(`ch_super_${id}`, 'true');
