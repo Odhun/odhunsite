@@ -138,8 +138,9 @@
 
     <div id="passwordOverlay">
         <h2 style="color:var(--accent); margin-bottom: 25px;">Giriş Yap</h2>
-        <input type="password" id="passInput" placeholder="Şifre (odhun123)">
+        <input type="password" id="passInput" placeholder="Şifreniz" onkeydown="if(event.key === 'Enter') checkPassword()">
         <button id="lockBtn" onclick="checkPassword()">Siteye Gir</button>
+        <p style="margin-top:20px; color:#555; font-size:0.8rem;">*Şifre, güvenlik nedeniyle tarayıcı hafızasında saklanmaz.</p>
     </div>
 
     <header>
@@ -153,7 +154,7 @@
             <div class="list-area">
                 <textarea id="optionsInput" placeholder="Örnek:\nPizza\nDöner\nSushi\nEvde yemek" oninput="drawWheel()"></textarea>
                 <div id="percentageList" class="percentage-list">
-                    <p style="color:var(--text-dim); text-align:center;">Yüzdelik Değerler:</p>
+                    <p style="color:var(--text-dim); text-align:center; margin-top:0;">Yüzdelik Değerler:</p>
                 </div>
             </div>
             <div class="btn-group">
@@ -198,12 +199,14 @@
         const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
         window.onload = () => {
+            // Şifre kontrolü sadece JS'den sonra yapılır
             if(document.getElementById('passwordOverlay')) document.getElementById('passwordOverlay').style.display = 'flex';
         };
 
         // --- GİRİŞ KONTROLÜ ---
         function checkPassword() {
-            const input = document.getElementById('passInput').value;
+            // trim() eklenerek boşluk hataları düzeltildi
+            const input = document.getElementById('passInput').value.trim();
             if (input === password) {
                 document.getElementById('passwordOverlay').style.opacity = '0';
                 setTimeout(() => { 
@@ -211,7 +214,7 @@
                     loadList();
                 }, 500);
             } else {
-                alert('Hatalı şifre.');
+                alert('Hatalı şifre. Lütfen şifrenizi kontrol edin.');
             }
         }
 
@@ -272,7 +275,7 @@
                 ctx.fillStyle = "#fff";
                 ctx.font = "14px Inter, sans-serif";
                 
-                // Metni merkeze doğru kaydırma
+                // Metni merkeze doğru kaydırma (Metin Yüksekliği: 0)
                 ctx.fillText(option, radius * 0.9, 0); 
                 ctx.restore();
 
@@ -331,35 +334,8 @@
             }
         }
 
-        // --- SLIDER DRAG LOGIC (KART VOLUME LOGİĞİ) ---
-        function startDrag(id, e) {
-            e.preventDefault();
-            const slider = e.currentTarget;
-            
-            const update = (evt) => {
-                const rect = slider.getBoundingClientRect();
-                let clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
-                let percent = (clientX - rect.left) / rect.width;
-                percent = Math.max(0, Math.min(1, percent));
-                setVolume(id, percent);
-            };
-
-            const stop = () => {
-                document.removeEventListener('mousemove', update);
-                document.removeEventListener('mouseup', stop);
-                document.removeEventListener('touchmove', update);
-                document.removeEventListener('touchend', stop);
-            };
-
-            document.addEventListener('mousemove', update);
-            document.addEventListener('mouseup', stop);
-            document.addEventListener('touchmove', update);
-            document.addEventListener('touchend', stop);
-            update(e);
-        }
-
         // --- EVENT LISTENERS ---
-        document.getElementById('lockBtn').addEventListener('click', checkPassword);
+        optionsInput.addEventListener('input', drawWheel);
     </script>
 
 </body>
