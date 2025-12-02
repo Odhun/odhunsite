@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Çark | Karar Çarkı</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23000000%22>Ç</text></svg>">
+<title>Odhun Çark | Rastgele Karar Çarkı</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>Ç</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 
 <style>
-    /* --- TEMEL STİLLER --- */
     :root {
         --bg: #0d1117; 
         --panel: #161b22;
-        --accent: #ffae00; /* Altın Sarısı */
+        --accent: #ffae00; /* Altın Sarısı / Şans Rengi */
         --accent-glow: rgba(255, 174, 0, 0.4);
         --text: #f0f0f0;
         --text-dim: #888;
         --border: #30363d;
-        --secondary: #d63031; /* Ok rengi */
+        --canvas-size: 400px;
+        --success: #27ae60;
     }
 
     * { box-sizing: border-box; }
@@ -31,11 +31,12 @@
         overflow-x: hidden;
     }
     
-    /* --- 1 & 5. GİRİŞ KİLİDİ --- */
+    /* --- GİRİŞ KİLİDİ --- */
     #passwordOverlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: var(--bg); z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        display: none; 
+        flex-direction: column; align-items: center; justify-content: center;
         transition: opacity 0.5s;
     }
     #passInput {
@@ -49,6 +50,7 @@
         border-radius: 30px; font-weight: 700; cursor: pointer;
     }
 
+    /* HEADER */
     header { width: 100%; padding: 20px 0; border-bottom: 1px solid var(--border); background: var(--panel); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
     .brand { font-size: 1.8rem; font-weight: 800; }
     .brand span { color: var(--accent); margin-left: 5px; }
@@ -59,7 +61,7 @@
         max-width: 1200px; flex-wrap: wrap; justify-content: center;
     }
 
-    /* SOL PANEL (INPUT & YÜZDE) */
+    /* SOL PANEL (INPUT) */
     .editor-panel {
         background: var(--panel); border: 1px solid var(--border);
         border-radius: 12px; padding: 20px; flex: 1 1 350px;
@@ -69,14 +71,13 @@
     
     .list-area { display: flex; flex-direction: row; flex: 1; gap: 15px; }
 
-    /* 2. Seçenek Girişi */
     textarea {
         flex: 1; width: 100%; background: #0d1117; border: 1px solid #333;
         color: #fff; padding: 15px; font-family: monospace; resize: none;
         border-radius: 6px; margin-bottom: 10px; font-size: 1rem;
     }
     
-    /* 3. YÜZDELİK LİSTESİ */
+    /* YÜZDELİK LİSTESİ */
     .percentage-list {
         flex: 1; background: #0d1117; border: 1px solid #333; border-radius: 6px;
         padding: 15px; overflow-y: auto; font-size: 0.9rem;
@@ -155,7 +156,7 @@
             <div class="list-area">
                 <textarea id="optionsInput" placeholder="Örnek:\nPizza\nDöner\nSushi\nEvde yemek" oninput="drawWheel()"></textarea>
                 <div id="percentageList" class="percentage-list">
-                    <p style="color:var(--text-dim); text-align:center; margin-top:0;">Kazanma Olasılığı:</p>
+                    <p style="color:var(--text-dim); text-align:center; margin-top:0;">Yüzdelik Değerler:</p>
                 </div>
             </div>
             <div class="btn-group">
@@ -200,7 +201,6 @@
         const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
         window.onload = () => {
-            // Şifre ekranını göster
             if(document.getElementById('passwordOverlay')) document.getElementById('passwordOverlay').style.display = 'flex';
         };
 
@@ -216,7 +216,6 @@
                     loadList();
                 }, 500);
             } else {
-                // Hata mesajı
                 alert('Hatalı şifre. Lütfen şifrenizi kontrol edin.');
             }
         }
@@ -292,7 +291,7 @@
             });
         }
 
-        // --- ÇEVİRME LOGİĞİ (ADİL MATEMATİK) ---
+        // --- ÇEVİRME LOGİĞİ ---
         function spinWheel() {
             if (isSpinning || options.length === 0) return;
 
@@ -302,18 +301,18 @@
             spinBtn.innerText = "DÖNÜYOR...";
             canvas.style.transition = 'none';
 
-            // 1. Rastgele hedef belirle (0'dan N-1'e kadar)
+            // 1. Rastgele hedef belirle
             targetIndex = Math.floor(Math.random() * options.length);
             
-            // 2. Durma açısını hesapla (Hedef dilimin ortasına)
+            // 2. Durma açısını hesapla
             const arcSize = 2 * Math.PI / options.length;
             const targetCenterAngle = (2 * Math.PI) - (targetIndex * arcSize + arcSize / 2); 
 
-            // 3. Büyük, rastgele bir açıya git (En az 5 tur)
+            // 3. 5-10 tam tur ekle + nihai açıya ulaş
             const randomSpins = Math.floor(Math.random() * 6) + 5; 
             const finalRotationDegrees = (targetCenterAngle + (randomSpins * 2 * Math.PI)) * (180 / Math.PI);
 
-            // 4. CSS ile dönme animasyonu başlat (4 saniye)
+            // 4. CSS ile dönme animasyonu başlat
             canvas.style.transition = 'transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0)';
             canvas.style.transform = `rotate(${finalRotationDegrees}deg)`;
 
@@ -337,6 +336,7 @@
         }
 
         // --- EVENT LISTENERS ---
+        // Şifre girişi için Enter tuşuna basıldığında checkPassword'ı tetikle
         document.getElementById('passInput').addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault(); 
@@ -344,6 +344,7 @@
             }
         });
 
+        // Diğer listener'lar
         optionsInput.addEventListener('input', drawWheel);
     </script>
 
