@@ -141,7 +141,7 @@
         <h2 style="color:var(--accent); margin-bottom: 25px;">Giriş Yap</h2>
         <input type="password" id="passInput" placeholder="Şifreniz" onkeydown="if(event.key === 'Enter') checkPassword()">
         <button id="lockBtn" onclick="checkPassword()">Siteye Gir</button>
-        <p style="margin-top:20px; color:#555; font-size:0.8rem;">*Şifre: ix2G<3FMg!@38f!M</p>
+        <p style="margin-top:20px; color:#555; font-size:0.8rem;">*Şifre: wiIs6J7G13qApCz1</p>
     </div>
 
     <header>
@@ -181,8 +181,7 @@
     </footer>
 
     <script>
-        // TRIMMING FIX APPLIED
-        const password = 'ix2G<3FMg!@38f!M'; 
+        const password = 'wiIs6J7G13qApCz1'; // YENİ ŞİFRE
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const optionsInput = document.getElementById('optionsInput');
@@ -201,11 +200,13 @@
         const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
         window.onload = () => {
+            // Şifre kontrolü sadece JS'den sonra yapılır
             if(document.getElementById('passwordOverlay')) document.getElementById('passwordOverlay').style.display = 'flex';
         };
 
         // --- GİRİŞ KONTROLÜ (TRIM APPLIED) ---
         function checkPassword() {
+            // trim() eklenerek şifrenin başındaki/sonundaki boşluklar temizlenir.
             const input = document.getElementById('passInput').value.trim();
             if (input === password) {
                 document.getElementById('passwordOverlay').style.opacity = '0';
