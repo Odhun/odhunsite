@@ -34,7 +34,8 @@
     #passwordOverlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: var(--bg); z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        display: none; /* JS ile görünür yapılacak */
+        flex-direction: column; align-items: center; justify-content: center;
         transition: opacity 0.5s;
     }
     #passInput {
@@ -140,7 +141,7 @@
         <h2 style="color:var(--accent); margin-bottom: 25px;">Giriş Yap</h2>
         <input type="password" id="passInput" placeholder="Şifreniz" onkeydown="if(event.key === 'Enter') checkPassword()">
         <button id="lockBtn" onclick="checkPassword()">Siteye Gir</button>
-        <p style="margin-top:20px; color:#555; font-size:0.8rem;">*Şifre, güvenlik nedeniyle tarayıcı hafızasında saklanmaz.</p>
+        <p style="margin-top:20px; color:#555; font-size:0.8rem;">*Şifre: ix2G<3FMg!@38f!M</p>
     </div>
 
     <header>
@@ -180,7 +181,8 @@
     </footer>
 
     <script>
-        const password = 'ix2G<3FMg!@38f!M'; // YENİ ŞİFRE
+        // TRIMMING FIX APPLIED
+        const password = 'ix2G<3FMg!@38f!M'; 
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const optionsInput = document.getElementById('optionsInput');
@@ -199,13 +201,11 @@
         const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
         window.onload = () => {
-            // Şifre kontrolü sadece JS'den sonra yapılır
             if(document.getElementById('passwordOverlay')) document.getElementById('passwordOverlay').style.display = 'flex';
         };
 
-        // --- GİRİŞ KONTROLÜ ---
+        // --- GİRİŞ KONTROLÜ (TRIM APPLIED) ---
         function checkPassword() {
-            // trim() eklenerek boşluk hataları düzeltildi
             const input = document.getElementById('passInput').value.trim();
             if (input === password) {
                 document.getElementById('passwordOverlay').style.opacity = '0';
@@ -335,6 +335,15 @@
         }
 
         // --- EVENT LISTENERS ---
+        // Şifre girişi için sadece Enter tuşuna basıldığında checkPassword'ı tetikle
+        document.getElementById('passInput').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Varsayılan formu gönderme işlemini engelle
+                checkPassword();
+            }
+        });
+
+        // Diğer listener'lar
         optionsInput.addEventListener('input', drawWheel);
     </script>
 
