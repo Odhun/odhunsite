@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Odhun Çark | Rastgele Karar Çarkı</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23000000%22>%C3%87</text></svg>">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg: #0d1117; /* GitHub Dark */
+        --panel: #161b22;
+        --accent: #ffae00; /* Altın Sarısı / Şans Rengi */
+        --accent-glow: rgba(255, 174, 0, 0.4);
+        --text: #f0f0f0;
+        --border: #30363d;
+        --canvas-size: 400px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; padding: 0; background: var(--bg); color: var(--text);
+        font-family: 'Inter', sans-serif; min-height: 100vh;
+        display: flex; flex-direction: column; align-items: center;
+        overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+        width: 100%; padding: 20px 0; border-bottom: 1px solid var(--border);
+        background: var(--panel); text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .brand { font-size: 1.8rem; font-weight: 800; }
+    .brand span { color: var(--accent); margin-left: 5px; }
+
+    /* LAYOUT */
+    .main-container {
+        display: flex; gap: 30px; padding: 40px 20px; width: 100%;
+        max-width: 1200px; flex-wrap: wrap; justify-content: center;
+    }
+
+    /* SOL PANEL (INPUT) */
+    .editor-panel {
+        background: var(--panel); border: 1px solid var(--border);
+        border-radius: 12px; padding: 20px; flex: 1 1 350px;
+        height: 650px; display: flex; flex-direction: column;
+    }
+    .panel-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--accent); }
+    
+    textarea {
+        flex: 1; width: 100%; background: #0d1117; border: 1px solid #333;
+        color: #fff; padding: 15px; font-family: monospace; resize: none;
+        border-radius: 6px; margin-bottom: 10px; font-size: 1rem;
+    }
+    
+    .btn-group { display: flex; gap: 10px; }
+    .btn-action {
+        flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer;
+        font-weight: 600; transition: 0.2s;
+    }
+    .btn-save { background: var(--accent); color: #000; }
+    .btn-reset { background: #333; color: #fff; }
+
+    /* ORTA PANEL (WHEEL) */
+    .wheel-panel {
+        flex: 1 1 450px; display: flex; flex-direction: column; align-items: center;
+        justify-content: center; position: relative;
+    }
+
+    #wheelCanvas {
+        background: var(--panel); border-radius: 50%;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow);
+    }
+
+    .pointer {
+        position: absolute; top: 10px; width: 0; height: 0;
+        border-left: 15px solid transparent; border-right: 15px solid transparent;
+        border-top: 25px solid var(--accent); z-index: 10;
+        transform: translateY(-5px);
+    }
+
+    .spin-btn {
+        position: absolute; width: 100px; height: 100px; border-radius: 50%;
+        background: var(--primary); color: #000; font-size: 1.1rem; font-weight: 900;
+        border: 5px solid #0d1117; cursor: pointer; z-index: 10;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); transition: 0.2s;
+    }
+    .spin-btn:hover { background: #e68a00; transform: scale(1.05); }
+
+    .result-box {
+        margin-top: 30px; padding: 15px 30px; background: var(--panel);
+        border: 2px solid var(--primary); border-radius: 8px; text-align: center;
+        display: none; width: 80%; max-width: 400px;
+    }
+    .result-box h3 { margin: 0; color: var(--primary); font-size: 1.5rem; }
+    
+    /* MOBİL UYUM */
+    @media (max-width: 800px) {
+        .main-container { flex-direction: column; padding: 15px; }
+        .editor-panel { height: 400px; flex: 1; }
+        .wheel-panel { height: 450px; flex: 1; }
+        #wheelCanvas { max-width: 90vw; max-height: 90vw; }
+    }
+</style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">ODHUN<span>ÇARK</span></div>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="editor-panel">
+            <div class="panel-title"><i class="fas fa-list-ul"></i> Seçenek Listesi (Her Satır Bir Seçenek)</div>
+            <textarea id="optionsInput" placeholder="Örnek:\nPizza\nDöner\nSushi\nEvde yemek" oninput="drawWheel()"></textarea>
+            
+            <div class="btn-group">
+                <button class="btn-action btn-save" onclick="saveList()"><i class="fas fa-save"></i> Listeyi Kaydet</button>
+                <button class="btn-action btn-reset" onclick="loadList()"><i class="fas fa-undo"></i> Kayıtlı Yükle</button>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Liste otomatik olarak tarayıcı hafızasına kaydedilir.</p>
+        </div>
+
+        <div class="wheel-panel">
+            <div class="pointer"></div>
+            <canvas id="wheelCanvas" width="400" height="400"></canvas>
+            <button class="spin-btn" id="spinBtn" onclick="spinWheel()">ÇEVİR!</button>
+
+            <div class="result-box" id="resultBox">
+                <p style="margin:0; font-size:0.8rem;">Kararınız:</p>
+                <h3 id="resultText">?</h3>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Odhun.com © 2025 | Basit Rastgele Seçim Aracı
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const optionsInput = document.getElementById('optionsInput');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultBox = document.getElementById('resultBox');
+        const center = canvas.width / 2;
+        const radius = canvas.width / 2;
+
+        let options = [];
+        let spinAngle = 0;
+        let spinVelocity = 0;
+        let isSpinning = false;
+        let targetIndex = -1;
+
+        // --- RENK PALETİ ---
+        const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
+
+        window.onload = () => {
+            loadList(); // Sayfa açıldığında kayıtlı listeyi yükle
+            drawWheel();
+            // Varsayılan listeyi yükle
+            if (options.length === 0) {
+                optionsInput.value = "Pizza\nDöner\nSushi\nEvde yemek\nSalata";
+                drawWheel();
+            }
+        };
+
+        // --- VERİ YÖNETİMİ (LOCAL STORAGE) ---
+        function saveList() {
+            localStorage.setItem('odhunchark_list', optionsInput.value);
+            alert("Liste başarıyla kaydedildi!");
+        }
+
+        function loadList() {
+            const savedList = localStorage.getItem('odhunchark_list');
+            if (savedList) {
+                optionsInput.value = savedList;
+            }
+            drawWheel();
+        }
+
+        // --- ÇARK ÇİZİMİ ---
+        function drawWheel() {
+            options = optionsInput.value.split('\n').filter(line => line.trim() !== '');
+            if (options.length === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            const totalOptions = options.length;
+            const arcSize = 2 * Math.PI / totalOptions;
+            let startAngle = 0;
+
+            options.forEach((option, i) => {
+                const endAngle = startAngle + arcSize;
+                const color = colors[i % colors.length];
+
+                // Dilim Çizimi
+                ctx.beginPath();
+                ctx.arc(center, center, radius, startAngle, endAngle);
+                ctx.lineTo(center, center);
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // Metin Çizimi
+                ctx.save();
+                ctx.translate(center, center);
+                ctx.rotate(startAngle + arcSize / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "14px Inter, sans-serif";
+                
+                // Metni merkeze doğru kaydırma
+                ctx.fillText(option.toUpperCase(), radius * 0.9, 0); 
+                ctx.restore();
+
+                startAngle = endAngle;
+            });
+        }
+
+        // --- ÇEVİRME LOGİĞİ ---
+        function spinWheel() {
+            if (isSpinning || options.length === 0) return;
+
+            isSpinning = true;
+            resultBox.style.display = 'none';
+            spinBtn.disabled = true;
+            spinBtn.innerText = "DÖNÜYOR...";
+
+            // 1. Rastgele hedef belirle (0 ile options.length arasında)
+            targetIndex = Math.floor(Math.random() * options.length);
+            
+            // 2. Hedefin açısını hesapla (Çarkın durması gereken nihai açı)
+            const arcSize = 2 * Math.PI / options.length;
+            
+            // Hedefin merkez açısı (örneğin hedef 1 ise, ortası)
+            const targetCenterAngle = (2 * Math.PI) - (targetIndex * arcSize + arcSize / 2); 
+
+            // Rastgele 5-10 tam tur ekle (hız kesmesi için)
+            const randomSpins = Math.floor(Math.random() * 6) + 5; 
+            const finalRotation = targetCenterAngle + (randomSpins * 2 * Math.PI);
+
+            // Başlangıç hızı (yüksek)
+            spinVelocity = 0.5 + Math.random() * 0.5;
+
+            // Animasyon Döngüsü
+            animateSpin(finalRotation);
+        }
+
+        function animateSpin(finalRotation) {
+            // Deceleration (Hız Kesme)
+            const deceleration = 0.005; // Sabit yavaşlama oranı
+            
+            // Hızı azalt
+            spinVelocity = Math.max(0, spinVelocity - deceleration);
+
+            // Açıyı güncelle
+            spinAngle += spinVelocity;
+
+            // 2 * PI'yi aşınca sıfırla (temizlik için)
+            if (spinAngle > 2 * Math.PI) {
+                spinAngle -= 2 * Math.PI;
+            }
+
+            // CSS Transform ile çarkı döndür
+            const visualRotation = (finalRotation - spinAngle) * 180 / Math.PI;
+            canvas.style.transform = `rotate(${visualRotation}deg)`;
+
+            // Bitiş Kontrolü
+            if (spinVelocity <= 0.005 && finalRotation - spinAngle < 0.05) {
+                 isSpinning = false;
+                 spinBtn.disabled = false;
+                 spinBtn.innerText = "ÇEVİR!";
+                 showResult();
+                 return;
+            }
+
+            if (isSpinning) {
+                requestAnimationFrame(() => animateSpin(finalRotation));
+            }
+        }
+
+        // --- SONUCU GÖSTER ---
+        function showResult() {
+            if (targetIndex !== -1) {
+                const result = options[targetIndex];
+                resultBox.style.display = 'block';
+                resultBox.style.borderColor = colors[targetIndex % colors.length];
+                document.getElementById('resultText').innerText = result;
+            }
+        }
+
+        // DOM'da input değiştiğinde çarkı tekrar çiz
+        optionsInput.addEventListener('input', drawWheel);
+    </script>
+
+</body>
+</html>
