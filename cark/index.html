@@ -4,18 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Odhun Çark | Rastgele Karar Çarkı</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23000000%22>%C3%87</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23000000%22>%C3%87</tspan></text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 
 <style>
     :root {
-        --bg: #0d1117; /* GitHub Dark */
+        --bg: #0d1117; 
         --panel: #161b22;
         --accent: #ffae00; /* Altın Sarısı / Şans Rengi */
         --accent-glow: rgba(255, 174, 0, 0.4);
         --text: #f0f0f0;
+        --text-dim: #888;
         --border: #30363d;
         --canvas-size: 400px;
     }
@@ -28,13 +29,27 @@
         display: flex; flex-direction: column; align-items: center;
         overflow-x: hidden;
     }
+    
+    /* --- GİRİŞ KİLİDİ --- */
+    #passwordOverlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg); z-index: 9999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        transition: opacity 0.5s;
+    }
+    #passInput {
+        padding: 15px; background: var(--panel); border: 2px solid var(--accent);
+        color: var(--text); border-radius: 8px; font-size: 1.1rem; text-align: center;
+        margin-bottom: 20px; width: 250px;
+    }
+    #passInput:focus { box-shadow: 0 0 10px var(--accent-glow); outline: none; }
+    #lockBtn {
+        background: var(--accent); color: #000; padding: 12px 30px; border: none;
+        border-radius: 30px; font-weight: 700; cursor: pointer;
+    }
 
     /* HEADER */
-    header {
-        width: 100%; padding: 20px 0; border-bottom: 1px solid var(--border);
-        background: var(--panel); text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
+    header { width: 100%; padding: 20px 0; border-bottom: 1px solid var(--border); background: var(--panel); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
     .brand { font-size: 1.8rem; font-weight: 800; }
     .brand span { color: var(--accent); margin-left: 5px; }
 
@@ -44,7 +59,7 @@
         max-width: 1200px; flex-wrap: wrap; justify-content: center;
     }
 
-    /* SOL PANEL (INPUT) */
+    /* SOL PANEL (INPUT & YÜZDE) */
     .editor-panel {
         background: var(--panel); border: 1px solid var(--border);
         border-radius: 12px; padding: 20px; flex: 1 1 350px;
@@ -52,17 +67,24 @@
     }
     .panel-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--accent); }
     
+    .list-area { display: flex; flex-direction: row; flex: 1; gap: 15px; }
+
     textarea {
         flex: 1; width: 100%; background: #0d1117; border: 1px solid #333;
         color: #fff; padding: 15px; font-family: monospace; resize: none;
         border-radius: 6px; margin-bottom: 10px; font-size: 1rem;
     }
     
-    .btn-group { display: flex; gap: 10px; }
-    .btn-action {
-        flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer;
-        font-weight: 600; transition: 0.2s;
+    /* YÜZDELİK LİSTESİ (YENİ) */
+    .percentage-list {
+        flex: 1; background: #0d1117; border: 1px solid #333; border-radius: 6px;
+        padding: 15px; overflow-y: auto; font-size: 0.9rem;
     }
+    .percent-item { margin-bottom: 8px; color: #ddd; display: flex; justify-content: space-between; }
+    .percent-item span { color: var(--accent); font-weight: 700; }
+
+    .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+    .btn-action { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
     .btn-save { background: var(--accent); color: #000; }
     .btn-reset { background: #333; color: #fff; }
 
@@ -73,42 +95,52 @@
     }
 
     #wheelCanvas {
-        background: var(--panel); border-radius: 50%;
+        background: transparent; border-radius: 50%;
         box-shadow: 0 0 20px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow);
+        transform: rotate(0deg); transition: transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0); /* Yumuşak bitiş için */
     }
 
     .pointer {
         position: absolute; top: 10px; width: 0; height: 0;
         border-left: 15px solid transparent; border-right: 15px solid transparent;
-        border-top: 25px solid var(--accent); z-index: 10;
+        border-top: 30px solid var(--secondary); /* Kırmızı Ok */
+        z-index: 10;
         transform: translateY(-5px);
+        filter: drop-shadow(0 0 5px var(--secondary));
     }
 
     .spin-btn {
-        position: absolute; width: 100px; height: 100px; border-radius: 50%;
-        background: var(--primary); color: #000; font-size: 1.1rem; font-weight: 900;
-        border: 5px solid #0d1117; cursor: pointer; z-index: 10;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); transition: 0.2s;
+        position: absolute; width: 120px; height: 120px; border-radius: 50%;
+        background: var(--primary); color: #000; font-size: 1.2rem; font-weight: 900;
+        border: 5px solid var(--bg); cursor: pointer; z-index: 10;
+        box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(0,0,0,0.5);
     }
-    .spin-btn:hover { background: #e68a00; transform: scale(1.05); }
 
     .result-box {
         margin-top: 30px; padding: 15px 30px; background: var(--panel);
         border: 2px solid var(--primary); border-radius: 8px; text-align: center;
         display: none; width: 80%; max-width: 400px;
     }
-    .result-box h3 { margin: 0; color: var(--primary); font-size: 1.5rem; }
+    .result-box h3 { margin: 0; color: var(--success, #00ff9d); font-size: 1.8rem; }
     
     /* MOBİL UYUM */
     @media (max-width: 800px) {
-        .main-container { flex-direction: column; padding: 15px; }
-        .editor-panel { height: 400px; flex: 1; }
-        .wheel-panel { height: 450px; flex: 1; }
+        .main-container { flex-direction: column; padding: 15px; gap: 15px; }
+        .editor-panel { height: 400px; flex: none; }
+        .list-area { flex-direction: column; }
+        .percentage-list { height: 150px; flex: none; margin-top: 10px; }
+        .wheel-panel { height: 450px; flex: none; }
         #wheelCanvas { max-width: 90vw; max-height: 90vw; }
     }
 </style>
 </head>
 <body>
+
+    <div id="passwordOverlay">
+        <h2 style="color:var(--accent); margin-bottom: 25px;">Giriş Yap</h2>
+        <input type="password" id="passInput" placeholder="Şifre (odhun123)">
+        <button id="lockBtn" onclick="checkPassword()">Siteye Gir</button>
+    </div>
 
     <header>
         <div class="brand">ODHUN<span>ÇARK</span></div>
@@ -117,14 +149,17 @@
     <div class="main-container">
         
         <div class="editor-panel">
-            <div class="panel-title"><i class="fas fa-list-ul"></i> Seçenek Listesi (Her Satır Bir Seçenek)</div>
-            <textarea id="optionsInput" placeholder="Örnek:\nPizza\nDöner\nSushi\nEvde yemek" oninput="drawWheel()"></textarea>
-            
+            <div class="panel-title"><i class="fas fa-list-ul"></i> Seçenek Listesi</div>
+            <div class="list-area">
+                <textarea id="optionsInput" placeholder="Örnek:\nPizza\nDöner\nSushi\nEvde yemek" oninput="drawWheel()"></textarea>
+                <div id="percentageList" class="percentage-list">
+                    <p style="color:var(--text-dim); text-align:center;">Yüzdelik Değerler:</p>
+                </div>
+            </div>
             <div class="btn-group">
                 <button class="btn-action btn-save" onclick="saveList()"><i class="fas fa-save"></i> Listeyi Kaydet</button>
                 <button class="btn-action btn-reset" onclick="loadList()"><i class="fas fa-undo"></i> Kayıtlı Yükle</button>
             </div>
-            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Liste otomatik olarak tarayıcı hafızasına kaydedilir.</p>
         </div>
 
         <div class="wheel-panel">
@@ -144,6 +179,7 @@
     </footer>
 
     <script>
+        const password = 'ix2G<3FMg!@38f!M'; // GİRİŞ ŞİFRESİ
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const optionsInput = document.getElementById('optionsInput');
@@ -157,37 +193,53 @@
         let spinVelocity = 0;
         let isSpinning = false;
         let targetIndex = -1;
+        let animationFrameId;
 
-        // --- RENK PALETİ ---
-        const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
+        const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63']; // 8 renk
 
         window.onload = () => {
-            loadList(); // Sayfa açıldığında kayıtlı listeyi yükle
-            drawWheel();
-            // Varsayılan listeyi yükle
-            if (options.length === 0) {
-                optionsInput.value = "Pizza\nDöner\nSushi\nEvde yemek\nSalata";
-                drawWheel();
-            }
+            // Şifre kontrolü sadece JS'den sonra yapılır
+            if(document.getElementById('passwordOverlay')) document.getElementById('passwordOverlay').style.display = 'flex';
         };
 
-        // --- VERİ YÖNETİMİ (LOCAL STORAGE) ---
+        // --- GİRİŞ KONTROLÜ ---
+        function checkPassword() {
+            const input = document.getElementById('passInput').value;
+            if (input === password) {
+                document.getElementById('passwordOverlay').style.opacity = '0';
+                setTimeout(() => { 
+                    document.getElementById('passwordOverlay').style.display = 'none';
+                    loadList(); // Şifre doğruysa listeyi yükle
+                }, 500);
+            } else {
+                alert('Hatalı şifre.');
+            }
+        }
+
+        // --- VERİ YÖNETİMİ ---
         function saveList() {
             localStorage.setItem('odhunchark_list', optionsInput.value);
+            drawWheel();
             alert("Liste başarıyla kaydedildi!");
         }
 
         function loadList() {
             const savedList = localStorage.getItem('odhunchark_list');
-            if (savedList) {
+            if (savedList && savedList.trim() !== "") {
                 optionsInput.value = savedList;
+            } else {
+                // Varsayılan listeyi yükle
+                optionsInput.value = "Çin Yemeği\nTürk Mutfağı\nFast Food\nSushi\nVegan";
             }
             drawWheel();
         }
 
-        // --- ÇARK ÇİZİMİ ---
+        // --- ÇARK ÇİZİMİ & YÜZDELİK HESAPLAMA ---
         function drawWheel() {
             options = optionsInput.value.split('\n').filter(line => line.trim() !== '');
+            const percentList = document.getElementById('percentageList');
+            percentList.innerHTML = `<p style="color:var(--text-dim); text-align:center; margin-top:0;">Kazanma Olasılığı:</p>`;
+
             if (options.length === 0) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 return;
@@ -195,20 +247,26 @@
 
             const totalOptions = options.length;
             const arcSize = 2 * Math.PI / totalOptions;
+            const percentage = (100 / totalOptions).toFixed(1);
             let startAngle = 0;
 
             options.forEach((option, i) => {
                 const endAngle = startAngle + arcSize;
                 const color = colors[i % colors.length];
 
-                // Dilim Çizimi
+                // 1. Dilim Çizimi
                 ctx.beginPath();
                 ctx.arc(center, center, radius, startAngle, endAngle);
                 ctx.lineTo(center, center);
                 ctx.fillStyle = color;
                 ctx.fill();
 
-                // Metin Çizimi
+                // 2. Dilim Arası Çizgisi (Daha şık görünüm için)
+                ctx.strokeStyle = var(--panel);
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 3. Metin Çizimi (Büyük harf fix)
                 ctx.save();
                 ctx.translate(center, center);
                 ctx.rotate(startAngle + arcSize / 2);
@@ -217,8 +275,15 @@
                 ctx.font = "14px Inter, sans-serif";
                 
                 // Metni merkeze doğru kaydırma
-                ctx.fillText(option.toUpperCase(), radius * 0.9, 0); 
+                ctx.fillText(option, radius * 0.9, 0); // Orijinal case kullanıldı
                 ctx.restore();
+
+                // 4. Yüzdelik Listeye Ekle
+                percentList.innerHTML += `
+                    <div class="percent-item">
+                        ${option}: <span>%${percentage}</span>
+                    </div>
+                `;
 
                 startAngle = endAngle;
             });
@@ -232,58 +297,30 @@
             resultBox.style.display = 'none';
             spinBtn.disabled = true;
             spinBtn.innerText = "DÖNÜYOR...";
+            canvas.style.transition = 'none'; // Geçişi sıfırla
 
-            // 1. Rastgele hedef belirle (0 ile options.length arasında)
+            // 1. Rastgele hedef belirle
             targetIndex = Math.floor(Math.random() * options.length);
             
-            // 2. Hedefin açısını hesapla (Çarkın durması gereken nihai açı)
+            // 2. Durma açısını hesapla
             const arcSize = 2 * Math.PI / options.length;
-            
-            // Hedefin merkez açısı (örneğin hedef 1 ise, ortası)
             const targetCenterAngle = (2 * Math.PI) - (targetIndex * arcSize + arcSize / 2); 
-
-            // Rastgele 5-10 tam tur ekle (hız kesmesi için)
-            const randomSpins = Math.floor(Math.random() * 6) + 5; 
-            const finalRotation = targetCenterAngle + (randomSpins * 2 * Math.PI);
-
-            // Başlangıç hızı (yüksek)
-            spinVelocity = 0.5 + Math.random() * 0.5;
-
-            // Animasyon Döngüsü
-            animateSpin(finalRotation);
-        }
-
-        function animateSpin(finalRotation) {
-            // Deceleration (Hız Kesme)
-            const deceleration = 0.005; // Sabit yavaşlama oranı
             
-            // Hızı azalt
-            spinVelocity = Math.max(0, spinVelocity - deceleration);
+            // 3. 5-10 tam tur ekle + nihai açıya ulaş
+            const randomSpins = Math.floor(Math.random() * 6) + 5; 
+            const finalRotationDegrees = (targetCenterAngle + (randomSpins * 2 * Math.PI)) * (180 / Math.PI);
 
-            // Açıyı güncelle
-            spinAngle += spinVelocity;
+            // 4. CSS ile dönme animasyonu başlat
+            canvas.style.transition = 'transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0)';
+            canvas.style.transform = `rotate(${finalRotationDegrees}deg)`;
 
-            // 2 * PI'yi aşınca sıfırla (temizlik için)
-            if (spinAngle > 2 * Math.PI) {
-                spinAngle -= 2 * Math.PI;
-            }
-
-            // CSS Transform ile çarkı döndür
-            const visualRotation = (finalRotation - spinAngle) * 180 / Math.PI;
-            canvas.style.transform = `rotate(${visualRotation}deg)`;
-
-            // Bitiş Kontrolü
-            if (spinVelocity <= 0.005 && finalRotation - spinAngle < 0.05) {
+            // 5. Animasyon bitince sonucu göster
+            setTimeout(() => {
                  isSpinning = false;
                  spinBtn.disabled = false;
                  spinBtn.innerText = "ÇEVİR!";
                  showResult();
-                 return;
-            }
-
-            if (isSpinning) {
-                requestAnimationFrame(() => animateSpin(finalRotation));
-            }
+            }, 4100);
         }
 
         // --- SONUCU GÖSTER ---
@@ -296,8 +333,9 @@
             }
         }
 
-        // DOM'da input değiştiğinde çarkı tekrar çiz
+        // --- EVENT LISTENERS ---
         optionsInput.addEventListener('input', drawWheel);
+        document.getElementById('lockBtn').addEventListener('click', checkPassword);
     </script>
 
 </body>
