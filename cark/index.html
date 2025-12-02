@@ -2,39 +2,144 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Özel Çark Çevirme Uygulaması</title>
+    <title>Yönetici Paneli - Özel Çark</title>
+    
     <style>
-        /* Basit CSS stilleri */
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        #app-content { max-width: 800px; margin: auto; }
-        #auth-ui input { padding: 10px; margin: 5px; }
-        #auth-ui button, #logout-button, #spin-button { padding: 10px 20px; cursor: pointer; }
-        #wheel-container { margin: 20px 0; border: 1px solid #ccc; display: inline-block; }
-        #wheel-canvas { background-color: #eee; border-radius: 50%; }
-        #results-list { list-style: none; padding: 0; }
-        #results-list li { background: #f4f4f4; margin: 5px 0; padding: 10px; border-radius: 5px; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+        
+        body { 
+            font-family: 'Arial', sans-serif; 
+            text-align: center; 
+            margin: 0; 
+            padding: 50px 20px;
+            background-color: #121212; /* Koyu arka plan */
+            color: #E0E0E0; /* Açık metin rengi */
+        }
+        h1, h2, h3 { 
+            font-family: 'Playfair Display', serif; /* Şık başlık fontu */
+            color: #FFD700; /* Altın rengi vurgu */
+        }
+        
+        #app-content { 
+            max-width: 900px; 
+            margin: auto; 
+            padding: 30px;
+            background-color: #1E1E1E; /* Daha koyu iç alan */
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Input ve Buton Stilleri */
+        #auth-ui input, #slice-input { 
+            padding: 12px; 
+            margin: 10px 0; 
+            border: 1px solid #444;
+            background-color: #2C2C2C;
+            color: #E0E0E0;
+            border-radius: 8px;
+            width: 80%;
+            box-sizing: border-box;
+        }
+
+        button { 
+            padding: 12px 25px; 
+            margin: 10px 5px;
+            cursor: pointer; 
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #login-button, #save-options-button {
+            background-color: #FFD700; /* Altın rengi (vurgu) */
+            color: #121212;
+        }
+        #spin-button {
+            background-color: #A30000; /* Koyu Kırmızı (Erotik Tema Vurgusu) */
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+        #logout-button {
+            background-color: #555;
+            color: white;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Çark Alanı ve Sonuçlar */
+        #wheel-container { 
+            margin: 30px auto; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #wheel-canvas { 
+            background-color: #2C2C2C; /* Koyu Çark Arka Planı */
+            border-radius: 50%; 
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); /* Hafif altın parıltısı */
+            margin-bottom: 20px;
+        }
+        #results-list { 
+            list-style: none; 
+            padding: 0; 
+            text-align: left;
+            width: 100%;
+        }
+        #results-list li { 
+            background: #2C2C2C; 
+            margin: 8px 0; 
+            padding: 12px; 
+            border-left: 4px solid #A30000;
+            border-radius: 5px;
+            color: #E0E0E0;
+            font-size: 0.9em;
+        }
+        #options-editor {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Özel Çark Çevirme Uygulaması</h1>
+    <h1>Özel Yönetim Konsolu</h1>
 
     <div id="auth-ui">
-        <h2>Giriş Yapın</h2>
+        <h2>Lütfen Giriş Yapın</h2>
         <input type="email" id="email" placeholder="E-posta">
         <input type="password" id="password" placeholder="Şifre">
         <button id="login-button">Giriş Yap</button>
-        <p id="auth-error" style="color: red;"></p>
+        <p id="auth-error" style="color: #FF4500;"></p>
     </div>
 
     <div id="app-content" style="display:none;">
-        <h2>Merhaba, Yönetici! Uygulama Verileri:</h2>
         
+        <div id="options-editor">
+            <h3>Çark Seçeneklerini Düzenle</h3>
+            <p style="font-size: 0.85em; color: #aaa;">Her satıra bir seçenek yazın ve kaydedin. Seçenekleriniz Firebase'e kaydedilecektir.</p>
+            <textarea id="slice-input" rows="5" placeholder="Örnek:
+A seçeneği
+B seçeneği
+C seçeneği"></textarea>
+            <button id="save-options-button">Seçenekleri Kaydet & Çarkı Güncelle</button>
+        </div>
+
         <div id="wheel-container">
             <canvas id="wheel-canvas" width="400" height="400"></canvas>
-            <button id="spin-button">Çevir!</button>
+            <button id="spin-button">ÇEVİR!</button>
         </div>
         
-        <h3>Sonuç Kayıtları (Firebase'den)</h3>
+        <h3>Kaydedilen Sonuçlar</h3>
         <ul id="results-list">
             <li>Yükleniyor...</li>
         </ul>
@@ -43,28 +148,27 @@
     </div>
 
     <script type="module">
-        // --- 1. Firebase Modüllerini İçe Aktar ---
+        // --- Firebase Modüllerini İçe Aktar ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getDatabase, ref, push, onValue, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
         
-        // --- 2. GÖRSELDEKİ BİLGİLERİNİZ VE KENDİ UID'NİZ ---
+        // --- 1. GÖRSELDEKİ BİLGİLERİNİZ VE KENDİ UID'NİZ ---
         const firebaseConfig = {
-            apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
+            apiKey: "AIzaSyBCxV9J8v9b53HpzVgWOiEF-_FHwejPo",
             authDomain: "anit-885a2.firebaseapp.com",
             projectId: "anit-885a2",
             storageBucket: "anit-885a2.appspot.com",
             messagingSenderId: "840387116828",
             appId: "1:840387116828:web:0887b37d998cb63a35c4d9",
             measurementId: "G-R0BY4RSPBB",
-            // Realtime Database URL'nizi buraya ekleyin:
             databaseURL: "https://anit-885a2-default-rtdb.firebaseio.com" 
         };
 
         // BURAYI KENDİ UID'NİZ İLE DEĞİŞTİRİN!
-        const MY_USER_UID = "yya21vML6kSIh2fttsg8VNFNcex1"; 
+        const MY_USER_UID = "SİZİN_KOPYALADIĞINIZ_UID"; 
 
-        // --- 3. Firebase Servislerini Başlat ---
+        // --- 2. Firebase Servislerini Başlat ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
@@ -79,30 +183,61 @@
         const authError = document.getElementById('auth-error');
         const resultsList = document.getElementById('results-list');
         const spinButton = document.getElementById('spin-button');
+        const sliceInput = document.getElementById('slice-input');
+        const saveOptionsButton = document.getElementById('save-options-button');
 
-        // Çark Dilimleri
-        const slices = ["5 Puan", "10 Puan", "Kaybettin", "25 Puan", "Tekrar Çevir", "0 Puan"];
-        const colors = ["#ffc107", "#28a745", "#dc3545", "#007bff", "#6f42c1", "#343a40"];
+        // Çark Ayarları
+        let slices = ["Aksiyon 1", "Aksiyon 2", "Joker", "Aksiyon 3"]; // Başlangıç/varsayılan dilimler
+        // Erotik temaya uygun renkler (Kırmızı, Bordo, Siyah, Altın)
+        const colors = ["#A30000", "#590000", "#300000", "#FFD700"]; 
         const canvas = document.getElementById('wheel-canvas');
         const ctx = canvas.getContext('2d');
         let currentRotation = 0;
 
-        // --- 4. Fonksiyonlar ---
+        // --- 3. Fonksiyonlar ---
         
-        // Veri Kaydetme
+        // A. Çark Seçeneklerini Firebase'e Kaydetme
+        function saveWheelOptions(uid, optionsArray) {
+            const optionsRef = ref(db, `users/${uid}/wheel_options`);
+            set(optionsRef, optionsArray)
+                .then(() => {
+                    authError.textContent = "Seçenekler başarıyla kaydedildi ve çark güncellendi.";
+                    slices = optionsArray; // Global değişkeni güncelle
+                    drawWheel(); // Çarkı yeniden çiz
+                })
+                .catch(error => {
+                    authError.textContent = "Seçenek kaydetme hatası: " + error.message;
+                });
+        }
+
+        // B. Çark Seçeneklerini Firebase'den Yükleme
+        function loadWheelOptions(uid) {
+            const optionsRef = ref(db, `users/${uid}/wheel_options`);
+            onValue(optionsRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const loadedOptions = snapshot.val();
+                    slices = loadedOptions; // Global dilimleri güncelle
+                    sliceInput.value = loadedOptions.join('\n'); // Textarea'yı doldur
+                } else {
+                    // Veri yoksa, varsayılan dilimleri kaydedelim
+                    saveWheelOptions(uid, slices);
+                }
+                drawWheel(); // Yüklenen/Varsayılan dilimlerle çarkı çiz
+            }, {
+                onlyOnce: true // İlk yüklemede bir kez okusun
+            });
+        }
+        
+        // C. Sonuçları Kaydetme (Önceki Koddan)
         function saveSpinResult(uid, result) {
             const resultsRef = ref(db, `users/${uid}/spin_results`);
             push(resultsRef, {
                 result: result,
                 timestamp: serverTimestamp()
-            }).then(() => {
-                console.log("Sonuç Firebase'e başarıyla kaydedildi.");
-            }).catch(error => {
-                console.error("Veri kaydetme hatası:", error);
             });
         }
 
-        // Veri Yükleme (Realtime)
+        // D. Veri Yükleme ve Dinleme (Önceki Koddan)
         function loadSpinResults(uid) {
             const resultsRef = ref(db, `users/${uid}/spin_results`);
             
@@ -110,13 +245,12 @@
                 resultsList.innerHTML = '';
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    // Sonuçları en yenisi en üstte olacak şekilde sıralama
                     const sortedResults = Object.entries(data).sort(([, a], [, b]) => b.timestamp - a.timestamp);
                     
                     sortedResults.forEach(([, item]) => {
                         const li = document.createElement('li');
                         const date = item.timestamp ? new Date(item.timestamp).toLocaleString() : 'Hemen şimdi';
-                        li.textContent = `[${date}] - Çark Sonucu: ${item.result}`;
+                        li.textContent = `[${date}] - ${item.result}`;
                         resultsList.appendChild(li);
                     });
                 } else {
@@ -125,8 +259,17 @@
             });
         }
 
-        // Çarkı Çizme Fonksiyonu
+        // E. Çarkı Çizme Fonksiyonu (Tasarım güncellendi)
         function drawWheel(rotation = 0) {
+            if (slices.length === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#E0E0E0';
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Seçenek Yok', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const radius = centerX - 5;
@@ -151,10 +294,27 @@
                 // Metni Yaz
                 ctx.save();
                 ctx.rotate(angle + arc / 2);
-                ctx.fillStyle = 'black';
-                ctx.font = 'bold 14px Arial';
+                ctx.fillStyle = 'white'; // Metin rengini beyaza çevirdik
+                ctx.font = 'bold 16px "Playfair Display", serif';
                 ctx.textAlign = 'right';
-                ctx.fillText(slice, radius - 10, 5);
+                
+                // Metni birden fazla satıra bölmek için basit mantık
+                const words = slice.split(' ');
+                let line = '';
+                let yOffset = 0;
+                
+                for(let j = 0; j < words.length; j++) {
+                    const testLine = line + words[j] + ' ';
+                    if (ctx.measureText(testLine).width > radius - 20 && j > 0) {
+                        ctx.fillText(line.trim(), radius - 10, 5 + yOffset);
+                        line = words[j] + ' ';
+                        yOffset += 18;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line.trim(), radius - 10, 5 + yOffset);
+                
                 ctx.restore();
             });
 
@@ -162,12 +322,12 @@
 
             // Orta daireyi çiz
             ctx.beginPath();
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = '#121212';
             ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
             ctx.fill();
-
-            // İşaretçi (Ok)
-            ctx.fillStyle = 'black';
+            
+            // İşaretçi (Ok) - Kırmızı ok
+            ctx.fillStyle = '#A30000';
             ctx.beginPath();
             ctx.moveTo(centerX * 2 - 10, centerY);
             ctx.lineTo(centerX * 2, centerY - 10);
@@ -176,8 +336,13 @@
             ctx.fill();
         }
 
-        // Çevirme Animasyonu
+        // F. Çevirme Animasyonu (Önceki Koddan)
         function spinWheel() {
+            if (slices.length === 0) {
+                 authError.textContent = "Lütfen önce çark seçeneklerini girin ve kaydedin!";
+                 return;
+            }
+            
             spinButton.disabled = true;
             authError.textContent = "Çark çevriliyor...";
             
@@ -185,27 +350,26 @@
             const minTurns = 4;
             const randomSliceIndex = Math.floor(Math.random() * slices.length);
             const targetAngle = randomSliceIndex * (360 / slices.length);
-            const totalDegrees = (minTurns * 360) + (360 - targetAngle); // Başlangıçtan hedefe dönme
-            const duration = 5000; // 5 saniye
+            const totalDegrees = (minTurns * 360) + (360 - targetAngle);
+            const duration = 5000;
             const startTime = performance.now();
 
             function animate(currentTime) {
                 const elapsedTime = currentTime - startTime;
                 const progress = Math.min(elapsedTime / duration, 1);
                 
-                // Yavaşlama (Ease out cubic)
                 const easing = 1 - Math.pow(1 - progress, 3); 
                 
                 const rotationDegrees = totalDegrees * easing;
-                currentRotation = (rotationDegrees * Math.PI) / 180; // Radyana çevir
+                currentRotation = (rotationDegrees * Math.PI) / 180;
                 drawWheel(currentRotation);
 
                 if (progress < 1) {
                     requestAnimationFrame(animate);
                 } else {
-                    // Animasyon bitti, sonucu belirle ve kaydet
                     spinButton.disabled = false;
-                    authError.textContent = "Sonuç belli oldu!";
+                    authError.textContent = `Sonuç: ${slices[randomSliceIndex]}!`;
+                    
                     const winningSlice = slices[randomSliceIndex];
                     alert(`Çark sonucu: ${winningSlice}!`);
                     saveSpinResult(auth.currentUser.uid, winningSlice);
@@ -214,30 +378,29 @@
             requestAnimationFrame(animate);
         }
 
-        // --- 5. Olay Dinleyicileri (Events) ---
+        // --- 4. Olay Dinleyicileri (Events) ---
 
         // A. Yetkilendirme Durumu Değiştiğinde
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 if (user.uid === MY_USER_UID) {
-                    // Kendi Yöneticinizsiniz!
                     authUI.style.display = 'none';
                     appContent.style.display = 'block';
                     authError.textContent = "";
-                    drawWheel(); // Çarkı başlangıçta çiz
-                    loadSpinResults(user.uid);
+                    
+                    loadWheelOptions(user.uid); // Seçenekleri yükle
+                    loadSpinResults(user.uid); // Sonuçları yükle
                 } else {
-                    // Yetkisiz kullanıcı giriş yaparsa
                     alert("Bu siteye erişim yetkiniz yok.");
                     signOut(auth);
                     authUI.style.display = 'block';
                     appContent.style.display = 'none';
                 }
             } else {
-                // Oturum Açılmamış
                 authUI.style.display = 'block';
                 appContent.style.display = 'none';
                 authError.textContent = "Lütfen yönetici hesabı ile giriş yapın.";
+                drawWheel(); // Çarkı varsayılan olarak çiz (giriş yapılmadıysa)
             }
         });
 
@@ -257,10 +420,29 @@
         logoutButton.addEventListener('click', () => {
             signOut(auth);
         });
+        
+        // D. Seçenekleri Kaydet Düğmesi (YENİ)
+        saveOptionsButton.addEventListener('click', () => {
+            if(auth.currentUser && auth.currentUser.uid === MY_USER_UID) {
+                // Textarea'daki metni al, boş satırları filtrele
+                const newSlices = sliceInput.value
+                    .split('\n')
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0);
+                
+                if (newSlices.length > 0) {
+                    saveWheelOptions(auth.currentUser.uid, newSlices);
+                } else {
+                    authError.textContent = "Lütfen en az bir seçenek girin.";
+                }
+            } else {
+                authError.textContent = "Kaydetmek için önce giriş yapmalısınız.";
+            }
+        });
 
-        // D. Çevir Düğmesi
+        // E. Çevir Düğmesi
         spinButton.addEventListener('click', spinWheel);
-
+        
         // İlk çark çizimini yap
         drawWheel(); 
     </script>
