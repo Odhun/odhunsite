@@ -10,123 +10,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 
 <style>
-/* ... (STYLE KODLARI AYNEN KALSIN) ... */
-/* passwordOverlay kaldırıldığı için gereksiz CSS'ler de kaldırılabilir. */
-:root {
-    --bg: #0d1117; 
-    --panel: #161b22;
-    --accent: #ffae00; /* Altın Sarısı / Şans Rengi */
-    --accent-glow: rgba(255, 174, 0, 0.4);
-    --text: #f0f0f0;
-    --text-dim: #888;
-    --border: #30363d;
-    --canvas-size: 400px;
-    --secondary: #d63031;
-}
+    :root {
+        --bg: #0d1117; 
+        --panel: #161b22;
+        --accent: #ffae00; /* Altın Sarısı / Şans Rengi */
+        --accent-glow: rgba(255, 174, 0, 0.4);
+        --text: #f0f0f0;
+        --text-dim: #888;
+        --border: #30363d;
+        --canvas-size: 400px;
+        --secondary: #d63031;
+        --primary: var(--accent); /* Spin butonu için eklendi */
+    }
 
-* { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-body {
-    margin: 0; padding: 0; background: var(--bg); color: var(--text);
-    font-family: 'Inter', sans-serif; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
-    overflow-x: hidden;
-}
+    body {
+        margin: 0; padding: 0; background: var(--bg); color: var(--text);
+        font-family: 'Inter', sans-serif; min-height: 100vh;
+        display: flex; flex-direction: column; align-items: center;
+        overflow-x: hidden;
+    }
+    
+    /* --- GİRİŞ KİLİDİ --- */
+    #passwordOverlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg); z-index: 9999;
+        display: none; 
+        flex-direction: column; align-items: center; justify-content: center;
+        transition: opacity 0.5s;
+    }
+    #lockForm {
+        display: flex; flex-direction: column; align-items: center;
+        padding: 30px; background: var(--panel); border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .input-field {
+        padding: 15px; background: #0d1117; border: 2px solid #333;
+        color: var(--text); border-radius: 8px; font-size: 1.1rem; text-align: center;
+        margin-bottom: 10px; width: 280px;
+    }
+    .input-field:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); outline: none; }
+    #lockBtn {
+        background: var(--accent); color: #000; padding: 12px 30px; border: none;
+        border-radius: 30px; font-weight: 700; cursor: pointer; margin-top: 10px;
+    }
+    .auth-status { color: var(--secondary); margin-top: 15px; font-size: 0.9rem; }
 
-/* --- GİRİŞ KİLİDİ (KALDIRILDIĞI İÇİN BUNLARA GEREK KALMAZ) --- */
-/* #passwordOverlay, #lockForm, .input-field, #lockBtn, .auth-status STYLES REMOVED */
+    /* HEADER */
+    header { width: 100%; padding: 20px 0; border-bottom: 1px solid var(--border); background: var(--panel); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
+    .brand { font-size: 1.8rem; font-weight: 800; }
+    .brand span { color: var(--accent); margin-left: 5px; }
 
-/* HEADER */
-header { width: 100%; padding: 20px 0; border-bottom: 1px solid var(--border); background: var(--panel); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
-.brand { font-size: 1.8rem; font-weight: 800; }
-.brand span { color: var(--accent); margin-left: 5px; }
+    /* LAYOUT */
+    .main-container {
+        display: flex; gap: 30px; padding: 40px 20px; width: 100%;
+        max-width: 1200px; flex-wrap: wrap; justify-content: center;
+    }
 
-/* LAYOUT */
-.main-container {
-    display: flex; gap: 30px; padding: 40px 20px; width: 100%;
-    max-width: 1200px; flex-wrap: wrap; justify-content: center;
-}
+    /* SOL PANEL (INPUT) */
+    .editor-panel {
+        background: var(--panel); border: 1px solid var(--border);
+        border-radius: 12px; padding: 20px; flex: 1 1 350px;
+        height: 650px; display: flex; flex-direction: column;
+    }
+    .panel-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--accent); }
+    
+    .list-area { display: flex; flex-direction: row; flex: 1; gap: 15px; }
 
-/* SOL PANEL (INPUT) */
-.editor-panel {
-    background: var(--panel); border: 1px solid var(--border);
-    border-radius: 12px; padding: 20px; flex: 1 1 350px;
-    height: 650px; display: flex; flex-direction: column;
-}
-.panel-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--accent); }
- 
-.list-area { display: flex; flex-direction: row; flex: 1; gap: 15px; }
+    textarea {
+        flex: 1; width: 100%; background: #0d1117; border: 1px solid #333;
+        color: #fff; padding: 15px; font-family: monospace; resize: none;
+        border-radius: 6px; margin-bottom: 10px; font-size: 1rem;
+    }
+    
+    /* YÜZDELİK LİSTESİ */
+    .percentage-list {
+        flex: 1; background: #0d1117; border: 1px solid #333; border-radius: 6px;
+        padding: 15px; overflow-y: auto; font-size: 0.9rem;
+    }
+    .percent-item { margin-bottom: 8px; color: #ddd; display: flex; justify-content: space-between; }
+    .percent-item span { color: var(--accent); font-weight: 700; }
 
-textarea {
-    flex: 1; width: 100%; background: #0d1117; border: 1px solid #333;
-    color: #fff; padding: 15px; font-family: monospace; resize: none;
-    border-radius: 6px; margin-bottom: 10px; font-size: 1rem;
-}
- 
-/* YÜZDELİK LİSTESİ */
-.percentage-list {
-    flex: 1; background: #0d1117; border: 1px solid #333; border-radius: 6px;
-    padding: 15px; overflow-y: auto; font-size: 0.9rem;
-}
-.percent-item { margin-bottom: 8px; color: #ddd; display: flex; justify-content: space-between; }
-.percent-item span { color: var(--accent); font-weight: 700; }
+    .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+    .btn-action { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .btn-save { background: var(--accent); color: #000; }
+    .btn-reset { background: #333; color: #fff; }
 
-.btn-group { display: flex; gap: 10px; margin-top: 10px; }
-.btn-action { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-.btn-save { background: var(--accent); color: #000; }
-.btn-reset { background: #333; color: #fff; }
+    /* ORTA PANEL (WHEEL) */
+    .wheel-panel {
+        flex: 1 1 450px; display: flex; flex-direction: column; align-items: center;
+        justify-content: center; position: relative;
+    }
 
-/* ORTA PANEL (WHEEL) */
-.wheel-panel {
-    flex: 1 1 450px; display: flex; flex-direction: column; align-items: center;
-    justify-content: center; position: relative;
-}
+    #wheelCanvas {
+        background: transparent; border-radius: 50%;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow);
+        transform: rotate(0deg); transition: transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0);
+    }
 
-#wheelCanvas {
-    background: transparent; border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow);
-    transform: rotate(0deg); transition: transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0);
-}
+    .pointer {
+        position: absolute; top: 10px; width: 0; height: 0;
+        border-left: 15px solid transparent; border-right: 15px solid transparent;
+        border-top: 30px solid var(--secondary); 
+        z-index: 10;
+        transform: translateY(-5px);
+        filter: drop-shadow(0 0 5px var(--secondary));
+    }
 
-.pointer {
-    position: absolute; top: 10px; width: 0; height: 0;
-    border-left: 15px solid transparent; border-right: 15px solid transparent;
-    border-top: 30px solid var(--secondary); 
-    z-index: 10;
-    transform: translateY(-5px);
-    filter: drop-shadow(0 0 5px var(--secondary));
-}
+    .spin-btn {
+        position: absolute; width: 120px; height: 120px; border-radius: 50%;
+        background: var(--primary); /* Düzeltildi: var(--primary) kullanıldı */
+        color: #000; font-size: 1.2rem; font-weight: 900;
+        border: 5px solid var(--bg); cursor: pointer; z-index: 10;
+        box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(0,0,0,0.5);
+    }
 
-.spin-btn {
-    position: absolute; width: 120px; height: 120px; border-radius: 50%;
-    background: var(--accent); /* --primary yerine --accent kullanıldı */
-    color: #000; font-size: 1.2rem; font-weight: 900;
-    border: 5px solid var(--bg); cursor: pointer; z-index: 10;
-    box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(0,0,0,0.5);
-}
-
-.result-box {
-    margin-top: 30px; padding: 15px 30px; background: var(--panel);
-    border: 2px solid var(--accent); /* --primary yerine --accent kullanıldı */
-    border-radius: 8px; text-align: center;
-    display: none; width: 80%; max-width: 400px;
-}
-.result-box h3 { margin: 0; color: var(--success, #00ff9d); font-size: 1.8rem; }
- 
-/* MOBİL UYUM */
-@media (max-width: 800px) {
-    .main-container { flex-direction: column; padding: 15px; gap: 15px; }
-    .editor-panel { height: 400px; flex: none; }
-    .list-area { flex-direction: column; }
-    .percentage-list { height: 150px; flex: none; margin-top: 10px; }
-    .wheel-panel { height: 450px; flex: none; }
-    #wheelCanvas { max-width: 90vw; max-height: 90vw; }
-}
+    .result-box {
+        margin-top: 30px; padding: 15px 30px; background: var(--panel);
+        border: 2px solid var(--primary); border-radius: 8px; text-align: center;
+        display: none; width: 80%; max-width: 400px;
+    }
+    .result-box h3 { margin: 0; color: var(--success, #00ff9d); font-size: 1.8rem; }
+    
+    /* MOBİL UYUM */
+    @media (max-width: 800px) {
+        .main-container { flex-direction: column; padding: 15px; gap: 15px; }
+        .editor-panel { height: 400px; flex: none; }
+        .list-area { flex-direction: column; }
+        .percentage-list { height: 150px; flex: none; margin-top: 10px; }
+        .wheel-panel { height: 450px; flex: none; }
+        #wheelCanvas { max-width: 90vw; max-height: 90vw; }
+    }
 </style>
 </head>
 <body>
 
-        <header>
+        <div id="passwordOverlay" style="display: flex; opacity: 1;">
+        <div id="lockForm">
+            <h2 style="color:var(--accent); margin-bottom: 25px;">Yönetici Girişi</h2>
+            <input type="email" id="emailInput" class="input-field" placeholder="E-posta (admin@odhun.com)">
+            <input type="password" id="passInput" class="input-field" placeholder="Şifre" onkeydown="if(event.key === 'Enter') loginUser()">
+            <button id="lockBtn" onclick="loginUser()">Siteye Gir</button>
+            <p class="auth-status" id="authStatusMsg">
+                *Güvenlik uyarısı: Bu şifre kaynak kodda görünüyor.
+            </p>
+        </div>
+    </div>
+
+    <header>
         <div class="brand">ODHUN<span>ÇARK</span></div>
     </header>
 
@@ -162,9 +194,74 @@ textarea {
         Odhun.com © 2025 | Basit Rastgele Seçim Aracı
     </footer>
 
-    <script>
-        // Firebase SDK importları ve auth ile ilgili tüm kodlar kaldırıldı
+    <script type="module">
+        // SDK'lar geri yüklendi
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         
+        // --- Firebase Config ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
+            authDomain: "anit-805a2.firebaseapp.com",
+            projectId: "anit-805a2",
+            storageBucket: "anit-805a2.firebasestorage.app",
+            messagingSenderId: "840387116828",
+            appId: "1:840387116828:web:0887b37d998cb63a35c4d9",
+            measurementId: "G-R0BY4RSPBB"
+        };
+        
+        let auth;
+        try { 
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+        } catch (error) {
+            console.error("Firebase Initialization Failed:", error);
+            // Hata durumunda bile overlay'in görünür olduğundan emin olun
+            document.getElementById('passwordOverlay').style.display = 'flex';
+            document.getElementById('authStatusMsg').innerText = "HATA: Firebase yüklenemedi. Şifreleme çalışmıyor.";
+        }
+        
+        // --- AUTH DURUM KONTROLÜ ---
+        onAuthStateChanged(auth, (user) => {
+            const overlay = document.getElementById('passwordOverlay');
+            if (user) {
+                // Giriş başarılıysa overlay'i kaldır ve uygulamayı başlat
+                overlay.style.opacity = '0';
+                setTimeout(() => { 
+                    overlay.style.display = 'none';
+                    window.loadList(); // Uygulamayı başlat
+                }, 500);
+            } else {
+                // Giriş gerekli: overlay'i göster
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '1';
+            }
+        });
+
+        // --- GİRİŞ FONKSİYONU (Firebase Auth) ---
+        // Düzeltildi: Global erişim için window.loginUser kullanıldı
+        window.loginUser = async () => {
+            if (!auth) return; // Firebase başlatılamadıysa çık
+
+            const email = document.getElementById('emailInput').value.trim();
+            const pass = document.getElementById('passInput').value.trim();
+            const statusMsg = document.getElementById('authStatusMsg');
+            const lockBtn = document.getElementById('lockBtn');
+
+            lockBtn.disabled = true;
+            statusMsg.innerText = 'Doğrulanıyor...';
+            statusMsg.style.color = 'var(--accent)';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                // Başarılı girişten sonra onAuthStateChanged tetiklenir ve overlay kalkar
+            } catch (error) {
+                statusMsg.innerText = 'Hata: E-posta veya Şifre Yanlış.';
+                statusMsg.style.color = 'var(--secondary)';
+                lockBtn.disabled = false;
+            }
+        };
+
         // --- UI & ÇARK LİSTESİ ---
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
@@ -173,35 +270,34 @@ textarea {
         const resultBox = document.getElementById('resultBox');
         const center = canvas.width / 2;
         const radius = canvas.width / 2;
-        // Canvas çiziminde kullanılacak olan renk sabit olarak belirlendi
-        const PANEL_COLOR = '#161b22'; 
+
+        const PANEL_COLOR = '#161b22'; // Canvas için sabit panel rengi
 
         let options = [];
-        let spinAngle = 0;
         let isSpinning = false;
         let targetIndex = -1;
 
         const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
         // --- VERİ YÖNETİMİ ---
-        window.saveList = () => { // Global olarak tanımlandı
+        window.saveList = () => { // Düzeltildi: Global erişim için window.saveList kullanıldı
             localStorage.setItem('odhunchark_list', optionsInput.value);
-            drawWheel();
+            window.drawWheel();
             alert("Liste başarıyla kaydedildi!");
         }
 
-        window.loadList = () => { // Global olarak tanımlandı
+        window.loadList = () => { // Düzeltildi: Global erişim için window.loadList kullanıldı
             const savedList = localStorage.getItem('odhunchark_list');
             if (savedList && savedList.trim() !== "") {
                 optionsInput.value = savedList;
             } else {
                 optionsInput.value = "Çin Yemeği\nTürk Mutfağı\nFast Food\nSushi\nVegan";
             }
-            drawWheel();
+            window.drawWheel();
         }
 
         // --- ÇARK ÇİZİMİ & YÜZDELİK HESAPLAMA ---
-        window.drawWheel = () => { // Global olarak tanımlandı
+        window.drawWheel = () => { // Düzeltildi: Global erişim için window.drawWheel kullanıldı
             options = optionsInput.value.split('\n').filter(line => line.trim() !== '');
             const percentList = document.getElementById('percentageList');
             percentList.innerHTML = `<p style="color:var(--text-dim); text-align:center; margin-top:0;">Kazanma Olasılığı:</p>`;
@@ -252,7 +348,7 @@ textarea {
         }
 
         // --- ÇEVİRME LOGİĞİ ---
-        window.spinWheel = () => { // Global olarak tanımlandı
+        window.spinWheel = () => { // Düzeltildi: Global erişim için window.spinWheel kullanıldı
             if (isSpinning || options.length === 0) return;
 
             isSpinning = true;
@@ -276,12 +372,12 @@ textarea {
                  isSpinning = false;
                  spinBtn.disabled = false;
                  spinBtn.innerText = "ÇEVİR!";
-                 showResult();
+                 window.showResult();
             }, 4100);
         }
 
         // --- SONUCU GÖSTER ---
-        window.showResult = () => { // Global olarak tanımlandı
+        window.showResult = () => { // Düzeltildi: Global erişim için window.showResult kullanıldı
             if (targetIndex !== -1) {
                 const result = options[targetIndex];
                 resultBox.style.display = 'block';
@@ -289,10 +385,6 @@ textarea {
                 document.getElementById('resultText').innerText = result;
             }
         }
-
-        // Uygulamayı başlat
-        window.onload = loadList;
-
     </script>
 
 </body>
