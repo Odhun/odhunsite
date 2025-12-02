@@ -19,6 +19,7 @@
         --text-dim: #888;
         --border: #30363d;
         --canvas-size: 400px;
+        --secondary: #d63031;
     }
 
     * { box-sizing: border-box; }
@@ -110,7 +111,7 @@
     .pointer {
         position: absolute; top: 10px; width: 0; height: 0;
         border-left: 15px solid transparent; border-right: 15px solid transparent;
-        border-top: 30px solid var(--secondary); /* Kırmızı Ok */
+        border-top: 30px solid var(--secondary); 
         z-index: 10;
         transform: translateY(-5px);
         filter: drop-shadow(0 0 5px var(--secondary));
@@ -195,8 +196,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         
-        const password = 'wiIs6J7G13qApCz1'; // SENİN SAĞLADIĞIN ŞİFRE
-        
+        // --- Firebase Config ---
+        // Kullanıcının sağladığı yapılandırma bilgileri
         const firebaseConfig = {
             apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
             authDomain: "anit-805a2.firebaseapp.com",
@@ -206,10 +207,64 @@
             appId: "1:840387116828:web:0887b37d998cb63a35c4d9",
             measurementId: "G-R0BY4RSPBB"
         };
+        
+        const ADMIN_EMAIL = "admin@odhun.com";
+        const ADMIN_PASS = "wiIs6J7G13qApCz1"; // Kullanıcının sağladığı şifre
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+        let auth;
+        try { 
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+        } catch (error) {
+            console.error("Firebase Initialization Failed:", error);
+            // Hata durumunda manuel login ekranını göster
+            document.getElementById('passwordOverlay').style.display = 'flex';
+        }
+        
+        // --- AUTH DURUM KONTROLÜ ---
+        onAuthStateChanged(auth, (user) => {
+            const overlay = document.getElementById('passwordOverlay');
+            if (user) {
+                // Giriş başarılı
+                overlay.style.opacity = '0';
+                setTimeout(() => { 
+                    overlay.style.display = 'none';
+                    loadList(); // Uygulamayı başlat
+                }, 500);
+            } else {
+                // Giriş gerekli
+                if(overlay) { // Eğer Firebase çalışıyorsa
+                    overlay.style.display = 'flex';
+                    overlay.style.opacity = '1';
+                } else { // Firebase yüklenemezse bile login ekranı görünsün
+                    document.getElementById('passwordOverlay').style.display = 'flex';
+                }
+            }
+        });
 
+        // --- GİRİŞ FONKSİYONU (Firebase Auth) ---
+        window.loginUser = async () => {
+            const email = document.getElementById('emailInput').value.trim();
+            const pass = document.getElementById('passInput').value.trim();
+            const statusMsg = document.getElementById('authStatusMsg');
+            const lockBtn = document.getElementById('lockBtn');
+
+            lockBtn.disabled = true;
+            statusMsg.innerText = 'Doğrulanıyor...';
+            statusMsg.style.color = 'var(--accent)';
+
+            try {
+                // Firebase Login
+                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                // Başarılı girişten sonra onAuthStateChanged tetiklenir ve overlay kalkar
+            } catch (error) {
+                statusMsg.innerText = 'Hata: E-posta veya Şifre Yanlış.';
+                statusMsg.style.color = 'var(--secondary)';
+                lockBtn.disabled = false;
+            }
+        };
+
+        // --- UI & ÇARK LİSTESİ ---
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const optionsInput = document.getElementById('optionsInput');
@@ -225,49 +280,9 @@
 
         const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
-        // --- AUTH DURUM KONTROLÜ ---
-        onAuthStateChanged(auth, (user) => {
-            const overlay = document.getElementById('passwordOverlay');
-            if (user) {
-                // Giriş başarılı
-                overlay.style.opacity = '0';
-                setTimeout(() => { 
-                    overlay.style.display = 'none';
-                    loadList();
-                }, 500);
-            } else {
-                // Giriş gerekli
-                overlay.style.display = 'flex';
-                overlay.style.opacity = '1';
-            }
-        });
-
-        // --- GİRİŞ FONKSİYONU ---
-        window.loginUser = async () => {
-            const email = document.getElementById('emailInput').value.trim();
-            const pass = document.getElementById('passInput').value.trim();
-            const statusMsg = document.getElementById('authStatusMsg');
-
-            // Hardcoded check for initial setup simplicity
-            const ADMIN_EMAIL = "admin@odhun.com";
-
-            if (email === ADMIN_EMAIL && pass === password) {
-                // Firebase Login (Bu kısım, Firebase'de kullanıcı yoksa hata verir!)
-                try {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                    // Başarılı girişten sonra onAuthStateChanged tetiklenir ve overlay kalkar
-                    statusMsg.innerText = "Giriş Başarılı! Yönlendiriliyor...";
-                    statusMsg.style.color = 'var(--success, #27ae60)';
-                } catch (error) {
-                    // Eğer Firebase'de kullanıcı oluşturulmadıysa buraya düşer
-                    statusMsg.innerText = `Hata: E-posta/Şifre yanlış veya hesap oluşturulmamış.`;
-                    statusMsg.style.color = 'var(--secondary)';
-                    console.error("Firebase Login Error:", error.message);
-                }
-            } else {
-                statusMsg.innerText = 'E-posta veya Şifre Yanlış.';
-                statusMsg.style.color = 'var(--secondary)';
-            }
+        // Sadece overlay'i göstermek için
+        window.onload = () => {
+            document.getElementById('passwordOverlay').style.display = 'flex';
         };
 
         // --- VERİ YÖNETİMİ ---
@@ -307,19 +322,16 @@
                 const endAngle = startAngle + arcSize;
                 const color = colors[i % colors.length];
 
-                // 1. Dilim Çizimi
                 ctx.beginPath();
                 ctx.arc(center, center, radius, startAngle, endAngle);
                 ctx.lineTo(center, center);
                 ctx.fillStyle = color;
                 ctx.fill();
 
-                // 2. Dilim Arası Çizgisi
                 ctx.strokeStyle = var(--panel);
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // 3. Metin Çizimi (Orijinal case)
                 ctx.save();
                 ctx.translate(center, center);
                 ctx.rotate(startAngle + arcSize / 2);
@@ -330,7 +342,6 @@
                 ctx.fillText(option, radius * 0.9, 0); 
                 ctx.restore();
 
-                // 4. Yüzdelik Listeye Ekle
                 percentList.innerHTML += `
                     <div class="percent-item">
                         ${option}: <span>%${percentage}</span>
@@ -351,22 +362,17 @@
             spinBtn.innerText = "DÖNÜYOR...";
             canvas.style.transition = 'none';
 
-            // 1. Rastgele hedef belirle
             targetIndex = Math.floor(Math.random() * options.length);
             
-            // 2. Durma açısını hesapla
             const arcSize = 2 * Math.PI / options.length;
             const targetCenterAngle = (2 * Math.PI) - (targetIndex * arcSize + arcSize / 2); 
 
-            // 3. 5-10 tam tur ekle + nihai açıya ulaş
             const randomSpins = Math.floor(Math.random() * 6) + 5; 
             const finalRotationDegrees = (targetCenterAngle + (randomSpins * 2 * Math.PI)) * (180 / Math.PI);
 
-            // 4. CSS ile dönme animasyonu başlat
             canvas.style.transition = 'transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0)';
             canvas.style.transform = `rotate(${finalRotationDegrees}deg)`;
 
-            // 5. Animasyon bitince sonucu göster
             setTimeout(() => {
                  isSpinning = false;
                  spinBtn.disabled = false;
@@ -384,16 +390,6 @@
                 document.getElementById('resultText').innerText = result;
             }
         }
-
-        // --- EVENT LISTENERS ---
-        optionsInput.addEventListener('input', drawWheel);
-        // Enter tuşu listener'ı
-        document.getElementById('passInput').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault(); 
-                loginUser(); // CheckPassword yerine loginUser çağrılır
-            }
-        });
     </script>
 
 </body>
