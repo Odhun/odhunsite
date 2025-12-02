@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Odhun Çark | Rastgele Karar Çarkı</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23000000%22>%C3%87</tspan></text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>Ç</text></svg>">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
@@ -59,7 +59,7 @@
         max-width: 1200px; flex-wrap: wrap; justify-content: center;
     }
 
-    /* SOL PANEL (INPUT & YÜZDE) */
+    /* SOL PANEL (INPUT) */
     .editor-panel {
         background: var(--panel); border: 1px solid var(--border);
         border-radius: 12px; padding: 20px; flex: 1 1 350px;
@@ -75,7 +75,7 @@
         border-radius: 6px; margin-bottom: 10px; font-size: 1rem;
     }
     
-    /* YÜZDELİK LİSTESİ (YENİ) */
+    /* YÜZDELİK LİSTESİ */
     .percentage-list {
         flex: 1; background: #0d1117; border: 1px solid #333; border-radius: 6px;
         padding: 15px; overflow-y: auto; font-size: 0.9rem;
@@ -97,7 +97,7 @@
     #wheelCanvas {
         background: transparent; border-radius: 50%;
         box-shadow: 0 0 20px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow);
-        transform: rotate(0deg); transition: transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0); /* Yumuşak bitiş için */
+        transform: rotate(0deg); transition: transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0);
     }
 
     .pointer {
@@ -179,7 +179,7 @@
     </footer>
 
     <script>
-        const password = 'ix2G<3FMg!@38f!M'; // GİRİŞ ŞİFRESİ
+        const password = 'ix2G<3FMg!@38f!M'; // YENİ ŞİFRE
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const optionsInput = document.getElementById('optionsInput');
@@ -195,10 +195,9 @@
         let targetIndex = -1;
         let animationFrameId;
 
-        const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63']; // 8 renk
+        const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
         window.onload = () => {
-            // Şifre kontrolü sadece JS'den sonra yapılır
             if(document.getElementById('passwordOverlay')) document.getElementById('passwordOverlay').style.display = 'flex';
         };
 
@@ -209,7 +208,7 @@
                 document.getElementById('passwordOverlay').style.opacity = '0';
                 setTimeout(() => { 
                     document.getElementById('passwordOverlay').style.display = 'none';
-                    loadList(); // Şifre doğruysa listeyi yükle
+                    loadList();
                 }, 500);
             } else {
                 alert('Hatalı şifre.');
@@ -228,7 +227,6 @@
             if (savedList && savedList.trim() !== "") {
                 optionsInput.value = savedList;
             } else {
-                // Varsayılan listeyi yükle
                 optionsInput.value = "Çin Yemeği\nTürk Mutfağı\nFast Food\nSushi\nVegan";
             }
             drawWheel();
@@ -261,12 +259,12 @@
                 ctx.fillStyle = color;
                 ctx.fill();
 
-                // 2. Dilim Arası Çizgisi (Daha şık görünüm için)
+                // 2. Dilim Arası Çizgisi
                 ctx.strokeStyle = var(--panel);
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // 3. Metin Çizimi (Büyük harf fix)
+                // 3. Metin Çizimi (Orijinal case)
                 ctx.save();
                 ctx.translate(center, center);
                 ctx.rotate(startAngle + arcSize / 2);
@@ -275,7 +273,7 @@
                 ctx.font = "14px Inter, sans-serif";
                 
                 // Metni merkeze doğru kaydırma
-                ctx.fillText(option, radius * 0.9, 0); // Orijinal case kullanıldı
+                ctx.fillText(option, radius * 0.9, 0); 
                 ctx.restore();
 
                 // 4. Yüzdelik Listeye Ekle
@@ -297,7 +295,7 @@
             resultBox.style.display = 'none';
             spinBtn.disabled = true;
             spinBtn.innerText = "DÖNÜYOR...";
-            canvas.style.transition = 'none'; // Geçişi sıfırla
+            canvas.style.transition = 'none';
 
             // 1. Rastgele hedef belirle
             targetIndex = Math.floor(Math.random() * options.length);
@@ -305,7 +303,7 @@
             // 2. Durma açısını hesapla
             const arcSize = 2 * Math.PI / options.length;
             const targetCenterAngle = (2 * Math.PI) - (targetIndex * arcSize + arcSize / 2); 
-            
+
             // 3. 5-10 tam tur ekle + nihai açıya ulaş
             const randomSpins = Math.floor(Math.random() * 6) + 5; 
             const finalRotationDegrees = (targetCenterAngle + (randomSpins * 2 * Math.PI)) * (180 / Math.PI);
@@ -333,8 +331,34 @@
             }
         }
 
+        // --- SLIDER DRAG LOGIC (KART VOLUME LOGİĞİ) ---
+        function startDrag(id, e) {
+            e.preventDefault();
+            const slider = e.currentTarget;
+            
+            const update = (evt) => {
+                const rect = slider.getBoundingClientRect();
+                let clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                let percent = (clientX - rect.left) / rect.width;
+                percent = Math.max(0, Math.min(1, percent));
+                setVolume(id, percent);
+            };
+
+            const stop = () => {
+                document.removeEventListener('mousemove', update);
+                document.removeEventListener('mouseup', stop);
+                document.removeEventListener('touchmove', update);
+                document.removeEventListener('touchend', stop);
+            };
+
+            document.addEventListener('mousemove', update);
+            document.addEventListener('mouseup', stop);
+            document.addEventListener('touchmove', update);
+            document.addEventListener('touchend', stop);
+            update(e);
+        }
+
         // --- EVENT LISTENERS ---
-        optionsInput.addEventListener('input', drawWheel);
         document.getElementById('lockBtn').addEventListener('click', checkPassword);
     </script>
 
