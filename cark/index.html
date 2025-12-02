@@ -1,406 +1,268 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Çark | Rastgele Karar Çarkı</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffae00%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%2240%22 fill=%22%23ffffff%22>Ç</text></svg>">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
-
-<style>
-    :root {
-        --bg: #0d1117; 
-        --panel: #161b22;
-        --accent: #ffae00; /* Altın Sarısı / Şans Rengi */
-        --accent-glow: rgba(255, 174, 0, 0.4);
-        --text: #f0f0f0;
-        --text-dim: #888;
-        --border: #30363d;
-        --canvas-size: 400px;
-        --secondary: #d63031;
-        --primary: var(--accent);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-        margin: 0; padding: 0; background: var(--bg); color: var(--text);
-        font-family: 'Inter', sans-serif; min-height: 100vh;
-        display: flex; flex-direction: column; align-items: center;
-        overflow-x: hidden;
-    }
-    
-    /* --- GİRİŞ KİLİDİ --- */
-    #passwordOverlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: var(--bg); z-index: 9999;
-        display: none; 
-        flex-direction: column; align-items: center; justify-content: center;
-        transition: opacity 0.5s;
-    }
-    #lockForm {
-        display: flex; flex-direction: column; align-items: center;
-        padding: 30px; background: var(--panel); border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .input-field {
-        padding: 15px; background: #0d1117; border: 2px solid #333;
-        color: var(--text); border-radius: 8px; font-size: 1.1rem; text-align: center;
-        margin-bottom: 10px; width: 280px;
-    }
-    .input-field:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); outline: none; }
-    #lockBtn {
-        background: var(--accent); color: #000; padding: 12px 30px; border: none;
-        border-radius: 30px; font-weight: 700; cursor: pointer; margin-top: 10px;
-    }
-    .auth-status { color: var(--secondary); margin-top: 15px; font-size: 0.9rem; }
-
-    /* HEADER */
-    header { width: 100%; padding: 20px 0; border-bottom: 1px solid var(--border); background: var(--panel); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
-    .brand { font-size: 1.8rem; font-weight: 800; }
-    .brand span { color: var(--accent); margin-left: 5px; }
-
-    /* LAYOUT */
-    .main-container {
-        display: flex; gap: 30px; padding: 40px 20px; width: 100%;
-        max-width: 1200px; flex-wrap: wrap; justify-content: center;
-    }
-
-    /* SOL PANEL (INPUT) */
-    .editor-panel {
-        background: var(--panel); border: 1px solid var(--border);
-        border-radius: 12px; padding: 20px; flex: 1 1 350px;
-        height: 650px; display: flex; flex-direction: column;
-    }
-    .panel-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--accent); }
-    
-    .list-area { display: flex; flex-direction: row; flex: 1; gap: 15px; }
-
-    textarea {
-        flex: 1; width: 100%; background: #0d1117; border: 1px solid #333;
-        color: #fff; padding: 15px; font-family: monospace; resize: none;
-        border-radius: 6px; margin-bottom: 10px; font-size: 1rem;
-    }
-    
-    /* YÜZDELİK LİSTESİ */
-    .percentage-list {
-        flex: 1; background: #0d1117; border: 1px solid #333; border-radius: 6px;
-        padding: 15px; overflow-y: auto; font-size: 0.9rem;
-    }
-    .percent-item { margin-bottom: 8px; color: #ddd; display: flex; justify-content: space-between; }
-    .percent-item span { color: var(--accent); font-weight: 700; }
-
-    .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-    .btn-action { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .btn-save { background: var(--accent); color: #000; }
-    .btn-reset { background: #333; color: #fff; }
-
-    /* ORTA PANEL (WHEEL) */
-    .wheel-panel {
-        flex: 1 1 450px; display: flex; flex-direction: column; align-items: center;
-        justify-content: center; position: relative;
-    }
-
-    #wheelCanvas {
-        background: transparent; border-radius: 50%;
-        box-shadow: 0 0 20px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow);
-        transform: rotate(0deg); transition: transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0);
-    }
-
-    .pointer {
-        position: absolute; top: 10px; width: 0; height: 0;
-        border-left: 15px solid transparent; border-right: 15px solid transparent;
-        border-top: 30px solid var(--secondary); 
-        z-index: 10;
-        transform: translateY(-5px);
-        filter: drop-shadow(0 0 5px var(--secondary));
-    }
-
-    .spin-btn {
-        position: absolute; width: 120px; height: 120px; border-radius: 50%;
-        background: var(--primary); 
-        color: #000; font-size: 1.2rem; font-weight: 900;
-        border: 5px solid var(--bg); cursor: pointer; z-index: 10;
-        box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(0,0,0,0.5);
-    }
-
-    .result-box {
-        margin-top: 30px; padding: 15px 30px; background: var(--panel);
-        border: 2px solid var(--primary); border-radius: 8px; text-align: center;
-        display: none; width: 80%; max-width: 400px;
-    }
-    .result-box h3 { margin: 0; color: var(--success, #00ff9d); font-size: 1.8rem; }
-    
-    /* MOBİL UYUM */
-    @media (max-width: 800px) {
-        .main-container { flex-direction: column; padding: 15px; gap: 15px; }
-        .editor-panel { height: 400px; flex: none; }
-        .list-area { flex-direction: column; }
-        .percentage-list { height: 150px; flex: none; margin-top: 10px; }
-        .wheel-panel { height: 450px; flex: none; }
-        #wheelCanvas { max-width: 90vw; max-height: 90vw; }
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>Özel Çark Çevirme Uygulaması</title>
+    <style>
+        /* Basit CSS stilleri */
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #app-content { max-width: 800px; margin: auto; }
+        #auth-ui input { padding: 10px; margin: 5px; }
+        #auth-ui button, #logout-button, #spin-button { padding: 10px 20px; cursor: pointer; }
+        #wheel-container { margin: 20px 0; border: 1px solid #ccc; display: inline-block; }
+        #wheel-canvas { background-color: #eee; border-radius: 50%; }
+        #results-list { list-style: none; padding: 0; }
+        #results-list li { background: #f4f4f4; margin: 5px 0; padding: 10px; border-radius: 5px; }
+    </style>
 </head>
 <body>
+    <h1>Özel Çark Çevirme Uygulaması</h1>
 
-        <div id="passwordOverlay" style="display: flex; opacity: 1;">
-        <div id="lockForm">
-            <h2 style="color:var(--accent); margin-bottom: 25px;">Yönetici Girişi</h2>
-            <input type="email" id="emailInput" class="input-field" placeholder="E-posta (admin@odhun.com)">
-            <input type="password" id="passInput" class="input-field" placeholder="Şifre" onkeydown="if(event.key === 'Enter') loginUser()">
-            <button id="lockBtn" onclick="loginUser()">Siteye Gir</button>
-            <p class="auth-status" id="authStatusMsg">
-                *Uyarı: Güvenlik için, bu şifre kaynağın dışına taşınmalıdır.
-            </p>
-        </div>
-    </div>
+    <div id="auth-ui">
+        <h2>Giriş Yapın</h2>
+        <input type="email" id="email" placeholder="E-posta">
+        <input type="password" id="password" placeholder="Şifre">
+        <button id="login-button">Giriş Yap</button>
+        <p id="auth-error" style="color: red;"></p>
+    </div>
 
-    <header>
-        <div class="brand">ODHUN<span>ÇARK</span></div>
-    </header>
-
-    <div class="main-container">
-        
-        <div class="editor-panel">
-            <div class="panel-title"><i class="fas fa-list-ul"></i> Seçenek Listesi</div>
-            <div class="list-area">
-                <textarea id="optionsInput" placeholder="Örnek:\nPizza\nDöner\nSushi\nEvde yemek" oninput="drawWheel()"></textarea>
-                <div id="percentageList" class="percentage-list">
-                    <p style="color:var(--text-dim); text-align:center; margin-top:0;">Kazanma Olasılığı:</p>
-                </div>
-            </div>
-            <div class="btn-group">
-                <button class="btn-action btn-save" onclick="saveList()"><i class="fas fa-save"></i> Listeyi Kaydet</button>
-                <button class="btn-action btn-reset" onclick="loadList()"><i class="fas fa-undo"></i> Kayıtlı Yükle</button>
-            </div>
-        </div>
-
-        <div class="wheel-panel">
-            <div class="pointer"></div>
-            <canvas id="wheelCanvas" width="400" height="400"></canvas>
-            <button class="spin-btn" id="spinBtn" onclick="spinWheel()">ÇEVİR!</button>
-
-            <div class="result-box" id="resultBox">
-                <p style="margin:0; font-size:0.8rem;">Kararınız:</p>
-                <h3 id="resultText">?</h3>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        Odhun.com © 2025 | Basit Rastgele Seçim Aracı
-    </footer>
-
-    <script type="module">
-        // SDK'lar geri yüklendi ve modüler import kullanıldı
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
-        
-        // --- GÜNCELLENMİŞ Firebase Config ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
-            authDomain: "anit-805a2.firebaseapp.com",
-            projectId: "anit-805a2",
-            storageBucket: "anit-805a2.firebasestorage.app",
-            messagingSenderId: "840387116828",
-            appId: "1:840387116828:web:0887b37d998cb63a35c4d9",
-            measurementId: "G-R0BY4RSPBB"
-        };
-        
-        let auth;
-        try { 
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            // Analitik başlatma (isteğe bağlı)
-            getAnalytics(app); 
-        } catch (error) {
-            console.error("Firebase Initialization Failed:", error);
-            const overlay = document.getElementById('passwordOverlay');
-            if(overlay) {
-                overlay.style.display = 'flex';
-                document.getElementById('authStatusMsg').innerText = "HATA: Firebase yüklenemedi. Doğrulama çalışmıyor.";
-            }
-        }
-        
-        // --- AUTH DURUM KONTROLÜ ---
-        onAuthStateChanged(auth, (user) => {
-            const overlay = document.getElementById('passwordOverlay');
-            if (user) {
-                // Giriş başarılıysa overlay'i kaldır ve uygulamayı başlat
-                overlay.style.opacity = '0';
-                setTimeout(() => { 
-                    overlay.style.display = 'none';
-                    window.loadList(); 
-                }, 500);
-            } else {
-                // Giriş gerekli: overlay'i göster
-                if(overlay) {
-                    overlay.style.display = 'flex';
-                    overlay.style.opacity = '1';
-                }
-            }
-        });
-
-        // --- GİRİŞ FONKSİYONU (Firebase Auth) ---
-        window.loginUser = async () => {
-            if (!auth) return; 
-
-            const email = document.getElementById('emailInput').value.trim();
-            const pass = document.getElementById('passInput').value.trim();
-            const statusMsg = document.getElementById('authStatusMsg');
-            const lockBtn = document.getElementById('lockBtn');
-
-            lockBtn.disabled = true;
-            statusMsg.innerText = 'Doğrulanıyor...';
-            statusMsg.style.color = 'var(--accent)';
-
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-            } catch (error) {
-                statusMsg.innerText = 'Hata: E-posta veya Şifre Yanlış.';
-                statusMsg.style.color = 'var(--secondary)';
-                lockBtn.disabled = false;
-            }
-        };
+    <div id="app-content" style="display:none;">
+        <h2>Merhaba, Yönetici! Uygulama Verileri:</h2>
         
-        // Uygulamanın çalışması için gerekli diğer değişkenler ve fonksiyonlar:
+        <div id="wheel-container">
+            <canvas id="wheel-canvas" width="400" height="400"></canvas>
+            <button id="spin-button">Çevir!</button>
+        </div>
+        
+        <h3>Sonuç Kayıtları (Firebase'den)</h3>
+        <ul id="results-list">
+            <li>Yükleniyor...</li>
+        </ul>
 
-        const canvas = document.getElementById('wheelCanvas');
-        const ctx = canvas.getContext('2d');
-        const optionsInput = document.getElementById('optionsInput');
-        const spinBtn = document.getElementById('spinBtn');
-        const resultBox = document.getElementById('resultBox');
-        const center = canvas.width / 2;
-        const radius = canvas.width / 2;
+        <button id="logout-button">Çıkış Yap</button>
+    </div>
 
-        const PANEL_COLOR = '#161b22'; // Canvas için sabit panel rengi (CSS değişkeni hatası düzeltildi)
+    <script type="module">
+        // --- 1. Firebase Modüllerini İçe Aktar ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        
+        // --- 2. GÖRSELDEKİ BİLGİLERİNİZ VE KENDİ UID'NİZ ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCxV9J8v9b53HpzVgWOiEF-_FHwejPo",
+            authDomain: "anit-885a2.firebaseapp.com",
+            projectId: "anit-885a2",
+            storageBucket: "anit-885a2.appspot.com",
+            messagingSenderId: "840387116828",
+            appId: "1:840387116828:web:0887b37d998cb63a35c4d9",
+            measurementId: "G-R0BY4RSPBB",
+            // Realtime Database URL'nizi buraya ekleyin:
+            databaseURL: "https://anit-885a2-default-rtdb.firebaseio.com" 
+        };
 
-        let options = [];
-        let isSpinning = false;
-        let targetIndex = -1;
+        // BURAYI KENDİ UID'NİZ İLE DEĞİŞTİRİN!
+        const MY_USER_UID = "yya21vML6kSIh2fttsg8VNFNcex1"; 
 
-        const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
+        // --- 3. Firebase Servislerini Başlat ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        
+        // DOM Elementleri
+        const authUI = document.getElementById('auth-ui');
+        const appContent = document.getElementById('app-content');
+        const loginButton = document.getElementById('login-button');
+        const logoutButton = document.getElementById('logout-button');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const authError = document.getElementById('auth-error');
+        const resultsList = document.getElementById('results-list');
+        const spinButton = document.getElementById('spin-button');
 
-        // --- VERİ YÖNETİMİ ---
-        window.saveList = () => {
-            localStorage.setItem('odhunchark_list', optionsInput.value);
-            window.drawWheel();
-            alert("Liste başarıyla kaydedildi!");
-        }
+        // Çark Dilimleri
+        const slices = ["5 Puan", "10 Puan", "Kaybettin", "25 Puan", "Tekrar Çevir", "0 Puan"];
+        const colors = ["#ffc107", "#28a745", "#dc3545", "#007bff", "#6f42c1", "#343a40"];
+        const canvas = document.getElementById('wheel-canvas');
+        const ctx = canvas.getContext('2d');
+        let currentRotation = 0;
 
-        window.loadList = () => {
-            const savedList = localStorage.getItem('odhunchark_list');
-            if (savedList && savedList.trim() !== "") {
-                optionsInput.value = savedList;
-            } else {
-                optionsInput.value = "Çin Yemeği\nTürk Mutfağı\nFast Food\nSushi\nVegan";
-            }
-            window.drawWheel();
-        }
+        // --- 4. Fonksiyonlar ---
+        
+        // Veri Kaydetme
+        function saveSpinResult(uid, result) {
+            const resultsRef = ref(db, `users/${uid}/spin_results`);
+            push(resultsRef, {
+                result: result,
+                timestamp: serverTimestamp()
+            }).then(() => {
+                console.log("Sonuç Firebase'e başarıyla kaydedildi.");
+            }).catch(error => {
+                console.error("Veri kaydetme hatası:", error);
+            });
+        }
 
-        // --- ÇARK ÇİZİMİ & YÜZDELİK HESAPLAMA ---
-        window.drawWheel = () => {
-            options = optionsInput.value.split('\n').filter(line => line.trim() !== '');
-            const percentList = document.getElementById('percentageList');
-            percentList.innerHTML = `<p style="color:var(--text-dim); text-align:center; margin-top:0;">Kazanma Olasılığı:</p>`;
+        // Veri Yükleme (Realtime)
+        function loadSpinResults(uid) {
+            const resultsRef = ref(db, `users/${uid}/spin_results`);
+            
+            onValue(resultsRef, (snapshot) => {
+                resultsList.innerHTML = '';
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    // Sonuçları en yenisi en üstte olacak şekilde sıralama
+                    const sortedResults = Object.entries(data).sort(([, a], [, b]) => b.timestamp - a.timestamp);
+                    
+                    sortedResults.forEach(([, item]) => {
+                        const li = document.createElement('li');
+                        const date = item.timestamp ? new Date(item.timestamp).toLocaleString() : 'Hemen şimdi';
+                        li.textContent = `[${date}] - Çark Sonucu: ${item.result}`;
+                        resultsList.appendChild(li);
+                    });
+                } else {
+                    resultsList.innerHTML = '<li>Henüz bir sonuç kaydedilmedi.</li>';
+                }
+            });
+        }
 
-            if (options.length === 0) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                return;
-            }
+        // Çarkı Çizme Fonksiyonu
+        function drawWheel(rotation = 0) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = centerX - 5;
+            const arc = (2 * Math.PI) / slices.length;
 
-            const totalOptions = options.length;
-            const arcSize = 2 * Math.PI / totalOptions;
-            const percentage = (100 / totalOptions).toFixed(1);
-            let startAngle = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+            
+            slices.forEach((slice, i) => {
+                const angle = i * arc;
+                
+                // Dilimi Çiz
+                ctx.beginPath();
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, angle, angle + arc);
+                ctx.closePath();
+                ctx.fill();
 
-            options.forEach((option, i) => {
-                const endAngle = startAngle + arcSize;
-                const color = colors[i % colors.length];
+                // Metni Yaz
+                ctx.save();
+                ctx.rotate(angle + arc / 2);
+                ctx.fillStyle = 'black';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText(slice, radius - 10, 5);
+                ctx.restore();
+            });
 
-                ctx.beginPath();
-                ctx.arc(center, center, radius, startAngle, endAngle);
-                ctx.lineTo(center, center);
-                ctx.fillStyle = color;
-                ctx.fill();
+            ctx.restore();
 
-                // HATA DÜZELTİLDİ: ctx.strokeStyle için sabit renk kullanıldı
-                ctx.strokeStyle = PANEL_COLOR;
-                ctx.lineWidth = 2;
-                ctx.stroke();
+            // Orta daireyi çiz
+            ctx.beginPath();
+            ctx.fillStyle = 'white';
+            ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+            ctx.fill();
 
-                ctx.save();
-                ctx.translate(center, center);
-                ctx.rotate(startAngle + arcSize / 2);
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#fff";
-                ctx.font = "14px Inter, sans-serif";
-                
-                ctx.fillText(option, radius * 0.9, 0); 
-                ctx.restore();
+            // İşaretçi (Ok)
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.moveTo(centerX * 2 - 10, centerY);
+            ctx.lineTo(centerX * 2, centerY - 10);
+            ctx.lineTo(centerX * 2, centerY + 10);
+            ctx.closePath();
+            ctx.fill();
+        }
 
-                percentList.innerHTML += `
-                    <div class="percent-item">
-                        ${option}: <span>%${percentage}</span>
-                    </div>
-                `;
+        // Çevirme Animasyonu
+        function spinWheel() {
+            spinButton.disabled = true;
+            authError.textContent = "Çark çevriliyor...";
+            
+            // Rastgele bir duruş açısı hesapla (en az 4 tam tur)
+            const minTurns = 4;
+            const randomSliceIndex = Math.floor(Math.random() * slices.length);
+            const targetAngle = randomSliceIndex * (360 / slices.length);
+            const totalDegrees = (minTurns * 360) + (360 - targetAngle); // Başlangıçtan hedefe dönme
+            const duration = 5000; // 5 saniye
+            const startTime = performance.now();
 
-                startAngle = endAngle;
-            });
-        }
+            function animate(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Yavaşlama (Ease out cubic)
+                const easing = 1 - Math.pow(1 - progress, 3); 
+                
+                const rotationDegrees = totalDegrees * easing;
+                currentRotation = (rotationDegrees * Math.PI) / 180; // Radyana çevir
+                drawWheel(currentRotation);
 
-        // --- ÇEVİRME LOGİĞİ ---
-        window.spinWheel = () => {
-            if (isSpinning || options.length === 0) return;
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Animasyon bitti, sonucu belirle ve kaydet
+                    spinButton.disabled = false;
+                    authError.textContent = "Sonuç belli oldu!";
+                    const winningSlice = slices[randomSliceIndex];
+                    alert(`Çark sonucu: ${winningSlice}!`);
+                    saveSpinResult(auth.currentUser.uid, winningSlice);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
 
-            isSpinning = true;
-            resultBox.style.display = 'none';
-            spinBtn.disabled = true;
-            spinBtn.innerText = "DÖNÜYOR...";
-            canvas.style.transition = 'none';
+        // --- 5. Olay Dinleyicileri (Events) ---
 
-            targetIndex = Math.floor(Math.random() * options.length);
-            
-            const arcSize = 2 * Math.PI / options.length;
-            const targetCenterAngle = (2 * Math.PI) - (targetIndex * arcSize + arcSize / 2); 
+        // A. Yetkilendirme Durumu Değiştiğinde
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (user.uid === MY_USER_UID) {
+                    // Kendi Yöneticinizsiniz!
+                    authUI.style.display = 'none';
+                    appContent.style.display = 'block';
+                    authError.textContent = "";
+                    drawWheel(); // Çarkı başlangıçta çiz
+                    loadSpinResults(user.uid);
+                } else {
+                    // Yetkisiz kullanıcı giriş yaparsa
+                    alert("Bu siteye erişim yetkiniz yok.");
+                    signOut(auth);
+                    authUI.style.display = 'block';
+                    appContent.style.display = 'none';
+                }
+            } else {
+                // Oturum Açılmamış
+                authUI.style.display = 'block';
+                appContent.style.display = 'none';
+                authError.textContent = "Lütfen yönetici hesabı ile giriş yapın.";
+            }
+        });
 
-            const randomSpins = Math.floor(Math.random() * 6) + 5; 
-            const finalRotationDegrees = (targetCenterAngle + (randomSpins * 2 * Math.PI)) * (180 / Math.PI);
+        // B. Giriş Düğmesi
+        loginButton.addEventListener('click', () => {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            authError.textContent = "Giriş yapılıyor...";
+            
+            signInWithEmailAndPassword(auth, email, password)
+                .catch((error) => {
+                    authError.textContent = "Giriş başarısız: " + error.message;
+                });
+        });
 
-            canvas.style.transition = 'transform 4s cubic-bezier(0.2, 1.0, 0.7, 1.0)';
-            canvas.style.transform = `rotate(${finalRotationDegrees}deg)`;
+        // C. Çıkış Düğmesi
+        logoutButton.addEventListener('click', () => {
+            signOut(auth);
+        });
 
-            setTimeout(() => {
-                 isSpinning = false;
-                 spinBtn.disabled = false;
-                 spinBtn.innerText = "ÇEVİR!";
-                 window.showResult();
-            }, 4100);
-        }
+        // D. Çevir Düğmesi
+        spinButton.addEventListener('click', spinWheel);
 
-        // --- SONUCU GÖSTER ---
-        window.showResult = () => {
-            if (targetIndex !== -1) {
-                const result = options[targetIndex];
-                resultBox.style.display = 'block';
-                resultBox.style.borderColor = colors[targetIndex % colors.length];
-                document.getElementById('resultText').innerText = result;
-            }
-        }
-    
-        // Sayfa yüklendiğinde şifre ekranını göster (auth kontrolü tarafından yönetilir)
-        window.onload = () => {
-            const overlay = document.getElementById('passwordOverlay');
-            // onAuthStateChanged henüz tetiklenmediyse overlay'i göster
-            if (overlay.style.display !== 'flex') {
-                overlay.style.display = 'flex';
-            }
-        };
-    </script>
-
+        // İlk çark çizimini yap
+        drawWheel(); 
+    </script>
 </body>
 </html>
