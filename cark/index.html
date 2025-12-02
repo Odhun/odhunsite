@@ -20,7 +20,7 @@
         --border: #30363d;
         --canvas-size: 400px;
         --secondary: #d63031;
-        --primary: var(--accent); /* Spin butonu için eklendi */
+        --primary: var(--accent);
     }
 
     * { box-sizing: border-box; }
@@ -120,7 +120,7 @@
 
     .spin-btn {
         position: absolute; width: 120px; height: 120px; border-radius: 50%;
-        background: var(--primary); /* Düzeltildi: var(--primary) kullanıldı */
+        background: var(--primary); 
         color: #000; font-size: 1.2rem; font-weight: 900;
         border: 5px solid var(--bg); cursor: pointer; z-index: 10;
         box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(0,0,0,0.5);
@@ -153,7 +153,7 @@
             <input type="password" id="passInput" class="input-field" placeholder="Şifre" onkeydown="if(event.key === 'Enter') loginUser()">
             <button id="lockBtn" onclick="loginUser()">Siteye Gir</button>
             <p class="auth-status" id="authStatusMsg">
-                *Güvenlik uyarısı: Bu şifre kaynak kodda görünüyor.
+                *Uyarı: Güvenlik için, bu şifre kaynağın dışına taşınmalıdır.
             </p>
         </div>
     </div>
@@ -195,11 +195,12 @@
     </footer>
 
     <script type="module">
-        // SDK'lar geri yüklendi
+        // SDK'lar geri yüklendi ve modüler import kullanıldı
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
         
-        // --- Firebase Config ---
+        // --- GÜNCELLENMİŞ Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
             authDomain: "anit-805a2.firebaseapp.com",
@@ -214,11 +215,15 @@
         try { 
             const app = initializeApp(firebaseConfig);
             auth = getAuth(app);
+            // Analitik başlatma (isteğe bağlı)
+            getAnalytics(app); 
         } catch (error) {
             console.error("Firebase Initialization Failed:", error);
-            // Hata durumunda bile overlay'in görünür olduğundan emin olun
-            document.getElementById('passwordOverlay').style.display = 'flex';
-            document.getElementById('authStatusMsg').innerText = "HATA: Firebase yüklenemedi. Şifreleme çalışmıyor.";
+            const overlay = document.getElementById('passwordOverlay');
+            if(overlay) {
+                overlay.style.display = 'flex';
+                document.getElementById('authStatusMsg').innerText = "HATA: Firebase yüklenemedi. Doğrulama çalışmıyor.";
+            }
         }
         
         // --- AUTH DURUM KONTROLÜ ---
@@ -229,19 +234,20 @@
                 overlay.style.opacity = '0';
                 setTimeout(() => { 
                     overlay.style.display = 'none';
-                    window.loadList(); // Uygulamayı başlat
+                    window.loadList(); 
                 }, 500);
             } else {
                 // Giriş gerekli: overlay'i göster
-                overlay.style.display = 'flex';
-                overlay.style.opacity = '1';
+                if(overlay) {
+                    overlay.style.display = 'flex';
+                    overlay.style.opacity = '1';
+                }
             }
         });
 
         // --- GİRİŞ FONKSİYONU (Firebase Auth) ---
-        // Düzeltildi: Global erişim için window.loginUser kullanıldı
         window.loginUser = async () => {
-            if (!auth) return; // Firebase başlatılamadıysa çık
+            if (!auth) return; 
 
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
@@ -254,15 +260,15 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
-                // Başarılı girişten sonra onAuthStateChanged tetiklenir ve overlay kalkar
             } catch (error) {
                 statusMsg.innerText = 'Hata: E-posta veya Şifre Yanlış.';
                 statusMsg.style.color = 'var(--secondary)';
                 lockBtn.disabled = false;
             }
         };
+        
+        // Uygulamanın çalışması için gerekli diğer değişkenler ve fonksiyonlar:
 
-        // --- UI & ÇARK LİSTESİ ---
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const optionsInput = document.getElementById('optionsInput');
@@ -271,7 +277,7 @@
         const center = canvas.width / 2;
         const radius = canvas.width / 2;
 
-        const PANEL_COLOR = '#161b22'; // Canvas için sabit panel rengi
+        const PANEL_COLOR = '#161b22'; // Canvas için sabit panel rengi (CSS değişkeni hatası düzeltildi)
 
         let options = [];
         let isSpinning = false;
@@ -280,13 +286,13 @@
         const colors = ['#f44336', '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ffc107', '#00bcd4', '#e91e63'];
 
         // --- VERİ YÖNETİMİ ---
-        window.saveList = () => { // Düzeltildi: Global erişim için window.saveList kullanıldı
+        window.saveList = () => {
             localStorage.setItem('odhunchark_list', optionsInput.value);
             window.drawWheel();
             alert("Liste başarıyla kaydedildi!");
         }
 
-        window.loadList = () => { // Düzeltildi: Global erişim için window.loadList kullanıldı
+        window.loadList = () => {
             const savedList = localStorage.getItem('odhunchark_list');
             if (savedList && savedList.trim() !== "") {
                 optionsInput.value = savedList;
@@ -297,7 +303,7 @@
         }
 
         // --- ÇARK ÇİZİMİ & YÜZDELİK HESAPLAMA ---
-        window.drawWheel = () => { // Düzeltildi: Global erişim için window.drawWheel kullanıldı
+        window.drawWheel = () => {
             options = optionsInput.value.split('\n').filter(line => line.trim() !== '');
             const percentList = document.getElementById('percentageList');
             percentList.innerHTML = `<p style="color:var(--text-dim); text-align:center; margin-top:0;">Kazanma Olasılığı:</p>`;
@@ -348,7 +354,7 @@
         }
 
         // --- ÇEVİRME LOGİĞİ ---
-        window.spinWheel = () => { // Düzeltildi: Global erişim için window.spinWheel kullanıldı
+        window.spinWheel = () => {
             if (isSpinning || options.length === 0) return;
 
             isSpinning = true;
@@ -377,7 +383,7 @@
         }
 
         // --- SONUCU GÖSTER ---
-        window.showResult = () => { // Düzeltildi: Global erişim için window.showResult kullanıldı
+        window.showResult = () => {
             if (targetIndex !== -1) {
                 const result = options[targetIndex];
                 resultBox.style.display = 'block';
@@ -385,6 +391,15 @@
                 document.getElementById('resultText').innerText = result;
             }
         }
+    
+        // Sayfa yüklendiğinde şifre ekranını göster (auth kontrolü tarafından yönetilir)
+        window.onload = () => {
+            const overlay = document.getElementById('passwordOverlay');
+            // onAuthStateChanged henüz tetiklenmediyse overlay'i göster
+            if (overlay.style.display !== 'flex') {
+                overlay.style.display = 'flex';
+            }
+        };
     </script>
 
 </body>
