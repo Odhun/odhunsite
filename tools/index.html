@@ -24,10 +24,7 @@
     * { box-sizing: border-box; }
 
     body {
-        margin: 0; padding: 0; 
-        /* Tema sorununu çözmek için arka plan rengini zorunlu kıldık */
-        background-color: var(--bg-dark); 
-        color: var(--text-main);
+        margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text-main);
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
     }
 
@@ -193,7 +190,9 @@
     }
 </style>
 </head>
-<body style="background-color: #0d1117; color: #ffffff;">     <button class="mobile-toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+<body>
+
+    <button class="mobile-toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
@@ -389,8 +388,6 @@
 
     <script>
         const sidebar = document.getElementById('sidebar');
-        // Logo değişkenini doğru tipte başlattık
-        let qrCode, qrLogo = ""; 
 
         function toggleSidebar() {
             sidebar.classList.toggle('active');
@@ -400,7 +397,7 @@
             document.querySelectorAll('.tool-container').forEach(el => el.classList.remove('active'));
             document.getElementById('tool-' + id).classList.add('active');
             
-            // Menü Aktiflik
+            // Masaüstü Menü Aktiflik
             document.querySelectorAll('.sidebar .menu-item').forEach(el => el.classList.remove('active'));
             const deskEl = document.querySelector(`.sidebar .menu-item[onclick*="'${id}'"]`);
             if(deskEl) deskEl.classList.add('active');
@@ -410,21 +407,21 @@
                 sidebar.classList.remove('active');
             }
             
+            // Sayfanın başına git
             document.querySelector('.main-content').scrollTop = 0;
         }
 
         // --- QR KOD ---
+        let qrCode, qrLogo = null;
         window.onload = () => {
             qrCode = new QRCodeStyling({
                 width: 250, height: 250, data: "https://odhun.com",
-                image: qrLogo, 
-                dotsOptions: { color: "#000", type: "square" },
+                image: "", dotsOptions: { color: "#000", type: "square" },
                 backgroundOptions: { color: "#fff" }
             });
             qrCode.append(document.getElementById("canvas"));
-            updateGradient(); 
+            updateGradient();
         };
-        
         function updateQR() {
             const data = document.getElementById('qrData').value;
             const color = document.getElementById('qrColor1').value;
@@ -437,7 +434,6 @@
             const size = document.getElementById('qrLogoSize').value;
             const ecc = document.getElementById('qrEcc').value;
 
-            // Sorun Giderildi: qrLogo'nun null/undefined yerine string olduğundan emin olundu.
             qrCode.update({
                 data: data,
                 qrOptions: { errorCorrectionLevel: ecc },
@@ -445,7 +441,7 @@
                 backgroundOptions: { color: bg },
                 cornersSquareOptions: { type: csT || undefined, color: csC },
                 cornersDotOptions: { type: cdT || undefined, color: cdC },
-                image: qrLogo, // qrLogo artık boş string "" olabilir, bu kütüphane ile uyumludur.
+                image: qrLogo,
                 imageOptions: { imageSize: parseFloat(size), margin: 5 }
             });
         }
@@ -453,11 +449,7 @@
             const file = e.target.files[0];
             if(file) { const r = new FileReader(); r.onload = () => { qrLogo = r.result; updateQR(); }; r.readAsDataURL(file); }
         }
-        function clearLogo() { 
-            qrLogo = ""; // Logo kaldırıldığında boş string olarak ayarlandı
-            document.getElementById('qrLogoInput').value = ""; 
-            updateQR(); 
-        }
+        function clearLogo() { qrLogo = null; document.getElementById('qrLogoInput').value = ""; updateQR(); }
         function downloadQR() { qrCode.download({ name: "odhun-qr", extension: document.getElementById('dlFormat').value }); }
 
         // --- DİĞERLERİ ---
