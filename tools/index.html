@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -350,7 +351,7 @@
 
         <div id="tool-hash" class="tool-container">
             <h2>Hash</h2>
-            <input type="text" id="hashInput" oninput="generateHash()">
+                        <input type="text" id="hashInput" value="Test" oninput="generateHash()">
             <input type="text" id="hashSHA1" readonly style="margin-top:10px">
             <input type="text" id="hashSHA256" readonly style="margin-top:10px">
         </div>
@@ -366,7 +367,7 @@
             <h2>Birim</h2>
             <select id="unitType" onchange="updateUnitUI()"><option value="len">Uzunluk</option><option value="weight">Ağırlık</option></select>
             <div class="row">
-                <div class="col"><label id="unitLabel1">Metre</label><input type="number" id="unitInput" oninput="convertUnit()"></div>
+                <div class="col"><label id="unitLabel1">Metre</label><input type="number" id="unitInput" value="1" oninput="convertUnit()"></div>
                 <div class="col"><label id="unitLabel2">Feet</label><input type="number" id="unitOutput" readonly></div>
             </div>
         </div>
@@ -394,9 +395,10 @@
 
         function showTool(id) {
             document.querySelectorAll('.tool-container').forEach(el => el.classList.remove('active'));
-            document.getElementById('tool-' + id).classList.add('active');
+            const toolEl = document.getElementById('tool-' + id);
+            if(toolEl) toolEl.classList.add('active');
             
-            // Masaüstü Menü Aktiflik
+            // Menü Aktiflik
             document.querySelectorAll('.sidebar .menu-item').forEach(el => el.classList.remove('active'));
             const deskEl = document.querySelector(`.sidebar .menu-item[onclick*="'${id}'"]`);
             if(deskEl) deskEl.classList.add('active');
@@ -412,16 +414,19 @@
 
         // --- QR KOD ---
         let qrCode, qrLogo = null;
-        window.onload = () => {
+        function initQR() {
+            if(qrCode) return; // Zaten oluşturulduysa tekrar oluşturma
             qrCode = new QRCodeStyling({
                 width: 250, height: 250, data: "https://odhun.com",
-                image: "", dotsOptions: { color: "#000", type: "square" },
+                qrOptions: { errorCorrectionLevel: 'Q' },
+                dotsOptions: { color: "#000", type: "square" },
                 backgroundOptions: { color: "#fff" }
             });
             qrCode.append(document.getElementById("canvas"));
-            updateGradient();
-        };
+        }
+
         function updateQR() {
+            if(!qrCode) initQR(); // Garantile
             const data = document.getElementById('qrData').value;
             const color = document.getElementById('qrColor1').value;
             const bg = document.getElementById('qrBgColor').value;
@@ -446,7 +451,7 @@
         }
         function handleLogoUpload(e) {
             const file = e.target.files[0];
-            if(file) { const r = new FileReader(); r.onload = () => { qrLogo = r.result; updateQR(); }; r.readAsDataURL(file); }
+            if(file) { const r = new FileReader(); r.onload = (ev) => { qrLogo = r.result; updateQR(); }; r.readAsDataURL(file); }
         }
         function clearLogo() { qrLogo = null; document.getElementById('qrLogoInput').value = ""; updateQR(); }
         function downloadQR() { qrCode.download({ name: "odhun-qr", extension: document.getElementById('dlFormat').value }); }
@@ -455,10 +460,10 @@
         let loadedImage = null;
         function loadImage(e) {
             const f = e.target.files[0];
-            if(f) { const r = new FileReader(); r.onload = (ev) => { document.getElementById('previewImg').src = ev.target.result; document.getElementById('previewImg').style.display='block'; document.getElementById('convertOptions').style.display='block'; loadedImage = new Image(); loadedImage.src = ev.target.result; }; r.readAsDataURL(f); }
+            if(f) { const r = new FileReader(); r.onload = (ev) => { document.getElementById('previewImg').src = ev.target.result; document.getElementById('previewImg').style.display='block'; document.getElementById('convertOptions').style.display='block'; loadedImage = new Image(); loadedImage.onload = () => {}; loadedImage.src = ev.target.result; }; r.readAsDataURL(f); }
         }
         function convertImage() {
-            if(!loadedImage) return;
+            if(!loadedImage || !loadedImage.complete) { alert("Lütfen önce bir resim yükleyin."); return; }
             const c = document.createElement('canvas'); c.width=loadedImage.width; c.height=loadedImage.height;
             c.getContext('2d').drawImage(loadedImage,0,0);
             const fmt = document.getElementById('formatSelect').value;
@@ -490,9 +495,14 @@
             try { const o = JSON.parse(el.value); el.value = JSON.stringify(o, null, pretty ? 4 : 0); } catch(e) { alert("Geçersiz JSON!"); }
         }
         function toBase64() { document.getElementById('b64Output').value = btoa(unescape(encodeURIComponent(document.getElementById('b64Input').value))); }
-        function fromBase64() { try { document.getElementById('b64Output').value = decodeURIComponent(escape(atob(document.getElementById('b64Input').value))); } catch(e){document.getElementById('b64Output').value="Hata";} }
+        function fromBase64() { try { document.getElementById('b64Output').value = decodeURIComponent(escape(atob(document.getElementById('b64Input').value))); } catch(e){document.getElementById('b64Output').value="Hata: Geçersiz Base64";}}
         async function generateHash() {
             const msg = document.getElementById('hashInput').value;
+            if(msg.length === 0) {
+                document.getElementById('hashSHA1').value = "";
+                document.getElementById('hashSHA256').value = "";
+                return;
+            }
             const msgBuffer = new TextEncoder().encode(msg);
             const sha1 = await crypto.subtle.digest('SHA-1', msgBuffer);
             document.getElementById('hashSHA1').value = buf2hex(sha1);
@@ -501,22 +511,42 @@
         }
         function buf2hex(buffer) { return [...new Uint8Array(buffer)].map(x => x.toString(16).padStart(2, '0')).join(''); }
         function generateLorem() {
-            const count = document.getElementById('loremCount').value;
-            const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-            document.getElementById('loremOutput').value = Array(parseInt(count)).fill(lorem).join('\n\n');
+            const count = parseInt(document.getElementById('loremCount').value) || 1;
+            const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."; // Daha uzun bir örnek metin
+            document.getElementById('loremOutput').value = Array(count).fill(lorem).join('\n\n');
         }
-        function updateUnitUI() { convertUnit(); }
+
+        // Birim Çevirici Fonksiyonları
+        const unitData = {
+            'len': { label1: 'Metre', label2: 'Feet', conversion: 3.28084 },
+            'weight': { label1: 'Kilogram', label2: 'Pound', conversion: 2.20462 }
+        };
+        function updateUnitUI() {
+            const t = document.getElementById('unitType').value;
+            const data = unitData[t];
+            document.getElementById('unitLabel1').innerText = data.label1;
+            document.getElementById('unitLabel2').innerText = data.label2;
+            convertUnit();
+        }
         function convertUnit() {
-            const t=document.getElementById('unitType').value, v=parseFloat(document.getElementById('unitInput').value);
+            const t=document.getElementById('unitType').value;
+            const v=parseFloat(document.getElementById('unitInput').value);
             const o=document.getElementById('unitOutput');
-            if(t==='len') o.value=(v*3.28).toFixed(2);
-            if(t==='weight') o.value=(v*2.2).toFixed(2);
+            if(isNaN(v)) {
+                o.value = '';
+                return;
+            }
+            const conv = unitData[t].conversion;
+            o.value=(v*conv).toFixed(2);
         }
+
         function analyzeText() {
             const t = document.getElementById('textInput').value;
             document.getElementById('charCount').innerText = t.length;
+            // Boşlukları ve yeni satırları temizleyerek kelimeleri say
             document.getElementById('wordCount').innerText = t.trim() === '' ? 0 : t.trim().split(/\s+/).length;
         }
+
         function updateColor() {
             const c = document.getElementById('colorInput').value;
             document.getElementById('hexVal').innerText = c.toUpperCase();
@@ -524,6 +554,18 @@
             const r = parseInt(c.substr(1,2),16), g = parseInt(c.substr(3,2),16), b = parseInt(c.substr(5,2),16);
             document.getElementById('rgbVal').innerText = `rgb(${r}, ${g}, ${b})`;
         }
+
+
+        // Sayfa yüklendiğinde tüm araçları başlat
+        window.onload = () => {
+            initQR();
+            updateGradient();
+            analyzeText();
+            generateLorem();
+            generateHash();
+            updateUnitUI();
+            updateColor();
+        };
     </script>
 
 </body>
