@@ -24,7 +24,10 @@
     * { box-sizing: border-box; }
 
     body {
-        margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text-main);
+        margin: 0; padding: 0; 
+        /* Tema sorununu çözmek için arka plan rengini zorunlu kıldık */
+        background-color: var(--bg-dark); 
+        color: var(--text-main);
         font-family: 'Inter', sans-serif; height: 100vh; display: flex; overflow: hidden;
     }
 
@@ -190,9 +193,7 @@
     }
 </style>
 </head>
-<body>
-
-    <button class="mobile-toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+<body style="background-color: #0d1117; color: #ffffff;">     <button class="mobile-toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
@@ -388,7 +389,8 @@
 
     <script>
         const sidebar = document.getElementById('sidebar');
-        let qrCode, qrLogo = ""; // qrLogo null yerine boş string olmalı
+        // Logo değişkenini doğru tipte başlattık
+        let qrCode, qrLogo = ""; 
 
         function toggleSidebar() {
             sidebar.classList.toggle('active');
@@ -415,12 +417,12 @@
         window.onload = () => {
             qrCode = new QRCodeStyling({
                 width: 250, height: 250, data: "https://odhun.com",
-                image: qrLogo, // Başlangıçta boş string
+                image: qrLogo, 
                 dotsOptions: { color: "#000", type: "square" },
                 backgroundOptions: { color: "#fff" }
             });
             qrCode.append(document.getElementById("canvas"));
-            updateGradient(); // Diğer araçlar için başlangıç çağrısı
+            updateGradient(); 
         };
         
         function updateQR() {
@@ -435,7 +437,7 @@
             const size = document.getElementById('qrLogoSize').value;
             const ecc = document.getElementById('qrEcc').value;
 
-            // HATA DÜZELTME: Logo boş olduğunda veya DataURL olmadığında boş string gönderilmeli
+            // Sorun Giderildi: qrLogo'nun null/undefined yerine string olduğundan emin olundu.
             qrCode.update({
                 data: data,
                 qrOptions: { errorCorrectionLevel: ecc },
@@ -443,7 +445,7 @@
                 backgroundOptions: { color: bg },
                 cornersSquareOptions: { type: csT || undefined, color: csC },
                 cornersDotOptions: { type: cdT || undefined, color: cdC },
-                image: qrLogo || '', // FIX 1: Null yerine boş string kullanıldı
+                image: qrLogo, // qrLogo artık boş string "" olabilir, bu kütüphane ile uyumludur.
                 imageOptions: { imageSize: parseFloat(size), margin: 5 }
             });
         }
@@ -452,7 +454,7 @@
             if(file) { const r = new FileReader(); r.onload = () => { qrLogo = r.result; updateQR(); }; r.readAsDataURL(file); }
         }
         function clearLogo() { 
-            qrLogo = ""; // FIX 2: Logo değişkeni boş string olarak ayarlandı
+            qrLogo = ""; // Logo kaldırıldığında boş string olarak ayarlandı
             document.getElementById('qrLogoInput').value = ""; 
             updateQR(); 
         }
