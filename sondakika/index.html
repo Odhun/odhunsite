@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Odhun Son Dakika | Halkın Habercisi</title>
+<title>Anamur Son Dakika </title>
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23dc2626%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22900%22 font-size=%22240%22 fill=%22%23ffffff%22>SD</text></svg>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,7 +25,7 @@
 
     body {
         margin: 0; padding: 0; background-color: var(--bg); color: var(--text);
-        font-family: 'Inter', sans-serif; padding-bottom: 50px;
+        font-family: 'Inter', sans-serif; padding-bottom: 100px;
         overflow-x: hidden;
     }
 
@@ -52,7 +52,7 @@
     .info-box {
         max-width: 600px; margin: 20px auto 0; padding: 15px;
         background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 4px solid var(--primary);
-        font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; width: 95%; /* Mobil genişlik */
+        font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; width: 95%;
     }
 
     /* MODALLAR */
@@ -74,11 +74,14 @@
     }
     textarea { height: 100px; resize: none; }
     
+    /* Medya Seçenekleri (Kamera/Galeri) */
+    .media-options { display: flex; gap: 10px; margin-bottom: 15px; }
     .file-label {
         flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
         background: #334155; padding: 12px; border-radius: 8px; text-align: center;
         cursor: pointer; color: #ccc; border: 2px dashed #475569; font-size: 0.9rem;
     }
+    .file-label:hover { border-color: var(--primary); color: #fff; }
     
     .submit-btn {
         width: 100%; background: var(--primary); color: #fff; padding: 12px; border: none;
@@ -103,20 +106,16 @@
         width: 40px; height: 40px; background: linear-gradient(45deg, #475569, #1e293b);
         border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
     }
-    
+    .user-info h4 { margin: 0; font-size: 0.95rem; color: #fff; }
+    .user-info span { font-size: 0.75rem; color: var(--text-dim); }
+
     .card-body { padding: 15px; }
     .news-text { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; white-space: pre-wrap; }
     
-    /* GÖRSEL STİLİ */
+    /* Mobil Uyumlu Görsel */
     .news-img { 
-        width: 100%; 
-        height: auto;
-        border-radius: 8px; 
-        margin-top: 10px; 
-        display: block; 
-        object-fit: contain; /* Görseli kesmeden sığdır */
-        background: #000;
-        max-width: 100%; /* Mobilde kaymayı önle */
+        width: 100%; border-radius: 8px; margin-top: 10px; display: block; 
+        max-height: 500px; object-fit: contain; background: #000;
     }
 
     .card-footer {
@@ -128,20 +127,39 @@
         display: flex; align-items: center; gap: 5px; transition: 0.2s;
     }
     .vote-btn:hover { transform: scale(1.1); }
+    .vote-up.active { color: var(--green); }
+    .vote-down.active { color: var(--red); }
     
-    /* MOBİL HEADER DÜZENLEMESİ */
+    .remove-btn {
+        color: #64748b; font-size: 0.8rem; background: none; border: 1px solid rgba(255,255,255,0.1);
+        padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: 0.2s;
+    }
+    .remove-btn:hover { color: var(--orange); border-color: var(--orange); }
+
+    .legal-banner {
+        background: #020617; color: #64748b; padding: 20px; text-align: center; font-size: 0.75rem;
+        border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px;
+    }
+    .loader { text-align: center; padding: 20px; color: var(--text-dim); font-style: italic; }
+    #previewImg { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; display: none; margin-bottom: 10px; }
+    
+    .copy-box {
+        background: #0f172a; padding: 10px; border-radius: 8px; border: 1px dashed #334155;
+        text-align: center; cursor: pointer; font-family: monospace; margin-bottom: 15px;
+    }
+    .copy-box:hover { border-color: var(--primary); color: #fff; }
+
+    /* MOBİL ÖZEL */
     @media (max-width: 500px) {
-        header { padding: 10px 15px; }
-        .brand { font-size: 1.3rem; }
-        .header-actions { gap: 5px; }
-        .btn-header { padding: 6px 10px; font-size: 0.8rem; }
+        .header-actions .btn-header span { display: inline; } /* Yazılar kalsın */
+        .modal-content { width: 95%; }
     }
 </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">ODHUN <span>SONDAKİKA</span></div>
+        <div class="brand">ANAMUR <span>SONDAKİKA</span></div>
         <div class="header-actions">
             <button class="btn-header contact-btn" onclick="openContactModal()"><i class="fas fa-envelope"></i> İletişim</button>
             <button class="btn-header new-post-btn" onclick="openPostModal()"><i class="fas fa-plus"></i> Haber Gir</button>
@@ -150,8 +168,8 @@
 
     <div class="info-box">
         <strong>Nasıl Çalışır?</strong><br>
-        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla kurulmuştur. Çevrenizde gördüğünüz olayları anlık olarak paylaşabilirsiniz. Paylaşımlar anonimdir (Rumuz Yazabilirsiniz). <br>
-        <strong>Dikkat:</strong> Her paylaşımdan sonra bekleme süresi artar. Kötüye kullanım durumunda haber topluluk tarafından kaldırılabilir. Test Sürümüdür.
+        Bu platform, vatandaş gazeteciliğini desteklemek amacıyla kurulmuştur. Çevrenizde gördüğünüz olayları anlık olarak paylaşabilirsiniz. Paylaşımlar anonimdir. (Rumuz Ekleyebilirsiniz.) <br>
+        <strong>Dikkat:</strong> Her paylaşımdan sonra bekleme süresi artar. Kötüye kullanım durumunda haber topluluk tarafından oylama ile kaldırılabilir. Test sürümüdür.
     </div>
 
     <div class="feed-container" id="feed">
@@ -160,8 +178,10 @@
 
     <div class="legal-banner">
         Odhun.com © 2025 Tüm Hakları Saklıdır.<br><br>
-        Bu sayfada yer alan içerikler, kullanıcılar tarafından oluşturulmakta olup <strong>Odhun.com</strong>'un resmi görüşünü yansıtmamaktadır. 
-        Paylaşılan içeriklerin doğruluğundan veya hukuki sorumluluğundan tamamen paylaşımı yapan kullanıcı sorumludur. Yapılan paylaşım konusunda ilgili kişi ve kurumlar irtibata geçtiğinde gerekli işlemler en kısa süred yapılacaktır.
+        Bu sitede yer alan tüm içerikler kullanıcılar tarafından oluşturulmaktadır ve <strong>Odhun.com</strong>'un resmi görüşlerini yansıtmaz. 
+        Platform yer sağlayıcı konumundadır. Paylaşılan içeriklerin hukuki ve cezai sorumluluğu tamamen paylaşımı yapan kullanıcıya aittir. 
+        Telif hakkı ihlali, kişilik haklarına saldırı veya yasa dışı içerik barındıran paylaşımlar, <strong>odhunticaret@gmail.com</strong> adresine 
+        yapılan bildirimler üzerine veya topluluk oylaması ile derhal yayından kaldırılacaktır.
     </div>
 
     <div id="postModal" class="modal-overlay">
@@ -203,7 +223,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, increment, serverTimestamp, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // YEREL KULLANICI İÇİN HARDCODED CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyB3Cmv9J8x9b53HPzgVmOIEF-_fKhwejPo",
             authDomain: "anit-805a2.firebaseapp.com",
@@ -215,9 +234,7 @@
         };
 
         let db;
-        try { const app = initializeApp(firebaseConfig); db = getFirestore(app); loadPosts(); } catch (e) {
-            document.getElementById('loader').innerHTML = "Bağlantı Hatası.<br>Lütfen internetinizi kontrol edin.";
-        }
+        try { const app = initializeApp(firebaseConfig); db = getFirestore(app); loadPosts(); } catch (e) {}
 
         const blackList = ["küfür", "hakaret", "aptal", "gerizekalı", "salak", "mal", "şerefsiz", "porno", "seks", "kumar", "bahis", "+18", "xxx", "amk", "aq", "piç", "yarrak", "orospu", "siktir", "göt", "meme", "kaşar", "yavşak", "sik", "ananı", "bacını", "sokayım", "sokarım"];
 
@@ -291,7 +308,6 @@
                     const interactionTotal = (post.likes || 0) + (post.dislikes || 0);
                     const removalThreshold = Math.max(1, interactionTotal); 
                     const currentRemoves = post.removeVotes || 0;
-                    
                     let imgHtml = post.image && post.image.length > 100 ? `<img src="${post.image}" class="news-img">` : "";
 
                     const html = `
